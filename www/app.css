@@ -1,0 +1,26 @@
+#save_plot_area {
+  display: inline-block;
+  margin-top: 15px;
+}
+
+#save_plot_btn {
+  margin-left: 5px;
+  vertical-align: top;
+}
+
+#save_plot_checkmark {
+  color: green;
+}
+
+#remove_plot_btn {
+  margin-left: 5px;
+  vertical-align: top;
+}
+#plot-log-opts .shiny-input-container {
+  display: inline-block;
+  width: 100px;
+}
+
+.blind-dropdown .selectize-dropdown {
+  display: none !important;
+}
