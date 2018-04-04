@@ -8,8 +8,8 @@ function(input, output, session) {
   )
   
   # If this app was launched from a function that explicitly set an initial dataset
-  if (exists("ggplotwithyourdata_init_data")) {
-    values$maindata <- get("ggplotwithyourdata_init_data")
+  if (exists("ggquickeda_initdata")) {
+    values$maindata <- get("ggquickeda_initdata")
   }
   
   # Variables to help with maintaining the dynamic number of "change the labels

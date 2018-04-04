@@ -12,23 +12,15 @@ suppressMessages ({
   library(markdown)
   library(rlang)
   library(lazyeval)
-  if (!suppressWarnings(require(ggkm, quietly=TRUE))) {
-    devtools::install_github("sachsmc/ggkm")
-    library(ggkm)
-  }
-  if (!suppressWarnings(require(table1, quietly=TRUE))) {
-      devtools::install_github("benjaminrich/table1")
-      library(table1)
-  }
-   # devtools::install_github("slowkow/ggrepel@0.6.6")
-    library(ggrepel)
-  
+  library(ggkm)
+  library(table1)
+  library(ggrepel)
+  library(plotly)
 })
-library(plotly)
-source("sourceable.R")
+
+source("helpers/sourceable.R", local = TRUE)
 
 options(shiny.maxRequestSize=250*1024^2) 
-#options(shiny.reactlog=TRUE) 
 
 stat_sum_df <- function(fun, geom="point", ...) {
   stat_summary(fun.data=fun,  geom=geom,  ...)
@@ -79,3 +71,6 @@ allstats <- c("N",
               "Median [IQR]",
               "Geo. Mean (Geo. CV%)")
 
+inline_ui <- function(tag) {
+  div(style = "display: inline-block", tag)
+}

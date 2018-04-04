@@ -1,12 +1,8 @@
-inline_ui <- function(tag) {
-  div(style = "display: inline-block", tag)
-}
-
 fluidPage(
   useShinyjs(),
-  includeCSS("www/app.css"),
-  includeCSS("www/table1-style.css"),
-  titlePanel("Hello ggploteR/Table1R!"),
+  tags$link(rel = "stylesheet", href = "app.css"),
+  tags$link(rel = "stylesheet", href = "table1-style.css"),
+  titlePanel("Hello ggquickeda!"),
   sidebarLayout(
     sidebarPanel(
       tabsetPanel(

@@ -1,5 +1,20 @@
-ggquickeda
-========
+---
+title: "ggquickeda"
+author: "Samer Mouksassi"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 **To launch the application, use `run_ggquickeda()` (or `run_ggquickeda(data)` to load a specific dataset initially).**
 
@@ -58,14 +73,14 @@ shiny::runGitHub('ggplotwithyourdata', 'smouksassi', subdir = 'shinyapp')
 ```
 Try to reproduce the steps below using the included sample_df.csv.
 ### Example 1
-![Example use case 1 with the included sample_df.csv.](img/snapshot1.gif)
+![Example use case 1 with the included sample_df.csv.](../img/snapshot1.gif)
 
 ### Example 2
-![Example use case 2 with the included sample_df.csv.](img/snapshot2.gif)
+![Example use case 2 with the included sample_df.csv.](../img/snapshot2.gif)
 
 ### Example 3
-![Example use case 3 with the included sample_df.csv.](img/snapshot3.gif)
+![Example use case 3 with the included sample_df.csv.](../img/snapshot3.gif)
 
 ### Example 4
-![Example use case 4 with the included sample_df.csv.](img/snapshot4.1.png)
+![Example use case 4 with the included sample_df.csv.](../img/snapshot4.1.png)
 

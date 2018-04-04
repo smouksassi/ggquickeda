@@ -1,0 +1,46 @@
+Package: ggquickeda
+Title: Quickly Explore Your Data Using 'ggplot2' and Stats Tables
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Samer", "Mouksassi", email = "Samer.Mouksassi@certara.com",
+      role = c("aut", "cre")),
+    person("Dean", "Attali", email = "daattali@gmail.com",
+      role = c("aut"))
+    )
+Description: Quickly explore your data by uploading your data as a csv. Start
+    generating insights using ggplot2 and/or html tables with descriptive stats
+    using an easy to use point and click R Shiny interface.
+URL: https://github.com/smouksassi/ggquickeda
+BugReports: https://github.com/smouksassi/ggquickeda/issues
+Depends:
+    R (>= 3.1.0)
+Imports:
+    colourpicker,
+    dplyr,
+    DT,
+    ggplot2,
+    ggrepel,
+    grDevices,
+    gridExtra,
+    Hmisc,
+    lazyeval,
+    markdown,
+    methods,
+    plotly,
+    quantreg,
+    rlang,
+    scales,
+    shiny (>= 1.0.4),
+    shinyjs,
+    tidyr
+Suggests:
+    knitr,
+    rmarkdown
+Remotes:
+    benjaminrich/table1,
+    sachsmc/ggkm
+License: MIT + file LICENSE
+SystemRequirements: pandoc with https support
+LazyData: true
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
