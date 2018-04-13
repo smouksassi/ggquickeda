@@ -1,5 +1,5 @@
 ---
-title: "ggquickeda"
+title: "Introduction to ggquickeda"
 author: "Samer Mouksassi"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -16,71 +16,40 @@ knitr::opts_chunk$set(
 )
 ```
 
-**To launch the application, use `run_ggquickeda()` (or `run_ggquickeda(data)` to load a specific dataset initially).**
-
-R Shiny app as a handy inteface to ggplot2. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms and densities.
-For a quick overview head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
-
-**Export Plots** and **Plot Code** tabs contributed by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
-**Plot Code** will let you look at the source code that generated the plot with the various options.
-
-Quick summary statistics tables using  <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> table1 package. 
-
-### CSV Data Input 
-* [read.csv("youruploadeddata.csv",na.strings = c("NA","."))]
-
-### Data Manipulations 
-* Change continuous variable to be treated as categorical 
-* Change continuous variable to categories with a specified number of bins or by supplying values for the bins start/end
-* Up to six sequential filters for categorical and continuous variables
-* Renaming and reordering of the levels of categorical variable(s)
-* Combining two categorical variables into one
-* Rounding a numerical variable to a specified number of digits
-
-### Summary/Regression functions 
-* Quantile Regression 
-* Smooth/Linear/Logistic Regressions
-* Mean Confidence Intervals
-* Median Prediction Intervals
-* Kaplan-Meier
-* Correlation Coefficients
-
-### `ggplot2` built-in functionality
-*`facet_grid` and `facet_wrap`
-* Group, color, size, fill mappings
-* Controlling y and x axis labels, legends and other commonly used theme options.
-* Adding a title, subtitle and a caption
-
-### Running Information
-Make sure to have all required packages installed
-shiny, shinyjs, ggplot2, ggrepel, scales, DT, tidyr, dplyr, Hmisc, quantreg, markdown, ggkm, colourpicker and table1.
-The app will try to install ggkm and table1 (if not found) using the commands below:
+This package/R Shiny app is a handy interface to ggplot2/table1. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics tables
+For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
+To get started:
 ```
-install.packages(c("shiny","shinyjs","ggplot2","scales","DT","tidyr","dplyr","Hmisc","quantreg","markdown","colourpicker","devtools"))
-devtools::install_github("sachsmc/ggkm")
-devtools::install_github("benjaminrich/table1")
+devtools::install_github("smouksassi/ggquickeda")
+library(ggquickeda)
 ```
-Make sure that you are using the this version of ggrepel 0.70 or later.
-```
-devtools::install_github("slowkow/ggrepel")
+Let us start by lauching the app `run_ggquickeda()` and clicking on use sample_data:
+The app will load the built-in example dataset and map the first column to y variable(s) and the second column to x variable and a simple scatter plot with points will be generated:
+![select sample_df.csv](../img/intro_1.png){width=100%}
 
-```
+We want to look at the Column Conc (concentration of drug in blood) versus Time joining each Subject data with a line:
 
+* Change the mapped y variable(s) from ID to Conc
+* Go to **Plot types, Points, Lines(?)** and select Lines
+![select sample_df.csv](../img/intro_2.png){width=100%}
 
-The main app contains several testing apps the main app can be run using this command:
-```
-shiny::runGitHub('ggplotwithyourdata', 'smouksassi', subdir = 'shinyapp')
-```
-Try to reproduce the steps below using the included sample_df.csv.
-### Example 1
-![Example use case 1 with the included sample_df.csv.](../img/snapshot1.gif)
+Wait something is wrong! We forgot to tell the app that we want to group by ID.
 
-### Example 2
-![Example use case 2 with the included sample_df.csv.](../img/snapshot2.gif)
+* Go Back to **Color/Group/Split/Size/Fill Mappings (?)** and select ID for the Group By:
 
-### Example 3
-![Example use case 3 with the included sample_df.csv.](../img/snapshot3.gif)
+![select sample_df.csv](../img/intro_3.png){width=100%}
+While we are on this tab let us map Color By: and Column Split: to Gender:
+![select sample_df.csv](../img/intro_4.png){width=100%}
+Now we want to add a loess trend line:
+* Go to  **Smooth/Linear/Logistic Regressions (?)** and click on the Smooth radio button:
 
-### Example 4
-![Example use case 4 with the included sample_df.csv.](../img/snapshot4.1.png)
+![select sample_df.csv](../img/intro_5.png){width=100%}
+After we made the plot we wanted, now we are interested to do a summary statistics of Weight and Age columns by Gender this will require the following steps:
+* Change the mapped y variable(s) to Weight, Age and Race
+* Go to **One Row by ID(s)** and select ID so we keep one row by ID
+* Go to **Descriptive Stats** tab
 
+![select sample_df.csv](../img/intro_6.png){width=100%}
+
+Now launch the application on your own data and start exploring:
+**`run_ggquickeda(yourdataname)`**

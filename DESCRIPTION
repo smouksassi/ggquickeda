@@ -19,7 +19,7 @@ Imports:
     dplyr,
     DT,
     ggplot2,
-    ggrepel,
+    ggrepel (>= 0.7.0),
     grDevices,
     gridExtra,
     Hmisc,
