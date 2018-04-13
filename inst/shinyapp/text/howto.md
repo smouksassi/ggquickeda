@@ -1,6 +1,6 @@
 Please read the How to to make sure you are using the app as intented.
 Contact me @ samermouksassi@gmail.com for feedback or use the link to file bugs/features/pull requests!
-<a href="https://github.com/smouksassi/ggplotwithyourdata/issues" target="_blank">Click Here to go to github</a>
+<a href="https://github.com/smouksassi/ggquickeda/issues" target="_blank">Click Here to go to github</a>
 
 1. Upload your data file in CSV format. R default options for `read.csv` will apply except for missing values where both (NA) and dot (.) are treated as missing. If your data has columns with other non-numeric missing value codes then they be treated as factors.
 
@@ -52,4 +52,4 @@ Contact me @ samermouksassi@gmail.com for feedback or use the link to file bugs/
 12. Copy Paste Bonus ≤ ≥ µ m² ³
     HTML: &le; &ge; &mu; &plusmn; &deg; <sup>superscript</sup>
 
-*Samer Mouksassi 2017*
+*Samer Mouksassi 2018*
