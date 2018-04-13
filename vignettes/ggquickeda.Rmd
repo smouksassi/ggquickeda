@@ -45,8 +45,8 @@ Now we want to add a loess trend line:
 
 ![select sample_df.csv](../img/intro_5.png){width=100%}
 After we made the plot we wanted, now we are interested to do a summary statistics of Weight and Age columns by Gender this will require the following steps:
-* Change the mapped y variable(s) to Weight, Age and Race
-* Go to **One Row by ID(s)** and select ID so we keep one row by ID
+* Change the mapped y variable(s) to Weight, Age and Race  
+* Go to **One Row by ID(s)** and select ID so we keep one row by ID  
 * Go to **Descriptive Stats** tab
 
 ![select sample_df.csv](../img/intro_6.png){width=100%}
