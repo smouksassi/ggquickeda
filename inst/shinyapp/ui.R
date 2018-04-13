@@ -636,13 +636,13 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       selectInput('smoothmethod', label ='Smoothing Method',
                                   choices=c("Loess" ="loess","Linear Fit"="lm","Logistic"="glm"),
                                   multiple=FALSE, selectize=TRUE,selected="loess"),
-                      
+                      conditionalPanel(" input.smoothmethod== 'loess' ",
                       sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),
                       selectInput('loessfamily', label ='Loess Family:',
                                   choices=c("Gaussian" ="gaussian","Symmetric"="symmetric"),
                                   multiple=FALSE, selectize=TRUE,selected="gaussian"),
                       sliderInput("loessdegree", "Loess Degree:", min=0, max=2, value=c(1),step=1)
-                      
+                      )
                     ) 
                   ),
                   
@@ -661,6 +661,11 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       " input.Smooth!= 'None' ",
                       checkboxInput('ignoregroup', 'Ignore Mapped Group',value = TRUE)
                     ) ,
+                    conditionalPanel(
+                      " input.Smooth== 'Smooth and SE' ",
+                      sliderInput("smoothselevel", "Confidence Level:", min=0.5, max=0.99, value=c(0.95),step=0.01)
+                    ) ,
+                    
                     uiOutput("weight"))
                   
                 )#fluidrow

@@ -1742,7 +1742,7 @@ function(input, output, session) {
           }
           
           spanplot <- input$loessens
-          
+          levelsmooth<- input$smoothselevel
           if ( input$ignoregroup) {
             if (!input$ignorecol) {
               if (input$Smooth=="Smooth")
@@ -1751,7 +1751,7 @@ function(input, output, session) {
                                      size=1.5,se=F,span=spanplot,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,aes(group=NULL))
               
@@ -1762,7 +1762,7 @@ function(input, output, session) {
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
@@ -1775,7 +1775,7 @@ function(input, output, session) {
                                      size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))
               
@@ -1786,7 +1786,7 @@ function(input, output, session) {
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
@@ -1802,7 +1802,7 @@ function(input, output, session) {
                                      size=1.5,se=F,span=spanplot)
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot)
               
@@ -1813,7 +1813,7 @@ function(input, output, session) {
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot)+  
                   aes_string(weight=input$weightin)
@@ -1826,7 +1826,7 @@ function(input, output, session) {
                                      size=1.5,se=F,span=spanplot,col=colsmooth)
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth)
               
@@ -1837,7 +1837,7 @@ function(input, output, session) {
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
