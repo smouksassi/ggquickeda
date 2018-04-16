@@ -25,31 +25,31 @@ library(ggquickeda)
 ```
 Let us start by launching the app `run_ggquickeda()` and clicking on use sample_data:
 The app will load the built-in example dataset and map the first column to y variable(s) and the second column to x variable and a simple scatter plot with points will be generated:
-![select sample_df.csv](../img/intro_1.png){width=100%}
+![select sample_df.csv](./intro_1.png){width=100%}
 
 We want to look at the Column Conc (concentration of drug in blood) versus Time joining each Subject data with a line:
 
 * Change the mapped y variable(s) from ID to Conc
 * Go to **Plot types, Points, Lines(?)** and select Lines
-![select sample_df.csv](../img/intro_2.png){width=100%}
+![select sample_df.csv](./intro_2.png){width=100%}
 
 Wait something is wrong! We forgot to tell the app that we want to group by ID.
 
 * Go Back to **Color/Group/Split/Size/Fill Mappings (?)** and select ID for the Group By:
 
-![select sample_df.csv](../img/intro_3.png){width=100%}
+![select sample_df.csv](./intro_3.png){width=100%}
 While we are on this tab let us map Color By: and Column Split: to Gender:
-![select sample_df.csv](../img/intro_4.png){width=100%}
+![select sample_df.csv](./intro_4.png){width=100%}
 Now we want to add a loess trend line:
 * Go to  **Smooth/Linear/Logistic Regressions (?)** and click on the Smooth radio button:
 
-![select sample_df.csv](../img/intro_5.png){width=100%}
+![select sample_df.csv](./intro_5.png){width=100%}
 After we made the plot we wanted, now we are interested to do a summary statistics of Weight and Age columns by Gender this will require the following steps:
 * Change the mapped y variable(s) to Weight, Age and Race  
 * Go to **One Row by ID(s)** and select ID so we keep one row by ID  
 * Go to **Descriptive Stats** tab
 
-![select sample_df.csv](../img/intro_6.png){width=100%}
+![select sample_df.csv](./intro_6.png){width=100%}
 
 Now launch the application on your own data and start exploring:
 **`run_ggquickeda(yourdataname)`**

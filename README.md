@@ -18,16 +18,16 @@ The best way to learn is to load a data your are familiar with and start experim
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea on the kind of ouputs that can be generated.
 
 ### Example 1
-![Example use case 1 with the included sample_df.csv.](img/snapshot1.gif)
+![Example use case 1 with the included sample_df.csv.](./inst/shinyapp/img/snapshot1.gif)
 
 ### Example 2
-![Example use case 2 with the included sample_df.csv.](img/snapshot2.gif)
+![Example use case 2 with the included sample_df.csv.](./inst/shinyapp/img/snapshot2.gif)
 
 ### Example 3
-![Example use case 3 with the included sample_df.csv.](img/snapshot3.gif)
+![Example use case 3 with the included sample_df.csv.](./inst/shinyapp/img/snapshot3.gif)
 
 ### Example 4
-![Example use case 4 with the included sample_df.csv.](img/snapshot4.1.png)
+![Example use case 4 with the included sample_df.csv.](./inst/shinyapp/img/snapshot4.1.png)
 
 
 Here is an overview of some of the things that can be done with the various menus:
