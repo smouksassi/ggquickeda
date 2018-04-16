@@ -1,5 +1,6 @@
 ggquickeda
 ========
+[![Travis-CI Build Status](https://travis-ci.org/smouksassi/ggquickeda.svg?branch=master)](https://travis-ci.org/smouksassi/ggquickeda)
 
 ### Installation and Running information
 ```
