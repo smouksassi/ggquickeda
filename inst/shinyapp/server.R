@@ -12,6 +12,9 @@ function(input, output, session) {
     values$maindata <- get("ggquickeda_initdata")
   }
   
+  # Kill the application/R session when a single shiny session is closed
+  session$onSessionEnded(stopApp)
+  
   # Variables to help with maintaining the dynamic number of "change the labels
   # of a variable" boxes
   changeLblsVals <- reactiveValues(
