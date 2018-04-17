@@ -12,13 +12,13 @@ suppressMessages ({
   library(markdown)
   library(rlang)
   library(lazyeval)
-  library(ggkm)
-  library(table1)
   library(ggrepel)
   library(plotly)
 })
 
 source("helpers/sourceable.R", local = TRUE)
+source("ext/ggkm.R", local = TRUE)
+source("ext/table1.R", local = TRUE)
 
 options(shiny.maxRequestSize=250*1024^2) 
 

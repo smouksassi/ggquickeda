@@ -99,16 +99,15 @@ Selecting scatter plots points and or lines with control over transparency and m
 * **Correlation Coefficient (?)** add a text label with the correlation coefficient
 
 ### Additional Information
+
 Installing the package should handle the installation of all dependencies. There are listed here in case you are curious:
+
 ```
 install.packages(c("shiny","shinyjs","colourpicker","ggplot2","scales","DT","tidyr","dplyr","Hmisc","quantreg","markdown","rlang","lazyeval","ggrepel","plotly","devtools"))
 ```
-It also depends on two github packages ggkm and table1 that can be installed via the commands below:
-```
-devtools::install_github("sachsmc/ggkm")
-devtools::install_github("benjaminrich/table1")
-```
+
 The app can also be directly lauched using this command
+
 ```
 shiny::runGitHub('ggquickeda', 'smouksassi', subdir = 'inst/shinyapp')
 ```

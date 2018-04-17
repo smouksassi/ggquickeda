@@ -5,7 +5,9 @@ Authors@R: c(
     person("Samer", "Mouksassi", email = "Samer.Mouksassi@certara.com",
       role = c("aut", "cre")),
     person("Dean", "Attali", email = "daattali@gmail.com",
-      role = c("aut"))
+      role = c("aut")),
+    person("Michael", "Sachs", email = "sachsmc@gmail.com",
+      role = c("aut"), comment = "provided ggkm code")
     )
 Description: Quickly explore your data by uploading your data as a csv. Start
     generating insights using ggplot2 and/or html tables with descriptive stats
@@ -36,9 +38,6 @@ Imports:
 Suggests:
     knitr,
     rmarkdown
-Remotes:
-    benjaminrich/table1,
-    sachsmc/ggkm
 License: MIT + file LICENSE
 SystemRequirements: pandoc with https support
 LazyData: true
