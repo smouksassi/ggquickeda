@@ -1553,39 +1553,51 @@ function(input, output, session) {
         
         #### Boxplot Section START
         
-        if (input$boxplotaddition){
-          if (input$groupin != 'None'& !input$boxplotignoregroup ){
-            if (!input$boxplotignorecol){
-              p <- p + aes_string(group=input$groupin)
-              p <- p + geom_boxplot(varwidth = input$boxplotvarwidh,notch = input$boxplotnotch,show.legend=input$boxplotshowlegend,alpha=input$boxplotalpha)
-              
-            }
-            if (input$boxplotignorecol){
-              p <- p + aes_string(group=input$groupin)
-              p <- p + geom_boxplot(varwidth = input$boxplotvarwidh,notch = input$boxplotnotch,show.legend=input$boxplotshowlegend,col=input$boxcolline,alpha=input$boxplotalpha)
-              
-            }
-          }
-          if (input$groupin == 'None'){
-            if (!input$boxplotignorecol){
-              p <- p + geom_boxplot(aes(group=NULL),varwidth = input$boxplotvarwidh,notch = input$boxplotnotch,show.legend=input$boxplotshowlegend,alpha=input$boxplotalpha)
-            }
-            if (input$boxplotignorecol){
-              p <- p + geom_boxplot(aes(group=NULL),varwidth = input$boxplotvarwidh,notch = input$boxplotnotch,show.legend=input$boxplotshowlegend,col=input$boxcolline,alpha=input$boxplotalpha)
-            } 
-          }
-          
-          
-          if (input$boxplotignoregroup ){
-            if (!input$boxplotignorecol){
-              p <- p + geom_boxplot(aes(group=NULL),varwidth = input$boxplotvarwidh,notch = input$boxplotnotch,show.legend=input$boxplotshowlegend,alpha=input$boxplotalpha)
-            }
-            if (input$boxplotignorecol){
-              p <- p + geom_boxplot(aes(group=NULL),varwidth = input$boxplotvarwidh,notch = input$boxplotnotch,show.legend=input$boxplotshowlegend,col=input$boxcolline,alpha=input$boxplotalpha)
+        if (input$boxplotaddition) {
+          if (input$groupin != 'None') {
+            if (!input$boxplotignoregroup) {
+              if (!input$boxplotignorecol) {
+                p <- p + geom_boxplot(
+                  aes_string(group = input$groupin),
+                  varwidth = input$boxplotvarwidh,
+                  notch = input$boxplotnotch,
+                  show.legend = input$boxplotshowlegend,
+                  alpha = input$boxplotalpha
+                )
+              }
+              if (input$boxplotignorecol) {
+                p <- p + geom_boxplot(
+                  aes_string(group = input$groupin),
+                  col = input$boxcolline,
+                  varwidth = input$boxplotvarwidh,
+                  notch = input$boxplotnotch,
+                  show.legend = input$boxplotshowlegend,
+                  alpha = input$boxplotalpha
+                )
+              }
             }
           }
-          
-          
+          if (input$groupin == 'None' || input$boxplotignoregroup) {
+            if (!input$boxplotignorecol) {
+              p <- p + geom_boxplot(
+                aes(group = NULL),
+                varwidth = input$boxplotvarwidh,
+                notch = input$boxplotnotch,
+                show.legend = input$boxplotshowlegend,
+                alpha = input$boxplotalpha
+              )
+            }
+            if (input$boxplotignorecol) {
+              p <- p + geom_boxplot(
+                aes(group = NULL),
+                varwidth = input$boxplotvarwidh,
+                notch = input$boxplotnotch,
+                show.legend = input$boxplotshowlegend,
+                col = input$boxcolline,
+                alpha = input$boxplotalpha
+              )
+            }
+          }
         }
         #### Boxplot Section END
         
