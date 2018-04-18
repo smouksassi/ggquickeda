@@ -4,19 +4,31 @@ ggquickeda
 
 ### Installation and Running information
 ```
-devtools::install_github("smouksassi/ggquickeda")
-```
-**To launch the application, use `run_ggquickeda()` (or `run_ggquickeda(data)` to load a specific dataset initially).**
 
-R Shiny app/package as a handy interface to ggplot2. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of multiple variable(s) by column(s) splits. For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
+# Install from CRAN:
+install.packages("ggquickeda")
+
+# Or the development version from GitHub:
+# install.packages("devtools")
+devtools::install_github("smouksassi/ggquickeda")
+
+```
+
+### Usage
+
+**To launch the application, use `run_ggquickeda()` then navigate to your csv file (or `run_ggquickeda(data)` to launch the app with a specific dataset already loaded).**
+
+R Shiny app/package as a handy interface to ggplot2/table1. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of multiple variable(s) by column(s) splits. For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
 
 **Export Plots** and **Plot Code** tabs contributed by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
-**Plot Code** will let you look at the source code that generated the plot with the various options.
+**Plot Code** will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
 
 Quick summary statistics tables using  <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> table1 package.
 
 The best way to learn is to load a data your are familiar with and start experimenting.
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea on the kind of ouputs that can be generated.
+
+The package has also two vignettes.
 
 ### Example 1
 ![Example use case 1 with the included sample_df.csv.](./inst/shinyapp/img/snapshot1.gif)
@@ -32,6 +44,8 @@ Try to reproduce the steps below using the included sample_df.csv. This will giv
 
 
 Here is an overview of some of the things that can be done with the various menus:
+
+## Details 
 
 ### Inputs 
 

@@ -1,13 +1,15 @@
 Package: ggquickeda
 Title: Quickly Explore Your Data Using 'ggplot2' and Stats Tables
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(
-    person("Samer", "Mouksassi", email = "Samer.Mouksassi@certara.com",
+    person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
       role = c("aut", "cre")),
     person("Dean", "Attali", email = "daattali@gmail.com",
       role = c("aut")),
     person("Michael", "Sachs", email = "sachsmc@gmail.com",
-      role = c("aut"), comment = "provided ggkm code")
+      role = c("aut"), comment = "provided ggkm code"),
+    person("Benjamin", "Rich", email = "mail@benjaminrich.net",
+      role = c("aut"), comment = "provided table1 code")  
     )
 Description: Quickly explore your data by uploading your data as a csv. Start
     generating insights using ggplot2 and/or html tables with descriptive stats
