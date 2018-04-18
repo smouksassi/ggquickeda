@@ -1,3 +1,5 @@
-# ggquickeda 0.0.0.9000
+1
+# ggquickeda 0.0.1
 
-- Initial version
+- Initial CRAN version
+
