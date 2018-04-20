@@ -23,9 +23,11 @@ Imports:
     colourpicker,
     dplyr,
     DT,
+    Formula,
     ggplot2,
     ggrepel (>= 0.7.0),
     grDevices,
+    grid,
     gridExtra,
     Hmisc,
     lazyeval,
@@ -37,7 +39,11 @@ Imports:
     scales,
     shiny (>= 1.0.4),
     shinyjs,
-    tidyr
+    stats,
+    stringr,
+    survival,
+    tidyr,
+    utils
 Suggests:
     knitr,
     rmarkdown

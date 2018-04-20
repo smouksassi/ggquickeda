@@ -1,5 +1,9 @@
-# Define a ggplot2 object as "sourceable", which means that it knows
-# how to keep track of its source code (parameter must be a ggplot2 object)
+#' Make a ggplot2 object sourceable
+#' 
+#' Define a ggplot2 object as "sourceable", which means that it knows
+#' how to keep track of its source code (parameter must be a ggplot2 object)
+#' @export
+#' @keywords internal
 sourceable <- function(x) {
   stopifnot(methods::is(x, "ggplot"))
   attr(x, "source_code") <- deparse(substitute(x))
@@ -8,8 +12,12 @@ sourceable <- function(x) {
   x
 }
 
-# Overwrite the plus operator so that if a "sourceable" object is used,
-# the source code is kept
+#' Add ggplot2 layer to a sourceable ggplot2
+#' 
+#' Overwrite the plus operator so that if a "sourceable" object is used,
+#' the source code is kept
+#' @export
+#' @keywords internal
 `+` <- function(e1, e2) {
   if (methods::is(e1, "sourceable")) {
     res <- base::`+`(e1, e2)
@@ -24,8 +32,11 @@ sourceable <- function(x) {
   }
 }
 
-# Attach dependecies to the source code (any input variables are automatically
-# attached)
+#' Attach dependencies to source code
+#' Attach dependecies to the source code (any input variables are automatically
+#' attached)
+#' @export
+#' @keywords internal
 attach_source_dep <- function(x, deps) {
   stopifnot(methods::is(x, "sourceable"))
   if (length(deps) == 0) {
@@ -40,13 +51,17 @@ attach_source_dep <- function(x, deps) {
   new_deps <- lapply(deps, function(dep) {
     eval(parse(text = dep), envir = parentFrame)
   })
-  new_deps <- setNames(new_deps, deps)
+  new_deps <- stats::setNames(new_deps, deps)
   
   attr(x, "source_deps") <- append(attr(x, "source_deps"), new_deps)
   x
 }
 
-# Retrieve the source code of a "sourceable" ggplot2
+#' Retrieve the source code of a "sourceable" ggplot2
+#' 
+#' Retrieve the source code of a "sourceable" ggplot2
+#' @export
+#' @keywords internal
 get_source_code <- function(x) {
   stopifnot(methods::is(x, "sourceable"))
   
@@ -59,11 +74,11 @@ get_source_code <- function(x) {
   if (exists("input", envir = parent.frame())) {
     input_vars <- stringr::str_extract_all(plot_code, "input\\$[[:alnum:]]*")[[1]]
     input_vars <- sub("input\\$", "", input_vars)
-    input_list <- reactiveValuesToList(get("input", envir = parent.frame()))
+    input_list <- shiny::reactiveValuesToList(get("input", envir = parent.frame()))
     if (length(input_vars) > 0) {
       input_code <- paste0("input <- list()\n")
       for (input_var in input_vars) {
-        input_var_value <- capture.output(
+        input_var_value <- utils::capture.output(
           dput(get(input_var, envir = as.environment(input_list))))
         input_var_value <- paste(trimws(input_var_value), collapse = "")
         input_code <- paste0(input_code,
@@ -78,7 +93,7 @@ get_source_code <- function(x) {
   dep_vars <- attr(x, "source_deps")
   if (length(dep_vars) > 0) {
     for (dep_var in names(dep_vars)) {
-      dep_var_value <- capture.output(dput(dep_vars[[dep_var]]))
+      dep_var_value <- utils::capture.output(dput(dep_vars[[dep_var]]))
       dep_var_value <- paste(trimws(dep_var_value), collapse = "")
       dep_code <- paste0(dep_code,
                          dep_var, " <- ", dep_var_value, "\n")

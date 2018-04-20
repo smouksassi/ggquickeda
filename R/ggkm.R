@@ -5,10 +5,11 @@
 #' Kaplan Meier Curve
 #'
 #' @export
+#' @keywords internal
 #' @rdname geom_km
 
 
-GeomKm <- ggplot2::ggproto("GeomKm", Geom,
+GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
                            
                            draw_group = function(data, scales, coordinates, ...) {
                              
@@ -20,7 +21,7 @@ GeomKm <- ggplot2::ggproto("GeomKm", Geom,
                            required_aes = c("x", "y"),
                            default_aes = ggplot2::aes(colour="black", fill="grey60", size=.75,
                                                       linetype=1, weight=1, alpha = 1),
-                           draw_key = draw_key_path
+                           draw_key = ggplot2::draw_key_path
                            
                            
 )
@@ -31,10 +32,11 @@ GeomKm <- ggplot2::ggproto("GeomKm", Geom,
 #' Kaplan Meier Curve
 #'
 #' @export
+#' @keywords internal
 #' @rdname geom_kmband
 
 
-GeomKmband <- ggplot2::ggproto("GeomKmband", Geom,
+GeomKmband <- ggplot2::ggproto("GeomKmband", ggplot2::Geom,
                                
                                draw_group = function(data, scales, coordinates, ...) {
                                  
@@ -49,7 +51,7 @@ GeomKmband <- ggplot2::ggproto("GeomKmband", Geom,
                                default_aes = ggplot2::aes(colour="black", fill="grey60", size=.75,
                                                           linetype=1, weight=1, alpha=0.4),
                                
-                               draw_key = draw_key_smooth
+                               draw_key = ggplot2::draw_key_smooth
                                
 )
 
@@ -59,9 +61,10 @@ GeomKmband <- ggplot2::ggproto("GeomKmband", Geom,
 #' Ticks are plotted at censoring times that are also not event times
 #'
 #' @export
+#' @keywords internal
 #' @rdname geom_kmticks
 
-GeomKmticks <- ggplot2::ggproto("GeomKmticks", Geom,
+GeomKmticks <- ggplot2::ggproto("GeomKmticks", ggplot2::Geom,
                                 
                                 draw_group = function(data, scales, coordinates, ...) {
                                   
@@ -92,7 +95,7 @@ GeomKmticks <- ggplot2::ggproto("GeomKmticks", Geom,
                                   shape = 3, colour = "black", size = .75,
                                   alpha = 1, stroke = 0.5, fill = "black"
                                 ),
-                                draw_key = draw_key_point
+                                draw_key = ggplot2::draw_key_point
                                 
 )
 
@@ -116,7 +119,9 @@ GeomKmticks <- ggplot2::ggproto("GeomKmticks", Geom,
 #' @seealso The default stat for this geom is \code{\link{stat_km}} see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
+#' @keywords internal
 #' @examples
+#' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) + geom_km()
@@ -151,7 +156,9 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #' @seealso The default stat for this geom is \code{\link{stat_kmband}} see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
+#' @keywords internal
 #' @examples
+#' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) + geom_km() + geom_kmband()
@@ -188,8 +195,10 @@ geom_kmband <- function(mapping = NULL, data = NULL, stat = "kmband",
 #' @seealso The default stat for this geom is \code{\link{stat_kmticks}} see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
+#' @keywords internal
 #' @rdname geom_kmticks
 #' @examples
+#' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) + geom_km() + geom_kmticks()
@@ -215,8 +224,9 @@ geom_kmticks <- function(mapping = NULL, data = NULL, stat = "kmticks",
 
 #' @rdname stat_km
 #' @export
+#' @keywords internal
 
-StatKm <- ggplot2::ggproto("StatKm", Stat,
+StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
                            
                            compute_group = function(data, scales, trans = "identity", firstx = 0, firsty = 1,
                                                     type = "kaplan-meier", start.time = 0) {
@@ -260,8 +270,9 @@ StatKm <- ggplot2::ggproto("StatKm", Stat,
 
 #' @rdname stat_kmband
 #' @export
+#' @keywords internal
 
-StatKmband <- ggplot2::ggproto("StatKmband", Stat,
+StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
                                
                                compute_group = function(data, scales, trans = "identity", firstx = 0, firsty = 1,
                                                         type = "kaplan-meier", error = "tsiatis", conf.type = "log",
@@ -336,6 +347,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", Stat,
 #' @return a data.frame with additional columns: \item{x}{x in data}
 #'   \item{y}{Kaplan-Meier Survival Estimate at x}
 #' @export
+#' @keywords internal
 #'
 #' @rdname stat_km
 #' @details
@@ -347,6 +359,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", Stat,
 #'
 #'
 #' @examples
+#' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) +
@@ -410,6 +423,7 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #'   limit of KM curve, if \code{se = TRUE}} \item{ymax}{Upper confidence limit
 #'   of KM curve}
 #' @export
+#' @keywords internal
 #'
 #' @rdname stat_kmband
 #' @details
@@ -420,6 +434,7 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #' 0=alive, 1=dead or 1/2 (2=death). Logical status is not supported.
 #'
 #' @examples
+#' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) +
@@ -430,7 +445,8 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #' p1 <- ggplot(df, aes(time = time, status = status))
 #' p1 + stat_km() + stat_kmband(conf.int = .99)
 #' p1 + stat_km() + stat_kmband(error = "tsiatis")
-#' p1 + stat_km() + stat_km(conf.type = "log-log")
+#' # NOTE this example doesn't work
+#' # p1 + stat_km() + stat_km(conf.type = "log-log")
 #'
 
 stat_kmband <- function(mapping = NULL, data = NULL, geom = "kmband",
@@ -461,8 +477,9 @@ stat_kmband <- function(mapping = NULL, data = NULL, geom = "kmband",
 #'
 #' @rdname stat_kmticks
 #' @export
+#' @keywords internal
 
-StatKmticks <- ggplot2::ggproto("StatKmticks", Stat,
+StatKmticks <- ggplot2::ggproto("StatKmticks", ggplot2::Stat,
                                 
                                 compute_group = function(data, scales, trans = "identity", ...) {
                                   
@@ -479,7 +496,7 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", Stat,
                                   
                                 },
                                 
-                                default_aes = aes(y = ..survival.., x = ..time..),
+                                default_aes = ggplot2::aes(y = ..survival.., x = ..time..),
                                 required_aes = c("time", "status")
                                 
                                 
@@ -510,6 +527,7 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", Stat,
 #' @return a data.frame with additional columns: \item{x}{x in data}
 #'   \item{y}{Kaplan-Meier Survival Estimate at x}
 #' @export
+#' @keywords internal
 #' @rdname stat_kmticks
 #'
 #' @details
@@ -523,6 +541,7 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", Stat,
 #' (2=death).
 #'
 #' @examples
+#' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) +

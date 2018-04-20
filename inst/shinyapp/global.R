@@ -14,11 +14,8 @@ suppressMessages ({
   library(lazyeval)
   library(ggrepel)
   library(plotly)
+  library(ggquickeda)
 })
-
-source("helpers/sourceable.R", local = TRUE)
-source("ext/ggkm.R", local = TRUE)
-source("ext/table1.R", local = TRUE)
 
 options(shiny.maxRequestSize=250*1024^2) 
 
