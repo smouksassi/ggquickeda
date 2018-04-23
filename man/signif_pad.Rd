@@ -9,14 +9,14 @@ signif_pad(x, digits = 3, round.integers = TRUE, round5up = TRUE)
 \arguments{
 \item{x}{A numeric vector.}
 
-\item{digits}{An interger specifying the number of significant digits to keep.}
+\item{digits}{An integer specifying the number of significant digits to keep.}
 
 \item{round.integers}{Should rounding be limited to digits to the right of
 the decimal point?}
 
 \item{round5up}{Should numbers with 5 as the last digit always be rounded
 up? The standard R approach is "go to the even digit" (IEC 60559 standard,
-see \code{\link{round}}), while some other softwares (e.g. SAS, Excel)
+see \code{\link{round}}), while some other software (e.g. SAS, Excel)
 always round up.}
 }
 \value{

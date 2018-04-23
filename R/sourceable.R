@@ -33,7 +33,7 @@ sourceable <- function(x) {
 }
 
 #' Attach dependencies to source code
-#' Attach dependecies to the source code (any input variables are automatically
+#' Attach dependencies to the source code (any input variables are automatically
 #' attached)
 #' @export
 #' @keywords internal

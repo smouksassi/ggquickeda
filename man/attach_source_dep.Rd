@@ -3,14 +3,14 @@
 \name{attach_source_dep}
 \alias{attach_source_dep}
 \title{Attach dependencies to source code
-Attach dependecies to the source code (any input variables are automatically
+Attach dependencies to the source code (any input variables are automatically
 attached)}
 \usage{
 attach_source_dep(x, deps)
 }
 \description{
 Attach dependencies to source code
-Attach dependecies to the source code (any input variables are automatically
+Attach dependencies to the source code (any input variables are automatically
 attached)
 }
 \keyword{internal}

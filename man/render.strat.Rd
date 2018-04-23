@@ -2,7 +2,7 @@
 % Please edit documentation in R/table1.R
 \name{render.strat}
 \alias{render.strat}
-\title{Render stata labels for table output.}
+\title{Render strata labels for table output.}
 \usage{
 render.strat(label, n, transpose = F)
 }

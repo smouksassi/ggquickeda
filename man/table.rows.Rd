@@ -34,7 +34,7 @@ table.data(x, row.labels = rownames(x), th = FALSE, class = NULL,
 A \code{character} which contains an HTML table fragment.
 }
 \description{
-Many functions exist in R to generate HTML tables.  These functions are
+Many functions exist in R to generate HTML tables. These functions are
 useful for generating HTML table fragments (rather than whole tables), which
 can then be used to build up complete tables. The first column my be used to
 label the rows of the table. Row labels, if specified, can have a special
