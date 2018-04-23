@@ -1,16 +1,16 @@
 ## Test environments
-* local OS X install, R 3.4.4
-* ubuntu 12.04 (on travis-ci), R 3.4.4
+* local Windows 10 install, R 3.5.0
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.4.4
 * win-builder (devel and release)
 
 ## R CMD check results
 
-0 errors | 0 warnings | 0 note
+0 errors | 0 warnings | 1 note
 
 * This is a new release.
 * Second submission after adressing comments and re-writing code into functions as suggested.
 * The previous note  about package size of 6.4 Mb has been fixed by reducing the png sizes.
-* Other comments has benn also addressed by re-writing some functions.
+* Other comments has been also addressed by re-writing some functions.
 
 ## Reverse dependencies
 
