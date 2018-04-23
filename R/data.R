@@ -16,5 +16,5 @@
 #'   \item{Dose}{dose group of the subject, in milligrams}
 #'   \item{AGECAT}{age category of the subject, a variable cutting Age into two values 0/1}
 #' }
-#' @source "sd_oral_richpk" from `PKPDmisc` R package with an additional AGECAT variable
+#' @source "sd_oral_richpk" from 'PKPDmisc' R package with an additional AGECAT variable
 "sample_data"

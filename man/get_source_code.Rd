@@ -2,11 +2,11 @@
 % Please edit documentation in R/sourceable.R
 \name{get_source_code}
 \alias{get_source_code}
-\title{Retrieve the source code of a "sourceable" ggplot2}
+\title{Retrieve the source code of a "sourceable" 'ggplot2'}
 \usage{
 get_source_code(x)
 }
 \description{
-Retrieve the source code of a "sourceable" ggplot2
+Retrieve the source code of a "sourceable" 'ggplot2'
 }
 \keyword{internal}

@@ -2,12 +2,12 @@
 % Please edit documentation in R/sourceable.R
 \name{sourceable}
 \alias{sourceable}
-\title{Make a ggplot2 object sourceable}
+\title{Make a 'ggplot2' object sourceable}
 \usage{
 sourceable(x)
 }
 \description{
-Define a ggplot2 object as "sourceable", which means that it knows
-how to keep track of its source code (parameter must be a ggplot2 object)
+Define a 'ggplot2' object as "sourceable", which means that it knows
+how to keep track of its source code (parameter must be a 'ggplot2' object)
 }
 \keyword{internal}

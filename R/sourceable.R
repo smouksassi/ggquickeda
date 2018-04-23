@@ -1,7 +1,7 @@
-#' Make a ggplot2 object sourceable
+#' Make a 'ggplot2' object sourceable
 #' 
-#' Define a ggplot2 object as "sourceable", which means that it knows
-#' how to keep track of its source code (parameter must be a ggplot2 object)
+#' Define a 'ggplot2' object as "sourceable", which means that it knows
+#' how to keep track of its source code (parameter must be a 'ggplot2' object)
 #' @export
 #' @keywords internal
 sourceable <- function(x) {
@@ -12,7 +12,7 @@ sourceable <- function(x) {
   x
 }
 
-#' Add ggplot2 layer to a sourceable ggplot2
+#' Add 'ggplot2' layer to a sourceable 'ggplot2'
 #' 
 #' Overwrite the plus operator so that if a "sourceable" object is used,
 #' the source code is kept
@@ -57,9 +57,9 @@ attach_source_dep <- function(x, deps) {
   x
 }
 
-#' Retrieve the source code of a "sourceable" ggplot2
+#' Retrieve the source code of a "sourceable" 'ggplot2'
 #' 
-#' Retrieve the source code of a "sourceable" ggplot2
+#' Retrieve the source code of a "sourceable" 'ggplot2'
 #' @export
 #' @keywords internal
 get_source_code <- function(x) {

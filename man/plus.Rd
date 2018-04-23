@@ -2,7 +2,7 @@
 % Please edit documentation in R/sourceable.R
 \name{+}
 \alias{+}
-\title{Add ggplot2 layer to a sourceable ggplot2}
+\title{Add 'ggplot2' layer to a sourceable 'ggplot2'}
 \usage{
 "+"(e1, e2)
 }
