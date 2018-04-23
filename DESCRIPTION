@@ -1,5 +1,5 @@
 Package: ggquickeda
-Title: Quickly Explore Your Data Using 'ggplot2' and Stats Tables
+Title: Quickly Explore Your Data Using 'ggplot2' and Summary tables
 Version: 0.1
 Authors@R: c(
     person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
