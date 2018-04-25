@@ -8,7 +8,7 @@
 0 errors | 0 warnings | 1 note
 
 * This is a new release.
-* Second submission after adressing comments and re-writing code into functions as suggested.
+* Third submission after exporting parse.abbrev.render.code.
 * The previous note  about package size of 6.4 Mb has been fixed by reducing the png sizes.
 * Other comments has been also addressed by re-writing some functions.
 
