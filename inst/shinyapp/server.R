@@ -289,7 +289,10 @@ function(input, output, session) {
   
   observeEvent(input$gridlinescolreset, {
       shinyjs::reset("gridlinescol")
-    })   
+    })
+  observeEvent(input$stripbackfillreset, {
+    shinyjs::reset("stripbackgroundfill")
+  })  
   
   output$ycol <- renderUI({
     df <- values$maindata
@@ -2735,7 +2738,10 @@ function(input, output, session) {
       
       p <-  p+
         theme(panel.grid.major = element_line(colour = input$gridlinescol),
-              panel.grid.minor = element_line(colour = input$gridlinescol) )
+              panel.grid.minor = element_line(colour = input$gridlinescol),
+              strip.background = element_rect(fill=input$stripbackgroundfill),
+              strip.placement  = input$stripplacement
+              )
 
       if (all(
          input$yaxiszoom=='noyzoom'&&

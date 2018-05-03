@@ -261,12 +261,9 @@ fluidPage(
             ),
             tabPanel(
               "Facets Options",
-              
               uiOutput("facetscales"),
               selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free")),
-              
-              
-              selectInput('facetordering' ,'Facet Ordering:',c(
+               selectInput('facetordering' ,'Facet Ordering:',c(
                 "Top to Bottom, Left to Right Ordering like a Table" ="table",
                 "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
                 selected="table"),
@@ -300,7 +297,15 @@ fluidPage(
                    The default empty values will use ggplot automatic algorithm."),        
                 numericInput("wrapncol",label = "N columns",value =NA,min=1,max =10) ,
                 numericInput("wrapnrow",label = "N rows",value = NA,min=1,max=10) 
-                )
+                ),
+              colourpicker::colourInput("stripbackgroundfill",
+                                        "Strip Background Fill:",
+                                        value="#E5E5E5",
+                                        showColour = "both",allowTransparent=TRUE),
+              div( actionButton("stripbackfillreset", "Reset Strip Background Fill"), style="text-align: right"),
+              selectizeInput(  "stripplacement", "Strip Placement:",
+                               choices = c("inside","outside"),
+                               options = list(  maxItems = 1 )  )
               ) ,
             
             tabPanel(

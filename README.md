@@ -1,6 +1,8 @@
 ggquickeda
 ========
+![CRAN](http://www.r-pkg.org/badges/version-last-release/ggquickeda)
 [![Travis-CI Build Status](https://travis-ci.org/smouksassi/ggquickeda.svg?branch=master)](https://travis-ci.org/smouksassi/ggquickeda)
+![DOWNLOADS](http://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)
 
 ### Installation and Running information
 ```
