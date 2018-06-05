@@ -988,6 +988,9 @@ function(input, output, session) {
       if(input$functionordervariable=="Maximum" )  {
         df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) max(x[!is.na(x)]))
       }
+      if(input$functionordervariable=="N" )  {
+        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) length(x[!is.na(x)]))
+      }
       if(input$reverseorder )  {
         df[,varname] <- factor( df[,varname], levels=rev(levels( df[,varname])))
         
@@ -2423,7 +2426,19 @@ function(input, output, session) {
         }
         
         if(!is.numeric(plotdata[,input$x]) ){
+          if(input$barplotorder=="frequency"){
+            plotdata[,input$x]<- factor(as.factor(plotdata[,input$x]),
+                                        levels=names(sort(table(plotdata[,input$x]), 
+                                                          decreasing=FALSE)))
+          }
+          if(input$barplotorder=="revfrequency"){
+            plotdata[,input$x]<- factor(as.factor(plotdata[,input$x]),
+                                        levels=names(sort(table(plotdata[,input$x]), 
+                                                          decreasing=TRUE)))           
+          }
           p <- sourceable(ggplot(plotdata, aes_string(x=input$x)))
+          
+
           
           if (input$colorin != 'None')
             p <- p + aes_string(color=input$colorin)
@@ -2740,7 +2755,8 @@ function(input, output, session) {
         theme(panel.grid.major = element_line(colour = input$gridlinescol),
               panel.grid.minor = element_line(colour = input$gridlinescol),
               strip.background = element_rect(fill=input$stripbackgroundfill),
-              strip.placement  = input$stripplacement
+              strip.placement  = input$stripplacement,
+              strip.text = NULL
               )
 
       if (all(

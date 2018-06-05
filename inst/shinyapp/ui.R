@@ -2,7 +2,7 @@ fluidPage(
   useShinyjs(),
   tags$link(rel = "stylesheet", href = "app.css"),
   tags$link(rel = "stylesheet", href = "table1-style.css"),
-  titlePanel("Hello ggquickeda!"),
+  titlePanel("Welcome to ggquickeda!"),
   sidebarLayout(
     sidebarPanel(
       tabsetPanel(
@@ -82,7 +82,7 @@ fluidPage(
                 condition = "input.reordervarin!='' " ,
                 selectizeInput(
                   "functionordervariable", 'By the:',
-                  choices =c("Median","Mean","Minimum","Maximum") ,multiple=FALSE)
+                  choices =c("Median","Mean","Minimum","Maximum","N") ,multiple=FALSE)
               ),
               uiOutput("variabletoorderby"),
               conditionalPanel(
@@ -570,10 +570,17 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
                                 selected = "position_stack(vjust = 0.5)"),
                     checkboxInput('barplotpercent', 'Show Percentage instead of Counts ?',value = FALSE),
-                    checkboxInput('barplotlabel', 'Show Labels ?',value = FALSE),
-                    checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
-                    
-                  )
+                    checkboxInput('barplotlabel', 'Show Labels ?',value = FALSE)
+                 
+                  ),
+                  column (3,
+                          radioButtons("barplotorder", "Bar Ordering:",
+                                                       c("Default" = "default",
+                                                         "By Frequency" = "frequency",
+                                                         "By Reverse Frequency" = "revfrequency"),inline=TRUE ) ,
+                          checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
+                          )
+                  
                   )
               ),
               
