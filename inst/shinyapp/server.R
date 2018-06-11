@@ -2756,7 +2756,10 @@ function(input, output, session) {
               panel.grid.minor = element_line(colour = input$gridlinescol),
               strip.background = element_rect(fill=input$stripbackgroundfill),
               strip.placement  = input$stripplacement,
-              strip.text = NULL
+              strip.text = NULL,
+              panel.spacing.x = unit(input$panelspacingx, "lines"),
+              panel.spacing.y = unit(input$panelspacingy, "lines")
+              
               )
 
       if (all(

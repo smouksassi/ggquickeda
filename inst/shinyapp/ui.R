@@ -305,7 +305,12 @@ fluidPage(
               div( actionButton("stripbackfillreset", "Reset Strip Background Fill"), style="text-align: right"),
               selectizeInput(  "stripplacement", "Strip Placement:",
                                choices = c("inside","outside"),
-                               options = list(  maxItems = 1 )  )
+                               options = list(  maxItems = 1 )  ),
+              
+              sliderInput("panelspacingx", label = "Facets X Spacing:",
+                          min = 0, max = 2, value = 0.25, step = 0.05),
+              sliderInput("panelspacingy", label = "Facets Y Spacing:",
+                          min = 0, max = 2, value = 0.25, step = 0.05)
               ) ,
             
             tabPanel(
