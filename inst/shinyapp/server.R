@@ -339,7 +339,8 @@ function(input, output, session) {
     }
     if (input$xaxisscale!="linearx") {
       updateRadioButtons(session, "xaxisformat", choices = c("default" = "default",
-                                                             "Log 10^x Format" = "logxformat"))
+                                                             "Log 10^x Format" = "logxformat",
+                                                             "Pretty X" ="logxformat2"))
     }
   })
   
@@ -2587,23 +2588,55 @@ function(input, output, session) {
         p <- p  + 
         scale_y_continuous(labels=percent )
       
-      if (input$yaxisscale=="lineary" && input$customyticks) {
+      
+      if (input$yaxisscale=="lineary" && input$customyticks && input$yaxisformat=="default") {
         p <- p  + 
           scale_y_continuous(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
       }
       
+      if (input$yaxisscale=="lineary" && input$customyticks && input$yaxisformat=="scientificy") {
+        p <- p  + 
+          scale_y_continuous(labels=comma,
+                             breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
+                             minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
+      }
       
+      if (input$yaxisscale=="lineary" && input$customyticks && input$yaxisformat=="percenty") {
+        p <- p  + 
+          scale_y_continuous(labels=percent,
+                             breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
+                             minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
+      }
 
       
+      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&&input$xaxisformat=="default")
+        p <- p + scale_x_log10()
       if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&& input$xaxisformat=="logxformat")
         p <- p + scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)))
-      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&&input$xaxisformat!="logxformat")
-        p <- p + scale_x_log10()
-      if (input$xaxisscale=="logx" && input$customxticks) {
+      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&& input$xaxisformat=="logxformat2")
+        p <- p + scale_x_log10(labels = prettyNum)
+      
+      
+      
+      
+      if (input$xaxisscale=="logx" && input$customxticks && input$xaxisformat=="default") {
         p <- p  + 
           scale_x_log10(breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                        minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+      }
+      
+      if (input$xaxisscale=="logx" && input$customxticks && input$xaxisformat=="logxformat") {
+        p <- p  + 
+          scale_x_log10(labels = trans_format("log10", math_format(10^.x)),
+                        breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                        minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+      }
+      if (input$xaxisscale=="logx" && input$customxticks &&input$xaxisformat=="logxformat2" ) {
+        p <- p  + 
+          scale_x_log10(labels = prettyNum,
+                        breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
       
@@ -2616,12 +2649,25 @@ function(input, output, session) {
         p <- p  + 
         scale_x_continuous(labels=percent )
       
-      if (input$xaxisscale=="linearx" && input$customxticks) {
+      if (input$xaxisscale=="linearx" && input$customxticks && input$xaxisformat=="default") {
         p <- p  + 
-          scale_x_continuous(breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+          scale_x_continuous(
+                             breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
-
+      if (input$xaxisscale=="linearx" && input$customxticks && input$xaxisformat=="scientificx") {
+        p <- p  + 
+          scale_x_continuous(labels=comma,
+                             breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                             minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+      }
+      if (input$xaxisscale=="linearx" && input$customxticks && input$xaxisformat=="percentx") {
+        p <- p  + 
+          scale_x_continuous(labels=percent,
+                             breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                             minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+      }
+      
 
 
       
