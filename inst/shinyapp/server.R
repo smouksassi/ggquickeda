@@ -292,8 +292,13 @@ function(input, output, session) {
     })
   observeEvent(input$stripbackfillreset, {
     shinyjs::reset("stripbackgroundfill")
-  })  
-  
+  })
+  observeEvent(input$hlinecol1reset, {
+    shinyjs::reset("hlinecol1")
+  })
+  observeEvent(input$hlinecol2reset, {
+    shinyjs::reset("hlinecol2")
+  })
   output$ycol <- renderUI({
     df <- values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -2706,11 +2711,11 @@ function(input, output, session) {
       
       if (input$customhline1)
         p <-    p+
-        geom_hline(yintercept=input$hline1)
-      
+        geom_hline(yintercept=input$hline1,color=input$hlinecol1,linetype=input$hlinetype1,size=input$hlinesize1)
+
       if (input$customhline2)
         p <-    p+
-        geom_hline(yintercept=input$hline2)     
+        geom_hline(yintercept=input$hline2,color=input$hlinecol2,linetype=input$hlinetype2,size=input$hlinesize2)     
       
       if (input$identityline)
         p <-    p+ geom_abline(intercept = 0, slope = 1)
