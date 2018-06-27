@@ -1471,12 +1471,18 @@ function(input, output, session) {
             if (length(listvarcor)<=1){
               cors <-  plotdata %>%
                 group_by(!!!syms("yvars")) %>%
-                dplyr::summarize(corcoeff = round(cor(!!as.name(input$x),!!as.name("yvalues"),use="complete.obs"),2))
+                dplyr::summarize(corcoeff = round(cor(!!as.name(input$x),
+                                                      !!as.name("yvalues"),
+                                                      use="complete.obs",
+                                                      method =input$corrtype),2))
             }
             if (length(listvarcor)>=2){
               cors <- plotdata %>%
                 group_by_at(.vars= listvarcor ) %>%
-                dplyr::summarize(corcoeff = round(cor(!!as.name(input$x),!!as.name("yvalues"),use="complete.obs"),2))
+                dplyr::summarize(corcoeff = round(cor(!!as.name(input$x),
+                                                      !!as.name("yvalues"),
+                                                      use="complete.obs",
+                                                      method =input$corrtype),2))
             }
             cors<-as.data.frame(cors)
             
@@ -2421,15 +2427,39 @@ function(input, output, session) {
               & input$colorin == 'None')
             p <- p + aes(group=1)
           
-          if ( input$histogramaddition){
-            p <- p+ aes(y=..density..)+
-              geom_histogram(alpha=0.2)
+          if ( input$histogramaddition=="Counts"){
+            p <- p+ 
+              geom_histogram(aes(y=..count..),
+                             alpha=0.2,bins = input$histobinwidth)+
+              ylab("Counts")
           }
-          if ( input$densityaddition){
+          if ( input$histogramaddition=="Density"){
             p <- p+
-              geom_density(alpha=0.1)
+              geom_histogram(aes(y=..density..),
+                             alpha=0.2,bins = input$histobinwidth)+
+              ylab("Density")
+          }
+          
+          
+          if ( input$densityaddition=="Density"){
+            p <- p+
+              geom_density(aes(y=..density..),alpha=0.1)+
+              ylab("Density")
             
           }
+          if ( input$densityaddition=="Scaled Density"){
+            p <- p+
+              geom_density(aes(y=..scaled..),alpha=0.1)+
+              ylab("Scaled Density")
+            
+          }
+          if ( input$densityaddition=="Counts"){
+            p <- p+
+              geom_density(aes(y=..count..),alpha=0.1)+
+              ylab("Counts")
+            
+          }
+          
         }
         
         if(!is.numeric(plotdata[,input$x]) ){

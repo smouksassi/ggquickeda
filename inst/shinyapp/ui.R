@@ -569,11 +569,27 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                   
                   column (
                     3,
-                    checkboxInput('histogramaddition', 'Add a Histogram ?',value = FALSE)
+                    radioButtons("histogramaddition", "Add a Histogram ?",
+                                 c("Counts" = "Counts",
+                                   "Density" = "Density",
+                                   "None" = "None") ,
+                                 selected="None") ,
+                    numericInput("histobinwidth",
+                                 "N Bins",
+                                 value = 30,
+                                 min = 0, step = 0.5)
+                  
+                    
+                    
                     ),
                   column (
                     3,
-                    checkboxInput('densityaddition', 'Add a Density Curve ?',value = TRUE)
+                    radioButtons("densityaddition", "Add a Density Curve ?",
+                                 c("Density" = "Density",
+                                   "Scaled Density" = "Scaled Density",
+                                   "Counts" = "Counts",
+                                   "None" = "None") ,
+                                 selected="Density") 
                   ),
                   
                   column (
@@ -584,7 +600,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
                                 selected = "position_stack(vjust = 0.5)"),
-                    checkboxInput('barplotpercent', 'Show Percentage instead of Counts ?',value = FALSE),
+                    checkboxInput('barplotpercent', 'Show Percentages instead of Counts ?',value = FALSE),
                     checkboxInput('barplotlabel', 'Show Labels ?',value = FALSE)
                  
                   ),
@@ -846,10 +862,24 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               tabPanel(
                 "Correlation Coefficient (?)",
                 fluidRow(
-                  column(12,hr()),
-                  checkboxInput('addcorrcoeff',"Add Correlation Coefficient to the plot ?"),
-                  checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE)
+                  column(4,hr(),
+                  checkboxInput('addcorrcoeff',
+                      "Add Correlation Coefficient to the plot ?")
+                  ),
+                  column(4,hr(),
+                  conditionalPanel(
+                    " input.addcorrcoeff ",
+                  selectInput("corrtype", label = "Correlation Method:",
+                              choices = c("pearson"="pearson",
+                                          "kendall"= "kendall",
+                                          "spearman"= "spearman"
+                                          ) ,
+                              selected = "pearson"))
+                  ),
+                  column(4,hr(),
                   
+                  checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE)
+                  )
                   
               )#fluidrow
               )##tabpanel corr
