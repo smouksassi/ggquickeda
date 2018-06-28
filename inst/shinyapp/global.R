@@ -16,6 +16,7 @@ suppressMessages ({
   library(plotly)
   library(ggpmisc)
   library(ggquickeda)
+  library(table1)
 })
 
 options(shiny.maxRequestSize=250*1024^2) 
@@ -57,6 +58,17 @@ allstats <- c("N",
               "SD",
               "CV%",
               "Median",
+              # "Q01",
+              # "Q02.5",
+              # "Q05",
+              # "Q10",
+              # "Q25",
+              # "Q50",
+              # "Q75",
+              # "Q90",
+              # "Q95",
+              # "Q97.5",
+              # "Q99",
               "Min",
               "Max",
               "IQR",
