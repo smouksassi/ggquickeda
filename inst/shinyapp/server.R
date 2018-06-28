@@ -1878,6 +1878,16 @@ function(input, output, session) {
             }
             
           }
+          if (input$smoothmethod=="lm"&&input$showslopepvalue){
+            p <- p+
+                ggpmisc::stat_fit_glance(method = "lm", 
+                                method.args = list(formula = y ~ x),
+                                geom = "text",
+                                aes(label = paste("P-value = ",
+                                signif(..p.value.., digits = 4), sep = "")),
+            show.legend = FALSE)
+          }
+          
           
           ###### smooth Section END
         }

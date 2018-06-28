@@ -679,6 +679,9 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       selectInput('smoothmethod', label ='Smoothing Method',
                                   choices=c("Loess" ="loess","Linear Fit"="lm","Logistic"="glm"),
                                   multiple=FALSE, selectize=TRUE,selected="loess"),
+                      conditionalPanel(" input.smoothmethod== 'lm' ",
+                      checkboxInput('showslopepvalue', 'Slope p-value ?',value = FALSE)
+                                       ),
                       conditionalPanel(" input.smoothmethod== 'loess' ",
                       sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),
                       selectInput('loessfamily', label ='Loess Family:',

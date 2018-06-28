@@ -14,6 +14,7 @@ suppressMessages ({
   library(lazyeval)
   library(ggrepel)
   library(plotly)
+  library(ggpmisc)
   library(ggquickeda)
 })
 
