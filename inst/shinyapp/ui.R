@@ -207,7 +207,7 @@ fluidPage(
                 conditionalPanel(condition = "input.xaxiszoom=='userxzoom' ",uiOutput("upperx")) )
               ),# fluidrow
   
-              h6("Y Axis Zoom only works if you have exactly one y variable and facet y scales are not set to be free. The automatic setting generate a slider has limits between your y variable min/max otherwise select User Defined to input your own."),
+              h6("Y Axis Zoom is available if you have exactly one y variable and facet y scales are not set to be free. The automatic setting generates a slider has limits between your y variable min/max otherwise select User Defined to input your own."),
               fluidRow(
                 column(12,
                        radioButtons("yaxiszoom", "Y Axis Zoom:",
@@ -461,9 +461,9 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
           tabPanel(
             "Types of Graphs",
             tabsetPanel(
-              id = "graphicaltypes",selected = "Color/Group/Split/Size/Fill Mappings (?)",
+              id = "graphicaltypes",selected = "Color/Group/Split/Size/Fill Mappings",
               tabPanel(
-                "Plot types, Points, Lines (?)",
+                "Plot types, Points, Lines",
                 
                 fluidRow(
                   
@@ -539,7 +539,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                 )#fluidrow
               ), # tabpanel
               tabPanel(
-                "Color/Group/Split/Size/Fill Mappings (?)",
+                "Color/Group/Split/Size/Fill Mappings",
                 fluidRow(
                   column (12, hr()),
                   column (3, uiOutput("colour"),uiOutput("group")),
@@ -642,7 +642,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               
               #rqss quantile regression
               tabPanel(
-                "Quantile Regression (?)",
+                "Quantile Regression",
                 
                 fluidRow(
                   column(12,hr()),
@@ -685,7 +685,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               ),
               
               tabPanel(
-                "Smooth/Linear/Logistic Regressions (?)",
+                "Smooth/Linear/Logistic Regressions",
                 
                 fluidRow(
                   column(12,hr()),
@@ -743,7 +743,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               ,
               ### Mean CI section
               tabPanel(
-                "Mean CI (?)",
+                "Mean (CI)",
                 
                 fluidRow(
                   column(12,hr()),
@@ -791,7 +791,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               
               
               tabPanel(
-                "Median PIs (?)",
+                "Median (PIs)",
                 
                 fluidRow(
                   column(12,hr()),
@@ -844,7 +844,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               
               
               tabPanel(
-                "Kaplan-Meier (?)",
+                "Kaplan-Meier (CI)",
                 
                 fluidRow(
                   column(12,hr()),
@@ -887,7 +887,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               ), #tabpanel km
               ### KM section
               tabPanel(
-                "Correlation Coefficient (?)",
+                "Correlation Coefficient",
                 fluidRow(
                   column(4,hr(),
                   checkboxInput('addcorrcoeff',

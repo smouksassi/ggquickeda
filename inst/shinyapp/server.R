@@ -355,6 +355,19 @@ function(input, output, session) {
     }
   })
   
+  observe({
+
+    if (length(input$y)>1) {
+      updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom"),inline=TRUE)
+    }
+    if (length(input$y)<2) {
+      updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
+                                                           "Automatic" = "automaticyzoom",
+                                                           "User" = "useryzoom"),inline=TRUE)
+    }
+  })
+
+    
   outputOptions(output, "ycol", suspendWhenHidden=FALSE)
   outputOptions(output, "xcol", suspendWhenHidden=FALSE)
   
@@ -2981,8 +2994,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       }
 
       if (all(
-        input$xaxiszoom=='noxzoom' &&
-        !is.null(input$yaxiszoomin[1]) &&
+        input$xaxiszoom=='noxzoom'  &&
           !is.null(plotdata$yvalues) &&
           is.numeric(plotdata[,"yvalues"] ) &&
           input$facetscalesin!="free_y" &&
@@ -2993,15 +3005,22 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             coord_cartesian(ylim= c(input$loweryin,input$upperyin) )
         }
         if(input$yaxiszoom=="automaticyzoom"){
-          p <- p +
-            coord_cartesian(
-              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]))
+          
+            if(!is.null(input$yaxiszoomin[1]) ){
+              p <- p +
+                coord_cartesian(
+                  ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])) 
+            } 
+          if(is.null(input$yaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(ylim= c(NA,NA)) 
+          } 
         }
 
       }
 
 
-      if (all(!is.null(input$xaxiszoomin[1])&&!is.null(input$yaxiszoomin[1])&&
+      if (all(!is.null(input$xaxiszoomin[1])&&
           is.numeric(plotdata[,input$x] ) && !is.null(plotdata$yvalues) &&
           is.numeric(plotdata[,"yvalues"]) &&
           input$facetscalesin!="free_x"&&input$facetscalesin!="free_y"&&
@@ -3014,9 +3033,17 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                             ylim= c(input$loweryin,input$upperyin)  )
         }
         if (input$xaxiszoom=="userxzoom"&&input$yaxiszoom=="automaticyzoom"){
-          p <- p +
-            coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
-                            ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])  )
+          if(!is.null(input$yaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
+                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])  )
+            }
+          if(is.null(input$yaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
+                              ylim= c(NA,NA) )
+          }
+          
         }
         if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="useryzoom"){
           p <- p +
@@ -3024,9 +3051,16 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                             ylim= c(input$loweryin,input$upperyin)  )
         }
         if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="automaticyzoom"){
-          p <- p +
-            coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                            ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])  )
+          if(!is.null(input$yaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
+                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])  )
+             }
+          if(is.null(input$yaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
+                              ylim= c(NA,NA)  )
+          }
         }
       }
 
