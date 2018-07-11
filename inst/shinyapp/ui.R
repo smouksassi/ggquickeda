@@ -25,6 +25,14 @@ fluidPage(
               shinyjs::hidden(
                 sliderInput('ncuts',label = 'N of Cut Breaks:', min=2, max=10, value=c(2),step=1)
               ),
+              uiOutput("catvarquant"),
+              shinyjs::hidden(
+                sliderInput('ncutsquant',label = 'N of Quantiles:', min=2, max=10, value=c(2),step=1),
+                checkboxInput('zeroplacebo', 'Zero as Placebo ?', value = FALSE),
+                checkboxInput('missingcategory', 'Missing as a Category ?', value = FALSE)
+                
+              ),
+              
               uiOutput("catvar2"),
               uiOutput("catvar3"),
               uiOutput("ncuts2"),
@@ -319,16 +327,26 @@ fluidPage(
               checkboxInput('horizontalzero', 'Horizontal Zero Line'),
               checkboxInput('customvline1', 'Vertical Line 1'),
               conditionalPanel(condition = "input.customvline1" , 
-                               numericInput("vline1",label = "",value = 1) ),
+                               numericInput("vline1",label = "",value = 1),
+                               colourpicker::colourInput("vlinecol1", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
+                               div( actionButton("vlinecol1reset", "Reset Line Color"), style="text-align: right"),
+                               selectInput('vlinetype1','Line Type:',c("solid","dotted","dashed")),
+                               sliderInput("vlinesize1", "Line Size:", min=0, max=4, value=c(1),step=0.1)
+                               ),
               checkboxInput('customvline2', 'Vertical Line 2'),
               conditionalPanel(condition = "input.customvline2" , 
-                               numericInput("vline2",label = "",value = 1) ),
+                               numericInput("vline2",label = "",value = 1) ,
+                               colourpicker::colourInput("vlinecol2", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
+                               div( actionButton("vlinecol2reset", "Reset Line Color"), style="text-align: right"),
+                               selectInput('vlinetype2','Line Type:',c("solid","dotted","dashed")),
+                               sliderInput("vlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) 
+                               ),
               checkboxInput('customhline1', 'Horizontal Line 1'),
               conditionalPanel(condition = "input.customhline1" , 
                                numericInput("hline1",label = "",value = 1),
                                colourpicker::colourInput("hlinecol1", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
-                               div( actionButton("hlinecol1reset", "Reset Grid Lines Color"), style="text-align: right"),
-                               selectInput('hlinetype1','Lines Type:',c("solid","dotted","dashed")),
+                               div( actionButton("hlinecol1reset", "Reset Line Color"), style="text-align: right"),
+                               selectInput('hlinetype1','Line Type:',c("solid","dotted","dashed")),
                                sliderInput("hlinesize1", "Line Size:", min=0, max=4, value=c(1),step=0.1)
                                
                                ),
@@ -336,8 +354,8 @@ fluidPage(
               conditionalPanel(condition = "input.customhline2" , 
                                numericInput("hline2",label = "",value = 1),
                                colourpicker::colourInput("hlinecol2", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
-                               div( actionButton("hlineco2reset", "Reset Grid Lines Color"), style="text-align: right"),
-                               selectInput('hlinetype2','Lines Type:',c("solid","dotted","dashed")),
+                               div( actionButton("hlinecol2reset", "Reset Line Color"), style="text-align: right"),
+                               selectInput('hlinetype2','Line Type:',c("solid","dotted","dashed")),
                                sliderInput("hlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) ),
               checkboxInput('showtarget', 'Add Target Window', value = FALSE) ,
               conditionalPanel(condition = "input.showtarget" , 
@@ -353,7 +371,13 @@ fluidPage(
               conditionalPanel(condition = "input.showtargettext" ,
                                textInput('targettext', 'Target Text', value = "Target: XX-XXX µg/mL"),
                                sliderInput("targettextsize", "Target Text Size:", min=1, max=10, value=c(5),step=0.5),
-                               colourInput("targettextcol", "Target Text Color:", "blue",showColour = "both")
+                               colourInput("targettextcol", "Target Text Color:", "blue",showColour = "both"),
+                               sliderInput("targettextvjust", "Target Text Vertical Justification:", min=0, max=1, value=c(1),step=0.1),
+                               sliderInput("targettexthjust", "Target Text Horizontal Justification:", min=0, max=1, value=c(0),step=0.1),
+                               numericInput("targettextxpos",label = "Target Text X Position",
+                                            value = 1,min=NA,max=NA,width='50%'),
+                               numericInput("targettextypos",label = "Target Text Y Position",
+                                            value = 1,min=NA,max=NA,width='50%')
                                )
               
             ),

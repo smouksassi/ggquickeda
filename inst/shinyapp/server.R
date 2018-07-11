@@ -293,6 +293,12 @@ function(input, output, session) {
   observeEvent(input$stripbackfillreset, {
     shinyjs::reset("stripbackgroundfill")
   })
+  observeEvent(input$vlinecol1reset, {
+    shinyjs::reset("vlinecol1")
+  })
+  observeEvent(input$vlinecol2reset, {
+    shinyjs::reset("vlinecol2")
+  })
   observeEvent(input$hlinecol1reset, {
     shinyjs::reset("hlinecol1")
   })
@@ -366,7 +372,38 @@ function(input, output, session) {
   observeEvent(input$catvarin, ignoreNULL = FALSE, {
     shinyjs::toggle("ncuts", condition = !is.null(input$catvarin) && length(input$catvarin) >= 1)
   })
+  
+  output$catvarquant <- renderUI({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP2<- names(df)  [ MODEDF ]
+    if (!is.null(input$catvarin)) {
+      if (length(input$catvarin ) >=1) {
+        NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
+      }  
+    }
+    selectInput('catvarquantin',
+                label = 'Recode into Quantile Categories:',
+                choices=NAMESTOKEEP2,multiple=TRUE)
+  })
 
+  # Show/hide the "N of cut quantiles" input
+  observeEvent(input$catvarquantin, ignoreNULL = FALSE, {
+    shinyjs::toggle("ncutsquant",
+condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
+  })
+  observeEvent(input$catvarquantin, ignoreNULL = FALSE, {
+  shinyjs::toggle("zeroplacebo",
+                  condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
+})
+  observeEvent(input$catvarquantin, ignoreNULL = FALSE, {
+    shinyjs::toggle("missingcategory",
+                    condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
+  })
+  
   output$catvar2 <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -374,6 +411,11 @@ function(input, output, session) {
     names(items)=items
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
+    if (!is.null(input$catvarquantin)) {
+      if (length(input$catvarquantin ) >=1) {
+        NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarquantin) ]
+      }  
+    }
     if (!is.null(input$catvarin)) {
       if (length(input$catvarin ) >=1) {
         NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
@@ -392,6 +434,9 @@ function(input, output, session) {
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     if (!is.null(input$catvarin)&length(input$catvarin ) >=1) {
       NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
+    }
+    if (!is.null(input$catvarquantin)&length(input$catvarquantin ) >=1) {
+      NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarquantin) ]
     }
     if (!is.null(input$catvar2in)&length(input$catvar2in ) >=1) {
       NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvar2in) ]
@@ -437,9 +482,7 @@ function(input, output, session) {
   outputOptions(output, "catvar3", suspendWhenHidden=FALSE)
   outputOptions(output, "ncuts2", suspendWhenHidden=FALSE)
   outputOptions(output, "asnumeric", suspendWhenHidden=FALSE)
-  
-  
-  
+  outputOptions(output, "catvarquant", suspendWhenHidden=FALSE)
   
   recodedata1  <- reactive({
     df <- values$maindata 
@@ -454,9 +497,50 @@ function(input, output, session) {
     df
   })
   
-  
+  recodedataquant  <- reactive({
+    df <- recodedata1() 
+    validate(       need(!is.null(df), "Please select a data set"))
+    ngroups<- input$ncutsquant
+    zeroplacebo<- input$zeroplacebo
+    missingcategory <- input$missingcategory
+    if(!is.null(input$catvarquantin)&length(input$catvarquantin ) >=1) {
+      for (i in 1:length(input$catvarquantin ) ) {
+        varname<- input$catvarquantin[i]
+        x2<- unlist(df[,varname])
+        if(zeroplacebo&&missingcategory){
+          df[,varname]   <- eqcut(x2, ngroups,
+                                  varname,
+                                  withhold=list(
+                                    Placebo=(x2==0),
+                                    Missing=(is.na(x2))))
+        }
+        if(zeroplacebo&&!missingcategory){
+          df[,varname]   <- eqcut(x2, ngroups,
+                                  varname,
+                                  withhold=list(
+                                    Placebo=(x2==0)))
+        }
+        if(!zeroplacebo&&missingcategory){
+          df[,varname]   <- eqcut(x2, ngroups,
+                                  varname,
+                                  withhold=list(
+                                    Missing=(is.na(x2))))
+        }
+        if(!zeroplacebo&&!missingcategory){
+          withhold<- NULL
+          df[,varname]   <- eqcut(x2, ngroups,
+                                  varname,
+                                  withhold=NULL)
+        }
+
+      }
+    }
+    df
+  })
+        
+        
   recodedata2  <- reactive({
-    df <- recodedata1()
+    df <- recodedataquant()
     validate(       need(!is.null(df), "Please select a data set"))
     if(!is.null(input$catvar2in) ){
       if(length(input$catvar2in ) >=1) {
@@ -2744,10 +2828,10 @@ function(input, output, session) {
       
       if (input$customvline1)
         p <-    p+
-        geom_vline(xintercept=input$vline1)
+        geom_vline(xintercept=input$vline1,color=input$vlinecol1,linetype=input$vlinetype1,size=input$vlinesize1)
       if (input$customvline2)
         p <-    p+
-        geom_vline(xintercept=input$vline2)      
+        geom_vline(xintercept=input$vline2,color=input$vlinecol2,linetype=input$vlinetype2,size=input$vlinesize2)      
       
       if (input$customhline1)
         p <-    p+
@@ -2947,9 +3031,10 @@ function(input, output, session) {
       }
 
       if (input$showtargettext){
+        targettext <-  gsub("\\\\n", "\\\n", input$targettext)
         p <- p +
-          annotate("text", x=input$lowerxin, y=input$lowerytarget,
-                   label=input$targettext, col=input$targettextcol, hjust=0, vjust=1,size=input$targettextsize)
+          annotate("text", x=input$targettextxpos, y=input$targettextypos,
+                   label=targettext, col=input$targettextcol, hjust=input$targettexthjust, vjust=input$targettextvjust,size=input$targettextsize)
       }
       
       
