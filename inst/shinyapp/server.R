@@ -932,7 +932,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     names(items)=items
     items= items 
     items= c(items) 
-    selectizeInput("onerowidgroupin", "ID(s):", choices = items,multiple=TRUE,
+    selectizeInput("onerowidgroupin", "Keep First Row by ID(s):", choices = items,multiple=TRUE,
                    options = list(
                      placeholder = 'Please select at least one variable that is not in y variable(s)',
                      onInitialize = I('function() { this.setValue(""); }'),
@@ -942,7 +942,6 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     
   })
   outputOptions(output, "onerowidgroup", suspendWhenHidden=FALSE)
-  
   filterdata7  <- reactive({
     df <- filterdata6()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -959,11 +958,41 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     as.data.frame(df)
   })
   
-  
-  
+  output$onerowidlastgroup <- renderUI({
+    df <- filterdata7()
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= items 
+    items= c(items) 
+    selectizeInput("onerowidlastgroupin", "Keep Last Row by ID(s):", choices = items,multiple=TRUE,
+                   options = list(
+                     placeholder = 'Please select at least one variable that is not in y variable(s)',
+                     onInitialize = I('function() { this.setValue(""); }'),
+                     plugins = list('remove_button')
+                   )
+    )
+    
+  })
+  outputOptions(output, "onerowidlastgroup", suspendWhenHidden=FALSE)  
+  filterdata8  <- reactive({
+    df <- filterdata7()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if( !is.null(input$onerowidlastgroupin) && length(input$onerowidlastgroupin) >0 ){
+      vars<- c(as.vector(input$onerowidlastgroupin) )
+      df <-   df %>%
+        group_by(!!!syms(vars))
+      df<- df %>% filter(row_number()==n() ) %>%
+        ungroup()
+    }
+    if(is.null(input$onerowidlastgroupin) || length(input$onerowidlastgroupin) <1 ){
+      df <-   df
+    }
+    as.data.frame(df)
+  })
   
   output$roundvar <- renderUI({
-    df <- filterdata7()
+    df <- filterdata8()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       items=names(df)
@@ -981,7 +1010,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   outputOptions(output, "roundvar", suspendWhenHidden=FALSE)
   
   rounddata <- reactive({
-    df <- filterdata7()
+    df <- filterdata8()
     validate(       need(!is.null(df), "Please select a data set"))
     if(!is.null(input$roundvarin)&length(input$roundvarin ) >=1) {
       for (i in 1:length(input$roundvarin ) ) {
@@ -1864,36 +1893,43 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         ###### Smoothing Section START
         if(!is.null(input$Smooth) ){
           familyargument <- input$loessfamily
-          if(input$smoothmethod=="glm") {
+          if(input$smoothmethod=="glm1") {
             familyargument<- "binomial"  
           }
+          if(input$smoothmethod=="glm2") {
+            familyargument<- "poisson"  
+          }
           methodsargument<- list(family = familyargument,degree=input$loessdegree) 
-          if(input$smoothmethod=="glm"){
+          if(input$smoothmethod=="glm1"){
             methodsargument<- list(family = familyargument) 
           }
-          
+          if(input$smoothmethod=="glm2"){
+            methodsargument<- list(family = familyargument) 
+          }
+          smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
+                                        "glm",input$smoothmethod)
           spanplot <- input$loessens
           levelsmooth<- input$smoothselevel
           if ( input$ignoregroup) {
             if (!input$ignorecol) {
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,aes(group=NULL))
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
@@ -1901,23 +1937,23 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$ignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethod,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
@@ -1928,23 +1964,23 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           if ( !input$ignoregroup) {
             if (!input$ignorecol) {
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethod,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot)
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot)
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethod,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot)+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot)+  
                   aes_string(weight=input$weightin)
@@ -1952,39 +1988,71 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$ignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethod,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth)
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth)
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,
+                p <- p + geom_smooth(method=smoothmethod,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=input$smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
             }
             
           }
-          if (input$smoothmethod=="lm"&&input$showslopepvalue){
+          if (input$smoothmethod=="lm"&&input$showslopepvalue&&!input$showadjrsquared){
             p <- p+
                 ggpmisc::stat_fit_glance(method = "lm", 
                                 method.args = list(formula = y ~ x),
                                 geom = "text",
                                 aes(label = paste("P-value = ",
-                                signif(..p.value.., digits = 4), sep = "")),
+                                signif(..p.value.., digits = 3), sep = "")),
             show.legend = FALSE)
+            
+            
+          }
+          if (input$smoothmethod=="lm"&&input$showadjrsquared&&!input$showslopepvalue){
+            p <- p+
+              ggpmisc::stat_fit_glance(method = "lm", 
+                                       method.args = list(formula = y ~ x),
+                                       geom = "text",
+                                       aes(label = paste("R[adj]^2 = ",
+                                      signif(..adj.r.squared.., digits = 2), sep = "")),
+                                       show.legend = FALSE,parse=TRUE)
+            
+            
+          }
+          if (input$smoothmethod=="lm"&&input$showslopepvalue&&input$showadjrsquared){
+            p <- p+
+              ggpmisc::stat_fit_glance(method = "lm", 
+                                       method.args = list(formula = y ~ x),
+                                       geom = "text",
+                                       aes(label = paste("P-value = ",
+                                                         signif(..p.value.., digits = 3), sep = "")),
+                                       show.legend = FALSE)
+            
+            p <- p+
+              ggpmisc::stat_fit_glance(method = "lm", 
+                                       method.args = list(formula = y ~ x),
+                                       geom = "text",
+                                       label.x.npc = "left", label.y.npc = "bottom",
+                                       aes(label = paste("R[adj]^2==",
+                                                         signif(..adj.r.squared.., digits = 2), sep = "")),
+                                       show.legend = FALSE,parse=TRUE)
           }
           
+    
           
           ###### smooth Section END
         }

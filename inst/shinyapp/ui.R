@@ -72,7 +72,8 @@ fluidPage(
             ),
             tabPanel(
               "One Row by ID(s)",
-                uiOutput("onerowidgroup")
+                uiOutput("onerowidgroup"),
+                uiOutput("onerowidlastgroup")
  
             ),
             
@@ -701,10 +702,13 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                     conditionalPanel(
                       " input.Smooth!= 'None' ",
                       selectInput('smoothmethod', label ='Smoothing Method',
-                                  choices=c("Loess" ="loess","Linear Fit"="lm","Logistic"="glm"),
+                                  choices=c("Loess" ="loess","Linear Fit"="lm",
+                                            "Logistic"="glm1",
+                                            "Poisson"="glm2"),
                                   multiple=FALSE, selectize=TRUE,selected="loess"),
                       conditionalPanel(" input.smoothmethod== 'lm' ",
-                      checkboxInput('showslopepvalue', 'Slope p-value ?',value = FALSE)
+                      checkboxInput('showslopepvalue', 'Show p-value ?',value = FALSE),
+                      checkboxInput('showadjrsquared', HTML('Show R<sup>2</sup><sub>adj</sub> ?'),value = FALSE)
                                        ),
                       conditionalPanel(" input.smoothmethod== 'loess' ",
                       sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),
