@@ -1891,19 +1891,25 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         ###### Mean section  END 
         
         ###### Smoothing Section START
-        if(!is.null(input$Smooth) ){
+        if(input$Smooth!="None"){
+          
+          if(input$smoothmethod=="loess") {
           familyargument <- input$loessfamily
-          if(input$smoothmethod=="glm1") {
-            familyargument<- "binomial"  
-          }
-          if(input$smoothmethod=="glm2") {
-            familyargument<- "poisson"  
-          }
           methodsargument<- list(family = familyargument,degree=input$loessdegree) 
-          if(input$smoothmethod=="glm1"){
+          }
+          
+          if(input$smoothmethod=="lm") {
+            familyargument<- "gaussian"
             methodsargument<- list(family = familyargument) 
           }
-          if(input$smoothmethod=="glm2"){
+          
+          if(input$smoothmethod=="glm1") {
+            familyargument<- "binomial" 
+            methodsargument<- list(family = familyargument) 
+            
+          }
+          if(input$smoothmethod=="glm2") {
+            familyargument<- "poisson"
             methodsargument<- list(family = familyargument) 
           }
           smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
@@ -1937,23 +1943,23 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$ignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
@@ -1964,23 +1970,23 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           if ( !input$ignoregroup) {
             if (!input$ignorecol) {
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot)
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot)
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot)+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot)+  
                   aes_string(weight=input$weightin)
@@ -1988,23 +1994,23 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$ignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth)
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth)
               
               if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethod,
+                p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
                                      size=1.5,se=F,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethod,level=levelsmooth,
+                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=1.5,se=T,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
@@ -2015,7 +2021,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
                 ggpmisc::stat_fit_glance(method = "lm", 
                                 method.args = list(formula = y ~ x),
-                                geom = "text",
+                                geom = "text_repel",
+                                label.x=-Inf ,label.y=Inf,
                                 aes(label = paste("P-value = ",
                                 signif(..p.value.., digits = 3), sep = "")),
             show.legend = FALSE)
@@ -2026,8 +2033,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
               ggpmisc::stat_fit_glance(method = "lm", 
                                        method.args = list(formula = y ~ x),
-                                       geom = "text",
-                                       aes(label = paste("R[adj]^2 = ",
+                                       geom = "text_repel",
+                                       label.x=-Inf ,label.y=-Inf,
+                                       aes(label = paste("R[adj]^2==",
                                       signif(..adj.r.squared.., digits = 2), sep = "")),
                                        show.legend = FALSE,parse=TRUE)
             
@@ -2037,7 +2045,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
               ggpmisc::stat_fit_glance(method = "lm", 
                                        method.args = list(formula = y ~ x),
-                                       geom = "text",
+                                       geom = "text_repel",
+                                       label.x=-Inf ,label.y=Inf,
                                        aes(label = paste("P-value = ",
                                                          signif(..p.value.., digits = 3), sep = "")),
                                        show.legend = FALSE)
@@ -2045,8 +2054,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
               ggpmisc::stat_fit_glance(method = "lm", 
                                        method.args = list(formula = y ~ x),
-                                       geom = "text",
-                                       label.x.npc = "left", label.y.npc = "bottom",
+                                       geom = "text_repel",
+                                       #label.x.npc = "left", label.y.npc = "bottom",
+                                       label.x=-Inf ,label.y=-Inf,
                                        aes(label = paste("R[adj]^2==",
                                                          signif(..adj.r.squared.., digits = 2), sep = "")),
                                        show.legend = FALSE,parse=TRUE)
@@ -3372,19 +3382,25 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       "SD"                   = function(x) x$SD,
       "CV%"                  = function(x) x$CV,
       "Median"               = function(x) x$MEDIAN,
-      # "Q01"                  = function(x) sprintf("%s", x$Q01),
-      # "Q05"                  = function(x) sprintf("%s", x$Q05),
-      # "Q10"                  = function(x) sprintf("%s", x$Q10),
-      # "Q25"                  = function(x) sprintf("%s", x$Q25),
-      # "Q50"                  = function(x) sprintf("%s", x$Q50),
-      # "Q75"                  = function(x) sprintf("%s", x$Q75),
-      # "Q90"                  = function(x) sprintf("%s", x$Q90),
-      # "Q95"                  = function(x) sprintf("%s", x$Q95),
-      # "Q97.5"                = function(x) sprintf("%s", x$Q97.5),
-      # "Q99"                  = function(x) sprintf("%s", x$Q99),
+      "q01"                  = function(x) sprintf("%s", x$q01),
+      "q02.5"                = function(x) sprintf("%s", x$q02.5),
+      "q05"                  = function(x) sprintf("%s", x$q05),
+      "q10"                  = function(x) sprintf("%s", x$q10),
+      "q25"                  = function(x) sprintf("%s", x$q25),
+      "q50"                  = function(x) sprintf("%s", x$q50),
+      "q75"                  = function(x) sprintf("%s", x$q75),
+      "q90"                  = function(x) sprintf("%s", x$q90),
+      "q95"                  = function(x) sprintf("%s", x$q95),
+      "q97.5"                = function(x) sprintf("%s", x$q97.5),
+      "q99"                  = function(x) sprintf("%s", x$q99),
       "Min"                  = function(x) x$MIN,
       "Max"                  = function(x) x$MAX,
       "IQR"                  = function(x) x$IQR,
+      "Q1"                  = function(x) x$Q1,      
+      "Q2"                  = function(x) x$Q2,
+      "Q3"                  = function(x) x$Q3,
+      "T1"                  = function(x) x$T1,
+      "T2"                  = function(x) x$T2,
       "Geo. Mean"            = function(x) x$GMEAN,
       "Geo. CV%"             = function(x) x$GCV,
       "Mean (SD)"            = function(x) sprintf("%s (%s)", x$MEAN, x$SD),
@@ -3393,6 +3409,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       "Mean (Median)"        = function(x) sprintf("%s (%s)", x$MEAN, x$MEDIAN),
       "[Min, Max]"           = function(x) sprintf("[%s, %s]", x$MIN, x$MAX),
       "Median [Min, Max]"    = function(x) sprintf("%s [%s, %s]", x$MEDIAN, x$MIN, x$MAX),
+      "Median [Q1, Q3]"      = function(x) sprintf("%s [%s, %s]", x$MEDIAN, x$Q1, x$Q3),
       "Median [IQR]"         = function(x) sprintf("%s [%s]", x$MEDIAN, x$IQR),
       "Geo. Mean (Geo. CV%)" = function(x) sprintf("%s (%s)", x$GMEAN, x$GCV))
     
@@ -3443,10 +3460,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       }
       formula <- as.formula(paste("~", paste(c(LHS, RHS), collapse=" | ")))
       overall <- if (input$table_incl_overall) "Overall" else FALSE
-      t <- capture.output(table1(formula, data=df, overall=overall,
+      t <- table1(formula, data=df, overall=overall,
                                  topclass=paste("Rtable1", input$table_style),
-                                 render.continuous=dstatsRenderCont(),
-                                 standalone=FALSE))
+                                 render.continuous=dstatsRenderCont())
       values$prevTable <- t
       t
     }
