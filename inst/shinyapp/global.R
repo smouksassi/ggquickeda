@@ -58,26 +58,28 @@ allstats <- c("N",
               "SD",
               "CV%",
               "Median",
-              # "Q01",
-              # "Q02.5",
-              # "Q05",
-              # "Q10",
-              # "Q25",
-              # "Q50",
-              # "Q75",
-              # "Q90",
-              # "Q95",
-              # "Q97.5",
-              # "Q99",
+              "q01",
+              "q02.5",
+              "q05",
+              "q10",
+              "q25",
+              "q50",
+              "q75",
+              "q90",
+              "q95",
+              "q97.5",
+              "q99",
               "Min",
               "Max",
               "IQR",
+              "Q1","Q2","Q3","T1","T2",
               "Geo. Mean",
               "Geo. CV%",
               "Mean (SD)",
               "Mean (CV%)",
               "Mean (SD) (CV%)",
-              "Median [Min, Max]",
+              "Median [Min, Max]","[Min, Max]",
+              "Median [Q1, Q3]",
               "Median [IQR]",
               "Geo. Mean (Geo. CV%)")
 
@@ -85,81 +87,81 @@ inline_ui <- function(tag) {
   div(style = "display: inline-block", tag)
 }
 
-eqcut <- function(x, ngroups, withhold=NULL, xlab=NULL, labeling=c("verbose", "Qn", "none"), interval=TRUE) {
-  labeling <- match.arg(labeling)
-  if (!is.null(withhold)) {
-    if (!is.list(withhold) || is.null(names(withhold)) || !(all(sapply(withhold, is.logical)))) {
-      stop("withhold must be a named list of logicals")
-    }
-    for (i in seq_len(length(withhold))) {
-      x[withhold[[i]]] <- NA
-    }
-  }
-  is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
-    abs(x - round(x)) < tol
-  }
-  if (!is.numeric(x)) stop("x must be numeric")
-  if (!is.numeric(ngroups)) stop("ngroups must be a single integer value")
-  if (length(ngroups) != 1) stop("ngroups must be a single integer value")
-  if (!is.wholenumber(ngroups)) stop("ngroups must be a single integer value")
-  if (ngroups < 2) stop("ngroups must be at least 2")
-  if (labeling == "none") interval <- TRUE  # Can't have no labels
-  q <- quantile(x, probs=seq.int(ngroups-1)/ngroups, na.rm=TRUE)
-  xcat <- cut(x, breaks=c(min(x, na.rm=T), q, max(x, na.rm=T)), right=F, include.lowest=T)
-  interv <- levels(xcat)
-  if (labeling == "verbose") {
-    if (ngroups == 2) {
-      if (!is.null(xlab)) {
-        lab <- paste0(" ", xlab)
-      } else {
-        lab <- ""
-      }
-      lab <- c("Below median", "Above median")
-      if (!is.null(xlab)) {
-        lab <- paste(lab, xlab)
-      }
-    } else {
-      th <- paste0(1:ngroups, c("st", "nd", "rd", rep("th", ngroups - 3)))
-      tile <- switch(as.character(ngroups), 
-                     "3" = "tertile",
-                     "4" = "quartile",
-                     "5" = "quintile",
-                     "6" = "sextile",
-                     "7" = "septile",
-                     "8" = "octile",
-                     "10" = "decile",
-                     "16" = "hexadecile",
-                     "100" = "percentile",
-                     paste0(ngroups, "-tile"))
-      lab <- paste(th, tile)
-      if (!is.null(xlab)) {
-        lab <- paste(lab, "of", xlab)
-      }
-    }
-  } else if (labeling == "Qn") {
-    lab <- paste0("Q", 1:ngroups)
-    if (!is.null(xlab)) {
-      lab <- paste(lab, "of", xlab)
-    }
-  } else {
-    lab <- ""
-  }
-  if (interval) {
-    if (labeling != "none") {
-      lab <- paste0(lab, ": ")
-    }
-    levels(xcat) <- paste0(lab, interv)
-  } else {
-    levels(xcat) <- lab
-  }
-  if (!is.null(withhold)) {
-    xcat <- factor(xcat, levels=c(levels(xcat), names(withhold)))
-    for (i in seq_len(length(withhold))) {
-      xcat[withhold[[i]]] <- names(withhold)[i]
-    }
-  }
-  xcat
-}
+# eqcut <- function(x, ngroups, withhold=NULL, xlab=NULL, labeling=c("verbose", "Qn", "none"), interval=TRUE) {
+#   labeling <- match.arg(labeling)
+#   if (!is.null(withhold)) {
+#     if (!is.list(withhold) || is.null(names(withhold)) || !(all(sapply(withhold, is.logical)))) {
+#       stop("withhold must be a named list of logicals")
+#     }
+#     for (i in seq_len(length(withhold))) {
+#       x[withhold[[i]]] <- NA
+#     }
+#   }
+#   is.wholenumber <- function(x, tol = .Machine$double.eps^0.5) {
+#     abs(x - round(x)) < tol
+#   }
+#   if (!is.numeric(x)) stop("x must be numeric")
+#   if (!is.numeric(ngroups)) stop("ngroups must be a single integer value")
+#   if (length(ngroups) != 1) stop("ngroups must be a single integer value")
+#   if (!is.wholenumber(ngroups)) stop("ngroups must be a single integer value")
+#   if (ngroups < 2) stop("ngroups must be at least 2")
+#   if (labeling == "none") interval <- TRUE  # Can't have no labels
+#   q <- quantile(x, probs=seq.int(ngroups-1)/ngroups, na.rm=TRUE)
+#   xcat <- cut(x, breaks=c(min(x, na.rm=T), q, max(x, na.rm=T)), right=F, include.lowest=T)
+#   interv <- levels(xcat)
+#   if (labeling == "verbose") {
+#     if (ngroups == 2) {
+#       if (!is.null(xlab)) {
+#         lab <- paste0(" ", xlab)
+#       } else {
+#         lab <- ""
+#       }
+#       lab <- c("Below median", "Above median")
+#       if (!is.null(xlab)) {
+#         lab <- paste(lab, xlab)
+#       }
+#     } else {
+#       th <- paste0(1:ngroups, c("st", "nd", "rd", rep("th", ngroups - 3)))
+#       tile <- switch(as.character(ngroups), 
+#                      "3" = "tertile",
+#                      "4" = "quartile",
+#                      "5" = "quintile",
+#                      "6" = "sextile",
+#                      "7" = "septile",
+#                      "8" = "octile",
+#                      "10" = "decile",
+#                      "16" = "hexadecile",
+#                      "100" = "percentile",
+#                      paste0(ngroups, "-tile"))
+#       lab <- paste(th, tile)
+#       if (!is.null(xlab)) {
+#         lab <- paste(lab, "of", xlab)
+#       }
+#     }
+#   } else if (labeling == "Qn") {
+#     lab <- paste0("Q", 1:ngroups)
+#     if (!is.null(xlab)) {
+#       lab <- paste(lab, "of", xlab)
+#     }
+#   } else {
+#     lab <- ""
+#   }
+#   if (interval) {
+#     if (labeling != "none") {
+#       lab <- paste0(lab, ": ")
+#     }
+#     levels(xcat) <- paste0(lab, interv)
+#   } else {
+#     levels(xcat) <- lab
+#   }
+#   if (!is.null(withhold)) {
+#     xcat <- factor(xcat, levels=c(levels(xcat), names(withhold)))
+#     for (i in seq_len(length(withhold))) {
+#       xcat[withhold[[i]]] <- names(withhold)[i]
+#     }
+#   }
+#   xcat
+# }
 #sample_data <- read.csv("inst/shinyapp/data/sample_data.csv")
 #x2<- unlist(sample_data["Weight"])
 #withhold<- list(Placebo=(x2==0))
