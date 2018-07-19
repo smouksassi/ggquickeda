@@ -521,28 +521,28 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         varname<- input$catvarquantin[i]
         x2<- unlist(df[,varname])
         if(zeroplacebo&&missingcategory){
-          df[,varname]   <- eqcut(x2, ngroups,
-                                  varname,
+          df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
+                                          varlabel=varname,
                                   withhold=list(
                                     Placebo=(x2==0),
                                     Missing=(is.na(x2))))
         }
         if(zeroplacebo&&!missingcategory){
-          df[,varname]   <- eqcut(x2, ngroups,
-                                  varname,
+          df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
+                                          varlabel=varname,
                                   withhold=list(
                                     Placebo=(x2==0)))
         }
         if(!zeroplacebo&&missingcategory){
-          df[,varname]   <- eqcut(x2, ngroups,
-                                  varname,
+          df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
+                                          varlabel=varname,
                                   withhold=list(
                                     Missing=(is.na(x2))))
         }
         if(!zeroplacebo&&!missingcategory){
           withhold<- NULL
-          df[,varname]   <- eqcut(x2, ngroups,
-                                  varname,
+          df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
+                                          varlabel=varname,
                                   withhold=NULL)
         }
 
