@@ -3322,8 +3322,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   
   output$flipthelevels <- renderUI({
     df <-tabledata()
-    validate(       need(!is.null(df), "Please select a data set"))
-    if(!is.null(df) && input$dstatscolextrain!="."){
+    validate(need(!is.null(df), "Please select a data set"))
+    if(!is.null(df) && !is.null(input$dstatscolextrain) && input$dstatscolextrain!="."){
       checkboxInput('flipthelevelsin', 'Flip the Order of the Columns', value = FALSE)
     }
   })  
@@ -3335,7 +3335,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     )
     validate(need(!is.null(input$y), 
                   "No y variable(s) selected"))
-    
+    req(input$dstatscolextrain)
+
     tabledata <- df
     if (input$dstatscolextrain != ".") {
       tabledata <- tabledata[, c(input$x, input$dstatscolextrain, input$y)]
