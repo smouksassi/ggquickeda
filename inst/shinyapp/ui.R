@@ -305,11 +305,19 @@ fluidPage(
                 numericInput("wrapncol",label = "N columns",value =NA,min=1,max =10) ,
                 numericInput("wrapnrow",label = "N rows",value = NA,min=1,max=10) 
                 ),
-              colourpicker::colourInput("stripbackgroundfill",
-                                        "Strip Background Fill:",
+              colourpicker::colourInput("stripbackgroundfillx",
+                                        "X Strip Background Fill:",
                                         value="#E5E5E5",
                                         showColour = "both",allowTransparent=TRUE),
-              div( actionButton("stripbackfillreset", "Reset Strip Background Fill"), style="text-align: right"),
+              div( actionButton("stripbackfillresetx", "Reset X Strip Background Fill"),
+                   style="text-align: right"),
+              colourpicker::colourInput("stripbackgroundfilly",
+                                        "Y Strip Background Fill:",
+                                        value="#E5E5E5",
+                                        showColour = "both",allowTransparent=TRUE),
+              div( actionButton("stripbackfillresety", "Reset Y Strip Background Fill"),
+                   style="text-align: right"),
+              
               selectizeInput(  "stripplacement", "Strip Placement:",
                                choices = c("inside","outside"),
                                options = list(  maxItems = 1 )  ),
@@ -318,6 +326,7 @@ fluidPage(
                           min = 0, max = 2, value = 0.25, step = 0.05),
               sliderInput("panelspacingy", label = "Facets Y Spacing:",
                           min = 0, max = 2, value = 0.25, step = 0.05)
+              
               ) ,
             
             tabPanel(
@@ -382,7 +391,11 @@ fluidPage(
             ),
             tabPanel(
               "Additional Themes Options",
-              sliderInput("themebasesize", "Theme Size (affects all text elements in the plot):", min=1, max=100, value=c(16),step=1),
+              sliderInput("themebasesize", "Theme Size (affects all text except facet strip):", min=1, max=100, value=c(16),step=1),
+              sliderInput("striptextsizex", "X Strip Text Size:",
+                          min=1, max=100, value=c(16),step=0.5),
+              sliderInput("striptextsizey", "Y Strip Text Size:",
+                          min=1, max=100, value=c(16),step=0.5),
               radioButtons("themecolorswitcher", "Discrete Color and Fill Themes:",
                            c("Tableau 10"  = "themetableau10",
                              "Tableau 20"  = "themetableau20",

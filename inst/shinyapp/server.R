@@ -290,8 +290,11 @@ function(input, output, session) {
   observeEvent(input$gridlinescolreset, {
       shinyjs::reset("gridlinescol")
     })
-  observeEvent(input$stripbackfillreset, {
-    shinyjs::reset("stripbackgroundfill")
+  observeEvent(input$stripbackfillresetx, {
+    shinyjs::reset("stripbackgroundfillx")
+  })
+  observeEvent(input$stripbackfillresety, {
+    shinyjs::reset("stripbackgroundfilly")
   })
   observeEvent(input$vlinecol1reset, {
     shinyjs::reset("vlinecol1")
@@ -3073,9 +3076,11 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       p <-  p+
         theme(panel.grid.major = element_line(colour = input$gridlinescol),
               panel.grid.minor = element_line(colour = input$gridlinescol),
-              strip.background = element_rect(fill=input$stripbackgroundfill),
+              strip.background.x = element_rect(fill=input$stripbackgroundfillx),
+              strip.background.y = element_rect(fill=input$stripbackgroundfilly),
               strip.placement  = input$stripplacement,
-              strip.text = NULL,
+              strip.text.x =  element_text(size = input$striptextsizex),
+              strip.text.y =  element_text(size = input$striptextsizey),
               panel.spacing.x = unit(input$panelspacingx, "lines"),
               panel.spacing.y = unit(input$panelspacingy, "lines")
               
