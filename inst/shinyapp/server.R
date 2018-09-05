@@ -2729,46 +2729,74 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       ###### Univariate SECTION END
       
       
-      facets <- paste(input$facetrowin,'~', input$facetcolin)
-      
-      if (input$facetrowextrain !="."&input$facetrowin !="."){
-        facets <- paste(input$facetrowextrain ,"+", input$facetrowin, '~', input$facetcolin)
-      }  
-      if (input$facetrowextrain !="."&input$facetrowin =="."){
-        facets <- paste( input$facetrowextrain, '~', input$facetcolin)
-      }  
-      
-      if (input$facetcolextrain !="."){
-        facets <- paste( facets, "+",input$facetcolextrain)
-      }  
-      ASTABLE <- ifelse( input$facetordering=="table",TRUE,FALSE)
-      
-      if (facets != '. ~ .')
-        p <- p + facet_grid(facets,scales=input$facetscalesin,space=input$facetspace
-                            ,labeller=input$facetlabeller,margins=input$facetmargin,as.table=ASTABLE )
-      
-      if (facets != '. ~ .' & input$facetswitch!="" )
-        
-        p <- p + facet_grid(facets,scales=input$facetscalesin,space=input$facetspace,
-                            switch=input$facetswitch
-                            , labeller=input$facetlabeller,
-                            margins=input$facetmargin ,as.table=ASTABLE)
-      
-      if (facets != '. ~ .'&input$facetwrap) {
-        multiline <-  input$facetwrapmultiline
-        
-        p <- p + facet_wrap(    c(input$facetrowextrain ,input$facetrowin,input$facetcolin,input$facetcolextrain ) [
-          c(input$facetrowextrain ,input$facetrowin,input$facetcolin,input$facetcolextrain )!="."]
-          ,scales=input$facetscalesin,
-          labeller=label_wrap_gen(width = 25, multi_line = multiline),as.table=ASTABLE)
-        
-        if (input$facetwrap&input$customncolnrow) {
-          multiline <-  input$facetwrapmultiline
-          p <- p + facet_wrap(    c(input$facetrowextrain ,input$facetrowin,input$facetcolin,input$facetcolextrain ) [
-            c(input$facetrowextrain ,input$facetrowin,input$facetcolin,input$facetcolextrain )!="."]
-            ,scales=input$facetscalesin,ncol=input$wrapncol,nrow=input$wrapnrow,
-            labeller=label_wrap_gen(width = 25, multi_line = multiline ),as.table=ASTABLE)
+      facets <- paste(input$facetrowin,
+                      '+',
+                      input$facetrowextrain,
+                      '~',
+                      input$facetcolin,
+                      '+',
+                      input$facetcolextrain)
+
+      ASTABLE <- ifelse(input$facetordering == "table", TRUE, FALSE)
+      if (facets != '. + . ~ . + .' && !input$facetwrap) {
+        facets<- as.formula(facets)
+        facetswitch <-
+          if (input$facetswitch == "none")
+            NULL
+        else {
+          input$facetswitch
         }
+        p <-
+          p + facet_grid(
+            facets,
+            scales = input$facetscalesin,
+            space = input$facetspace,
+            switch = facetswitch,
+            labeller = input$facetlabeller,
+            margins = input$facetmargin ,
+            as.table = ASTABLE
+          )
+      }
+      
+      
+      if (facets != '. + . ~ . + .' && input$facetwrap) {
+        multiline <-  input$facetwrapmultiline
+        wrapncol <-
+          if (is.na(input$wrapncol) |
+              is.null(input$wrapncol))
+            NULL
+        else {
+          input$wrapncol
+        }
+        wrapnrow <-
+          if (is.na(input$wrapnrow) |
+              is.null(input$wrapnrow))
+            NULL
+        else {
+          input$wrapnrow
+        }
+        
+        facetgridvariables <-
+          c(
+            input$facetcolin,
+            input$facetcolextrain,
+            input$facetrowin,
+            input$facetrowextrain
+          ) [c(
+            input$facetcolin,
+            input$facetcolextrain,
+            input$facetrowin,
+            input$facetrowextrain
+          ) != "."]
+        p <- p + facet_wrap(
+          facetgridvariables,
+          scales = input$facetscalesin,
+          ncol = input$wrapncol,
+          nrow = input$wrapnrow,
+          labeller = label_wrap_gen(width = 25, multi_line = multiline),
+          as.table = ASTABLE
+        )
+        
       }
       
       

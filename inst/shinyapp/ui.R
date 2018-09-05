@@ -280,10 +280,8 @@ fluidPage(
               conditionalPanel(
                 condition = "!input.facetwrap" ,
                 selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
-                                 choices = c("x","y","both"),
-                                 options = list(  maxItems = 1 ,
-                                                  placeholder = 'Please select an option',
-                                                  onInitialize = I('function() { this.setValue(""); }')  )  ),
+                                 choices = c("none","x","y","both"),
+                                 options = list(  maxItems = 1 )  ),
                 checkboxInput('facetmargin', 'Show a facet with all data (margins)?'),
                 selectInput('facetlabeller' ,'Facet Label:',c(
                   "Variable(s) Name(s) and Value(s)" ="label_both",
