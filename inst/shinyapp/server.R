@@ -632,7 +632,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   
   
   output$pastevar <- renderUI({
-    df <- recodedata4()
+    df <- factorMergeData()
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
@@ -652,7 +652,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   })
   
   pastedata  <- reactive({
-    df <- recodedata4()
+    df <- factorMergeData()
     validate(       need(!is.null(df), "Please select a data set"))
     df <- df[!names(df)%in%"custombins"]
     if( !is.null(input$pastevarin)   ) {
@@ -1032,7 +1032,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   
   stackdata <- reactive({
     
-    df <- rounddata() 
+    df <- factorMergeData()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       validate(  need(!is.element(input$x,input$y) ,
@@ -1232,6 +1232,47 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     df
   })
 
+  # --- Merge Factor Levels feature
+  
+  observe({
+    df <- recodedata4()
+    if (!is.null(df)){
+      factors <- df %>%
+        sapply(is.factor) %>%
+        which() %>%
+        names() %>%
+        {.[!. %in% 'yvars']}
+      updateSelectInput(session, "factor_to_merge", choices = factors)
+    }
+  })
+  
+  observe({
+    if (!is.null(input$factor_to_merge)){
+      df <- recodedata4()
+      levelsToMerge <- levels(df[[input$factor_to_merge]])
+      updateCheckboxGroupInput(session, "levels_to_merge", choices = levelsToMerge)
+    }
+  })
+  
+  factorMergeData <- reactive({
+    df <- recodedata4()
+    if (is.null(input$levels_to_merge) || length(input$levels_to_merge) < 2) {
+      return(df)
+    } else {
+      newFactor <- paste0(input$levels_to_merge,collapse = '/')
+      newLevels <- c(levels(df[[input$factor_to_merge]])[!levels(df[[input$factor_to_merge]]) %in% input$levels_to_merge],
+                    newFactor)
+      df[[input$factor_to_merge]] <-
+        df[[input$factor_to_merge]] %>%
+        as.character() %>%
+        {.[. %in% input$levels_to_merge] = newFactor;.} %>%
+        factor(levels = newLevels)
+      return(df)
+    }
+  })
+  
+  # --- End: Merge Factor Levels feature
+  
   finalplotdata <- reactive({
     df <- recodedata5()
     as.data.frame(df)

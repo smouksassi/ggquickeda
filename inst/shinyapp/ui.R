@@ -48,7 +48,12 @@ fluidPage(
                 actionButton("factor_lvl_change_add", "Add another variable", icon("plus")),
                 actionButton("factor_lvl_change_remove", "Remove last", icon("trash"))
               ))
-              ),
+            ),
+            tabPanel(
+              'Merge factor levels',
+              selectInput("factor_to_merge", 'Factor to merge', choices = NULL),
+              checkboxGroupInput("levels_to_merge", 'Levels to merge', choices = NULL)
+            ),
             tabPanel("Combine Two Variables",
                      h6("Combined variables can be used for colour, fill, group, size and facets. They cannot be used as X or Y variables."),
                      
