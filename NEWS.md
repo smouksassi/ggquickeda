@@ -16,4 +16,4 @@ Initial CRAN release
 * added p-values for slope(s) and adjusted Rsquare when a linear regression smoother is selected
 * fixed a bug where x and or y axix zoom would not work in some situations
 * added more stats from table1 as well as possibility to cut by quantiles `eqcut()`
-
+* fixed bug where commas in label names broke up the factor levels when using "Recode/Reorder Categories"

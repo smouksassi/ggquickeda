@@ -136,11 +136,12 @@ function(input, output, session) {
         updateSelectizeInput(
           session, paste0("factor_lvl_change_labels_", num1),
           label = paste(selected_var, "requires", nlevels, "new labels,
-                        edit the labels via Backspace/Enter keys. Drag and Drop the items to the desired order."),
+                        edit the labels via Backspace/Enter keys. Drag and Drop the items to the desired order. Do not use semicolons."),
           choices = levelsvalues,
           selected = levelsvalues,
           options = list(
             create = TRUE, createOnBlur = TRUE,
+            delimiter = ";",
             plugins = list('drag_drop', 'restore_on_backspace'),
             maxItems = nlevels
           )
@@ -623,7 +624,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                       levels = names(ordered_lvls))
       }
       
-      new_labels <- unlist(strsplit(labels, ","))[1:nlevels(df[, variable_name])]
+      new_labels <- labels[1:nlevels(df[, variable_name])]
       new_labels[is.na(new_labels)] <- ""
       levels(df[, variable_name]) <- new_labels
     }
