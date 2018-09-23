@@ -44,7 +44,7 @@ function(input, output, session) {
   add_factor_lvl_change_box <- function() {
     changeLblsVals$numCurrent <- changeLblsVals$numCurrent + 1
     
-    df <- recodedata3()
+    df <- factorMergeData()
     items <- names(df)
     names(items) <- items
     MODEDF <- sapply(df, is.numeric)
@@ -91,7 +91,7 @@ function(input, output, session) {
       changeLblsVals$numTotal <- num1
       
       output[[paste0("factor_lvl_change_labeltext_", num1)]] <- renderText({
-        df <- recodedata3()
+        df <- factorMergeData()
         selected_var <- input[[paste0("factor_lvl_change_select_", num1)]]
         if (is.null(selected_var) || selected_var == "") return(NULL)
         if (!selected_var %in% names(df)) return(NULL)
@@ -104,7 +104,7 @@ function(input, output, session) {
         if (selected_var == "") return()
         shinyjs::disable(paste0("factor_lvl_change_select_", num1))
 
-        df <- recodedata3()
+        df <- factorMergeData()
         MODEDF <- sapply(df, is.numeric)
         
         ALLNAMES <- names(df)[!MODEDF]
@@ -112,7 +112,7 @@ function(input, output, session) {
         if (changeLblsVals$numCurrent < length(ALLNAMES)) {
           shinyjs::enable("factor_lvl_change_add")
         }
-        df <- recodedata3()
+        df <- factorMergeData()
         shinyjs::show(paste0("factor_lvl_change_labels_", num1))
         
         selected_var_factor <- as.factor( df[, selected_var] )
@@ -267,8 +267,8 @@ function(input, output, session) {
     values$maindata <- read.csv(file, na.strings = c("NA","."))
   })
   
-  # when recodedata3 changes, reset the dynamic "change factor levels" boxes
-  observeEvent(recodedata3(), {
+  # reset the dynamic "change factor levels" boxes
+  observeEvent(factorMergeData(), {
     shinyjs::show("factor_lvl_change_section")
     
     changeLblsVals$numCurrent <- 0
@@ -589,7 +589,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     df
   })
   output$bintext <- renderText({
-    df <- recodedata3()
+    df <- factorMergeData()
     validate(       need(!is.null(df), "Please select a data set"))
     bintextout <- ""
     if(input$catvar3in!="" && !is.null(input$asnumericin)) {
@@ -604,7 +604,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   })   
   
   recodedata4  <- reactive({
-    df <- recodedata3()
+    df <- factorMergeData()
     validate(       need(!is.null(df), "Please select a data set"))
     # get all the "change factor levels" inputs and apply them
     for (i in seq_len(changeLblsVals$numCurrent)) {
@@ -633,7 +633,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   
   
   output$pastevar <- renderUI({
-    df <- factorMergeData()
+    df <- recodedata4()
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
@@ -653,7 +653,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   })
   
   pastedata  <- reactive({
-    df <- factorMergeData()
+    df <- recodedata4()
     validate(       need(!is.null(df), "Please select a data set"))
     df <- df[!names(df)%in%"custombins"]
     if( !is.null(input$pastevarin)   ) {
@@ -1033,7 +1033,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   
   stackdata <- reactive({
     
-    df <- factorMergeData()
+    df <- recodedata4()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       validate(  need(!is.element(input$x,input$y) ,
@@ -1234,44 +1234,185 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   })
 
   # --- Merge Factor Levels feature
+
+  clickReset <- reactiveVal(list())
+  factorMergeList  <- reactiveVal(NULL)
   
-  observe({
-    df <- recodedata4()
-    if (!is.null(df)){
-      factors <- df %>%
-        sapply(is.factor) %>%
-        which() %>%
-        names() %>%
-        {.[!. %in% 'yvars']}
-      updateSelectInput(session, "factor_to_merge", choices = factors)
-    }
+  
+  output$factor_merging <- renderUI({
+    
+    df <- recodedata3()
+    if (is.null(df)) return()
+    
+    factors <- df %>%
+      sapply(is.factor) %>%
+      which() %>%
+      names()
+    counts <- df %>% select(factors) %>% lapply(levels) %>% sapply(length)
+    isolate({
+      cr <- clickReset()
+      cr <- rep(0, sum(counts>2))
+      names(cr) <- names(counts[counts>2])
+      clickReset(cr)
+    })
+    
+    whichFactors <- selectizeInput("factors_to_merge", "Select factors to merge",
+                                   choices = factors, multiple = TRUE)
+    
+    
+    mergingElements <- lapply(seq_along(factors), function(i) {
+      checkBoxes <- lapply(seq_len(counts[i]-1), function(j) {
+        out <- checkboxGroupInput(
+          inputId = paste0("levels_to_merge_", factors[i], "_", j),
+          label = paste('Group', j),
+          choices = levels(df[[factors[i]]]))
+        if (j > 1) {
+          out <- shinyjs::hidden(out)
+        }
+        return(out)
+        
+      }) %>% tagList()
+      
+      out <- tagList(
+        h3(paste("Select levels to merge for factor", factors[i])),
+        checkBoxes)
+      
+      if (counts[i] > 2) {
+        out <- tagList(
+          out,
+          actionButton(paste0("addMergingGroup_", factors[i]), "Merge more levels"))
+      }
+      out <- shinyjs::hidden(div(id = paste0("merge_", factors[i]),
+                                 out))
+    }) %>% tagList()
+    
+    tagList(whichFactors, div(id = "factorClick", mergingElements))
   })
   
-  observe({
-    if (!is.null(input$factor_to_merge)){
-      df <- recodedata4()
-      levelsToMerge <- levels(df[[input$factor_to_merge]])
-      updateCheckboxGroupInput(session, "levels_to_merge", choices = levelsToMerge)
+  onclick("factorClick", expr = factor_merge_click)
+  
+  # hide and show factors to merge
+  observeEvent(input$factors_to_merge, {
+    df <-  recodedata3()
+    factors <- df %>%
+      sapply(is.factor) %>%
+      which() %>%
+      names()
+    counts <- df %>% select(factors) %>% lapply(levels) %>% sapply(length)
+    
+    toShow <- input$factors_to_merge
+    toHide <- factors[!factors %in% toShow]
+    
+    toShow %>% sapply(function(x){
+      shinyjs::show(paste0('merge_',x))
+    })
+    toHide %>% sapply(function(x){
+      shinyjs::hide(paste0('merge_',x))
+    })
+    
+    fml <- factorMergeList()
+    
+    
+    cr <- clickReset()
+    for (x in toHide) {
+      combinationCounts <- counts[x] - 1
+      if (combinationCounts>1 && !is.null(input[[paste0('addMergingGroup_',x)]])){
+        cr[x] = input[[paste0('addMergingGroup_',x)]]
+      }
+      for (i in seq_len(combinationCounts)){
+        updateCheckboxGroupInput(
+          session,
+          inputId = paste0('levels_to_merge_', x, '_', i),
+          selected = NULL,
+          choices = levels(df[[x]])
+        )
+        if (i>1){
+          shinyjs::hide(paste0('levels_to_merge_', x, '_', i))
+        }
+        fml[[x]][[i]] <- list(NULL)
+      }
     }
+    clickReset(cr)
+    
+    factorMergeList(fml)
+    
+  }, ignoreNULL = FALSE)
+  
+  
+  # hide show groups and processing
+  factor_merge_click <- function() {
+    df <-  recodedata3()
+    factors <- df %>%
+      sapply(is.factor) %>%
+      which() %>%
+      names()
+    counts <- df %>% select(factors) %>% lapply(levels) %>% sapply(length)
+    
+    cr <- clickReset()
+    fml <- factors %>% lapply(function(x){
+      combinationCounts <- counts[x] - 1
+      selectedInGroups <- lapply(seq_len(combinationCounts), function(i) {
+        input[[paste0('levels_to_merge_', x, '_', i)]]
+      })
+      
+      # control visibility of "Merge more levels"
+      if (combinationCounts > 1) {
+        timesClicked <- input[[paste0('addMergingGroup_', x)]] - cr[x]
+        if ((timesClicked + 1) >= combinationCounts) {
+          shinyjs::disable(paste0('addMergingGroup_',x ))
+        }
+        shinyjs::show(paste0('levels_to_merge_', x, '_', timesClicked + 1))
+        
+        seq_len(combinationCounts) %>% sapply(function(i) {
+          selectedInOthers <- selectedInGroups[-i] %>% unlist() %>% unique()
+          updateCheckboxGroupInput(session, inputId = paste0('levels_to_merge_', x, '_', i),
+                                   selected =  input[[paste0('levels_to_merge_', x, '_', i)]],
+                                   choices = levels(df[[x]])[!levels(df[[x]]) %in% selectedInOthers])
+        })
+        
+        if (all(levels(df[[x]]) %in% unique(unlist(selectedInGroups)))) {
+          shinyjs::disable(paste0('addMergingGroup_', x))
+        } else if ((timesClicked + 1) < combinationCounts) {
+          shinyjs::enable(paste0('addMergingGroup_', x))
+        }
+        
+      }
+      return(selectedInGroups)
+    })
+    names(fml) <- factors
+    
+    factorMergeList(fml)
+  }
+  
+  observe({
+    recodedata3()
+    factorMergeList(NULL)
   })
+  
   
   factorMergeData <- reactive({
-    df <- recodedata4()
-    if (is.null(input$levels_to_merge) || length(input$levels_to_merge) < 2) {
+    df <-  recodedata3()
+    mergeList <- factorMergeList()
+    mergeList <- mergeList[input$factors_to_merge]
+    if (!is.null(df) && !is.null(mergeList)) {
+      for (x in names(mergeList)) {
+        toMerge <- mergeList[[x]][!sapply(mergeList[[x]], is.null)]
+        for (y in toMerge) {
+          newFactor <- paste0(y, collapse = '/')
+          newLevels <- c(levels(df[[x]])[!levels(df[[x]]) %in% y], newFactor)
+          df[[x]] <-
+            df[[x]] %>%
+            as.character() %>%
+            {.[. %in% y] = newFactor;.} %>%
+            factor(levels = newLevels)
+        }
+      }
       return(df)
     } else {
-      newFactor <- paste0(input$levels_to_merge,collapse = '/')
-      newLevels <- c(levels(df[[input$factor_to_merge]])[!levels(df[[input$factor_to_merge]]) %in% input$levels_to_merge],
-                    newFactor)
-      df[[input$factor_to_merge]] <-
-        df[[input$factor_to_merge]] %>%
-        as.character() %>%
-        {.[. %in% input$levels_to_merge] = newFactor;.} %>%
-        factor(levels = newLevels)
       return(df)
     }
   })
-  
+    
   # --- End: Merge Factor Levels feature
   
   finalplotdata <- reactive({
