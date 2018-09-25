@@ -41,6 +41,15 @@ fluidPage(
 
             ),
             tabPanel(
+              "Merge factor levels",
+              shinyjs::hidden(div(
+                id = "factor_merge_section",
+                div(id = "factor_merge_placeholder"),
+                actionButton("factor_merge_add", "Merge another group", icon("plus")),
+                actionButton("factor_merge_remove", "Remove last merge", icon("trash"))
+              ))
+            ),
+            tabPanel(
               "Recode/Reorder Categories",
               shinyjs::hidden(div(
                 id = "factor_lvl_change_section",
@@ -48,7 +57,7 @@ fluidPage(
                 actionButton("factor_lvl_change_add", "Add another variable", icon("plus")),
                 actionButton("factor_lvl_change_remove", "Remove last", icon("trash"))
               ))
-              ),
+            ),
             tabPanel("Combine Two Variables",
                      h6("Combined variables can be used for colour, fill, group, size and facets. They cannot be used as X or Y variables."),
                      
