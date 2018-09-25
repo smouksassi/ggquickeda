@@ -44,7 +44,7 @@ function(input, output, session) {
   add_factor_lvl_change_box <- function() {
     changeLblsVals$numCurrent <- changeLblsVals$numCurrent + 1
     
-    df <- factorMergeData()
+    df <- factor_merge_data()
     items <- names(df)
     names(items) <- items
     MODEDF <- sapply(df, is.numeric)
@@ -83,163 +83,163 @@ function(input, output, session) {
       )
     )
     
+    # if we already had this many sections before, no need to wire up any
+    # new observers
     if (changeLblsVals$numCurrent <= changeLblsVals$numTotal) {
-      # if we already had this many sections before, no need to wire up any
-      # new observers
-    } else {
-      num1 <- changeLblsVals$numCurrent
-      changeLblsVals$numTotal <- num1
-      
-      output[[paste0("factor_lvl_change_labeltext_", num1)]] <- renderText({
-        df <- factorMergeData()
-        selected_var <- input[[paste0("factor_lvl_change_select_", num1)]]
-        if (is.null(selected_var) || selected_var == "") return(NULL)
-        if (!selected_var %in% names(df)) return(NULL)
-        labeltextout <- c("Old labels", levels(df[, selected_var]))
-        labeltextout   
-      })
-      
-      observeEvent(input[[paste0("factor_lvl_change_select_", num1)]], {
-        selected_var <- input[[paste0("factor_lvl_change_select_", num1)]]
-        if (selected_var == "") return()
-        shinyjs::disable(paste0("factor_lvl_change_select_", num1))
-
-        df <- factorMergeData()
-        MODEDF <- sapply(df, is.numeric)
-        
-        ALLNAMES <- names(df)[!MODEDF]
-        ALLNAMES <- ALLNAMES[!ALLNAMES=="custombins"]
-        if (changeLblsVals$numCurrent < length(ALLNAMES)) {
-          shinyjs::enable("factor_lvl_change_add")
-        }
-        df <- factorMergeData()
-        shinyjs::show(paste0("factor_lvl_change_labels_", num1))
-        
-        selected_var_factor <- as.factor( df[, selected_var] )
-        nlevels <- nlevels(selected_var_factor)
-        levelsvalues <- levels(selected_var_factor)
-
-        # Start tracking Recoding/Reordering in this variable
-        # This object contains snapshots of the factor levels
-        # including their recoded values. The elements represent the
-        # newly named recoded level, while its name refers to the value
-        # found in the data. Order is also retained for values present.
-        # The dictionary keeps track of known recodings so that you can add
-        # a level back using its new name (not resticted to only its true level)
-        factor_lvl_diff_tracker[[ as.character(num1) ]] <- list(
-          var = selected_var,
-          last_value = setNames(levelsvalues, levelsvalues),
-          second_last_value = setNames(levelsvalues, levelsvalues),
-          dictionary_of_edits = setNames(levelsvalues, levelsvalues)
-        )
-        
-        updateSelectizeInput(
-          session, paste0("factor_lvl_change_labels_", num1),
-          label = paste(selected_var, "requires", nlevels, "new labels,
-                        edit the labels via Backspace/Enter keys. Drag and Drop the items to the desired order. Do not use semicolons."),
-          choices = levelsvalues,
-          selected = levelsvalues,
-          options = list(
-            create = TRUE, createOnBlur = TRUE,
-            delimiter = ";",
-            plugins = list('drag_drop', 'restore_on_backspace'),
-            maxItems = nlevels
-          )
-        )
-      })
-      
-      observeEvent(input[[ paste0("factor_lvl_change_labels_", num1) ]], {
-        
-        value_on_arrival <- input[[ paste0("factor_lvl_change_labels_", num1) ]]
-        names(value_on_arrival) <- value_on_arrival
-        
-        diff_tracker <- factor_lvl_diff_tracker[[ as.character(num1) ]]
-        previous_value <- diff_tracker[[ "last_value" ]]
-        second_last_value <- diff_tracker[[ "second_last_value" ]]
-        
-        if ( identical(value_on_arrival, previous_value)) return()
-        
-        # The condition below handles label-adding events,
-        # including addition of previously deleted levels.
-        # These show up as a delete followed by an addition with a different name/value.
-        # Hence, need to track the last 2 values and compare the newest with
-        # the value twice preceding it
-        #       EG.       Renaming Susan to Sue looks like this:
-        #             1. c('Alfred', 'Betty', 'Susan')  <-- compare this
-        #             2. c('Alfred', 'Betty')
-        #             3. c('Alfred', 'Betty', 'Sue')   <-- against this
-        #
-        if (length(previous_value[ !is.na(previous_value)]) < length(value_on_arrival) ) {
-          
-          lvl_dict <-  diff_tracker[[ "dictionary_of_edits" ]]
-          new_value <- setdiff(value_on_arrival, previous_value)
-          
-          already_in_dict <- new_value %in% lvl_dict
-          
-          if ( !isTRUE(already_in_dict)) { # If label has never been seen, add it to the dictionary
-            
-            value_before_edit <- setdiff(second_last_value[ !is.na(second_last_value)], value_on_arrival)
-            lvl_in_data <- names(lvl_dict[ match(value_before_edit, lvl_dict)])
-            
-            new_value_tmp <- new_value
-            names(new_value_tmp) <- lvl_in_data
-            
-            updated_lvl_dict <- c(lvl_dict, new_value_tmp)
-            updated_lvl_dict <- updated_lvl_dict[ !duplicated(updated_lvl_dict)]
-            updated_lvl_dict <- updated_lvl_dict[ !is.na(names(updated_lvl_dict))]
-            
-            factor_lvl_diff_tracker[[ as.character(num1) ]][[ "dictionary_of_edits" ]] <-
-              updated_lvl_dict
-          }
-          
-        }
-        
-        # This line should read directly from the most up-to-date value
-        # (not the object `difftracker`)
-        refreshed_lvl_dict <-  factor_lvl_diff_tracker[[ as.character(num1) ]][[ "dictionary_of_edits" ]]
-        
-        # If a level was removed, determine which level was removed by looking
-        # at the levels before the change, and impute it with NA, while keeping
-        # a place for it.
-        #       EG.       Removing bat looks like this:
-        #             1. c(ant = 'ant',  bat = 'bat', cat = 'cat')
-        #             ... becomes...
-        #             2. c(ant = 'ant',  bat = NA,    cat = 'cat')
-        if( length(value_on_arrival) < length(previous_value) ){
-          
-          imputed_missing_current_value <- previous_value
-          true_values <- names(refreshed_lvl_dict)[ match(value_on_arrival, refreshed_lvl_dict)]
-          imputed_missing_current_value[ !names(imputed_missing_current_value) %in% true_values] <- NA_character_
-          imputed_missing_current_value[ names(imputed_missing_current_value) %in% true_values] <- value_on_arrival
-          value_on_arrival <- imputed_missing_current_value
-          
-        }
-        
-        # Next we change the *names* of the levels (after recoding) to match the
-        # values taken in the data.
-        # This is accomplished using the dictionary_of_edits that has been tracking
-        # all recoding/relabelling events.
-        #       EG.  Given a vector like this..
-        #               c(ant = 'ant',  bat = 'bat', cat = 'MrChestington')
-        #             .. and a dictionary like this...
-        #               c(ant = 'ant', bat = 'bat', cat = 'cat', ant = 'MrAnt',
-        #                 bat = 'batface', cat = 'MrChestington')
-        #
-        #             ... becomes...
-        #             2. c(ant = 'ant',  bat = NA,    cat = 'cat')
-        
-        
-        # names(value_on_arrival)[ !is.na(value_on_arrival)] <- names(refreshed_lvl_dict)[match(value_on_arrival[ !is.na(value_on_arrival)], refreshed_lvl_dict)]
-        
-        
-        names(value_on_arrival)[ !is.na(value_on_arrival)] <-
-          names(refreshed_lvl_dict)[ match(value_on_arrival[ !is.na(value_on_arrival)], refreshed_lvl_dict) ]
-        
-        factor_lvl_diff_tracker[[ as.character(num1) ]][[ "last_value" ]] <- value_on_arrival
-        factor_lvl_diff_tracker[[ as.character(num1) ]][[ "second_last_value" ]] <- previous_value
-        
-      })
+      return()
     }
+    num1 <- changeLblsVals$numCurrent
+    changeLblsVals$numTotal <- num1
+    
+    output[[paste0("factor_lvl_change_labeltext_", num1)]] <- renderText({
+      df <- factor_merge_data()
+      selected_var <- input[[paste0("factor_lvl_change_select_", num1)]]
+      if (is.null(selected_var) || selected_var == "") return(NULL)
+      if (!selected_var %in% names(df)) return(NULL)
+      labeltextout <- c("Old labels", levels(df[, selected_var]))
+      labeltextout   
+    })
+    
+    observeEvent(input[[paste0("factor_lvl_change_select_", num1)]], {
+      selected_var <- input[[paste0("factor_lvl_change_select_", num1)]]
+      if (selected_var == "") return()
+      shinyjs::disable(paste0("factor_lvl_change_select_", num1))
+
+      df <- factor_merge_data()
+      MODEDF <- sapply(df, is.numeric)
+      
+      ALLNAMES <- names(df)[!MODEDF]
+      ALLNAMES <- ALLNAMES[!ALLNAMES=="custombins"]
+      if (changeLblsVals$numCurrent < length(ALLNAMES)) {
+        shinyjs::enable("factor_lvl_change_add")
+      }
+      df <- factor_merge_data()
+      shinyjs::show(paste0("factor_lvl_change_labels_", num1))
+      
+      selected_var_factor <- as.factor( df[, selected_var] )
+      nlevels <- nlevels(selected_var_factor)
+      levelsvalues <- levels(selected_var_factor)
+
+      # Start tracking Recoding/Reordering in this variable
+      # This object contains snapshots of the factor levels
+      # including their recoded values. The elements represent the
+      # newly named recoded level, while its name refers to the value
+      # found in the data. Order is also retained for values present.
+      # The dictionary keeps track of known recodings so that you can add
+      # a level back using its new name (not resticted to only its true level)
+      factor_lvl_diff_tracker[[ as.character(num1) ]] <- list(
+        var = selected_var,
+        last_value = setNames(levelsvalues, levelsvalues),
+        second_last_value = setNames(levelsvalues, levelsvalues),
+        dictionary_of_edits = setNames(levelsvalues, levelsvalues)
+      )
+      
+      updateSelectizeInput(
+        session, paste0("factor_lvl_change_labels_", num1),
+        label = paste(selected_var, "requires", nlevels, "new labels,
+                      edit the labels via Backspace/Enter keys. Drag and Drop the items to the desired order. Do not use semicolons."),
+        choices = levelsvalues,
+        selected = levelsvalues,
+        options = list(
+          create = TRUE, createOnBlur = TRUE,
+          delimiter = ";",
+          plugins = list('drag_drop', 'restore_on_backspace'),
+          maxItems = nlevels
+        )
+      )
+    })
+    
+    observeEvent(input[[ paste0("factor_lvl_change_labels_", num1) ]], {
+      
+      value_on_arrival <- input[[ paste0("factor_lvl_change_labels_", num1) ]]
+      names(value_on_arrival) <- value_on_arrival
+      
+      diff_tracker <- factor_lvl_diff_tracker[[ as.character(num1) ]]
+      previous_value <- diff_tracker[[ "last_value" ]]
+      second_last_value <- diff_tracker[[ "second_last_value" ]]
+      
+      if ( identical(value_on_arrival, previous_value)) return()
+      
+      # The condition below handles label-adding events,
+      # including addition of previously deleted levels.
+      # These show up as a delete followed by an addition with a different name/value.
+      # Hence, need to track the last 2 values and compare the newest with
+      # the value twice preceding it
+      #       EG.       Renaming Susan to Sue looks like this:
+      #             1. c('Alfred', 'Betty', 'Susan')  <-- compare this
+      #             2. c('Alfred', 'Betty')
+      #             3. c('Alfred', 'Betty', 'Sue')   <-- against this
+      #
+      if (length(previous_value[ !is.na(previous_value)]) < length(value_on_arrival) ) {
+        
+        lvl_dict <-  diff_tracker[[ "dictionary_of_edits" ]]
+        new_value <- setdiff(value_on_arrival, previous_value)
+        
+        already_in_dict <- new_value %in% lvl_dict
+        
+        if ( !isTRUE(already_in_dict)) { # If label has never been seen, add it to the dictionary
+          
+          value_before_edit <- setdiff(second_last_value[ !is.na(second_last_value)], value_on_arrival)
+          lvl_in_data <- names(lvl_dict[ match(value_before_edit, lvl_dict)])
+          
+          new_value_tmp <- new_value
+          names(new_value_tmp) <- lvl_in_data
+          
+          updated_lvl_dict <- c(lvl_dict, new_value_tmp)
+          updated_lvl_dict <- updated_lvl_dict[ !duplicated(updated_lvl_dict)]
+          updated_lvl_dict <- updated_lvl_dict[ !is.na(names(updated_lvl_dict))]
+          
+          factor_lvl_diff_tracker[[ as.character(num1) ]][[ "dictionary_of_edits" ]] <-
+            updated_lvl_dict
+        }
+        
+      }
+      
+      # This line should read directly from the most up-to-date value
+      # (not the object `difftracker`)
+      refreshed_lvl_dict <-  factor_lvl_diff_tracker[[ as.character(num1) ]][[ "dictionary_of_edits" ]]
+      
+      # If a level was removed, determine which level was removed by looking
+      # at the levels before the change, and impute it with NA, while keeping
+      # a place for it.
+      #       EG.       Removing bat looks like this:
+      #             1. c(ant = 'ant',  bat = 'bat', cat = 'cat')
+      #             ... becomes...
+      #             2. c(ant = 'ant',  bat = NA,    cat = 'cat')
+      if( length(value_on_arrival) < length(previous_value) ){
+        
+        imputed_missing_current_value <- previous_value
+        true_values <- names(refreshed_lvl_dict)[ match(value_on_arrival, refreshed_lvl_dict)]
+        imputed_missing_current_value[ !names(imputed_missing_current_value) %in% true_values] <- NA_character_
+        imputed_missing_current_value[ names(imputed_missing_current_value) %in% true_values] <- value_on_arrival
+        value_on_arrival <- imputed_missing_current_value
+        
+      }
+      
+      # Next we change the *names* of the levels (after recoding) to match the
+      # values taken in the data.
+      # This is accomplished using the dictionary_of_edits that has been tracking
+      # all recoding/relabelling events.
+      #       EG.  Given a vector like this..
+      #               c(ant = 'ant',  bat = 'bat', cat = 'MrChestington')
+      #             .. and a dictionary like this...
+      #               c(ant = 'ant', bat = 'bat', cat = 'cat', ant = 'MrAnt',
+      #                 bat = 'batface', cat = 'MrChestington')
+      #
+      #             ... becomes...
+      #             2. c(ant = 'ant',  bat = NA,    cat = 'cat')
+      
+      
+      # names(value_on_arrival)[ !is.na(value_on_arrival)] <- names(refreshed_lvl_dict)[match(value_on_arrival[ !is.na(value_on_arrival)], refreshed_lvl_dict)]
+      
+      
+      names(value_on_arrival)[ !is.na(value_on_arrival)] <-
+        names(refreshed_lvl_dict)[ match(value_on_arrival[ !is.na(value_on_arrival)], refreshed_lvl_dict) ]
+      
+      factor_lvl_diff_tracker[[ as.character(num1) ]][[ "last_value" ]] <- value_on_arrival
+      factor_lvl_diff_tracker[[ as.character(num1) ]][[ "second_last_value" ]] <- previous_value
+      
+    })
   }
   
   remove_last_factor_lvl_change_box <- function() {
@@ -268,7 +268,7 @@ function(input, output, session) {
   })
   
   # reset the dynamic "change factor levels" boxes
-  observeEvent(factorMergeData(), {
+  observeEvent(factor_merge_data(), {
     shinyjs::show("factor_lvl_change_section")
     
     changeLblsVals$numCurrent <- 0
@@ -589,7 +589,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     df
   })
   output$bintext <- renderText({
-    df <- factorMergeData()
+    df <- factor_merge_data()
     validate(       need(!is.null(df), "Please select a data set"))
     bintextout <- ""
     if(input$catvar3in!="" && !is.null(input$asnumericin)) {
@@ -604,7 +604,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   })   
   
   recodedata4  <- reactive({
-    df <- factorMergeData()
+    df <- factor_merge_data()
     validate(       need(!is.null(df), "Please select a data set"))
     # get all the "change factor levels" inputs and apply them
     for (i in seq_len(changeLblsVals$numCurrent)) {
@@ -1233,186 +1233,149 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     df
   })
 
-  # --- Merge Factor Levels feature
-
-  clickReset <- reactiveVal(list())
-  factorMergeList  <- reactiveVal(NULL)
+  # --- Merge factor levels feature ---
+    
   
+  # Variables to help with maintaining the dynamic number of "merge levels of
+  # a factor" boxes
+  factor_merge_vals <- reactiveValues(
+    num_current = 0,  # How many boxes are there currently
+    num_total = 0  # Max # of boxes at the same time, to prevent memory leaks
+  )
   
-  output$factor_merging <- renderUI({
+  # Add UI and corresponding outputs+observers for a "merge factor levels"
+  # section
+  add_factor_merge_box <- function() {
+    factor_merge_vals$num_current <- factor_merge_vals$num_current + 1
     
     df <- recodedata3()
-    if (is.null(df)) return()
-    
     factors <- df %>%
       sapply(is.factor) %>%
       which() %>%
       names()
-    counts <- df %>% select(factors) %>% lapply(levels) %>% sapply(length)
-    isolate({
-      cr <- clickReset()
-      cr <- rep(0, sum(counts>2))
-      names(cr) <- names(counts[counts>2])
-      clickReset(cr)
-    })
     
-    whichFactors <- selectizeInput("factors_to_merge", "Select factors to merge",
-                                   choices = factors, multiple = TRUE)
-    
-    
-    mergingElements <- lapply(seq_along(factors), function(i) {
-      checkBoxes <- lapply(seq_len(counts[i]-1), function(j) {
-        out <- checkboxGroupInput(
-          inputId = paste0("levels_to_merge_", factors[i], "_", j),
-          label = paste('Group', j),
-          choices = levels(df[[factors[i]]]))
-        if (j > 1) {
-          out <- shinyjs::hidden(out)
-        }
-        return(out)
-        
-      }) %>% tagList()
-      
-      out <- tagList(
-        h3(paste("Select levels to merge for factor", factors[i])),
-        checkBoxes)
-      
-      if (counts[i] > 2) {
-        out <- tagList(
-          out,
-          actionButton(paste0("addMergingGroup_", factors[i]), "Merge more levels"))
-      }
-      out <- shinyjs::hidden(div(id = paste0("merge_", factors[i]),
-                                 out))
-    }) %>% tagList()
-    
-    tagList(whichFactors, div(id = "factorClick", mergingElements))
-  })
-  
-  onclick("factorClick", expr = factor_merge_click)
-  
-  # hide and show factors to merge
-  observeEvent(input$factors_to_merge, {
-    df <-  recodedata3()
-    factors <- df %>%
-      sapply(is.factor) %>%
-      which() %>%
-      names()
-    counts <- df %>% select(factors) %>% lapply(levels) %>% sapply(length)
-    
-    toShow <- input$factors_to_merge
-    toHide <- factors[!factors %in% toShow]
-    
-    toShow %>% sapply(function(x){
-      shinyjs::show(paste0('merge_',x))
-    })
-    toHide %>% sapply(function(x){
-      shinyjs::hide(paste0('merge_',x))
-    })
-    
-    fml <- factorMergeList()
-    
-    
-    cr <- clickReset()
-    for (x in toHide) {
-      combinationCounts <- counts[x] - 1
-      if (combinationCounts>1 && !is.null(input[[paste0('addMergingGroup_',x)]])){
-        cr[x] = input[[paste0('addMergingGroup_',x)]]
-      }
-      for (i in seq_len(combinationCounts)){
-        updateCheckboxGroupInput(
-          session,
-          inputId = paste0('levels_to_merge_', x, '_', i),
-          selected = NULL,
-          choices = levels(df[[x]])
+    insertUI(
+      selector = "#factor_merge_placeholder", where = "beforeEnd",
+      immediate = TRUE,
+      div(
+        class = "factor_merge_box",
+        selectizeInput(
+          paste0("factor_merge_select_", factor_merge_vals$num_current),
+          sprintf("Factor to merge (%s):", factor_merge_vals$num_current),
+          choices = c("", factors),
+          selected = ""
+        ),
+        div(
+          class = "blind-dropdown",
+          shinyjs::hidden(
+            checkboxGroupInput(
+              inputId = paste0("factor_merge_levels_", factor_merge_vals$num_current),
+              label = "Levels to merge",
+              choices = c()
+            )
+          )
         )
-        if (i>1){
-          shinyjs::hide(paste0('levels_to_merge_', x, '_', i))
-        }
-        fml[[x]][[i]] <- list(NULL)
-      }
+      )
+    )
+    
+    # if we already had this many sections before, no need to wire up any
+    # new observers
+    if (factor_merge_vals$num_current <= factor_merge_vals$num_total) {
+      return()
     }
-    clickReset(cr)
     
-    factorMergeList(fml)
+    num1 <- factor_merge_vals$num_current
+    factor_merge_vals$num_total <- num1
     
-  }, ignoreNULL = FALSE)
-  
-  
-  # hide show groups and processing
-  factor_merge_click <- function() {
-    df <-  recodedata3()
-    factors <- df %>%
-      sapply(is.factor) %>%
-      which() %>%
-      names()
-    counts <- df %>% select(factors) %>% lapply(levels) %>% sapply(length)
-    
-    cr <- clickReset()
-    fml <- factors %>% lapply(function(x){
-      combinationCounts <- counts[x] - 1
-      selectedInGroups <- lapply(seq_len(combinationCounts), function(i) {
-        input[[paste0('levels_to_merge_', x, '_', i)]]
-      })
+    # when the user selects a factor to merge
+    observeEvent(input[[paste0("factor_merge_select_", num1)]], {
+      selected_var <- input[[paste0("factor_merge_select_", num1)]]
       
-      # control visibility of "Merge more levels"
-      if (combinationCounts > 1) {
-        timesClicked <- input[[paste0('addMergingGroup_', x)]] - cr[x]
-        if ((timesClicked + 1) >= combinationCounts) {
-          shinyjs::disable(paste0('addMergingGroup_',x ))
-        }
-        shinyjs::show(paste0('levels_to_merge_', x, '_', timesClicked + 1))
-        
-        seq_len(combinationCounts) %>% sapply(function(i) {
-          selectedInOthers <- selectedInGroups[-i] %>% unlist() %>% unique()
-          updateCheckboxGroupInput(session, inputId = paste0('levels_to_merge_', x, '_', i),
-                                   selected =  input[[paste0('levels_to_merge_', x, '_', i)]],
-                                   choices = levels(df[[x]])[!levels(df[[x]]) %in% selectedInOthers])
-        })
-        
-        if (all(levels(df[[x]]) %in% unique(unlist(selectedInGroups)))) {
-          shinyjs::disable(paste0('addMergingGroup_', x))
-        } else if ((timesClicked + 1) < combinationCounts) {
-          shinyjs::enable(paste0('addMergingGroup_', x))
-        }
-        
+      if (selected_var == "") {
+        shinyjs::hide(paste0("factor_merge_levels_", num1))
+        return()
       }
-      return(selectedInGroups)
+      shinyjs::show(paste0("factor_merge_levels_", num1))
+      
+      df <- factor_merge_data()
+      levelsvalues <- levels(df[[selected_var]])
+      
+      updateCheckboxGroupInput(
+        session, paste0("factor_merge_levels_", num1),
+        choices = levelsvalues,
+        selected = c()
+      )
     })
-    names(fml) <- factors
-    
-    factorMergeList(fml)
   }
   
-  observe({
-    recodedata3()
-    factorMergeList(NULL)
+  remove_last_factor_merge_box <- function() {
+    updateSelectInput(session, paste0("factor_merge_select_", factor_merge_vals$num_current), selected = "")
+    selector <- paste0("#factor_merge_placeholder .factor_merge_box:nth-child(", factor_merge_vals$num_current, ")")
+    removeUI(selector, multiple = FALSE, immediate = TRUE)
+    factor_merge_vals$num_current <- factor_merge_vals$num_current - 1
+    shinyjs::enable("factor_merge_add")
+  }
+  
+  # Decide if to enable/disable the remove variable labels button
+  observeEvent(factor_merge_vals$num_current, {
+    shinyjs::toggleState("factor_merge_remove", condition = factor_merge_vals$num_current > 0)
   })
   
-  
-  factorMergeData <- reactive({
-    df <-  recodedata3()
-    mergeList <- factorMergeList()
-    mergeList <- mergeList[input$factors_to_merge]
-    if (!is.null(df) && !is.null(mergeList)) {
-      for (x in names(mergeList)) {
-        toMerge <- mergeList[[x]][!sapply(mergeList[[x]], is.null)]
-        for (y in toMerge) {
-          newFactor <- paste0(y, collapse = '/')
-          newLevels <- c(levels(df[[x]])[!levels(df[[x]]) %in% y], newFactor)
-          df[[x]] <-
-            df[[x]] %>%
-            as.character() %>%
-            {.[. %in% y] = newFactor;.} %>%
-            factor(levels = newLevels)
-        }
-      }
-      return(df)
-    } else {
-      return(df)
-    }
-  })
+  # when recodedata3 changes, reset the merge levels UI
+  observeEvent(recodedata3(), {
+    shinyjs::show("factor_merge_section")
     
+    factor_merge_vals$num_current <- 0
+    
+    removeUI(selector = ".factor_merge_box",
+             multiple = TRUE, immediate = TRUE)
+    
+    add_factor_merge_box()
+  })
+  
+  # add another "merge factor levels" box
+  observeEvent(input$factor_merge_add, {
+    shinyjs::disable(paste0("factor_merge_select_", factor_merge_vals$num_current))
+    shinyjs::disable(paste0("factor_merge_levels_", factor_merge_vals$num_current))
+    add_factor_merge_box()
+  })
+  # remove the last "merge factor levels" box
+  observeEvent(input$factor_merge_remove, {
+    remove_last_factor_merge_box()
+  })
+  
+  # The final dataframe that transforms the data from te previous step into data
+  # after the mergings are processed
+  factor_merge_data_raw <- reactive({
+    df <-  recodedata3()
+    if (is.null(df)) return()
+    
+    for (i in seq_len(factor_merge_vals$num_current)) {
+      # no valid factor is selected
+      variable_name <- input[[paste0("factor_merge_select_", i)]]
+      if (is.null(variable_name) || variable_name == "") next
+      
+      # the checkboxes (levels) of a factor don't match the factor
+      old_levels <- levels(df[[variable_name]])
+      levels_to_merge <- input[[paste0("factor_merge_levels_", i)]]
+      if (is.null(levels_to_merge) || !all(levels_to_merge %in% old_levels)) next
+      
+      new_level <- paste0(levels_to_merge, collapse = "/")
+      new_levels <- c(
+        levels(df[[variable_name]])[!levels(df[[variable_name]]) %in% levels_to_merge],
+        new_level
+      )
+      df[[variable_name]] <-
+        df[[variable_name]] %>%
+        as.character() %>%
+        {.[. %in% levels_to_merge] = new_level; .} %>%
+        factor(levels = new_levels)
+    }
+    df
+  })
+  # so that plot doesn't update too rapidly and the user has time to select multiple labels
+  factor_merge_data <- factor_merge_data_raw %>% debounce(400)
+  
   # --- End: Merge Factor Levels feature
   
   finalplotdata <- reactive({
