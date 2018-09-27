@@ -9,6 +9,7 @@
 
 * This is an update adding several enhancements and bug fixes to the shiny app.
 * Functions that are part of table1 has been moved to table1 which is now on CRAN.
+* some Notes from the previous builds on some platforms for version 0.1.0 are false positives since these are used in the shiny app code and are required for it.
 
 
 ## Reverse dependencies
