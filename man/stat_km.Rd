@@ -9,9 +9,10 @@
 \usage{
 StatKm
 
-stat_km(mapping = NULL, data = NULL, geom = "km", position = "identity",
-  show.legend = NA, inherit.aes = TRUE, se = TRUE, trans = "identity",
-  firstx = 0, firsty = 1, type = "kaplan-meier", start.time = 0)
+stat_km(mapping = NULL, data = NULL, geom = "km",
+  position = "identity", show.legend = NA, inherit.aes = TRUE,
+  se = TRUE, trans = "identity", firstx = 0, firsty = 1,
+  type = "kaplan-meier", start.time = 0)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or

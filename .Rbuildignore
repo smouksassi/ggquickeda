@@ -4,3 +4,4 @@
 ^data-raw$
 .git
 ^cran-comments\.md$
+^revdep$

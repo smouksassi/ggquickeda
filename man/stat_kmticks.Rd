@@ -10,7 +10,8 @@
 StatKmticks
 
 stat_kmticks(mapping = NULL, data = NULL, geom = "kmticks",
-  position = "identity", show.legend = NA, inherit.aes = TRUE, trans, ...)
+  position = "identity", show.legend = NA, inherit.aes = TRUE, trans,
+  ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -60,8 +61,6 @@ a data.frame with additional columns: \item{x}{x in data}
 }
 \description{
 Tick marks are plotted where there are censoring times that are also not event times
-
-Adds tick marks to a Kaplan Meier Estimate of Survival
 }
 \details{
 This stat is for computing the tick marks for a Kaplan-Meier survival estimate for

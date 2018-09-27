@@ -9,8 +9,9 @@
 \usage{
 GeomKm
 
-geom_km(mapping = NULL, data = NULL, stat = "km", position = "identity",
-  show.legend = NA, inherit.aes = TRUE, na.rm = TRUE, ...)
+geom_km(mapping = NULL, data = NULL, stat = "km",
+  position = "identity", show.legend = NA, inherit.aes = TRUE,
+  na.rm = TRUE, ...)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
@@ -59,8 +60,6 @@ to the paired geom/stat.}
 }
 \description{
 Kaplan Meier Curve
-
-Add a Kaplan-Meier survival curve
 }
 \section{Aesthetics}{
 

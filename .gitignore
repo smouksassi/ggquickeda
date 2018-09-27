@@ -4,3 +4,5 @@
 .Ruserdata
 inst/doc
 rsconnect
+revdep
+/revdep/.cache.rds
