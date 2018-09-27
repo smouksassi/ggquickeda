@@ -60,8 +60,6 @@ to the paired geom/stat.}
 }
 \description{
 Kaplan Meier Curve
-
-Add confidence bands to a Kaplan-Meier survival curve
 }
 \section{Aesthetics}{
 

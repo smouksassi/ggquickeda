@@ -11,9 +11,9 @@ StatKmband
 
 stat_kmband(mapping = NULL, data = NULL, geom = "kmband",
   position = "identity", show.legend = NA, inherit.aes = TRUE,
-  trans = "identity", firstx = 0, firsty = 1, type = "kaplan-meier",
-  error = "tsiatis", conf.type = "log", conf.lower = "usual",
-  start.time = 0, conf.int = 0.95)
+  trans = "identity", firstx = 0, firsty = 1,
+  type = "kaplan-meier", error = "tsiatis", conf.type = "log",
+  conf.lower = "usual", start.time = 0, conf.int = 0.95)
 }
 \arguments{
 \item{mapping}{Set of aesthetic mappings created by \code{\link[=aes]{aes()}} or
