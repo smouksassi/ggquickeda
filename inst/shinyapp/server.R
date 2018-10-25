@@ -1033,7 +1033,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   
   stackdata <- reactive({
     
-    df <- recodedata4()
+    df <- rounddata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       validate(  need(!is.element(input$x,input$y) ,
