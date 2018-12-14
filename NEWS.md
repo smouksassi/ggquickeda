@@ -1,9 +1,9 @@
-# ggquickeda 0.1.0
-
-Initial CRAN release
+# ggquickeda 0.1.2
+* bug fixed where in some cases plotdata did not apply filtering
+* updated and expanded merge multiple levels of a factor
+* added mappings by shape for points and jitter and associated custom legends
 
 # ggquickeda 0.1.1
-
 * added options to control facets strip background fill and placement
 * added options to control panel spacing
 * reworked barplots to be able to sort by frequency or reverse frequency
@@ -18,3 +18,7 @@ Initial CRAN release
 * added more stats from table1 as well as possibility to cut by quantiles `eqcut()`
 * added possibility to merge multiple levels of a factor
 * fixed bug where commas in label names broke up the factor levels when using "Recode/Reorder Categories"
+
+# ggquickeda 0.1.0
+
+Initial CRAN release

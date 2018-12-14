@@ -266,11 +266,16 @@ fluidPage(
                 numericInput("legendncolsize",label = "Size Legend N columns",value =1,min=1,max =10) ,
                 checkboxInput('legendrevsize','Reverse Size Legend ?',value = FALSE),
                 
+                textInput("customshapetitle", label ="Shape Legend Title",value="shape"),
+                numericInput("legendncolshape",label = "Shape Legend N columns",value =1,min=1,max =10) ,
+                checkboxInput('legendrevshape','Reverse Shape Legend ?',value = FALSE),
+                
+                
                 selectizeInput(
                   'legendordering',
-                  label = paste("Drag/Drop to reorder","Colour, Fill, Size Legends"),
-                  choices = c("colour","fill","size"),
-                  selected = c("colour","fill","size"),
+                  label = paste("Drag/Drop to reorder","Colour, Fill, Size, Shape Legends"),
+                  choices = c("colour","fill","size","shape"),
+                  selected = c("colour","fill","size","shape"),
                   multiple=TRUE,  options = list(
                     plugins = list('drag_drop')
                   )
@@ -505,13 +510,17 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                     3,
                     conditionalPanel(
                       " input.Points!= 'None' ",
-                      sliderInput("pointsizes", "Points Size:", min=0, max=4, value=c(1),step=0.1),
+                      sliderInput("pointsizes", "Points Size:", min=0, max=6, value=c(1),step=0.1),
                       numericInput('pointtypes','Points Type:',16, min = 1, max = 25),
+                      
                       conditionalPanel(
                         " input.pointignorecol ",
                         selectInput('colpoint', label ='Points Color', choices=colors(),
                                     multiple=FALSE, selectize=TRUE, selected="black") 
-                      )
+                      ),
+                      
+                      checkboxInput('pointignoreshape', 'Ignore Mapped Shape')
+                      
                     ),
                     conditionalPanel(
                       " input.Points== 'Jitter' ",
@@ -566,7 +575,8 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                   column (3, uiOutput("colour"),uiOutput("group")),
                   column(3, uiOutput("facet_col"),uiOutput("facet_row")),
                   column (3, uiOutput("facet_col_extra"),uiOutput("facet_row_extra")),
-                  column (3, uiOutput("pointsize"),uiOutput("fill")),
+                  column (3, uiOutput("pointsize"),uiOutput("fill"),
+                          uiOutput("pointshape")),
                   column (12, h6("Make sure not to choose a variable that is in the y variable(s) list otherwise you will get an error Variable not found. These variables are stacked and become yvars and yvalues.This ensures that colour/group/etc. are kept intact when you apply a new filter or recode a variable. When you combine variables all mappings will be updated so you can choose the newly formed variable and as such the previous state will be lost." ))
                   
                 )
