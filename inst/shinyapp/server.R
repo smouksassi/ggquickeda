@@ -1808,6 +1808,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             & input$colorin == 'None')
           p <- p + aes(group=1)
         
+        if (input$jitterdirection=="None"){
+          positionj<- position_identity()
+        }
         if (input$jitterdirection=="Vertical"){
           positionj<- position_jitter(width=0)
         }
@@ -1815,155 +1818,93 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           positionj<-  position_jitter(height=0)
         }
         
-        if (input$jitterdirection=="Both"){
+        if (input$jitterdirection=="Default"){
           positionj<-  position_jitter()
         }
         if (input$jitterdirection=="Custom"){
-          positionj<-  position_jitter(height=input$jittervertical,width=input$jitterhorizontal)
+          positionj<-  position_jitter(height=input$jittervertical,
+                                       width=input$jitterhorizontal)
         }
-        
-        
-        
-        if(input$pointshapein== 'None'){
-          if (input$Points=="Points"&input$pointsizein == 'None'&!input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,shape=input$pointtypes,size=input$pointsizes)  
-          if (input$Points=="Points"&input$pointsizein != 'None'&!input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,shape=input$pointtypes)
-          
-          
-          if (input$Points=="Jitter"&input$pointsizein == 'None'&!input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,shape=input$pointtypes,size=input$pointsizes,
-                                 position=positionj)
-          if (input$Points=="Jitter"&input$pointsizein != 'None'&!input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,shape=input$pointtypes,
-                                 position=positionj)
-          
-          
-          if (input$Points=="Points"&input$pointsizein == 'None'&input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,
-                                shape=input$pointtypes,
-                                size=input$pointsizes,
-                                colour=input$colpoint)  
-          if (input$Points=="Points"&input$pointsizein != 'None'&input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,
-                                shape=input$pointtypes,
-                                colour=input$colpoint)
-         
-          if (input$Points=="Jitter"&input$pointsizein == 'None'&input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                 shape=input$pointtypes,
-                                 size=input$pointsizes,
-                                 colour=input$colpoint,
-                                 position=positionj)
-          if (input$Points=="Jitter"&input$pointsizein != 'None'&input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                 shape=input$pointtypes,
-                                 colour=input$colpoint,
-                                 position=positionj)
-        }
-        
-        if (input$pointshapein != 'None'){
-          if (!input$pointignoreshape){
-          p <- p  + aes_string(shape=input$pointshapein)
-          if (input$Points=="Points"&input$pointsizein == 'None'&!input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,size=input$pointsizes)  
-          if (input$Points=="Points"&input$pointsizein != 'None'&!input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency)
-          
-          if (input$Points=="Points"&input$pointsizein == 'None'&input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,size=input$pointsizes,colour=input$colpoint)  
-          if (input$Points=="Points"&input$pointsizein != 'None'&input$pointignorecol)
-            p <- p + geom_point(,alpha=input$pointstransparency,colour=input$colpoint)
-          
-          if (input$Points=="Jitter"&input$pointsizein == 'None'&!input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,size=input$pointsizes,
-                                position=positionj)  
-          if (input$Points=="Jitter"&input$pointsizein != 'None'&!input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                position=positionj)
-          
-          if (input$Points=="Jitter"&input$pointsizein == 'None'&input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,size=input$pointsizes,
-                                colour=input$colpoint,
-                                position=positionj)  
-          if (input$Points=="Jitter"&input$pointsizein != 'None'&input$pointignorecol)
-            p <- p + geom_jitter(,alpha=input$pointstransparency,colour=input$colpoint,
-                                position=positionj)
-          
-          }
-          
-          if (input$pointignoreshape){
-            if (input$Points=="Points"&input$pointsizein == 'None'&!input$pointignorecol)
-              p <- p + geom_point(,alpha=input$pointstransparency,
-                                  size=input$pointsizes,
-                                  shape=input$pointtypes)  
-            if (input$Points=="Points"&input$pointsizein != 'None'&!input$pointignorecol)
-              p <- p + geom_point(,alpha=input$pointstransparency,
-                                  shape=input$pointtypes)
-            
-            if (input$Points=="Points"&input$pointsizein == 'None'&input$pointignorecol)
-              p <- p + geom_point(,alpha=input$pointstransparency,
-                                  size=input$pointsizes,
-                                  colour=input$colpoint,
-                                  shape=input$pointtypes)  
-            if (input$Points=="Points"&input$pointsizein != 'None'&input$pointignorecol)
-              p <- p + geom_point(,alpha=input$pointstransparency,
-                                  colour=input$colpoint,
-                                  shape=input$pointtypes)
-            
-            
-            #
-            if (input$Points=="Jitter"&input$pointsizein == 'None'&!input$pointignorecol)
-              p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                  size=input$pointsizes,
-                                  shape=input$pointtypes,
-                                  position=positionj)  
-            if (input$Points=="Jitter"&input$pointsizein != 'None'&!input$pointignorecol)
-              p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                  shape=input$pointtypes,
-                                  position=positionj)
-            
-            if (input$Points=="Jitter"&input$pointsizein == 'None'&input$pointignorecol)
-              p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                  size=input$pointsizes,
-                                  colour=input$colpoint,
-                                  shape=input$pointtypes,
-                                  position=positionj)  
-            if (input$Points=="Jitter"&input$pointsizein != 'None'&input$pointignorecol)
-              p <- p + geom_jitter(,alpha=input$pointstransparency,
-                                  colour=input$colpoint,
-                                  shape=input$pointtypes,
-                                  position=positionj)
- 
-          }
-          
-        }
-              
-      
-        
-        
         
 
+        if (input$Points=="Points"){
+          
+          
+          if (input$pointshapein != 'None'){
+            if (!input$pointignoreshape){
+              p <- p  + aes_string(shape=input$pointshapein)
+              }
+          if (input$pointsizein == 'None'&& !input$pointignorecol)
+            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                position=positionj)
+          if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
+            p <- p + geom_point(alpha=input$pointstransparency,
+                                position=positionj)
+          if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
+            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                position=positionj)
+          
+          if (input$pointsizein == 'None'&&input$pointignorecol)
+            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+                                position=positionj)
+          if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
+            p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
+                                position=positionj)
+          if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
+            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+                                position=positionj)
+        }
         
+          if(input$pointshapein == 'None' ){
+            if (input$pointsizein == 'None'&& !input$pointignorecol)
+              p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                  shape=input$pointshapes,
+                                  position=positionj)
+            if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
+              p <- p + geom_point(alpha=input$pointstransparency,
+                                  shape=input$pointshapes,
+                                  position=positionj)
+            if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
+              p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                  shape=input$pointshapes,
+                                  position=positionj)
+            
+            if (input$pointsizein == 'None'&&input$pointignorecol)
+              p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+                                  shape=input$pointshapes,
+                                  position=positionj)
+            if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
+              p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
+                                  shape=input$pointshapes,
+                                  position=positionj)
+            if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
+              p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+                                  shape=input$pointshapes,
+                                  position=positionj)
+            
+            
+          }
+          
+          
+          
+          }
         
-        
+        if (input$line=="Lines"){
+          if (input$pointsizein == 'None'&& !input$lineignorecol)
+            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+          
+          if (input$pointsizein == 'None'&&input$lineignorecol)
+            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+        }
 
-        
-        
-        if (input$line=="Lines"&input$pointsizein == 'None'& !input$lineignorecol)
-          p <- p + geom_line(,size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
-        if (input$line=="Lines"&input$pointsizein != 'None'& !input$lineignorecol& !input$lineignoresize)
-          p <- p + geom_line(,alpha=input$linestransparency,linetype=input$linetypes)
-        if (input$line=="Lines"&input$pointsizein != 'None'& !input$lineignorecol& input$lineignoresize)
-          p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
-        
-        if (input$line=="Lines"&input$pointsizein == 'None'&input$lineignorecol)
-          p <- p + geom_line(,size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
-        if (input$line=="Lines"&input$pointsizein != 'None'& input$lineignorecol& !input$lineignoresize)
-          p <- p + geom_line(,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
-        if (input$line=="Lines"&input$pointsizein != 'None'& input$lineignorecol & input$lineignoresize )
-          p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
-        
         #### Boxplot Section START
         
         if (input$boxplotaddition) {

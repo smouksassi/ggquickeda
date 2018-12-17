@@ -1,7 +1,9 @@
 # ggquickeda 0.1.2
 * bug fixed where in some cases plotdata did not apply filtering
 * updated and expanded merge multiple levels of a factor
-* added mappings by shape for points and jitter and associated custom legends
+* added mappings by shape for points and associated custom legends and possibility to ignore it
+* added the possibility of dashed lines
+* changed the ui for points and lines
 
 # ggquickeda 0.1.1
 * added options to control facets strip background fill and placement

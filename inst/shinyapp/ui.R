@@ -489,46 +489,28 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
             tabsetPanel(
               id = "graphicaltypes",selected = "Color/Group/Split/Size/Fill Mappings",
               tabPanel(
-                "Plot types, Points, Lines",
+                "Points, Lines",
                 
                 fluidRow(
                   
                   column (12, hr()),
                   column (
                     3,
-                    radioButtons("Points", "Points/Jitter:",
+                    radioButtons("Points", "Points:",
                                  c("Points" = "Points",
-                                   "Jitter" = "Jitter",
-                                   "None" = "None")),
-                    conditionalPanel(
-                      " input.Points!= 'None' ",
-                      sliderInput("pointstransparency", "Points Transparency:", min=0, max=1, value=c(0.5),step=0.01),
-                      checkboxInput('pointignorecol', 'Ignore Mapped Color')
-                    )
-                  ),
-                  column(
-                    3,
+                                   "None" = "None"),inline=TRUE),
+
                     conditionalPanel(
                       " input.Points!= 'None' ",
                       sliderInput("pointsizes", "Points Size:", min=0, max=6, value=c(1),step=0.1),
-                      numericInput('pointtypes','Points Type:',16, min = 1, max = 25),
-                      
-                      conditionalPanel(
-                        " input.pointignorecol ",
-                        selectInput('colpoint', label ='Points Color', choices=colors(),
-                                    multiple=FALSE, selectize=TRUE, selected="black") 
-                      ),
-                      
-                      checkboxInput('pointignoreshape', 'Ignore Mapped Shape')
-                      
-                    ),
-                    conditionalPanel(
-                      " input.Points== 'Jitter' ",
+                      checkboxInput('pointignoresize', 'Ignore Mapped Size'),
                       radioButtons("jitterdirection", "Jitter Direction:",
-                                   c("Vertical"  = "Vertical",
+                                   c("None" = "None",
+                                     "Vertical"  = "Vertical",
                                      "Horizontal"  = "Horizontal",
-                                     "Both" = "Both",
-                                     "Custom" = "Custom"),selected="Both"
+                                     "Default" = "Default",
+                                     "Custom" = "Custom"
+                                     ),selected="None"
                                    ,inline=TRUE),
                       conditionalPanel(
                         " input.jitterdirection== 'Custom' ",
@@ -536,17 +518,33 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                         numericInput("jitterhorizontal",label = "Horizontal Jitter Width",value =0.1,min=0) 
                       )
                     )
-               
                   ),
+                  column(
+                    3,
+                    conditionalPanel(
+                      " input.Points!= 'None' ",
+                      checkboxInput('pointignorecol', 'Ignore Mapped Color'),
+                      conditionalPanel(
+                        " input.pointignorecol ",
+                        selectInput('colpoint', label ='Points Color', choices=colors(),
+                                    multiple=FALSE, selectize=TRUE, selected="black") 
+                      ),
+                      sliderInput("pointstransparency", "Points Transparency:",
+                                  min=0, max=1, value=c(0.5),step=0.01),
+                      checkboxInput('pointignoreshape', 'Ignore Mapped Shape'),
+                      numericInput('pointshapes','Points Shape:',16, min = 1, max = 25)
+                      
+                    )
+                  ),
+                  
                   column(
                     3,
                     radioButtons("line", "Lines:",
                                  c("Lines" = "Lines",
-                                   "None" = "None"),selected="None"),
+                                   "None" = "None"),selected="None",inline = TRUE),
                     conditionalPanel(
                       " input.line== 'Lines' ",
-                      sliderInput("linestransparency", "Lines Transparency:", min=0, max=1, value=c(0.5),step=0.01),
-                      checkboxInput('lineignorecol', 'Ignore Mapped Color'),
+                      sliderInput("linesize", "Lines Size:", min=0, max=4, value=c(1),step=0.1),
                       checkboxInput('lineignoresize', 'Ignore Mapped Size')
                     )
                   ),
@@ -554,13 +552,17 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                     3,
                     conditionalPanel(
                       " input.line== 'Lines' ",
-                      sliderInput("linesize", "Lines Size:", min=0, max=4, value=c(1),step=0.1),
-                      selectInput('linetypes','Lines Type:',c("solid","dotted")),
+                      checkboxInput('lineignorecol', 'Ignore Mapped Color'),
+                      
                       conditionalPanel(
                         " input.lineignorecol ",
                         selectInput('colline', label ='Lines Color', choices=colors(),
                                     multiple=FALSE, selectize=TRUE,selected="black") 
-                      )
+                      ),
+                      sliderInput("linestransparency", "Lines Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                      
+                      selectInput('linetypes','Lines Type:',c("solid","dotted","dashed"))
+           
                     )
                   ),
                   column (12,
