@@ -532,7 +532,38 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       sliderInput("pointstransparency", "Points Transparency:",
                                   min=0, max=1, value=c(0.5),step=0.01),
                       checkboxInput('pointignoreshape', 'Ignore Mapped Shape'),
-                      numericInput('pointshapes','Points Shape:',16, min = 1, max = 25)
+            
+                      #numericInput('pointshapes','Points Shape:',16, min = 1, max = 25)
+          
+                      selectInput('pointshapes','Points Shape:',c(
+                        "square open"           ,
+                        "circle open"           ,
+                        "triangle open"         ,
+                        "plus"                  ,
+                        "cross"                 ,
+                        "diamond open"          ,
+                        "triangle down open"    ,
+                        "square cross"          ,
+                        "asterisk"              ,
+                        "diamond plus"          ,
+                        "circle plus"           ,
+                        "star"                  ,
+                        "square plus"           ,
+                        "circle cross"          ,
+                        "square triangle"       ,
+                        "square"                ,
+                        "circle small"          ,
+                        "triangle"              ,
+                        "diamond"               ,
+                        "circle"                ,
+                        "bullet"                ,
+                        "circle filled"         ,
+                        "square filled"         ,
+                        "diamond filled"        ,
+                        "triangle filled"       ,
+                        "triangle down filled" 
+                      ),selected="circle small")
+                      
                       
                     )
                   ),
