@@ -291,6 +291,15 @@ function(input, output, session) {
   observeEvent(input$gridlinescolreset, {
       shinyjs::reset("gridlinescol")
     })
+  
+  observeEvent(input$colpointreset, {
+    shinyjs::reset("colpoint")
+  })
+  observeEvent(input$collinereset, {
+    shinyjs::reset("colline")
+  })
+  
+  
   observeEvent(input$stripbackfillresetx, {
     shinyjs::reset("stripbackgroundfillx")
   })
@@ -3290,14 +3299,25 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                            vjust = input$yticksvjust) )                              
       }    
       
+      if (input$striptextsizex <= 0) {
+        x.strip.text <- ggplot2::element_blank()
+      } else {
+        x.strip.text <- ggplot2::element_text(size = input$striptextsizex)
+      }
+      if (input$striptextsizey <= 0) {
+        y.strip.text <- ggplot2::element_blank()
+      } else {
+        y.strip.text <- ggplot2::element_text(size = input$striptextsizey)
+      }
+      
       p <-  p+
         theme(panel.grid.major = element_line(colour = input$gridlinescol),
               panel.grid.minor = element_line(colour = input$gridlinescol),
               strip.background.x = element_rect(fill=input$stripbackgroundfillx),
               strip.background.y = element_rect(fill=input$stripbackgroundfilly),
               strip.placement  = input$stripplacement,
-              strip.text.x =  element_text(size = input$striptextsizex),
-              strip.text.y =  element_text(size = input$striptextsizey),
+              strip.text.x =  x.strip.text,
+              strip.text.y =  y.strip.text,
               panel.spacing.x = unit(input$panelspacingx, "lines"),
               panel.spacing.y = unit(input$panelspacingy, "lines")
               

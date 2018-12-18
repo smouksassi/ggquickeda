@@ -407,9 +407,12 @@ fluidPage(
               "Additional Themes Options",
               sliderInput("themebasesize", "Theme Size (affects all text except facet strip):", min=1, max=100, value=c(16),step=1),
               sliderInput("striptextsizex", "X Strip Text Size:",
-                          min=1, max=100, value=c(16),step=0.5),
+                          min=0, max=100, value=c(16),step=0.5),
               sliderInput("striptextsizey", "Y Strip Text Size:",
-                          min=1, max=100, value=c(16),step=0.5),
+                          min=0, max=100, value=c(16),step=0.5),
+              
+              
+              
               radioButtons("themecolorswitcher", "Discrete Color and Fill Themes:",
                            c("Tableau 10"  = "themetableau10",
                              "Tableau 20"  = "themetableau20",
@@ -526,8 +529,12 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       checkboxInput('pointignorecol', 'Ignore Mapped Color'),
                       conditionalPanel(
                         " input.pointignorecol ",
-                        selectInput('colpoint', label ='Points Color', choices=colors(),
-                                    multiple=FALSE, selectize=TRUE, selected="black") 
+                        colourpicker::colourInput("colpoint", "Points Color", value="black",
+                                                  showColour = "both",allowTransparent=FALSE),
+                        div( actionButton("colpointreset", "Reset Points Color"),
+                             style="text-align: right")
+                        
+                        
                       ),
                       sliderInput("pointstransparency", "Points Transparency:",
                                   min=0, max=1, value=c(0.5),step=0.01),
@@ -587,8 +594,11 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       
                       conditionalPanel(
                         " input.lineignorecol ",
-                        selectInput('colline', label ='Lines Color', choices=colors(),
-                                    multiple=FALSE, selectize=TRUE,selected="black") 
+                         colourpicker::colourInput("colline", "Lines Color", value="black",
+                                                  showColour = "both",allowTransparent=FALSE),
+                        div( actionButton("collinereset", "Reset Lines Color"),
+                             style="text-align: right")
+                        
                       ),
                       sliderInput("linestransparency", "Lines Transparency:", min=0, max=1, value=c(0.5),step=0.01),
                       
