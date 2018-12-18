@@ -298,7 +298,9 @@ function(input, output, session) {
   observeEvent(input$collinereset, {
     shinyjs::reset("colline")
   })
-  
+  observeEvent(input$colsmoothreset, {
+    shinyjs::reset("colsmooth")
+  })
   
   observeEvent(input$stripbackfillresetx, {
     shinyjs::reset("stripbackgroundfillx")
@@ -2135,7 +2137,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           spanplot <- input$loessens
           levelsmooth<- input$smoothselevel
           if ( input$ignoregroup) {
-            if (!input$ignorecol) {
+            if (!input$smoothignorecol) {
               if (input$Smooth=="Smooth")
                 p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
@@ -2158,7 +2160,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                      size=1.5,se=T,span=spanplot,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
             }
-            if (input$ignorecol) {
+            if (input$smoothignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
                 p <- p + geom_smooth(method=smoothmethodargument,
@@ -2186,7 +2188,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           }
           
           if ( !input$ignoregroup) {
-            if (!input$ignorecol) {
+            if (!input$smoothignorecol) {
               if (input$Smooth=="Smooth")
                 p <- p + geom_smooth(method=smoothmethodargument,
                                      method.args = methodsargument,
@@ -2209,7 +2211,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                      size=1.5,se=T,span=spanplot)+  
                   aes_string(weight=input$weightin)
             }
-            if (input$ignorecol) {
+            if (input$smoothignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
                 p <- p + geom_smooth(method=smoothmethodargument,

@@ -627,8 +627,6 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               tabPanel(
                 "Boxplots",
                 fluidRow(
-                  column (12, h6("Limited Boxplots support. Options are to be added as per users requests.")),
-                  
                   column (
                     4,
                     checkboxInput('boxplotaddition', 'Add a Boxplot ? (makes sense if x variable is categorical and
@@ -795,11 +793,15 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                   
                   column (
                     3,  conditionalPanel( " input.Smooth!= 'None' ",
-                                          checkboxInput('ignorecol', 'Ignore Mapped Color'),
+                                          checkboxInput('smoothignorecol', 'Ignore Mapped Color'),
                                           conditionalPanel(
-                                            " input.ignorecol ",
-                                            selectInput('colsmooth', label ='Smooth Color', choices=colors(),
-                                                        multiple=FALSE, selectize=TRUE,selected="black") )
+                                            " input.smoothignorecol ",
+                                          colourpicker::colourInput("colsmooth", "Smooth Color", value="black",
+                                                                    showColour = "both",allowTransparent=FALSE),
+                                          div( actionButton("colsmoothreset", "Reset Smooth Color"),
+                                               style="text-align: right")
+                                          )
+                                          
                                          
                     )
                   ),
