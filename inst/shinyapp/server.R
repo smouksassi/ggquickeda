@@ -3186,63 +3186,69 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       
       
       if (input$customlegendtitle){
-        colourpos<-  which( input$legendordering=="colour")
-        fillpos  <-  which( input$legendordering=="fill")
-        sizepos  <-  which( input$legendordering=="size")
-        shapepos  <-  which( input$legendordering=="shape")
+        
+        colourpos<-  which0( input$legendordering=="colour")[1]
+        fillpos  <-  which0( input$legendordering=="fill")[1]
+        sizepos  <-  which0( input$legendordering=="size")[1]
+        shapepos  <-  which0( input$legendordering=="shape")[1]
         
         collegend <-  gsub("\\\\n", "\\\n", input$customcolourtitle)
         filllegend <- gsub("\\\\n", "\\\n", input$customfilltitle)
         sizelegend <- gsub("\\\\n", "\\\n", input$customsizetitle)
         shapelegend <- gsub("\\\\n", "\\\n", input$customshapetitle)
         
-        # to do list by row by row etc.
+
         
         if (input$legendalphacol){
-          gcol  <- guide_legend(collegend,ncol=input$legendncolcol,reverse=input$legendrevcol,
-                                override.aes = list(alpha = 1))
-          if( length(colourpos)!=0) {
-            gcol  <- guide_legend(collegend,ncol=input$legendncolcol,reverse=input$legendrevcol,
-                                  order= colourpos,override.aes = list(alpha = 1))
-          }
+            gcol  <- guide_legend(collegend,
+                                  ncol=input$legendncolcol,
+                                  reverse=input$legendrevcol,
+                                  order= colourpos,
+                                  override.aes = list(alpha = 1))
         }
         if (!input$legendalphacol){
-          gcol  <- guide_legend(collegend,ncol=input$legendncolcol,reverse=input$legendrevcol)
-          if( length(colourpos)!=0) {
-            gcol  <- guide_legend(collegend,ncol=input$legendncolcol,reverse=input$legendrevcol,
+            gcol  <- guide_legend(collegend,
+                                  ncol=input$legendncolcol,
+                                  reverse=input$legendrevcol,
                                   order= colourpos)
-          }
         }
+        
         if (input$legendalphafill){
-          gfill <- guide_legend(filllegend,ncol=input$legendncolfill,reverse=input$legendrevfill,override.aes = list(alpha = 1))
-          if( length(fillpos)!=0) {
-            gfill <- guide_legend(filllegend,ncol=input$legendncolfill,reverse=input$legendrevfill,
-                                  order = fillpos,override.aes = list(alpha = 1))
-          } 
-        }
-        
+            gfill <- guide_legend(filllegend,
+                                  ncol=input$legendncolfill,
+                                  reverse=input$legendrevfill,
+                                  order = fillpos,
+                                  override.aes = list(alpha = 1))
+         }
         if (!input$legendalphafill){
-          gfill <- guide_legend(filllegend,ncol=input$legendncolfill,reverse=input$legendrevfill)
-          if( length(fillpos)!=0) {
-            gfill <- guide_legend(filllegend,ncol=input$legendncolfill,reverse=input$legendrevfill,
+            gfill <- guide_legend(filllegend,
+                                  ncol=input$legendncolfill,
+                                  reverse=input$legendrevfill,
                                   order = fillpos)
-          } 
         }
         
-        gsize <- guide_legend(sizelegend,ncol=input$legendncolsize,reverse=input$legendrevsize)
-        if( length(sizepos)!=0) {
-          gsize <- guide_legend(sizelegend,ncol=input$legendncolsize,reverse=input$legendrevsize,
+          gsize  <- guide_legend(sizelegend,
+                                ncol=input$legendncolsize,
+                                reverse=input$legendrevsize,
                                 order = sizepos)
-        }
-        
-        gshape <- guide_legend(shapelegend,ncol=input$legendncolshape,reverse=input$legendrevshape)
-        if( length(shapepos)!=0) {
-          gshape <- guide_legend(shapelegend,ncol=input$legendncolshape,reverse=input$legendrevshape,
+
+          gshape <- guide_legend(shapelegend,
+                                 ncol=input$legendncolshape,
+                                 reverse=input$legendrevshape,
                                 order = shapepos)
+        
+        if (input$removelegend){
+          if( colourpos==0) gcol = FALSE
+          if( fillpos==0) gfill = FALSE
+          if( sizepos==0) gsize = FALSE
+          if( shapepos==0) gshape = FALSE
         }
-        
-        
-        p <-  p + guides(colour = gcol, size = gsize, fill = gfill,shape=gshape)
+
+
+        p <-  p + guides(colour = gcol,
+                         size = gsize,
+                         fill = gfill,
+                         shape= gshape)
         
       }
       
@@ -3263,7 +3269,12 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         legend.position=input$legendposition,
         legend.box=input$legendbox,
         legend.direction=input$legenddirection,
-        panel.background = element_rect(fill=input$backgroundcol))
+        panel.background = element_rect(fill=input$backgroundcol),
+        
+        legend.spacing.x = ggplot2::unit(input$legendspacex*11, "pt"),
+        legend.margin = ggplot2::margin(t = 0, r = 0.1, l = -0.1, b = 0, unit='cm')
+        
+        )
       
       if (input$labelguides)
         p <-    p+

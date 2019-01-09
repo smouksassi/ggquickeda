@@ -251,6 +251,10 @@ fluidPage(
                           multiple=FALSE, selectize=TRUE,selected="vertical"),
               checkboxInput('sepguides', 'Separate Legend Items for Median/PI ?',value = TRUE),       
               checkboxInput('labelguides', 'Hide the Names of the Legend Items ?',value = FALSE),
+              sliderInput("legendspacex", "Multiplier for Space between Legend Items",
+                          min = 0, max = 1.5, step = 0.1, value = 1),
+              
+              
               checkboxInput('customlegendtitle', 'Customization of Legend Titles, number of columns of items and reversing the legend items ?',value = FALSE),
               conditionalPanel(
                 condition = "input.customlegendtitle",
@@ -279,7 +283,10 @@ fluidPage(
                   multiple=TRUE,  options = list(
                     plugins = list('drag_drop')
                   )
-                ) 
+                ),
+                checkboxInput('removelegend','Remove Legend if deleted from input reordering above?',value = FALSE),
+                h6("ggplot will attempt to merge legend items that share names and mappings")
+                
               )
             ),
             tabPanel(

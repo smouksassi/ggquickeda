@@ -50,7 +50,13 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                 "#0072B2", "#D55E00", "#CC79A7")
 
-
+which0 <- function(x) {
+  result <- which(x)
+  if (length(result) == 0) {
+    result <- 0
+  }
+  result
+}
 
 # All stats that can be displayed for continuous variables
 allstats <- c("N",
