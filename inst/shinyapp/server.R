@@ -1812,6 +1812,10 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         if (input$pointsizein != 'None' )
           p <- p  + aes_string(size=input$pointsizein)
  
+        if (input$pointshapein != 'None'){
+            p <- p  + aes_string(shape=input$pointshapein)
+          }
+        
         # if (input$groupin != 'None' & !is.factor(plotdata[,input$x]))
         if (input$groupin != 'None')
           p <- p + aes_string(group=input$groupin)
@@ -1840,11 +1844,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
 
         if (input$Points=="Points"){
           
-          
-          if (input$pointshapein != 'None'){
-            if (!input$pointignoreshape){
-              p <- p  + aes_string(shape=input$pointshapein)
-              }
+          if (input$pointshapein != 'None' && !input$pointignoreshape){
+
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 position=positionj)
@@ -1856,16 +1857,47 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                 position=positionj)
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
-            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+            p <- p + geom_point(size=input$pointsizes,
+                                alpha=input$pointstransparency,
+                                colour=input$colpoint,
                                 position=positionj)
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
-            p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
+            p <- p + geom_point(alpha=input$pointstransparency,
+                                colour=input$colpoint,
                                 position=positionj)
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
-            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+            p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                colour=input$colpoint,
                                 position=positionj)
-        }
-        
+          }
+          
+          if (input$pointshapein != 'None' && input$pointignoreshape){
+            if (input$pointsizein == 'None'&& !input$pointignorecol)
+                p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                    shape=input$pointshapes,
+                                    position=positionj)
+              if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
+                p <- p + geom_point(alpha=input$pointstransparency,
+                                    shape=input$pointshapes,
+                                    position=positionj)
+              if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
+                p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                    shape=input$pointshapes,
+                                    position=positionj)
+              
+              if (input$pointsizein == 'None'&&input$pointignorecol)
+                p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
+                                    colour=input$colpoint,
+                                    shape=input$pointshapes,
+                                    position=positionj)
+              if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
+                p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
+                                    position=positionj)
+              if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
+                p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
+                                    position=positionj)
+          }
+          
           if(input$pointshapein == 'None' ){
             if (input$pointsizein == 'None'&& !input$pointignorecol)
               p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
@@ -2296,26 +2328,28 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line")
+                  stat_sum_single(median, geom = "line" ,alpha=input$alphamedianl)
               
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",size=input$medianlinesize)
+                  stat_sum_single(median, geom = "line",size=input$medianlinesize,
+                                  alpha=input$alphamedianl)
               
               if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point")
+                  stat_sum_single(median, geom = "point",alpha=input$alphamedianp)
               
               if(input$medianpoints&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",size=input$medianpointsize)
+                  stat_sum_single(median, geom = "point",size=input$medianpointsize,
+                                  alpha=input$alphamedianp)
               
             }
             
             if (input$Median=="Median/PI"&input$pointsizein == 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI) ,size=input$medianlinesize,alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI) ,size=input$medianlinesize,alpha=0)
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI) ,size=input$medianlinesize,alpha=input$alphamedianl)
               
               if ( input$sepguides )
                 p <-   p + 
@@ -2331,7 +2365,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median/PI"&input$pointsizein != 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA)+
-                stat_sum_df("median_hilow", geom = "smooth"  ,fun.args=list(conf.int=input$PI),alpha=0)
+                stat_sum_df("median_hilow", geom = "smooth"  ,fun.args=list(conf.int=input$PI),alpha=input$alphamedianl)
               
               if ( input$sepguides )
                 p <-   p +
@@ -2366,20 +2400,24 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancoll)
+                  stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl)
               
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancoll,size=input$medianlinesize)
+                  stat_sum_single(median, geom = "line",col=mediancoll,
+                                  alpha=input$alphamedianl,
+                                  size=input$medianlinesize)
               
               
               if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancolp )
+                  stat_sum_single(median, geom = "point",col=mediancolp,alpha=input$alphamedianp )
               
               if(input$medianpoints&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancolp ,size=input$medianpointsize)
+                  stat_sum_single(median, geom = "point",col=mediancolp ,
+                                  alpha=input$alphamedianp,
+                                  size=input$medianpointsize)
               
             }
             
@@ -2387,7 +2425,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon", fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA)+
                 stat_sum_df("median_hilow", geom = "smooth", fun.args=list(conf.int=input$PI), size=input$medianlinesize,
-                            col=mediancoll,alpha=0)
+                            col=mediancoll,alpha=input$alphamedianl)
               
               if ( input$sepguides )
                 p <-   p +
@@ -2402,7 +2440,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),alpha=input$PItransparency,col=NA)+
                 stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancoll,
-                            alpha=0)          
+                            alpha=input$alphamedianl)          
               
               if ( input$sepguides )
                 p <-   p +
@@ -2434,26 +2472,30 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",aes(group=NULL))
+                  stat_sum_single(median, geom = "line",aes(group=NULL),alpha=input$alphamedianl)
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",aes(group=NULL),size=input$medianlinesize)
+                  stat_sum_single(median, geom = "line",aes(group=NULL),size=input$medianlinesize,
+                                  alpha=input$alphamedianl)
               
               if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",aes(group=NULL))
+                  stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp)
               
               
               if(input$medianpoints&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",aes(group=NULL),size=input$medianpointsize)
+                  stat_sum_single(median, geom = "point",aes(group=NULL),
+                                  alpha=input$alphamedianp,
+                                  size=input$medianpointsize)
               
             }
             
             if (input$Median=="Median/PI"&input$pointsizein == 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),size=input$medianlinesize,alpha=0)   
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),
+                            size=input$medianlinesize,alpha=input$alphamedianl)   
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -2467,7 +2509,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median/PI"&input$pointsizein != 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=0)
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$alphamedianl)
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -2501,19 +2543,27 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancoll,aes(group=NULL))
+                  stat_sum_single(median, geom = "line",col=mediancoll,
+                                  alpha=input$alphamedianl,
+                                  aes(group=NULL))
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancoll,aes(group=NULL),size=input$medianlinesize)
+                  stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl,
+                                  aes(group=NULL),size=input$medianlinesize)
               
               
               if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancolp,aes(group=NULL))
+                  stat_sum_single(median, geom = "point",col=mediancolp,
+                                  alpha=input$alphamedianp,
+                                  aes(group=NULL))
               
               if(input$medianpoints&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancolp,aes(group=NULL),size=input$medianpointsize)
+                  stat_sum_single(median, geom = "point",
+                                  col=mediancolp,
+                                  alpha=input$alphamedianp,
+                                  aes(group=NULL),size=input$medianpointsize)
               
             }
             
@@ -2522,7 +2572,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA)+ 
                 stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),
-                            col=mediancoll,aes(group=NULL),size=input$medianlinesize,alpha=0)
+                            col=mediancoll,aes(group=NULL),size=input$medianlinesize,alpha=input$alphamedianl)
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -2534,8 +2584,11 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             }
             if (input$Median=="Median/PI"&input$pointsizein != 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancoll,aes(group=NULL),alpha=0)
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),
+                            aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),
+                            col=mediancoll,alpha=input$alphamedianl,
+                            aes(group=NULL),alpha=0)
               
               
               

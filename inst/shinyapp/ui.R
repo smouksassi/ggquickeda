@@ -329,13 +329,13 @@ fluidPage(
               colourpicker::colourInput("stripbackgroundfillx",
                                         "X Strip Background Fill:",
                                         value="#E5E5E5",
-                                        showColour = "both",allowTransparent=TRUE),
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
               div( actionButton("stripbackfillresetx", "Reset X Strip Background Fill"),
                    style="text-align: right"),
               colourpicker::colourInput("stripbackgroundfilly",
                                         "Y Strip Background Fill:",
                                         value="#E5E5E5",
-                                        showColour = "both",allowTransparent=TRUE),
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
               div( actionButton("stripbackfillresety", "Reset Y Strip Background Fill"),
                    style="text-align: right"),
               
@@ -357,7 +357,8 @@ fluidPage(
               checkboxInput('customvline1', 'Vertical Line 1'),
               conditionalPanel(condition = "input.customvline1" , 
                                numericInput("vline1",label = "",value = 1),
-                               colourpicker::colourInput("vlinecol1", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
+                               colourpicker::colourInput("vlinecol1", "Line Color:", "gray",
+                                                         showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("vlinecol1reset", "Reset Line Color"), style="text-align: right"),
                                selectInput('vlinetype1','Line Type:',c("solid","dotted","dashed")),
                                sliderInput("vlinesize1", "Line Size:", min=0, max=4, value=c(1),step=0.1)
@@ -365,7 +366,8 @@ fluidPage(
               checkboxInput('customvline2', 'Vertical Line 2'),
               conditionalPanel(condition = "input.customvline2" , 
                                numericInput("vline2",label = "",value = 1) ,
-                               colourpicker::colourInput("vlinecol2", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
+                               colourpicker::colourInput("vlinecol2", "Line Color:", "gray",
+                                                         showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("vlinecol2reset", "Reset Line Color"), style="text-align: right"),
                                selectInput('vlinetype2','Line Type:',c("solid","dotted","dashed")),
                                sliderInput("vlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) 
@@ -373,7 +375,7 @@ fluidPage(
               checkboxInput('customhline1', 'Horizontal Line 1'),
               conditionalPanel(condition = "input.customhline1" , 
                                numericInput("hline1",label = "",value = 1),
-                               colourpicker::colourInput("hlinecol1", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
+                               colourpicker::colourInput("hlinecol1", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("hlinecol1reset", "Reset Line Color"), style="text-align: right"),
                                selectInput('hlinetype1','Line Type:',c("solid","dotted","dashed")),
                                sliderInput("hlinesize1", "Line Size:", min=0, max=4, value=c(1),step=0.1)
@@ -382,7 +384,7 @@ fluidPage(
               checkboxInput('customhline2', 'Horizontal Line 2'),
               conditionalPanel(condition = "input.customhline2" , 
                                numericInput("hline2",label = "",value = 1),
-                               colourpicker::colourInput("hlinecol2", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE),
+                               colourpicker::colourInput("hlinecol2", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("hlinecol2reset", "Reset Line Color"), style="text-align: right"),
                                selectInput('hlinetype2','Line Type:',c("solid","dotted","dashed")),
                                sliderInput("hlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) ),
@@ -392,7 +394,7 @@ fluidPage(
                                             value = 1,min=NA,max=NA,width='50%'),
                                numericInput("lowerytarget",label = "Lower Target Value",
                                             value = 1,min=NA,max=NA,width='50%'),
-                               colourpicker::colourInput("targetcol", "Target  Color:", "gray",showColour = "both"),
+                               colourpicker::colourInput("targetcol", "Target  Color:", "gray",showColour = "both",returnName=TRUE),
                                sliderInput("targetopacity", label = "Target Opacity:",
                                            min = 0, max = 1, value = 0.7, step = 0.05)
               ),
@@ -442,7 +444,8 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               
               
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
-              colourpicker::colourInput("gridlinescol", "Grid Lines Color:", value="#E5E5E5",showColour = "both",allowTransparent=TRUE),
+              colourpicker::colourInput("gridlinescol", "Grid Lines Color:", value="#E5E5E5",showColour = "both",
+                                        allowTransparent=TRUE,returnName=TRUE),
               div( actionButton("gridlinescolreset", "Reset Grid Lines Color"), style="text-align: right"),
               checkboxInput('themeaspect', 'Use custom aspect ratio ?')   ,  
               conditionalPanel(condition = "input.themeaspect" , 
@@ -537,7 +540,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       conditionalPanel(
                         " input.pointignorecol ",
                         colourpicker::colourInput("colpoint", "Points Color", value="black",
-                                                  showColour = "both",allowTransparent=FALSE),
+                                                  showColour = "both",allowTransparent=FALSE,returnName=TRUE),
                         div( actionButton("colpointreset", "Reset Points Color"),
                              style="text-align: right")
                         
@@ -602,7 +605,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       conditionalPanel(
                         " input.lineignorecol ",
                          colourpicker::colourInput("colline", "Lines Color", value="black",
-                                                  showColour = "both",allowTransparent=FALSE),
+                                                  showColour = "both",allowTransparent=FALSE,returnName=TRUE),
                         div( actionButton("collinereset", "Reset Lines Color"),
                              style="text-align: right")
                         
@@ -804,7 +807,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                           conditionalPanel(
                                             " input.smoothignorecol ",
                                           colourpicker::colourInput("colsmooth", "Smooth Color", value="black",
-                                                                    showColour = "both",allowTransparent=FALSE),
+                                                                    showColour = "both",allowTransparent=FALSE,returnName=TRUE),
                                           div( actionButton("colsmoothreset", "Reset Smooth Color"),
                                                style="text-align: right")
                                           )
@@ -900,7 +903,12 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                     ),
                     conditionalPanel( " input.Median!= 'None' ",
                     checkboxInput('medianlines', 'Show lines',value=TRUE),
-                    checkboxInput('medianpoints', 'Show points')
+                    checkboxInput('medianpoints', 'Show points'),
+                    conditionalPanel( " input.Median!= 'None'&input.medianlines ",
+                    sliderInput("alphamedianl", "Line Transparency:", min=0, max=1, value=c(0.5),step=0.01) ),
+                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
+                    sliderInput("alphamedianp", "Point Transparency:", min=0, max=1, value=c(0.5),step=0.01)
+                    )
                      )
 
                   ),
@@ -913,7 +921,7 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                     sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1)
                     ),
                     conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
-                    sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=4, value=c(1),step=0.1)
+                    sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1)
                     )
                     
                   ),
@@ -929,7 +937,8 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                                             "Median Line(s) Color",
                                                             value="black",
                                                             showColour = "both",
-                                                            allowTransparent=TRUE,returnName=TRUE)
+                                                            allowTransparent=FALSE,returnName=TRUE)
+                                  
                            
                            ),
                conditionalPanel( " input.medianpoints ",
@@ -937,7 +946,8 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                                            "Median Point(s) Color",
                                                            value="black",
                                                            showColour = "both",
-                                                           allowTransparent=TRUE,returnName=TRUE)
+                                                           allowTransparent=FALSE,returnName=TRUE)
+                                 
                            
                            )
                       )
