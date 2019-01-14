@@ -889,18 +889,33 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                    "None" = "None") ,selected="None") ,
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianvalues', 'Label Values?') ,
-                                      checkboxInput('medianN', 'Label N?') )
-                    
+                                      checkboxInput('medianN', 'Label N?') ,
+                                      checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE)
+                                      )
+                   ),
+                  column (
+                    3,
+                    conditionalPanel( " input.Median== 'Median/PI' ",
+                    sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01)
+                    ),
+                    conditionalPanel( " input.Median!= 'None' ",
+                    checkboxInput('medianlines', 'Show lines',value=TRUE),
+                    checkboxInput('medianpoints', 'Show points')
+                     )
+
                   ),
                   column (
                     3,
-                    conditionalPanel( " input.Median== 'Median' ",
-                                      checkboxInput('medianpoints', 'Show points') ,
-                                      checkboxInput('medianlines', 'Show lines',value=TRUE)),
                     conditionalPanel( " input.Median== 'Median/PI' ",
-                                      sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
-                                      sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                    sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                    ),
+                    conditionalPanel( " input.Median!= 'None'&input.medianlines ",
+                    sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1)
+                    ),
+                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
+                    sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=4, value=c(1),step=0.1)
                     )
+                    
                   ),
                   column (
                     3,
@@ -908,17 +923,25 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                                       checkboxInput('medianignorecol', 'Ignore Mapped Color'),
                                       conditionalPanel(
                                         " input.medianignorecol ",
-                                        selectInput('colmedian', label ='Median Color', choices=colors(),multiple=FALSE, selectize=TRUE,selected="black") )
-                                      
-                    ) ),
-                  column (
-                    3,
-                    conditionalPanel(
-                      " input.Median!= 'None' ",
-                      
-                      checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE),
-                      sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1)
-                      
+                                        
+                conditionalPanel( " input.medianlines ",
+                                  colourpicker::colourInput("colmedianl",
+                                                            "Median Line(s) Color",
+                                                            value="black",
+                                                            showColour = "both",
+                                                            allowTransparent=TRUE,returnName=TRUE)
+                           
+                           ),
+               conditionalPanel( " input.medianpoints ",
+                                 colourpicker::colourInput("colmedianp",
+                                                           "Median Point(s) Color",
+                                                           value="black",
+                                                           showColour = "both",
+                                                           allowTransparent=TRUE,returnName=TRUE)
+                           
+                           )
+                      )
+               
                     )
                   )
                   

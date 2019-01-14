@@ -2302,10 +2302,13 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_single(median, geom = "line",size=input$medianlinesize)
               
-              
-              if(input$medianpoints)           
+              if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point")
+              
+              if(input$medianpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(median, geom = "point",size=input$medianpointsize)
               
             }
             
@@ -2357,26 +2360,34 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           
           if (input$medianignorecol) {
-            mediancol <- input$colmedian
+            mediancoll <- input$colmedianl
+            mediancolp <- input$mediancolp
+            
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancol)
+                  stat_sum_single(median, geom = "line",col=mediancoll)
               
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancol,size=input$medianlinesize)
+                  stat_sum_single(median, geom = "line",col=mediancoll,size=input$medianlinesize)
               
-              if(input$medianpoints)           
+              
+              if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancol)
+                  stat_sum_single(median, geom = "point",col=mediancolp )
+              
+              if(input$medianpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(median, geom = "point",col=mediancolp ,size=input$medianpointsize)
               
             }
             
             if (input$Median=="Median/PI"&input$pointsizein == 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon", fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA)+
-                stat_sum_df("median_hilow", geom = "smooth", fun.args=list(conf.int=input$PI), size=input$medianlinesize,col=mediancol,alpha=0)
+                stat_sum_df("median_hilow", geom = "smooth", fun.args=list(conf.int=input$PI), size=input$medianlinesize,
+                            col=mediancoll,alpha=0)
               
               if ( input$sepguides )
                 p <-   p +
@@ -2390,7 +2401,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median/PI"&input$pointsizein != 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),alpha=input$PItransparency,col=NA)+
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancol,
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancoll,
                             alpha=0)          
               
               if ( input$sepguides )
@@ -2405,12 +2416,12 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median!="None" & input$medianvalues )  {
               p <-   p   +
                 stat_summary(fun.data = median.n,geom = "label_repel",alpha=0.4,
-                             fun.y = median, fontface = "bold",colour=mediancol,
+                             fun.y = median, fontface = "bold",colour=mediancoll,
                              show.legend=FALSE,size=6)}
             if (input$Median!="None" & input$medianN)  {
               p <-   p   +
                 stat_summary(fun.data = give.n, geom = "label_repel",alpha=0.4,
-                             fun.y = median, fontface = "bold", colour=mediancol,
+                             fun.y = median, fontface = "bold", colour=mediancolp,
                              show.legend=FALSE,size=6)      
             }       
             
@@ -2428,9 +2439,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_single(median, geom = "line",aes(group=NULL),size=input$medianlinesize)
               
-              if(input$medianpoints)           
+              if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point",aes(group=NULL))
+              
+              
+              if(input$medianpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(median, geom = "point",aes(group=NULL),size=input$medianpointsize)
               
             }
             
@@ -2479,25 +2495,34 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           
           if (input$medianignorecol) {
-            mediancol <- input$colmedian
+            mediancoll <- input$colmedianl
+            mediancolp <- input$colmedianp
+            
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancol,aes(group=NULL))
+                  stat_sum_single(median, geom = "line",col=mediancoll,aes(group=NULL))
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancol,aes(group=NULL),size=input$medianlinesize)
+                  stat_sum_single(median, geom = "line",col=mediancoll,aes(group=NULL),size=input$medianlinesize)
               
-              if(input$medianpoints)           
+              
+              if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancol,aes(group=NULL))
+                  stat_sum_single(median, geom = "point",col=mediancolp,aes(group=NULL))
+              
+              if(input$medianpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(median, geom = "point",col=mediancolp,aes(group=NULL),size=input$medianpointsize)
               
             }
             
             if (input$Median=="Median/PI"&input$pointsizein == 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancol,aes(group=NULL),size=input$medianlinesize,alpha=0)
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
+                            alpha=input$PItransparency,col=NA)+ 
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),
+                            col=mediancoll,aes(group=NULL),size=input$medianlinesize,alpha=0)
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -2510,7 +2535,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median/PI"&input$pointsizein != 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancol,aes(group=NULL),alpha=0)
+                stat_sum_df("median_hilow", geom = "smooth",fun.args=list(conf.int=input$PI),col=mediancoll,aes(group=NULL),alpha=0)
               
               
               
@@ -2528,12 +2553,12 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median!="None" & input$medianvalues )  {
               p <-   p   +
                 stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=0.4,
-                             fun.y = median, fontface = "bold",colour=mediancol,
+                             fun.y = median, fontface = "bold",colour=mediancoll,
                              show.legend=FALSE,size=6)}
             if (input$Median!="None" & input$medianN)  {
               p <-   p   +
                 stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=0.4,
-                             fun.y = median, fontface = "bold", colour=mediancol,
+                             fun.y = median, fontface = "bold", colour=mediancolp,
                              show.legend=FALSE,size=6)      
             }
             
