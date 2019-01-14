@@ -1795,9 +1795,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         p <- sourceable(ggplot(plotdata, aes_string(x=input$x, y="yvalues")))
         
         if (input$showtarget)  {
-          if ( is.numeric( plotdata[,input$x] ) ) {
+          if ( is.numeric( plotdata[,input$x] ) && is.numeric( plotdata[,"yvalues"] ) ) {
             p <-   p   +
               annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget,
+                       ymax = input$uppertarget,fill=input$targetcol,
+                       alpha =input$targetopacity)  
+          } 
+          
+          if ( !is.numeric( plotdata[,input$x] )&& is.numeric( plotdata[,"yvalues"] ) ) {
+            xlow  <-  levels( as.factor( plotdata[,input$x] ) )[1]
+            xhigh <- levels( as.factor( plotdata[,input$x] ) )[length(levels( as.factor( plotdata[,input$x] ) ))]
+            p <-   p   +
+              annotate("rect", xmin = xlow, xmax = xhigh,
+                       ymin = input$lowerytarget,
                        ymax = input$uppertarget,fill=input$targetcol,
                        alpha =input$targetopacity)  
           } 
