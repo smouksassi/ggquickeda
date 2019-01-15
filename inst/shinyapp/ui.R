@@ -840,45 +840,82 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                           radioButtons("Mean", "Mean:",
                                        c("Mean" = "Mean",
                                          "Mean/CI" = "Mean/CI",
-                                         "None" = "None") ,selected="None") 
+                                         "None" = "None") ,selected="None"),
+                          conditionalPanel( " input.Mean!= 'None' ",
+                  checkboxInput('meanignoregroup', 'Ignore Mapped Group',value = TRUE)
+                          )
                   ),
-                  column (
-                    3,
-                    
+                  column (3,
+                    conditionalPanel( " input.Mean== 'Mean/CI' ",
+                      sliderInput("CI", "CI %:", min=0, max=1, value=c(0.95),step=0.01)
+                    ),
+                    conditionalPanel( " input.Mean!= 'None' ",
+                                      checkboxInput('meanlines', 'Show lines', value=TRUE) ,
+                                      checkboxInput('meanpoints', 'Show points') ,
+                                      
+                  conditionalPanel( " input.Mean!= 'None'&input.meanlines ",                    
+                                    sliderInput("alphameanl", "Line Transparency:", min=0, max=1,
+                                                value=c(0.5),step=0.01) 
+                                    ),
+                  conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
+                                    sliderInput("alphameanp", "Point Transparency:", min=0, max=1,
+                                                value=c(0.5),step=0.01)
+                                    
+                  )
+                  ) 
+                  ),
+        
+                  column (3,
                     conditionalPanel(
                       " input.Mean== 'Mean/CI' ",
-                      sliderInput("CI", "CI %:", min=0, max=1, value=c(0.95),step=0.01),
-                      numericInput( inputId = "errbar",label = "CI bar width:",value = 2,min = 1,max = NA)      
-                    )
+                      numericInput( inputId = "errbar",label = "CI bar width:",
+                                    value = 2,min = 1,max = NA)    
+                    ),
                     
-                  ),
-                  column (
-                    3,
                     conditionalPanel(
-                      " input.Mean!= 'None' ",
-                      checkboxInput('meanpoints', 'Show points') ,
-                      checkboxInput('meanlines', 'Show lines', value=TRUE),
-                      checkboxInput('meanignorecol', 'Ignore Mapped Color') ,
-                      conditionalPanel( " input.meanignorecol ",
-                                        selectInput('colmean', label ='Mean Color', choices=colors(),multiple=FALSE, selectize=TRUE,selected="black") )
+                      " input.Mean!= 'None'&input.meanlines ",
+                      sliderInput("meanlinesize", "Mean(s) Line(s) Size:", min=0, max=4,
+                                  value=1,step=1)
                       
-                    ) ),
-                  
-                  
+                    ),
+                    conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
+                    sliderInput("meanpointsize", "Mean(s) Point(s) Size:", min=0, max=6,
+                                value=1,step=1)
+                    )
+                    ),
                   column(
                     3,
                     conditionalPanel(
                       " input.Mean!= 'None' ",
-                      checkboxInput('meanignoregroup', 'Ignore Mapped Group',value = TRUE),
-                      sliderInput("meanlinesize", "Mean(s) Line(s) Size:", min=0, max=3, value=1,step=0.05)
-                    ) 
-                  )
+                      checkboxInput('meanignorecol', 'Ignore Mapped Color') ,
+                      conditionalPanel( " input.meanignorecol ",
+        conditionalPanel( " input.meanlines ",
+                          colourpicker::colourInput("colmeanl",
+                                                    "Mean Line(s) Color",
+                                                    value="black",
+                                                    showColour = "both",
+                                                    allowTransparent=FALSE,returnName=TRUE)
+                          
+                          
+        ),
+        conditionalPanel( " input.meanpoints ",
+                          colourpicker::colourInput("colmeanp",
+                                                    "Mean Points(s) Color",
+                                                    value="black",
+                                                    showColour = "both",
+                                                    allowTransparent=FALSE,returnName=TRUE)
+                          
+                          
+        )
+        
+        )
+                    )
+                  )#column
                 ) #fluidrow
               ), # tab panel for mean
-              
+ 
+                     
               ### median PI section
-              
-              
               tabPanel(
                 "Median (PIs)",
                 

@@ -2018,65 +2018,97 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Mean=="Mean") {
               if(input$meanlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line")
+                  stat_sum_single(mean, geom = "line",alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",size=input$meanlinesize)
+                  stat_sum_single(mean, geom = "line",size=input$meanlinesize,alpha=input$alphameanl)
               
               
-              if(input$meanpoints)           
+              if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "point")
+                  stat_sum_single(mean, geom = "point",alpha=input$alphameanp)
+              
+              if(input$meanpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(mean, geom = "point",size=input$meanpointsize,
+                                  alpha=input$alphameanp)
               
             }
             
             if (input$Mean=="Mean/CI"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "errorbar",fun.args=list(conf.int=input$CI),width=input$errbar)
+                stat_sum_df("mean_cl_normal", geom = "errorbar",
+                            fun.args=list(conf.int=input$CI),width=input$errbar,
+                            alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein != 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line")
+                  stat_sum_df("mean_cl_normal", geom = "line",alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line",size=input$meanlinesize)
-              if(input$meanpoints)           
+                  stat_sum_df("mean_cl_normal", geom = "line",
+                              size=input$meanlinesize,alpha=input$alphameanl)
+              if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point")
+                  stat_sum_df("mean_cl_normal", geom = "point",alpha=input$alphameanp)
+              
+              if(input$meanpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_df("mean_cl_normal", geom = "point",
+                              size=input$meanpointsize, alpha=input$alphameanp)
+              
               
             }
           }
           
           
           if (input$meanignorecol) {
-            meancol <- input$colmean
+            meancoll <- input$colmeanl
+            meancolp <- input$colmeanp
+            
             if (input$Mean=="Mean") {
               if(input$meanlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",col=meancol)
+                  stat_sum_single(mean, geom = "line",col=meancoll,alpha=input$alphameanl)
               
               if(input$meanlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",col=meancol,size=input$meanlinesize)
+                  stat_sum_single(mean, geom = "line",col=meancoll,
+                                  size=input$meanlinesize,alpha=input$alphameanl)
               
-              if(input$meanpoints)           
+              if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "point",col=meancol)
+                  stat_sum_single(mean, geom = "point",col=meancolp,alpha=input$alphameanp)
+              
+              
+              if(input$meanpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(mean, geom = "point",
+                                  size=input$meanpointsize,
+                                  col=meancolp,alpha=input$alphameanp)
               
             }
             
             if (input$Mean=="Mean/CI"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "errorbar",fun.args=list(conf.int=input$CI),width=input$errbar, col=meancol)
+                stat_sum_df("mean_cl_normal", geom = "errorbar",
+                            fun.args=list(conf.int=input$CI),width=input$errbar,
+                            col=meancoll,alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein != 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line", col=meancol)
+                  stat_sum_df("mean_cl_normal", geom = "line", col=meancoll,alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line", col=meancol,size=input$meanlinesize)
+                  stat_sum_df("mean_cl_normal", geom = "line", col=meancoll,
+                              size=input$meanlinesize,alpha=input$alphameanl)
               
-              if(input$meanpoints)           
+              if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point", col=meancol)
+                  stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,alpha=input$alphameanp)
+              
+              if(input$meanpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,
+                              size=input$meanpointsize,alpha=input$alphameanp)
               
             }
           }
@@ -2088,65 +2120,96 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Mean=="Mean") {
               if(input$meanlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",aes(group=NULL))
+                  stat_sum_single(mean, geom = "line",aes(group=NULL),alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",aes(group=NULL),size=input$meanlinesize)
+                  stat_sum_single(mean, geom = "line",aes(group=NULL),size=input$meanlinesize,
+                                  alpha=input$alphameanl)
               
-              if(input$meanpoints)           
+              if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "point",aes(group=NULL))
+                  stat_sum_single(mean, geom = "point",aes(group=NULL),alpha=input$alphameanp)
+              
+              if(input$meanpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(mean, geom = "point",aes(group=NULL),
+                                  size=input$meanpointsize,alpha=input$alphameanp)
               
             }
             
             if (input$Mean=="Mean/CI"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "errorbar",fun.args=list(conf.int=input$CI), width=input$errbar,aes(group=NULL))
+                stat_sum_df("mean_cl_normal", geom = "errorbar",fun.args=list(conf.int=input$CI),
+                            width=input$errbar,aes(group=NULL),alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein != 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line",aes(group=NULL))
+                  stat_sum_df("mean_cl_normal", geom = "line",aes(group=NULL),alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line",aes(group=NULL),size=input$meanlinesize)
-              if(input$meanpoints)           
+                  stat_sum_df("mean_cl_normal", geom = "line",aes(group=NULL),
+                              size=input$meanlinesize,
+                              alpha=input$alphameanl)
+              if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL))
+                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                              alpha=input$alphameanp)
+              if(input$meanpoints&input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                              size=input$meanpointsize,
+                              alpha=input$alphameanp)
+              
               
             }
           }
           
           
           if (input$meanignorecol) {
-            meancol <- input$colmean
+            meancoll <- input$colmeanl
+            meancolp <- input$colmeanp
+            
             if (input$Mean=="Mean") {
               if(input$meanlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",col=meancol,aes(group=NULL))
+                  stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",col=meancol,aes(group=NULL),size=input$meanlinesize)
+                  stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),
+                                  size=input$meanlinesize,alpha=input$alphameanl)
               
               
-              if(input$meanpoints)           
+              if(input$meanpoints &input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "point",col=meancol,aes(group=NULL))
+                  stat_sum_single(mean, geom = "point",col=meancolp,
+                                  aes(group=NULL),alpha=input$alphameanp)
+              if(input$meanpoints &input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_single(mean, geom = "point",size=input$meanpointsize,
+                                  col=meancolp,aes(group=NULL),alpha=input$alphameanp)
               
             }
             
             if (input$Mean=="Mean/CI"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "errorbar",fun.args=list(conf.int=input$CI), width=input$errbar, col=meancol, aes(group=NULL))
+                stat_sum_df("mean_cl_normal", geom = "errorbar",
+                            fun.args=list(conf.int=input$CI), width=input$errbar,
+                            col=meancoll, aes(group=NULL),alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein != 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line",col=meancol,aes(group=NULL))
+                  stat_sum_df("mean_cl_normal", geom = "line",col=meancoll,aes(group=NULL),alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')  
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line",col=meancol,aes(group=NULL),size=input$meanlinesize)
+                  stat_sum_df("mean_cl_normal", geom = "line",col=meancoll,aes(group=NULL),
+                              size=input$meanlinesize,alpha=input$alphameanl)
               
-              if(input$meanpoints)           
+              if(input$meanpoints &input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",col=meancol,aes(group=NULL))
-              
+                  stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
+                              alpha=input$alphameanp)
+              if(input$meanpoints & input$pointsizein == 'None')           
+                p <- p + 
+                  stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
+                              size=input$meanpointsize,alpha=input$alphameanp)
             }
           }
         }
@@ -2405,8 +2468,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           if (input$medianignorecol) {
             mediancoll <- input$colmedianl
-            mediancolp <- input$mediancolp
-            
+            mediancolp <- input$colmedianp
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
