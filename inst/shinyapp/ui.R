@@ -241,7 +241,7 @@ fluidPage(
                 column(6,
                 conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("uppery")) ),
                 column(12,
-                       conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
+               conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
                 checkboxInput('expand', 'Expand X/Y axis Range ?', value = TRUE)
                        )
                 )
