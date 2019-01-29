@@ -288,9 +288,12 @@ function(input, output, session) {
     remove_last_factor_lvl_change_box()
   })
   
-  observeEvent(input$gridlinescolreset, {
-      shinyjs::reset("gridlinescol")
+  observeEvent(input$majorgridlinescolreset, {
+      shinyjs::reset("majorgridlinescol")
     })
+  observeEvent(input$minorgridlinescolreset, {
+    shinyjs::reset("minorgridlinescol")
+  })
   
   observeEvent(input$colpointreset, {
     shinyjs::reset("colpoint")
@@ -1454,6 +1457,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               input$facetscalesin!="free")){
         yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
         ymin <- min(yvalues)
+        if(input$yaxisscale=="logy"&& ymin==0) ymin <- 0.01
         ymax <- max(yvalues)
         ystep <- (ymax -ymin)/100
         sliderInput('yaxiszoomin',label = 'Zoom to Y variable range:', min=ymin, max=ymax, value=c(ymin,ymax),step=ystep)
@@ -1475,6 +1479,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             input$facetscalesin!="free")){
       yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
       ymin <- min(yvalues)
+      if(input$yaxisscale=="logy") ymin <- min(yvalues)+0.01
       numericInput("loweryin",label = "Lower Y Limit",value = ymin,min=NA,max=NA,width='50%')
     }
   })
@@ -1633,6 +1638,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     }
     selectInput("pointshapein", "Shape By:",items )
     
+  })
+  
+  output$linetype <- renderUI({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= items 
+    items= c("None",items, "yvars","yvalues") 
+    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    selectInput("linetypein", "Linetype By:",items )
   })
   
   output$fill <- renderUI({
@@ -1825,7 +1844,10 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         if (input$pointshapein != 'None'){
             p <- p  + aes_string(shape=input$pointshapein)
           }
-        
+        if (input$linetypein != 'None'){
+          p <- p  + aes_string(linetype=input$linetypein)
+        }
+
         # if (input$groupin != 'None' & !is.factor(plotdata[,input$x]))
         if (input$groupin != 'None')
           p <- p + aes_string(group=input$groupin)
@@ -1943,19 +1965,58 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           }
         
         if (input$line=="Lines"){
-          if (input$pointsizein == 'None'&& !input$lineignorecol)
-            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
-          if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
-            p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes)
-          if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
-            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
           
-          if (input$pointsizein == 'None'&&input$lineignorecol)
-            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
-          if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
-            p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
-          if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
-            p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$linetypein != 'None' && !input$lineignorelinetype){
+            
+            if (input$pointsizein == 'None'&& !input$lineignorecol)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency)
+            if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+              p <- p + geom_line(alpha=input$linestransparency)
+            if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency)
+            
+            if (input$pointsizein == 'None'&&input$lineignorecol)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,colour=input$colline)
+            if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+              p <- p + geom_line(alpha=input$linestransparency,colour=input$colline)
+            if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,colour=input$colline)
+          }
+          
+          if (input$linetypein != 'None' && input$lineignorelinetype){
+            
+            if (input$pointsizein == 'None'&& !input$lineignorecol)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+            if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+              p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes)
+            if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+            
+            if (input$pointsizein == 'None'&&input$lineignorecol)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+            if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+              p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+            if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          }
+          
+          if(input$linetypein == 'None' ){
+            if (input$pointsizein == 'None'&& !input$lineignorecol)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+            if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+              p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes)
+            if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+            
+            if (input$pointsizein == 'None'&&input$lineignorecol)
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+            if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+              p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+            if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+              p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          }
+          
+          
         }
 
         #### Boxplot Section START
@@ -3341,13 +3402,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         fillpos  <-  which0( input$legendordering=="fill")[1]
         sizepos  <-  which0( input$legendordering=="size")[1]
         shapepos  <-  which0( input$legendordering=="shape")[1]
+        linetypepos  <-  which0( input$legendordering=="linetype")[1]
         
         collegend <-  gsub("\\\\n", "\\\n", input$customcolourtitle)
         filllegend <- gsub("\\\\n", "\\\n", input$customfilltitle)
         sizelegend <- gsub("\\\\n", "\\\n", input$customsizetitle)
         shapelegend <- gsub("\\\\n", "\\\n", input$customshapetitle)
+        linetypelegend <- gsub("\\\\n", "\\\n", input$customlinetypetitle)
         
-
+        
         
         if (input$legendalphacol){
             gcol  <- guide_legend(collegend,
@@ -3386,19 +3449,26 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                  ncol=input$legendncolshape,
                                  reverse=input$legendrevshape,
                                 order = shapepos)
+          
+          glinetype <- guide_legend(linetypelegend,
+                                 ncol=input$legendncollinetype,
+                                 reverse=input$legendrevlinetype,
+                                 order = linetypepos)
         
         if (input$removelegend){
           if( colourpos==0) gcol = FALSE
           if( fillpos==0) gfill = FALSE
           if( sizepos==0) gsize = FALSE
           if( shapepos==0) gshape = FALSE
+          if( linetypepos==0) glinetype = FALSE
         }
 
 
         p <-  p + guides(colour = gcol,
                          size = gsize,
                          fill = gfill,
-                         shape= gshape)
+                         shape= gshape,
+                         linetype = glinetype)
         
       }
       
@@ -3474,8 +3544,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       }
       
       p <-  p+
-        theme(panel.grid.major = element_line(colour = input$gridlinescol),
-              panel.grid.minor = element_line(colour = input$gridlinescol),
+        theme(panel.grid.major = element_line(colour = input$majorgridlinescol),
+              panel.grid.minor = element_line(colour = input$minorgridlinescol),
               strip.background.x = element_rect(fill=input$stripbackgroundfillx),
               strip.background.y = element_rect(fill=input$stripbackgroundfilly),
               strip.placement  = input$stripplacement,
@@ -3485,7 +3555,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               panel.spacing.y = unit(input$panelspacingy, "lines")
               
               )
-
+      if(input$rmmajorgridlines){
+        p <-  p+
+          theme(panel.grid.major = element_blank())
+      }
+      if(input$rmminorgridlines){
+        p <-  p+
+          theme(panel.grid.minor = element_blank())
+      }
+      if(input$annotatelogticks){
+        p <-  p+
+          annotation_logticks(sides=paste(input$logsides,collapse="",sep="") )   
+      }
+      
       if (all(
          input$yaxiszoom=='noyzoom'&&
         !is.null(input$xaxiszoomin[1])&&
@@ -3495,11 +3577,11 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       ){
         if(input$xaxiszoom=="userxzoom"){
           p <- p +
-            coord_cartesian(xlim= c(input$lowerxin,input$upperxin))
+            coord_cartesian(xlim= c(input$lowerxin,input$upperxin),expand=input$expand)
         }
         if(input$xaxiszoom=="automaticxzoom"){
           p <- p +
-            coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2])  )
+            coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),expand=input$expand  )
         }
 
       }
@@ -3513,18 +3595,18 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       ){
         if(input$yaxiszoom=="useryzoom" ){
           p <- p +
-            coord_cartesian(ylim= c(input$loweryin,input$upperyin) )
+            coord_cartesian(ylim= c(input$loweryin,input$upperyin),expand=input$expand )
         }
         if(input$yaxiszoom=="automaticyzoom"){
           
             if(!is.null(input$yaxiszoomin[1]) ){
               p <- p +
                 coord_cartesian(
-                  ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])) 
+                  ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),expand=input$expand) 
             } 
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(ylim= c(NA,NA)) 
+              coord_cartesian(ylim= c(NA,NA),expand=input$expand) 
           } 
         }
 
@@ -3541,36 +3623,36 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         if (input$xaxiszoom=="userxzoom"&& input$yaxiszoom=="useryzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
-                            ylim= c(input$loweryin,input$upperyin)  )
+                            ylim= c(input$loweryin,input$upperyin),expand=input$expand  )
         }
         if (input$xaxiszoom=="userxzoom"&&input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
-                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])  )
+                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),expand=input$expand  )
             }
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
-                              ylim= c(NA,NA) )
+                              ylim= c(NA,NA) ,expand=input$expand)
           }
           
         }
         if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="useryzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                            ylim= c(input$loweryin,input$upperyin)  )
+                            ylim= c(input$loweryin,input$upperyin) ,expand=input$expand )
         }
         if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2])  )
+                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),expand=input$expand  )
              }
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                              ylim= c(NA,NA)  )
+                              ylim= c(NA,NA) ,expand=input$expand )
           }
         }
       }
