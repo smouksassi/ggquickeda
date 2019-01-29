@@ -196,7 +196,16 @@ fluidPage(
                                            0.5,1.5
                                            ,sep=",") )
                                )
-              )
+              ),
+              checkboxInput('annotatelogticks', 'Add Log Tick Annotations ?', value = FALSE),
+              conditionalPanel(condition = "input.annotatelogticks",
+                               selectInput('logsides', label ='Log Tick Sides',
+                                           choices=c("Left" = "l",
+                                                     "Top" ="t ",
+                                                     "Right"="r",
+                                                     "Bottom"="b"),
+                                           multiple=TRUE, selectize=TRUE,selected="l")
+                               )
             ),
             tabPanel(
               "Graph Size/Zoom",
@@ -230,7 +239,12 @@ fluidPage(
                 column(6,
                 conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("lowery")) ),
                 column(6,
-                conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("uppery")) )
+                conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("uppery")) ),
+                column(12,
+                       conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
+                checkboxInput('expand', 'Expand X/Y axis Range ?', value = TRUE)
+                       )
+                )
               ) # fluidrow
 
             ),#tabpanel zoom
@@ -274,12 +288,16 @@ fluidPage(
                 numericInput("legendncolshape",label = "Shape Legend N columns",value =1,min=1,max =10) ,
                 checkboxInput('legendrevshape','Reverse Shape Legend ?',value = FALSE),
                 
+                textInput("customlinetypetitle", label ="Linetype Legend Title",value="linetype"),
+                numericInput("legendncollinetype",label = "Linetype Legend N columns",value =1,min=1,max =10) ,
+                checkboxInput('legendrevlinetype','Reverse Linetype Legend ?',value = FALSE),
+                
                 
                 selectizeInput(
                   'legendordering',
                   label = paste("Drag/Drop to reorder","Colour, Fill, Size, Shape Legends"),
-                  choices = c("colour","fill","size","shape"),
-                  selected = c("colour","fill","size","shape"),
+                  choices = c("colour","fill","size","shape","linetype"),
+                  selected = c("colour","fill","size","shape","linetype"),
                   multiple=TRUE,  options = list(
                     plugins = list('drag_drop')
                   )
@@ -444,9 +462,20 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
               
               
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
-              colourpicker::colourInput("gridlinescol", "Grid Lines Color:", value="#E5E5E5",showColour = "both",
+              colourpicker::colourInput("majorgridlinescol", "Major Grid Lines Color:",
+                                        value="#E5E5E5",
+                                        showColour = "both",
                                         allowTransparent=TRUE,returnName=TRUE),
-              div( actionButton("gridlinescolreset", "Reset Grid Lines Color"), style="text-align: right"),
+              div( actionButton("majorgridlinescolreset", "Reset Major Grid Lines Color"),
+                   style="text-align: right"),
+              colourpicker::colourInput("minorgridlinescol", "Minor Grid Lines Color:",
+                          value="#E5E5E5",
+                          showColour = "both",
+                          allowTransparent=TRUE,returnName=TRUE),
+checkboxInput('rmmajorgridlines', 'Remove Major Grid Linee ?',value=FALSE),
+checkboxInput('rmminorgridlines', 'Remove Minor Grid Lines ?',value=FALSE),
+div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), style="text-align: right"),
+
               checkboxInput('themeaspect', 'Use custom aspect ratio ?')   ,  
               conditionalPanel(condition = "input.themeaspect" , 
                                numericInput("aspectratio",label = "Y/X ratio",
@@ -549,9 +578,6 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                       sliderInput("pointstransparency", "Points Transparency:",
                                   min=0, max=1, value=c(0.5),step=0.01),
                       checkboxInput('pointignoreshape', 'Ignore Mapped Shape'),
-            
-                      #numericInput('pointshapes','Points Shape:',16, min = 1, max = 25)
-          
                       selectInput('pointshapes','Points Shape:',c(
                         "square open"           ,
                         "circle open"           ,
@@ -611,9 +637,9 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                         
                       ),
                       sliderInput("linestransparency", "Lines Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                      checkboxInput('lineignorelinetype', 'Ignore Mapped Linetype'),
+                      selectInput('linetypes','Lines Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank"))
                       
-                      selectInput('linetypes','Lines Type:',c("solid","dotted","dashed"))
-           
                     )
                   ),
                   column (12,
@@ -627,7 +653,8 @@ h6("If you get /Error: Insufficient values in manual scale. ## needed but only 1
                   column (12, hr()),
                   column (3, uiOutput("colour"),uiOutput("group")),
                   column(3, uiOutput("facet_col"),uiOutput("facet_row")),
-                  column (3, uiOutput("facet_col_extra"),uiOutput("facet_row_extra")),
+                  column (3, uiOutput("facet_col_extra"),uiOutput("facet_row_extra"),
+                          uiOutput("linetype")),
                   column (3, uiOutput("pointsize"),uiOutput("fill"),
                           uiOutput("pointshape")),
                   column (12, h6("Make sure not to choose a variable that is in the y variable(s) list otherwise you will get an error Variable not found. These variables are stacked and become yvars and yvalues.This ensures that colour/group/etc. are kept intact when you apply a new filter or recode a variable. When you combine variables all mappings will be updated so you can choose the newly formed variable and as such the previous state will be lost." ))
