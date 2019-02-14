@@ -2030,17 +2030,22 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   varwidth = input$boxplotvarwidh,
                   notch = input$boxplotnotch,
                   show.legend = input$boxplotshowlegend,
-                  alpha = input$boxplotalpha
+                  alpha = input$boxplotalpha,
+                  outlier.alpha = input$boxplotoutlieralpha,
+                  outlier.size = input$boxplotoutliersize
                 )
               }
               if (input$boxplotignorecol) {
                 p <- p + geom_boxplot(
                   aes_string(group = input$groupin),
                   col = input$boxcolline,
+                  outlier = input$boxcolline,
                   varwidth = input$boxplotvarwidh,
                   notch = input$boxplotnotch,
                   show.legend = input$boxplotshowlegend,
-                  alpha = input$boxplotalpha
+                  alpha = input$boxplotalpha,
+                  outlier.alpha = input$boxplotoutlieralpha,
+                  outlier.size = input$boxplotoutliersize
                 )
               }
             }
@@ -2052,7 +2057,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 varwidth = input$boxplotvarwidh,
                 notch = input$boxplotnotch,
                 show.legend = input$boxplotshowlegend,
-                alpha = input$boxplotalpha
+                alpha = input$boxplotalpha,
+                outlier.alpha = input$boxplotoutlieralpha,
+                outlier.size = input$boxplotoutliersize
               )
             }
             if (input$boxplotignorecol) {
@@ -2062,7 +2069,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 notch = input$boxplotnotch,
                 show.legend = input$boxplotshowlegend,
                 col = input$boxcolline,
-                alpha = input$boxplotalpha
+                alpha = input$boxplotalpha,
+                outlier.alpha = input$boxplotoutlieralpha,
+                outlier.size = input$boxplotoutliersize
               )
             }
           }
@@ -2085,14 +2094,27 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_single(mean, geom = "line",size=input$meanlinesize,alpha=input$alphameanl)
               
               
-              if(input$meanpoints&input$pointsizein != 'None')           
-                p <- p + 
-                  stat_sum_single(mean, geom = "point",alpha=input$alphameanp)
-              
-              if(input$meanpoints&input$pointsizein == 'None')           
-                p <- p + 
-                  stat_sum_single(mean, geom = "point",size=input$meanpointsize,
-                                  alpha=input$alphameanp)
+              if(!input$forcemeanshape)    {
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",alpha=input$alphameanp)
+                
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",size=input$meanpointsize,
+                                    alpha=input$alphameanp)                
+              }
+              if(input$forcemeanshape)    {
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",alpha=input$alphameanp,
+                                    shape=input$meanshapes )
+                
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",size=input$meanpointsize,
+                                    alpha=input$alphameanp,shape=input$meanshapes)                
+              }
               
             }
             
@@ -2108,14 +2130,26 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "line",
                               size=input$meanlinesize,alpha=input$alphameanl)
+              
+              if(!input$forcemeanshape)    {
               if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",alpha=input$alphameanp)
-              
               if(input$meanpoints&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",
                               size=input$meanpointsize, alpha=input$alphameanp)
+              }
+              if(input$forcemeanshape)    {
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point",alpha=input$alphameanp,shape=input$meanshapes)
+                
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point",
+                                size=input$meanpointsize, alpha=input$alphameanp,shape=input$meanshapes)
+              }
               
               
             }
@@ -2136,16 +2170,26 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_single(mean, geom = "line",col=meancoll,
                                   size=input$meanlinesize,alpha=input$alphameanl)
               
-              if(input$meanpoints&input$pointsizein != 'None')           
-                p <- p + 
-                  stat_sum_single(mean, geom = "point",col=meancolp,alpha=input$alphameanp)
+              if(!input$forcemeanshape)    {
+              
+
+              
+              }
+              if(input$forcemeanshape)    {
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",col=meancolp,alpha=input$alphameanp,shape=input$meanshapes)
+                
+                
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",
+                                    size=input$meanpointsize,
+                                    col=meancolp,alpha=input$alphameanp,shape=input$meanshapes)
+              }
               
               
-              if(input$meanpoints&input$pointsizein == 'None')           
-                p <- p + 
-                  stat_sum_single(mean, geom = "point",
-                                  size=input$meanpointsize,
-                                  col=meancolp,alpha=input$alphameanp)
+              
               
             }
             
@@ -2162,6 +2206,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_df("mean_cl_normal", geom = "line", col=meancoll,
                               size=input$meanlinesize,alpha=input$alphameanl)
               
+              if(!input$forcemeanshape)    {
+                
               if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,alpha=input$alphameanp)
@@ -2170,6 +2216,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,
                               size=input$meanpointsize,alpha=input$alphameanp)
+              
+              }
+              if(input$forcemeanshape)    {
+                
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,alpha=input$alphameanp,shape=input$meanshapes)
+                
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,
+                                size=input$meanpointsize,alpha=input$alphameanp,shape=input$meanshapes)
+                
+              }
               
             }
           }
@@ -2187,6 +2247,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_single(mean, geom = "line",aes(group=NULL),size=input$meanlinesize,
                                   alpha=input$alphameanl)
               
+              if(!input$forcemeanshape)    {
               if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_single(mean, geom = "point",aes(group=NULL),alpha=input$alphameanp)
@@ -2195,6 +2256,17 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_single(mean, geom = "point",aes(group=NULL),
                                   size=input$meanpointsize,alpha=input$alphameanp)
+              }
+              if(input$forcemeanshape)    {
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",aes(group=NULL),alpha=input$alphameanp,shape=input$meanshapes)
+                
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",aes(group=NULL),
+                                    size=input$meanpointsize,alpha=input$alphameanp,shape=input$meanshapes)
+              } 
               
             }
             
@@ -2210,6 +2282,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_df("mean_cl_normal", geom = "line",aes(group=NULL),
                               size=input$meanlinesize,
                               alpha=input$alphameanl)
+              if(!input$forcemeanshape)    {
               if(input$meanpoints&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
@@ -2220,6 +2293,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                               size=input$meanpointsize,
                               alpha=input$alphameanp)
               
+              }
+              if(input$forcemeanshape)    {
+                if(input$meanpoints&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                                alpha=input$alphameanp,shape=input$meanshapes)
+                if(input$meanpoints&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                                size=input$meanpointsize,
+                                alpha=input$alphameanp,shape=input$meanshapes)
+                
+              }
               
             }
           }
@@ -2238,7 +2324,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),
                                   size=input$meanlinesize,alpha=input$alphameanl)
               
-              
+              if(!input$forcemeanshape)    {
               if(input$meanpoints &input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_single(mean, geom = "point",col=meancolp,
@@ -2247,8 +2333,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_single(mean, geom = "point",size=input$meanpointsize,
                                   col=meancolp,aes(group=NULL),alpha=input$alphameanp)
+             
+              }
               
-            }
+              if(input$forcemeanshape)    {
+                if(input$meanpoints &input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",col=meancolp,
+                                    aes(group=NULL),alpha=input$alphameanp,shape=input$meanshapes)
+                if(input$meanpoints &input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",size=input$meanpointsize,
+                                    col=meancolp,aes(group=NULL),alpha=input$alphameanp,shape=input$meanshapes)
+              }
+              }
             
             if (input$Mean=="Mean/CI"){
               p <- p + 
@@ -2263,6 +2361,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_df("mean_cl_normal", geom = "line",col=meancoll,aes(group=NULL),
                               size=input$meanlinesize,alpha=input$alphameanl)
               
+              if(!input$forcemeanshape)    {
+              
               if(input$meanpoints &input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
@@ -2271,6 +2371,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
                               size=input$meanpointsize,alpha=input$alphameanp)
+              }
+              
+              if(input$forcemeanshape)    {
+                
+                if(input$meanpoints &input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
+                                alpha=input$alphameanp,shape=input$meanshapes)
+                if(input$meanpoints & input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
+                                size=input$meanpointsize,alpha=input$alphameanp,shape=input$meanshapes)
+              }
+              
             }
           }
         }

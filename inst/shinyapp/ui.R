@@ -686,8 +686,9 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                       selectInput('boxcolline', label ='Box Outlines Color',
                                   choices=colors(),multiple=FALSE, selectize=TRUE,selected="black")
                     ),
-                    sliderInput("boxplotalpha", "Boxplot Transparency:", min=0, max=1, value=c(0.2),step=0.01)
-                    
+                    sliderInput("boxplotalpha", "Boxplot Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                    sliderInput("boxplotoutlieralpha", "Outlier Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                    sliderInput("boxplotoutliersize", "Outliers Size:", min=0, max=6, value=c(1),step=0.1)
                   )
                   
                 )#fluidrow 
@@ -889,6 +890,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                                 value=c(0.5),step=0.01)
                                     
                   )
+                  
                   ) 
                   ),
         
@@ -908,6 +910,41 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
                     sliderInput("meanpointsize", "Mean(s) Point(s) Size:", min=0, max=6,
                                 value=1,step=1)
+                    ),
+
+                    conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
+                                      checkboxInput('forcemeanshape', 'Force Mean Shape',value = FALSE)
+                    ),
+                    conditionalPanel( " input.Mean!= 'None'&input.meanpoints & input.forcemeanshape ",
+                                      selectInput('meanshapes','Points Shape:',c(
+                                        "square open"           ,
+                                        "circle open"           ,
+                                        "triangle open"         ,
+                                        "plus"                  ,
+                                        "cross"                 ,
+                                        "diamond open"          ,
+                                        "triangle down open"    ,
+                                        "square cross"          ,
+                                        "asterisk"              ,
+                                        "diamond plus"          ,
+                                        "circle plus"           ,
+                                        "star"                  ,
+                                        "square plus"           ,
+                                        "circle cross"          ,
+                                        "square triangle"       ,
+                                        "square"                ,
+                                        "circle small"          ,
+                                        "triangle"              ,
+                                        "diamond"               ,
+                                        "circle"                ,
+                                        "bullet"                ,
+                                        "circle filled"         ,
+                                        "square filled"         ,
+                                        "diamond filled"        ,
+                                        "triangle filled"       ,
+                                        "triangle down filled" 
+                                      ),selected="diamond")  
+                                      
                     )
                     ),
                   column(
