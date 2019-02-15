@@ -1005,7 +1005,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     conditionalPanel( " input.Median!= 'None' ",
                     checkboxInput('medianlines', 'Show lines',value=TRUE),
                     checkboxInput('medianpoints', 'Show points'),
-                    conditionalPanel( " input.Median!= 'None'&input.medianlines ",
+                    conditionalPanel( " input.Median!= 'None' ",
                     sliderInput("alphamedianl", "Line Transparency:", min=0, max=1, value=c(0.5),step=0.01) ),
                     conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
                     sliderInput("alphamedianp", "Point Transparency:", min=0, max=1, value=c(0.5),step=0.01)
@@ -1018,11 +1018,45 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     conditionalPanel( " input.Median== 'Median/PI' ",
                     sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
                     ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianlines ",
+                    conditionalPanel( " input.Median!= 'None' ",
                     sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1)
                     ),
                     conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
                     sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1)
+                    ),
+                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
+                                      checkboxInput('forcemedianshape', 'Force Median Shape',value = FALSE)
+                    ),
+                    conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
+                                      selectInput('medianshapes','Points Shape:',c(
+                                        "square open"           ,
+                                        "circle open"           ,
+                                        "triangle open"         ,
+                                        "plus"                  ,
+                                        "cross"                 ,
+                                        "diamond open"          ,
+                                        "triangle down open"    ,
+                                        "square cross"          ,
+                                        "asterisk"              ,
+                                        "diamond plus"          ,
+                                        "circle plus"           ,
+                                        "star"                  ,
+                                        "square plus"           ,
+                                        "circle cross"          ,
+                                        "square triangle"       ,
+                                        "square"                ,
+                                        "circle small"          ,
+                                        "triangle"              ,
+                                        "diamond"               ,
+                                        "circle"                ,
+                                        "bullet"                ,
+                                        "circle filled"         ,
+                                        "square filled"         ,
+                                        "diamond filled"        ,
+                                        "triangle filled"       ,
+                                        "triangle down filled" 
+                                      ),selected="square")  
+                                      
                     )
                     
                   ),
@@ -1033,7 +1067,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                       conditionalPanel(
                                         " input.medianignorecol ",
                                         
-                conditionalPanel( " input.medianlines ",
+                conditionalPanel( " input.Median!= 'None' ",
                                   colourpicker::colourInput("colmedianl",
                                                             "Median Line(s) Color",
                                                             value="black",

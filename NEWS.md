@@ -7,7 +7,9 @@
 * separate color control for major and minor gridlines with the possibility to remove them
 * added annotation_logticks
 * added more options for boxplot outliers
-* added options to fore mean shapes
+* added options to force mean shapes
+* added options to force median shapes
+* fixed bug in median line not honoring transparency when Median\PI selected
 
 # ggquickeda 0.1.1
 * added options to control facets strip background fill and placement
