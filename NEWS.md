@@ -1,15 +1,17 @@
 # ggquickeda 0.1.2
 * bug fixed where in some cases plotdata did not apply filtering
 * updated and expanded merge multiple levels of a factor
-* added mappings by shape for points and associated custom legends and possibility to ignore it
+* added mappings by shape for points and linetypes of lines and associated custom legends and possibility to ignore it
 * added the possibility of dashed lines
-* changed the ui for points and lines
+* various UI improvements for points and lines
 * separate color control for major and minor gridlines with the possibility to remove them
 * added annotation_logticks
 * added more options for boxplot outliers
 * added options to force mean shapes
 * added options to force median shapes
 * fixed bug in median line not honoring transparency when Median\PI selected
+* various UI improvements for smooth, median and mean
+* added options to control size and transparency of smooth lines
 
 # ggquickeda 0.1.1
 * added options to control facets strip background fill and placement

@@ -2404,6 +2404,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         ###### Smoothing Section START
         if(input$Smooth!="None"){
+          smoothlinesize  <- input$smoothlinesize
+          smoothlinealpha <- input$smoothlinealpha
+          smoothCItransparency <- input$smoothCItransparency
           
           if(input$smoothmethod=="loess") {
           familyargument <- input$loessfamily
@@ -2430,50 +2433,75 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           levelsmooth<- input$smoothselevel
           if ( input$ignoregroup) {
             if (!input$smoothignorecol) {
-              if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth"&& input$weightin == 'None')
+                p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                     method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot,aes(group=NULL))
+                                     size=smoothlinesize,se=F,span=spanplot,aes(group=NULL))
               
-              if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
-                                     method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot,aes(group=NULL))
+              if (input$Smooth=="Smooth and SE"&& input$weightin == 'None')
+                p <- p + 
+                  geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                            method=smoothmethodargument,level=levelsmooth,
+                            method.args = methodsargument,
+                            size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))+
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                            method=smoothmethodargument,level=levelsmooth,
+                            method.args = methodsargument,
+                            size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))
               
-              if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth"&& input$weightin != 'None')
+                p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                     method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot,aes(group=NULL))+  
+                                     size=smoothlinesize,se=F,span=spanplot,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
               
-              if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
-                                     method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot,aes(group=NULL))+  
+              if (input$Smooth=="Smooth and SE" && input$weightin != 'None')
+                p <- p +       geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                               method=smoothmethodargument,level=levelsmooth,
+                               method.args = methodsargument,
+                               size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))+
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                            method=smoothmethodargument,level=levelsmooth,
+                            method.args = methodsargument,
+                            size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))++
                   aes_string(weight=input$weightin)
             }
             if (input$smoothignorecol) {
               colsmooth <- input$colsmooth
               if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=smoothmethodargument,
+                p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                     method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
+                                     size=smoothlinesize,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                                  method=smoothmethodargument,level=levelsmooth,
+                                  method.args = methodsargument,
+                                  size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                    method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))
+                                     size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))
               
-              if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth"&& input$weightin != 'None')
+                p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                     method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot,col=colsmooth,aes(group=NULL))+  
+                                     size=smoothlinesize,se=F,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
+                p <- p +   geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                                    method=smoothmethodargument,level=levelsmooth,
+                                    method.args = methodsargument,
+                                    size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                     method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+  
+                                     size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+  
                   aes_string(weight=input$weightin)
             }
             
@@ -2481,50 +2509,74 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           if ( !input$ignoregroup) {
             if (!input$smoothignorecol) {
-              if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth" && input$weightin == 'None')
+                p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                     method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot)
+                                     size=smoothlinesize,se=F,span=spanplot)
               
-              if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
+              if (input$Smooth=="Smooth and SE" && input$weightin == 'None')
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                                  method=smoothmethodargument,level=levelsmooth,
+                                  method.args = methodsargument,
+                                  size=smoothlinesize,se=T,span=spanplot)+  
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                    method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot)
+                                     size=smoothlinesize,se=T,span=spanplot)
               
-              if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth" && input$weightin != 'None')
+                p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                    method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot)+  
+                                     size=smoothlinesize,se=F,span=spanplot)+  
                   aes_string(weight=input$weightin)
               
-              if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
+              if (input$Smooth=="Smooth and SE" && input$weightin != 'None')
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                                     method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot)+  
+                                     size=smoothlinesize,se=T,span=spanplot)+
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                            method=smoothmethodargument,level=levelsmooth,
+                                     method.args = methodsargument,
+                                     size=smoothlinesize,se=T,span=spanplot)+  
                   aes_string(weight=input$weightin)
             }
             if (input$smoothignorecol) {
               colsmooth <- input$colsmooth
-              if (input$Smooth=="Smooth")
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth" && input$weightin == 'None')
+                p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                    method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot,col=colsmooth)
+                                     size=smoothlinesize,se=F,span=spanplot,col=colsmooth)
               
-              if (input$Smooth=="Smooth and SE")
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
+              if (input$Smooth=="Smooth and SE" && input$weightin == 'None')
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                                   method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot,col=colsmooth)
+                                     size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                            method=smoothmethodargument,level=levelsmooth,
+                            method.args = methodsargument,
+                            size=smoothlinesize,se=T,span=spanplot,col=colsmooth)
               
-              if (input$Smooth=="Smooth"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,
+              if (input$Smooth=="Smooth" && input$weightin != 'None')
+                p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                    method=smoothmethodargument,
                                      method.args = methodsargument,
-                                     size=1.5,se=F,span=spanplot,col=colsmooth)+  
+                                     size=smoothlinesize,se=F,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
               
-              if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p + geom_smooth(method=smoothmethodargument,level=levelsmooth,
+              if (input$Smooth=="Smooth and SE" && input$weightin != 'None')
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                                  method=smoothmethodargument,level=levelsmooth,
+                                  method.args = methodsargument,
+                                  size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+  
+                  geom_line(stat="smooth",alpha=smoothlinealpha,
+                                    method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
-                                     size=1.5,se=T,span=spanplot,col=colsmooth)+  
+                                     size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+  
                   aes_string(weight=input$weightin)
             }
             

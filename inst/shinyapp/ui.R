@@ -751,14 +751,16 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               
               
               #rqss quantile regression
-              tabPanel(
-                "Quantile Regression",
-                
+              tabPanel("Quantile Regression",
                 fluidRow(
                   column(12,hr()),
                   column(
                     3,
                     checkboxInput('Tauvalue', 'Dynamic and Preset Quantiles', value = FALSE),
+                    checkboxInput('ignoregroupqr', 'Ignore Mapped Group',value = TRUE)
+                    ),
+                  column(
+                    3,
                     h5("Preset Quantiles"),
                     checkboxInput('ninetyseventh', '97%'),
                     checkboxInput('up', '95%'),
@@ -768,12 +770,9 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     checkboxInput('low', '5%'),
                     checkboxInput('third', '3%')
                   ),
-                  column(
-                    5,
-                    sliderInput("Tau", label = "Dynamic Quantile Value:",
-                                min = 0, max = 1, value = 0.5, step = 0.01)  ,
-                    sliderInput("Penalty", label = "Spline sensitivity adjustment:",
-                                min = 0, max = 100, value = 1, step = 0.1)  ,
+                  column(3,
+                    sliderInput("Tau", label = "Dynamic Quantile Value:",min = 0, max = 1, value = 0.5, step = 0.01)  ,
+                    sliderInput("Penalty", label = "Spline sensitivity adjustment:",min = 0, max = 100, value = 1, step = 0.1)  ,
                     selectInput("Constraints", label = "Spline constraints:",
                                 choices = c("None"="N","Increasing"="I","Decreasing"="D","Convex"="V","Concave"="C",
                                             "Convex and Increasing"="VI", "Convex and Decreasing"= "VD",
@@ -781,15 +780,15 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                 selected = "N")
                     
                   ),
-                  column(
-                    3,
+                  column(3,
                     checkboxInput('ignorecolqr', 'Ignore Mapped Color'),
-                    checkboxInput('ignoregroupqr', 'Ignore Mapped Group',value = TRUE),
-                    checkboxInput('hidedynamic', 'Hide Dynamic Quantile'),
                     conditionalPanel(
-                      condition = "input.ignorecolqr" ,
-                      selectInput('colqr', label ='QR Color', choices=colors(),multiple=FALSE, selectize=TRUE,selected="black")
-                    ))
+                      " input.ignorecolqr ",
+                      colourpicker::colourInput("colqr", "QR Color", value="black",
+                                                showColour = "both",allowTransparent=FALSE,returnName=TRUE)),
+                    checkboxInput('hidedynamic', 'Hide Dynamic Quantile')
+                    
+                    )
                   
                 )#fluidrow
               ),
@@ -804,7 +803,16 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     radioButtons("Smooth", "Smooth:",
                                  c("Smooth" = "Smooth",
                                    "Smooth and SE" = "Smooth and SE",
-                                   "None" = "None"),selected="None")
+                                   "None" = "None"),selected="None"),
+                    conditionalPanel(
+                      " input.Smooth== 'Smooth and SE' ",
+                      sliderInput("smoothselevel", "Confidence Level:", min=0.5, max=0.99, value=c(0.95),step=0.01),
+                      sliderInput("smoothCItransparency", "CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                    ),
+                    conditionalPanel(
+                      " input.Smooth!= 'None' ",
+                      checkboxInput('ignoregroup', 'Ignore Mapped Group',value = TRUE)
+                    ) 
                   ),
                   column (
                     3, 
@@ -828,155 +836,183 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                       )
                     ) 
                   ),
-                  
                   column (
-                    3,  conditionalPanel( " input.Smooth!= 'None' ",
+                    3, 
+                    uiOutput("weight"),
+                    conditionalPanel( " input.Smooth!= 'None' ",                    
+                                      sliderInput("smoothlinesize", "Smooth Line(s) Size:", min=0, max=4,value=c(1.5),step=0.2),
+                                      sliderInput("smoothlinealpha", "Smooth Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
+                    )),
+                  
+                  column (3,
+                          conditionalPanel( " input.Smooth!= 'None' ",
                                           checkboxInput('smoothignorecol', 'Ignore Mapped Color'),
                                           conditionalPanel(
                                             " input.smoothignorecol ",
-                                          colourpicker::colourInput("colsmooth", "Smooth Color", value="black",
-                                                                    showColour = "both",allowTransparent=FALSE,returnName=TRUE),
-                                          div( actionButton("colsmoothreset", "Reset Smooth Color"),
-                                               style="text-align: right")
+                                            colourpicker::colourInput("colsmooth", "Smooth Line Color", value="black",
+                                                                      showColour = "both",allowTransparent=FALSE,returnName=TRUE),
+                                            div( actionButton("colsmoothreset", "Reset Smooth Color"),
+                                                 style="text-align: right")
                                           )
-                                          
-                                         
-                    )
-                  ),
-                  column (
-                    3, conditionalPanel(
-                      " input.Smooth!= 'None' ",
-                      checkboxInput('ignoregroup', 'Ignore Mapped Group',value = TRUE)
-                    ) ,
-                    conditionalPanel(
-                      " input.Smooth== 'Smooth and SE' ",
-                      sliderInput("smoothselevel", "Confidence Level:", min=0.5, max=0.99, value=c(0.95),step=0.01)
-                    ) ,
-                    
-                    uiOutput("weight"))
+                  )
+                  )
                   
                 )#fluidrow
               )
               ,
               ### Mean CI section
-              tabPanel(
-                "Mean (CI)",
-                
+              tabPanel("Mean (CI)",
                 fluidRow(
-                  column(12,hr()),
-                  column (3, 
-                          radioButtons("Mean", "Mean:",
-                                       c("Mean" = "Mean",
-                                         "Mean/CI" = "Mean/CI",
-                                         "None" = "None") ,selected="None"),
-                          conditionalPanel( " input.Mean!= 'None' ",
-                  checkboxInput('meanignoregroup', 'Ignore Mapped Group',value = TRUE)
-                          )
-                  ),
+                  column(12, hr()),
                   column (3,
-                    conditionalPanel( " input.Mean== 'Mean/CI' ",
-                      sliderInput("CI", "CI %:", min=0, max=1, value=c(0.95),step=0.01)
+                    radioButtons(
+                      "Mean",
+                      "Mean:",
+                      c(
+                        "Mean" = "Mean",
+                        "Mean/CI" = "Mean/CI",
+                        "None" = "None"
+                      ) ,
+                      selected = "None"
                     ),
-                    conditionalPanel( " input.Mean!= 'None' ",
-                                      checkboxInput('meanlines', 'Show lines', value=TRUE) ,
-                                      checkboxInput('meanpoints', 'Show points') ,
-                                      
-                  conditionalPanel( " input.Mean!= 'None'&input.meanlines ",                    
-                                    sliderInput("alphameanl", "Line Transparency:", min=0, max=1,
-                                                value=c(0.5),step=0.01) 
-                                    ),
-                  conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
-                                    sliderInput("alphameanp", "Point Transparency:", min=0, max=1,
-                                                value=c(0.5),step=0.01)
-                                    
-                  )
-                  
-                  ) 
-                  ),
-        
-                  column (3,
                     conditionalPanel(
                       " input.Mean== 'Mean/CI' ",
-                      numericInput( inputId = "errbar",label = "CI bar width:",
-                                    value = 2,min = 1,max = NA)    
+                      sliderInput(
+                        "CI",
+                        "CI %:",
+                        min = 0,
+                        max = 1,
+                        value = c(0.95),
+                        step = 0.01
+                      ),
+                      numericInput(
+                          inputId = "errbar",
+                          label = "CI bar width:",
+                          value = 2,
+                          min = 1,
+                          max = NA
+                      )
                     ),
-                    
-                    conditionalPanel(
-                      " input.Mean!= 'None'&input.meanlines ",
-                      sliderInput("meanlinesize", "Mean(s) Line(s) Size:", min=0, max=4,
-                                  value=1,step=1)
-                      
-                    ),
-                    conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
-                    sliderInput("meanpointsize", "Mean(s) Point(s) Size:", min=0, max=6,
-                                value=1,step=1)
-                    ),
-
-                    conditionalPanel( " input.Mean!= 'None'&input.meanpoints ",
-                                      checkboxInput('forcemeanshape', 'Force Mean Shape',value = FALSE)
-                    ),
-                    conditionalPanel( " input.Mean!= 'None'&input.meanpoints & input.forcemeanshape ",
-                                      selectInput('meanshapes','Points Shape:',c(
-                                        "square open"           ,
-                                        "circle open"           ,
-                                        "triangle open"         ,
-                                        "plus"                  ,
-                                        "cross"                 ,
-                                        "diamond open"          ,
-                                        "triangle down open"    ,
-                                        "square cross"          ,
-                                        "asterisk"              ,
-                                        "diamond plus"          ,
-                                        "circle plus"           ,
-                                        "star"                  ,
-                                        "square plus"           ,
-                                        "circle cross"          ,
-                                        "square triangle"       ,
-                                        "square"                ,
-                                        "circle small"          ,
-                                        "triangle"              ,
-                                        "diamond"               ,
-                                        "circle"                ,
-                                        "bullet"                ,
-                                        "circle filled"         ,
-                                        "square filled"         ,
-                                        "diamond filled"        ,
-                                        "triangle filled"       ,
-                                        "triangle down filled" 
-                                      ),selected="diamond")  
-                                      
-                    )
-                    ),
-                  column(
-                    3,
                     conditionalPanel(
                       " input.Mean!= 'None' ",
-                      checkboxInput('meanignorecol', 'Ignore Mapped Color') ,
-                      conditionalPanel( " input.meanignorecol ",
-        conditionalPanel( " input.meanlines ",
-                          colourpicker::colourInput("colmeanl",
-                                                    "Mean Line(s) Color",
-                                                    value="black",
-                                                    showColour = "both",
-                                                    allowTransparent=FALSE,returnName=TRUE)
-                          
-                          
-        ),
-        conditionalPanel( " input.meanpoints ",
-                          colourpicker::colourInput("colmeanp",
-                                                    "Mean Points(s) Color",
-                                                    value="black",
-                                                    showColour = "both",
-                                                    allowTransparent=FALSE,returnName=TRUE)
-                          
-                          
-        )
-        
-        )
+                      checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE)
                     )
-                  )#column
-                ) #fluidrow
-              ), # tab panel for mean
+                  ),#first column
+                  column (3,
+                    conditionalPanel(
+                      " input.Mean!= 'None' ",
+                      checkboxInput('meanlines', 'Show lines', value =TRUE)
+                    ),
+                    conditionalPanel(
+                      " input.Mean!= 'None'&input.meanlines ",
+                      sliderInput(
+                        "meanlinesize",
+                        "Mean(s) Line(s) Size:",
+                        min = 0,
+                        max = 4,
+                        value = 1,
+                        step = 1
+                      ),
+                      sliderInput(
+                        "alphameanl",
+                        "Mean(s) Line(s) Transparency:",
+                        min = 0,
+                        max = 1,
+                        value = c(0.5),
+                        step = 0.01
+                      )
+                    )
+                  ),#second column
+                column (3,
+                    conditionalPanel(
+                      " input.Mean!= 'None' ",
+                      checkboxInput('meanpoints', 'Show points')
+                    ),
+                    conditionalPanel(
+                      " input.Mean!= 'None'&input.meanpoints ",
+                      sliderInput(
+                        "meanpointsize",
+                        "Mean(s) Point(s) Size:",
+                        min = 0,
+                        max = 6,
+                        value = 1,
+                        step = 1
+                      ),
+                      sliderInput(
+                        "alphameanp",
+                        "Mean(s) Point(s) Transparency:",
+                        min = 0,
+                        max = 1,
+                        value = c(0.5),
+                        step = 0.01
+                      ),
+                      checkboxInput('forcemeanshape', 'Force Mean(s) Shape', value = FALSE)
+                    )
+                    
+                  ),#third column
+                column(3,
+                  conditionalPanel(
+                    " input.Mean!= 'None' ",
+                    checkboxInput('meanignorecol', 'Ignore Mapped Color') ,
+                    conditionalPanel(" input.meanignorecol ",
+                      conditionalPanel(
+                        " input.meanlines ",
+                        colourpicker::colourInput(
+                          "colmeanl",
+                          "Mean(s) Line(s) Color",
+                          value = "black",
+                          showColour = "both",
+                          allowTransparent = FALSE,
+                          returnName = TRUE)
+                      ),
+                      conditionalPanel(" input.meanpoints ",
+                        colourpicker::colourInput(
+                          "colmeanp",
+                          "Mean(s) Points(s) Color",
+                          value = "black",
+                          showColour = "both",
+                          allowTransparent = FALSE,
+                          returnName = TRUE)
+                      )
+                    ),
+                    conditionalPanel(
+                      " input.Mean!= 'None'&input.meanpoints & input.forcemeanshape ",
+                      selectInput('meanshapes','Mean(s) Point(s) Shape:',
+                                  c(
+                                    "square open"           ,
+                                    "circle open"           ,
+                                    "triangle open"         ,
+                                    "plus"                  ,
+                                    "cross"                 ,
+                                    "diamond open"          ,
+                                    "triangle down open"    ,
+                                    "square cross"          ,
+                                    "asterisk"              ,
+                                    "diamond plus"          ,
+                                    "circle plus"           ,
+                                    "star"                  ,
+                                    "square plus"           ,
+                                    "circle cross"          ,
+                                    "square triangle"       ,
+                                    "square"                ,
+                                    "circle small"          ,
+                                    "triangle"              ,
+                                    "diamond"               ,
+                                    "circle"                ,
+                                    "bullet"                ,
+                                    "circle filled"         ,
+                                    "square filled"         ,
+                                    "diamond filled"        ,
+                                    "triangle filled"       ,
+                                    "triangle down filled"
+                                  ),
+                                  selected = "diamond"
+                      )
+                    )
+                  )
+                )#column 4
+              ) #fluidrow
+            ), # tab panel for mean
  
                      
               ### median PI section
@@ -991,6 +1027,10 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                  c("Median" = "Median",
                                    "Median/PI" = "Median/PI",
                                    "None" = "None") ,selected="None") ,
+                    conditionalPanel( " input.Median== 'Median/PI' ",
+                                      sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
+                                      sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                    ),
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianvalues', 'Label Values?') ,
                                       checkboxInput('medianN', 'Label N?') ,
@@ -999,64 +1039,25 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                    ),
                   column (
                     3,
-                    conditionalPanel( " input.Median== 'Median/PI' ",
-                    sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01)
-                    ),
                     conditionalPanel( " input.Median!= 'None' ",
                     checkboxInput('medianlines', 'Show lines',value=TRUE),
-                    checkboxInput('medianpoints', 'Show points'),
+                    
                     conditionalPanel( " input.Median!= 'None' ",
-                    sliderInput("alphamedianl", "Line Transparency:", min=0, max=1, value=c(0.5),step=0.01) ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
-                    sliderInput("alphamedianp", "Point Transparency:", min=0, max=1, value=c(0.5),step=0.01)
-                    )
+                    sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1),
+                    sliderInput("alphamedianl", "Median(s) Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01) )
+
                      )
 
                   ),
                   column (
                     3,
-                    conditionalPanel( " input.Median== 'Median/PI' ",
-                    sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
-                    ),
-                    conditionalPanel( " input.Median!= 'None' ",
-                    sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1)
-                    ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
-                    sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1)
-                    ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
-                                      checkboxInput('forcemedianshape', 'Force Median Shape',value = FALSE)
-                    ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
-                                      selectInput('medianshapes','Points Shape:',c(
-                                        "square open"           ,
-                                        "circle open"           ,
-                                        "triangle open"         ,
-                                        "plus"                  ,
-                                        "cross"                 ,
-                                        "diamond open"          ,
-                                        "triangle down open"    ,
-                                        "square cross"          ,
-                                        "asterisk"              ,
-                                        "diamond plus"          ,
-                                        "circle plus"           ,
-                                        "star"                  ,
-                                        "square plus"           ,
-                                        "circle cross"          ,
-                                        "square triangle"       ,
-                                        "square"                ,
-                                        "circle small"          ,
-                                        "triangle"              ,
-                                        "diamond"               ,
-                                        "circle"                ,
-                                        "bullet"                ,
-                                        "circle filled"         ,
-                                        "square filled"         ,
-                                        "diamond filled"        ,
-                                        "triangle filled"       ,
-                                        "triangle down filled" 
-                                      ),selected="square")  
-                                      
+                      conditionalPanel( " input.Median!= 'None' ",
+                                      checkboxInput('medianpoints', 'Show points')
+   ),
+   conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
+                    sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1),
+                    sliderInput("alphamedianp", "Median(s) Point(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                    checkboxInput('forcemedianshape', 'Force Median(s) Shape',value = FALSE)
                     )
                     
                   ),
@@ -1064,12 +1065,10 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     3,
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianignorecol', 'Ignore Mapped Color'),
-                                      conditionalPanel(
-                                        " input.medianignorecol ",
-                                        
+                                      conditionalPanel(" input.medianignorecol ",
                 conditionalPanel( " input.Median!= 'None' ",
                                   colourpicker::colourInput("colmedianl",
-                                                            "Median Line(s) Color",
+                                                            "Median(s) Line(s) Color",
                                                             value="black",
                                                             showColour = "both",
                                                             allowTransparent=FALSE,returnName=TRUE)
@@ -1078,17 +1077,49 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                            ),
                conditionalPanel( " input.medianpoints ",
                                  colourpicker::colourInput("colmedianp",
-                                                           "Median Point(s) Color",
+                                                           "Median(s) Point(s) Color",
                                                            value="black",
                                                            showColour = "both",
                                                            allowTransparent=FALSE,returnName=TRUE)
                                  
                            
                            )
-                      )
+               ),
+               conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
+                                 selectInput('medianshapes','Median(s) Point(s) Shape:',c(
+                                   "square open"           ,
+                                   "circle open"           ,
+                                   "triangle open"         ,
+                                   "plus"                  ,
+                                   "cross"                 ,
+                                   "diamond open"          ,
+                                   "triangle down open"    ,
+                                   "square cross"          ,
+                                   "asterisk"              ,
+                                   "diamond plus"          ,
+                                   "circle plus"           ,
+                                   "star"                  ,
+                                   "square plus"           ,
+                                   "circle cross"          ,
+                                   "square triangle"       ,
+                                   "square"                ,
+                                   "circle small"          ,
+                                   "triangle"              ,
+                                   "diamond"               ,
+                                   "circle"                ,
+                                   "bullet"                ,
+                                   "circle filled"         ,
+                                   "square filled"         ,
+                                   "diamond filled"        ,
+                                   "triangle filled"       ,
+                                   "triangle down filled" 
+                                 ),selected="square")  
+                                 
+               )
+                      
                
                     )
-                  )
+                  )# column
                   
                 )#fluidrow
               ),
