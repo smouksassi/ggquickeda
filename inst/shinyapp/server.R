@@ -2998,50 +2998,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         ###### RQSS SECTION START  
         if (!input$ignoregroupqr) {
           if (!input$ignorecolqr) {
-            if (input$Tauvalue) {
+            if (input$qr=="dynamicquantile") {
               if(!input$hidedynamic){
-                p <- p +  stat_quantile(method = "rqss",quantiles =input$Tau,size=1.5,
-                                        linetype="solid", 
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))       
+                p <- p +  stat_quantile(method = "rqss",quantiles =input$Tau,size=input$qrlinesize,alpha=input$qrlinealpha,
+                                         
+                                        formula=y ~ qss(x, constraint= input$Constraints,lambda=input$Penalty))       
               }
               
-              if (input$mid)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.5,size=1.5,
-                                        linetype="solid",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$ninetieth)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.90,size=1,
-                                        linetype="dashed",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$tenth)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.1,size=1,
-                                        linetype="dashed",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$up)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.95,size=1,
-                                        linetype="dashed",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$low) 
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.05,size=1,
-                                        linetype="dashed",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$ninetyseventh)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.97,size=1,
-                                        linetype="dashed",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$third) 
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.03,size=1,
+                p <- p +  stat_quantile(method = "rqss",quantiles = as.numeric(input$predefquantiles),
+                                        size=input$qrlinesize,alpha=input$qrlinealpha,
                                         linetype="dashed",
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
@@ -3052,52 +3017,18 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           }
           if (input$ignorecolqr) {
             colqr <- input$colqr
-            if (input$Tauvalue) {
+            if (input$qr=="dynamicquantile") {
               if(!input$hidedynamic){
-                p <- p +  stat_quantile(method = "rqss",quantiles =input$Tau,size=1.5,
-                                        linetype="solid", col=colqr,
+                p <- p +  stat_quantile(method = "rqss",quantiles =input$Tau,size=input$qrlinesize,alpha=input$qrlinealpha,
+                                         col=colqr,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty)) 
               }
               
-              
-              if (input$mid)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.5,size=1.5,
-                                        linetype="solid", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$ninetieth)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.90,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$tenth)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.1,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$up)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.95,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$low) 
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.05,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$ninetyseventh)
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.97,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$third) 
-                p <- p +  stat_quantile(method = "rqss",quantiles = 0.03,size=1,
-                                        linetype="dashed", col=colqr,
+                p <- p +  stat_quantile(method = "rqss", quantiles = as.numeric(input$predefquantiles),
+                                        size=input$qrlinesize,alpha=input$qrlinealpha,
+                                         col=colqr,
+                                        linetype="dashed",
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
             }
@@ -3107,106 +3038,48 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         if (input$ignoregroupqr) {
           if (!input$ignorecolqr) {
-            if (input$Tauvalue) {
+            if (input$qr=="dynamicquantile") {
               if(!input$hidedynamic){
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles =input$Tau,size=1.5,
-                                        linetype="solid",
+                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles =input$Tau,
+                                        size=input$qrlinesize,alpha=input$qrlinealpha,
+                                        
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty)) 
               }
               
-              if (input$mid)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.5,size=1.5,
-                                        linetype="solid",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$ninetieth)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.90,size=1,
-                                        linetype="dashed", 
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$tenth)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.1,size=1,
-                                        linetype="dashed",
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$up)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.95,size=1,
-                                        linetype="dashed", 
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$low) 
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.05,size=1,
-                                        linetype="dashed", 
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$ninetyseventh)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.97,size=1,
-                                        linetype="dashed", 
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$third)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.03,size=1,
-                                        linetype="dashed", 
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))     
+              p <- p +  stat_quantile(aes(group=NULL),
+                                      method = "rqss",quantiles = as.numeric(input$predefquantiles),
+                                      linetype="dashed",
+                                      size=input$qrlinesize,alpha=input$qrlinealpha,
+                                      formula=y ~ qss(x, constraint= input$Constraints,
+                                                      lambda=input$Penalty)) 
+               
             }
           }
           if (input$ignorecolqr) {
             colqr <- input$colqr
-            if (input$Tauvalue) {
+            if (input$qr=="dynamicquantile") {
               if(!input$hidedynamic){
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles =input$Tau,size=1.5,
-                                        linetype="solid",col=colqr,
+                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",
+                                        quantiles =input$Tau,
+                                        size=input$qrlinesize,alpha=input$qrlinealpha,
+                                        col=colqr,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))     
               }
               
-              
-              if (input$mid)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.5,size=1.5,
-                                        linetype="solid", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$ninetieth)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.90,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$tenth)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.1,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$up)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.95,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$low) 
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.05,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              if (input$ninetyseventh)
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.97,size=1,
-                                        linetype="dashed", col=colqr,
-                                        formula=y ~ qss(x, constraint= input$Constraints,
-                                                        lambda=input$Penalty))
-              
-              if (input$third) 
-                p <- p +  stat_quantile(aes(group=NULL),method = "rqss",quantiles = 0.03,size=1,
-                                        linetype="dashed", col=colqr,
+              p <- p +  stat_quantile(aes(group=NULL),method = "rqss",
+                                      quantiles =as.numeric(input$predefquantiles),
+                                      size=input$qrlinesize,alpha=input$qrlinealpha,
+                                      linetype="dashed",
+                                      col=colqr,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
             }
           }
         }
         
+#aes(linetype = reorder(factor(..quantile..),..quantile.. ))
         
         ###### RQSS SECTION END
         

@@ -754,42 +754,79 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               tabPanel("Quantile Regression",
                 fluidRow(
                   column(12,hr()),
-                  column(
+                   column(
                     3,
-                    checkboxInput('Tauvalue', 'Dynamic and Preset Quantiles', value = FALSE),
-                    checkboxInput('ignoregroupqr', 'Ignore Mapped Group',value = TRUE)
+                    radioButtons("qr","Quantile Regression:",
+                      c("Slider and Predefined Quantile(s)" = "dynamicquantile",
+                        "None" = "None") ,
+                      selected = "None"
                     ),
-                  column(
-                    3,
-                    h5("Preset Quantiles"),
-                    checkboxInput('ninetyseventh', '97%'),
-                    checkboxInput('up', '95%'),
-                    checkboxInput('ninetieth', '90%'),
-                    checkboxInput('mid', '50%', value = FALSE),
-                    checkboxInput('tenth', '10%'),
-                    checkboxInput('low', '5%'),
-                    checkboxInput('third', '3%')
-                  ),
+                    checkboxInput('ignoregroupqr', 'Ignore Mapped Group',value = TRUE),
+                    
+                    conditionalPanel(
+                      " input.qr!= 'None' ",
+                      checkboxGroupInput("predefquantiles", "Predefined Quantiles" ,
+                                         c("97%" = 0.97,
+                                           "95%" = 0.95,
+                                           "90%" = 0.9,
+                                           "75%" = 0.75,
+                                           "50%" = 0.5,
+                                           "25%" = 0.25,
+                                           "10%" = 0.1,
+                                           "5%" = 0.05,
+                                           "3%" = 0.03
+                                         )
+                      )
+                    )
+
+
+                    ),
                   column(3,
-                    sliderInput("Tau", label = "Dynamic Quantile Value:",min = 0, max = 1, value = 0.5, step = 0.01)  ,
-                    sliderInput("Penalty", label = "Spline sensitivity adjustment:",min = 0, max = 100, value = 1, step = 0.1)  ,
+                         conditionalPanel(
+                           " input.qr!= 'None' ",
+                    sliderInput("Tau", label = "Quantile Slider:",min = 0, max = 1, value = 0.5, step = 0.01)  ,
+                    checkboxInput('hidedynamic', 'Hide Quantile Slider?'),
+                    sliderInput("Penalty", label = "Spline sensitivity adjustment:",min = 0, max = 100, value = 1, step = 0.1),
                     selectInput("Constraints", label = "Spline constraints:",
                                 choices = c("None"="N","Increasing"="I","Decreasing"="D","Convex"="V","Concave"="C",
                                             "Convex and Increasing"="VI", "Convex and Decreasing"= "VD",
                                             "Concave and Increasing"="CI","Concave and Decreasing"= "CD"),
                                 selected = "N")
+                    )
                     
+                  ),
+                  
+                  column(
+                    3,
+                    conditionalPanel(
+                      " input.qr!= 'None' ",
+                  sliderInput(
+                    "qrlinesize",
+                    "QR Line(s) Size:",
+                    min = 0,
+                    max = 4,
+                    value = 1.5,
+                    step = 0.1
+                  ),
+                  sliderInput(
+                    "qrlinealpha",
+                    "QR Line(s) Transparency:",
+                    min = 0,
+                    max = 1,
+                    value = c(0.5),
+                    step = 0.01
+                  )
+                    )
                   ),
                   column(3,
                     checkboxInput('ignorecolqr', 'Ignore Mapped Color'),
                     conditionalPanel(
                       " input.ignorecolqr ",
                       colourpicker::colourInput("colqr", "QR Color", value="black",
-                                                showColour = "both",allowTransparent=FALSE,returnName=TRUE)),
-                    checkboxInput('hidedynamic', 'Hide Dynamic Quantile')
+                                                showColour = "both",allowTransparent=FALSE,returnName=TRUE))
                     
                     )
-                  
+
                 )#fluidrow
               ),
               
@@ -840,7 +877,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     3, 
                     uiOutput("weight"),
                     conditionalPanel( " input.Smooth!= 'None' ",                    
-                                      sliderInput("smoothlinesize", "Smooth Line(s) Size:", min=0, max=4,value=c(1.5),step=0.2),
+                                      sliderInput("smoothlinesize", "Smooth Line(s) Size:", min=0, max=4,value=c(1.5),step=0.1),
                                       sliderInput("smoothlinealpha", "Smooth Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
                     )),
                   
@@ -910,8 +947,8 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                         "Mean(s) Line(s) Size:",
                         min = 0,
                         max = 4,
-                        value = 1,
-                        step = 1
+                        value = 1.5,
+                        step = 0.1
                       ),
                       sliderInput(
                         "alphameanl",
@@ -1043,7 +1080,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     checkboxInput('medianlines', 'Show lines',value=TRUE),
                     
                     conditionalPanel( " input.Median!= 'None' ",
-                    sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1),step=0.1),
+                    sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1.5),step=0.1),
                     sliderInput("alphamedianl", "Median(s) Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01) )
 
                      )
