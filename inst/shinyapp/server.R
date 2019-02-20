@@ -1592,21 +1592,23 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     
     if (length(input$y) < 2 ){
       items= c(None=".",items,"yvars", "yvalues")    
-      if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
+      if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
         nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
         items= c(items,nameofcombinedvariables)    
       }
     }
-    if (length(input$y) > 1 ){
+    if (length(input$y) > 1  ){
       items= c("yvars",None=".",items, "yvalues")    
-      if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
+      if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
         nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="")
         items= c(items,nameofcombinedvariables)    
       }
     }
-    
+
     selectInput("facetrowextrain", "Extra Row Split:",items)
   })
+  
+
   
   output$facetscales <- renderUI({
     items= c("fixed","free_x","free_y","free")   
@@ -1726,6 +1728,47 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               style = "bootstrap")
   })
   
+  output$userdefinedcolor <- renderUI({ 
+    lev <- 1:10
+    cols <- tableau10
+    if(input$themecolorswitcher=="themeuser"){
+      lapply(seq_along(lev), function(i) {
+        colourInput(inputId = paste0("col", lev[i]),label = paste0("Choose color", lev[i]), value = cols[i]
+        )        
+      })
+    }
+
+  })
+  
+  observeEvent(input$userdefinedcolorreset, {
+    lev <- 1:10
+    cols <- tableau10
+    lapply(seq_along(lev), function(i) {
+      do.call(what = "updateColourInput",
+              args = list(
+                session = session,
+                inputId = paste0("col", lev[i]),
+                value = cols[i]
+              )
+      )
+    })
+  })
+  
+  observeEvent(input$userdefinedcolorhighlight, {
+    lev <- 1:10
+    cols <- c("#D62728",rep("lightgray",9))
+    lapply(seq_along(lev), function(i) {
+      do.call(what = "updateColourInput",
+              args = list(
+                session = session,
+                inputId = paste0("col", lev[i]),
+                value = cols[i]
+              )
+      )
+    })
+  })
+  
+  
   
   
   plotObject <- reactive({
@@ -1760,6 +1803,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         scale_fill_discrete <- function(...) 
           scale_fill_manual(..., values = tableau10,drop=!input$themecolordrop)
       }
+      
+      if (input$themecolorswitcher=="themeuser"){
+        cols <- paste0("c(", paste0("input$col", 1:10, collapse = ", "), ")")
+        cols <- eval(parse(text = cols))
+        scale_colour_discrete <- function(...) 
+          scale_colour_manual(..., values = cols,drop=!input$themecolordrop)
+        scale_fill_discrete <- function(...) 
+          scale_fill_manual(..., values = cols,drop=!input$themecolordrop)
+      }
+      
+      
+      
+      
       if (input$themecolorswitcher=="themetableau20"){
         scale_colour_discrete <- function(...) 
           scale_colour_manual(..., values = tableau20,drop=!input$themecolordrop)
@@ -3007,7 +3063,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
                 p <- p +  stat_quantile(method = "rqss",quantiles = as.numeric(input$predefquantiles),
                                         size=input$qrlinesize,alpha=input$qrlinealpha,
-                                        linetype="dashed",
+                                        linetype="1F",
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
               
@@ -3028,7 +3084,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p +  stat_quantile(method = "rqss", quantiles = as.numeric(input$predefquantiles),
                                         size=input$qrlinesize,alpha=input$qrlinealpha,
                                          col=colqr,
-                                        linetype="dashed",
+                                        linetype="1F",
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
             }
@@ -3049,7 +3105,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
               p <- p +  stat_quantile(aes(group=NULL),
                                       method = "rqss",quantiles = as.numeric(input$predefquantiles),
-                                      linetype="dashed",
+                                      linetype="1F",
                                       size=input$qrlinesize,alpha=input$qrlinealpha,
                                       formula=y ~ qss(x, constraint= input$Constraints,
                                                       lambda=input$Penalty)) 
@@ -3071,7 +3127,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p +  stat_quantile(aes(group=NULL),method = "rqss",
                                       quantiles =as.numeric(input$predefquantiles),
                                       size=input$qrlinesize,alpha=input$qrlinealpha,
-                                      linetype="dashed",
+                                      linetype="1F",
                                       col=colqr,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
@@ -3079,7 +3135,6 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           }
         }
         
-#aes(linetype = reorder(factor(..quantile..),..quantile.. ))
         
         ###### RQSS SECTION END
         
@@ -3269,15 +3324,16 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       
       
       ###### Univariate SECTION END
+      allfacetsvariables<- c(input$facetrowin,input$facetrowextrain,input$facetcolin,input$facetcolextrain)
+      allfacetsvariables[which(duplicated(allfacetsvariables))]<- "." # make it not fail
       
-      
-      facets <- paste(input$facetrowin,
+      facets <- paste(allfacetsvariables[1],
                       '+',
-                      input$facetrowextrain,
+                      allfacetsvariables[2],
                       '~',
-                      input$facetcolin,
+                      allfacetsvariables[3],
                       '+',
-                      input$facetcolextrain)
+                      allfacetsvariables[4])
 
       ASTABLE <- ifelse(input$facetordering == "table", TRUE, FALSE)
       if (facets != '. + . ~ . + .' && !input$facetwrap) {

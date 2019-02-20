@@ -378,7 +378,7 @@ fluidPage(
                                colourpicker::colourInput("vlinecol1", "Line Color:", "gray",
                                                          showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("vlinecol1reset", "Reset Line Color"), style="text-align: right"),
-                               selectInput('vlinetype1','Line Type:',c("solid","dotted","dashed")),
+                               selectInput('vlinetype1','Line Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")),
                                sliderInput("vlinesize1", "Line Size:", min=0, max=4, value=c(1),step=0.1)
                                ),
               checkboxInput('customvline2', 'Vertical Line 2'),
@@ -387,7 +387,7 @@ fluidPage(
                                colourpicker::colourInput("vlinecol2", "Line Color:", "gray",
                                                          showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("vlinecol2reset", "Reset Line Color"), style="text-align: right"),
-                               selectInput('vlinetype2','Line Type:',c("solid","dotted","dashed")),
+                               selectInput('vlinetype2','Line Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")),
                                sliderInput("vlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) 
                                ),
               checkboxInput('customhline1', 'Horizontal Line 1'),
@@ -395,7 +395,7 @@ fluidPage(
                                numericInput("hline1",label = "",value = 1),
                                colourpicker::colourInput("hlinecol1", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("hlinecol1reset", "Reset Line Color"), style="text-align: right"),
-                               selectInput('hlinetype1','Line Type:',c("solid","dotted","dashed")),
+                               selectInput('hlinetype1','Line Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")),
                                sliderInput("hlinesize1", "Line Size:", min=0, max=4, value=c(1),step=0.1)
                                
                                ),
@@ -404,7 +404,7 @@ fluidPage(
                                numericInput("hline2",label = "",value = 1),
                                colourpicker::colourInput("hlinecol2", "Line Color:", "gray",showColour = "both",allowTransparent=TRUE,returnName=TRUE),
                                div( actionButton("hlinecol2reset", "Reset Line Color"), style="text-align: right"),
-                               selectInput('hlinetype2','Line Type:',c("solid","dotted","dashed")),
+                               selectInput('hlinetype2','Line Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")),
                                sliderInput("hlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) ),
               checkboxInput('showtarget', 'Add Target Window', value = FALSE) ,
               conditionalPanel(condition = "input.showtarget" , 
@@ -445,22 +445,25 @@ fluidPage(
                              "Tableau 20"  = "themetableau20",
                              "Color Blind" = "themecolorblind",
                              "Color Blind 2" = "themecolorblind2",
-                             "ggplot default" = "themeggplot")
+                             "ggplot default" = "themeggplot",
+                             "User defined" = "themeuser")
                            ,inline=TRUE),
+              h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
+  Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
+   Contact me if you want to add your own set of colors."),
+              uiOutput('userdefinedcolor'),
+              conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
+                               actionButton("userdefinedcolorreset", "Back to starting tableau10 colours", icon = icon("undo") ),
+                               actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
+                               
+              ),
+                           
               radioButtons("themecontcolorswitcher", "Continuous Color and Fill Themes:",
                            c("Red White Blue"  = "RedWhiteBlue",
                              "Red White Green"  = "RedWhiteGreen",
                              "ggplot default" = "themeggplot")
                            ,inline=TRUE),
-              
-h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
-  Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
-   Contact me if you want to add your own set of colors."),
-
-
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
-              
-              
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
               colourpicker::colourInput("majorgridlinescol", "Major Grid Lines Color:",
                                         value="#E5E5E5",

@@ -11,7 +11,9 @@
 * added options to force median shapes
 * fixed bug in median line not honoring transparency when Median\PI selected
 * various UI improvements for qr, smooth, median and mean
-* added options to control size and transparency of smooth and qr lines
+* added options to control size and transparency of smooth and qr lines and added predefined 25 and 75%
+* make faceting less prone to fail when user mistankenly choose the save variable in rows and columns
+* make user defined color/fill scales
 
 # ggquickeda 0.1.1
 * added options to control facets strip background fill and placement
