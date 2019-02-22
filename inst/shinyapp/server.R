@@ -392,7 +392,14 @@ function(input, output, session) {
     }
   })
   observe({
+    if (input$Median== 'Median/PI' ) {
+      updateCheckboxInput(session, "medianlines", value = TRUE)
+      shinyjs::disable("medianlines")
+    }
+  })
+  observe({
     if (input$Median== 'Median' ) {
+      shinyjs::enable("medianpoints")
       shinyjs::enable("medianpoints")
     }
   })

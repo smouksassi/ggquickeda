@@ -2,17 +2,15 @@
 * bug fixed where in some cases plotdata did not apply filtering
 * updated and expanded merge multiple levels of a factor
 * added mappings by shape for points and linetypes of lines and associated custom legends and possibility to ignore it
-* added the possibility of dashed lines
-* various UI improvements for points and lines
+* added the possibility of choosing more linetypes for lines
+* various UI improvements for points, lines, qr, smooth, median and mean
+* added options to control size and transparency of qr, smooth, median and mean lines and added predefined qr 25 and 75%
+* added options to force mean and median shapes
+* fixed bug in median line not honoring transparency when Median\PI selected with some UI tweaks
+* added more options for boxplot outliers (size and transparency)
 * separate color control for major and minor gridlines with the possibility to remove them
 * added annotation_logticks
-* added more options for boxplot outliers
-* added options to force mean shapes
-* added options to force median shapes
-* fixed bug in median line not honoring transparency when Median\PI selected
-* various UI improvements for qr, smooth, median and mean
-* added options to control size and transparency of smooth and qr lines and added predefined 25 and 75%
-* make faceting less prone to fail when user mistankenly choose the save variable in rows and columns
+* make faceting less prone to fail when user mistakenly choose the same variable in rows and columns
 * make user defined color/fill scales
 
 # ggquickeda 0.1.1
@@ -26,7 +24,7 @@
 * added styling options for horizontal and vertical reference lines
 * added more methods for the correlation coefficient
 * added p-values for slope(s) and adjusted Rsquare when a linear regression smoother is selected
-* fixed a bug where x and or y axix zoom would not work in some situations
+* fixed a bug where x and or y axis zoom would not work in some situations
 * added more stats from table1 as well as possibility to cut by quantiles `eqcut()`
 * added possibility to merge multiple levels of a factor
 * fixed bug where commas in label names broke up the factor levels when using "Recode/Reorder Categories"

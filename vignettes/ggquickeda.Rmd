@@ -38,7 +38,7 @@ Wait something is wrong! We forgot to tell the app that we want to group by ID.
 * Go Back to **Color/Group/Split/Size/Fill Mappings (?)** and select ID for the Group By:
 
 ![select sample_df.csv](./intro_3.png){width=100%}
-While we are on this tab let us map Color By: and Column Split: to Gender:
+While we are on this tab let us map Color By:, Column Split:, Linetype By: and Shape By: to Gender
 ![select sample_df.csv](./intro_4.png){width=100%}
 Now we want to add a loess trend line:
 * Go to  **Smooth/Linear/Logistic Regressions (?)** and click on the Smooth radio button:
@@ -48,7 +48,7 @@ After we made the plot we wanted, now we are interested to do a summary statisti
 * Change the mapped y variable(s) to Weight, Age and Race  
 * Go to **One Row by ID(s)** and select ID so we keep one row by ID  
 * Go to **Descriptive Stats** tab
-
+(notice how you can use html codes for line breaks, superscript and subscript in the Quick HTML Labels)
 ![select sample_df.csv](./intro_6.png){width=100%}
 
 Now launch the application on your own data and start exploring:

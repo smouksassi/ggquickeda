@@ -60,14 +60,14 @@ Once your data is uploaded the first column will be selected for the **y variabl
 ggquickeda can handle one or more y variable(s) selections but only one x variable.
 Note that the x variable should be different from those selected for y variable(s).
 Whether the user selects one or more y variable(s), the y variable(s) data will be automatically stacked (gathered) into two columns named yvalues (values) and yvars (identifier from which variable the value is coming from) and a scatter plot of yvalues versus x, faceted plot by yvars will be shown. Mixing categorical and continuous variables will render all yvalues to be treated as character. The order of the selected y variables(s) matters and can be changed via drag and drop. Selections can be removed by clicking on the small x.
-When no y variable(s) is selected a histogram (if x variable is continous) or a barplot (if x variable is categorical) is shown. 
+When no y variable(s) is selected a histogram (if x variable is continuous) or a barplot (if x variable is categorical) is shown. 
 
 ### Data Manipulations 
 After selecting your y variable(s) if any and x variable you can directly proceed into data manipulation within the **Inputs** tab using the following subtabs. Note that the subtabs execution is sequential i.e. each subtab actions are executed in the order they appear. If the user changes an upstream action this will reset the subsequent ones.
 
 * **Categorize/Cut:**
     + **Recode into Binned Categories:** Recode one or more continuous variable(s) into 2 to 10 categories as chosen with the **N of Cut Breaks** Slider.
-    + **Treat as Categories:** Treat as a continous/numeric variable as a factor.
+    + **Treat as Categories:** Treat as a continuous/numeric variable as a factor.
     + **Custom cuts of this variable:, defaults to min, median, max before any applied filtering:** cut a continuous/numeric variable into a set of bins delimited by the user selected values. By default the min, median, max are filled in int to the **varname Cuts** field and a two levels factor is generated: [min,median] (median,max]. User can change input a comma separated list for example:
 min,value1,value2,max and then the following bins will be generated:
 [min,value1] (value1,value2] (value2,max]. A Checkbox to treat the generated levels as continuous 0,1,... is provided to ease some plotting operations down the line.
@@ -87,7 +87,7 @@ Filter the data down to distinct values (one row) of the selected variable(s) wh
 Rounding a numerical variable to a specified number of digits. It can help to come up with a crude binning.
 * **Reorder Facets or axis Levels**
 Enables the user to reorder the yvalues using a statistical function (Median, Mean, Minimum or Maximum of another variable) with a checkbox to quickly reverse the order, if desired.
-The user can also manually drag and drop an order and change the name of the levels where \n is recongnized as a line break.
+The user can also manually drag and drop an order and change the name of the levels where \n is recognized as a line break.
 
 ### Graph Options
 Various options to tweak the plot:
@@ -95,7 +95,7 @@ Various options to tweak the plot:
 * Adding a title, subtitle and a caption
 
 ### How To
-A shorter version of this walkthrough within the app.
+A shorter version of this walk-through within the app.
 
 ### X/Y Plot
 Main plot is output here with the various options to generate the plot below the possibilities include:
@@ -122,7 +122,7 @@ Installing the package should handle the installation of all dependencies. There
 install.packages(c("shiny","shinyjs","colourpicker","ggplot2","scales","DT","tidyr","dplyr","Hmisc","quantreg","markdown","rlang","lazyeval","ggrepel","plotly","devtools"))
 ```
 
-The app can also be directly lauched using this command
+The app can also be directly launched using this command
 
 ```
 shiny::runGitHub('ggquickeda', 'smouksassi', subdir = 'inst/shinyapp')
