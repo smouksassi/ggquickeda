@@ -2202,7 +2202,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
               
             }
-          }
+            
+            if (input$Mean!="None" && input$meanvalues )  {
+              p <-   p   +
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,
+                             fun.y = mean, fontface = "bold",
+                             show.legend=FALSE,size=6)}
+            if (input$Mean!="None" && input$meanN)  {
+              p <-   p   +
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,
+                             fun.y = mean, fontface = "bold", 
+                             show.legend=FALSE,size=6)      
+            }
+            
+          }#do not ignore col do not ignore group
           
           
           if (input$meanignorecol) {
@@ -2221,16 +2234,25 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
               if(!input$forcemeanshape)    {
               
-
+                if(input$meanpoints&&input$pointsizein != 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",col=meancolp,alpha=input$alphameanp)
+                
+                
+                if(input$meanpoints&&input$pointsizein == 'None')           
+                  p <- p + 
+                    stat_sum_single(mean, geom = "point",
+                                    size=input$meanpointsize,
+                                    col=meancolp,alpha=input$alphameanp)
               
               }
               if(input$forcemeanshape)    {
-                if(input$meanpoints&input$pointsizein != 'None')           
+                if(input$meanpoints&&input$pointsizein != 'None')           
                   p <- p + 
                     stat_sum_single(mean, geom = "point",col=meancolp,alpha=input$alphameanp,shape=input$meanshapes)
                 
                 
-                if(input$meanpoints&input$pointsizein == 'None')           
+                if(input$meanpoints&&input$pointsizein == 'None')           
                   p <- p + 
                     stat_sum_single(mean, geom = "point",
                                     size=input$meanpointsize,
@@ -2257,11 +2279,11 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
               if(!input$forcemeanshape)    {
                 
-              if(input$meanpoints&input$pointsizein != 'None')           
+              if(input$meanpoints&&input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,alpha=input$alphameanp)
               
-              if(input$meanpoints&input$pointsizein == 'None')           
+              if(input$meanpoints&&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,
                               size=input$meanpointsize,alpha=input$alphameanp)
@@ -2269,7 +2291,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               }
               if(input$forcemeanshape)    {
                 
-                if(input$meanpoints&input$pointsizein != 'None')           
+                if(input$meanpoints&&input$pointsizein != 'None')           
                   p <- p + 
                     stat_sum_df("mean_cl_normal", geom = "point", col=meancolp,alpha=input$alphameanp,shape=input$meanshapes)
                 
@@ -2281,7 +2303,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               }
               
             }
-          }
+          
+            if (input$Mean!="None" && input$meanvalues )  {
+              p <-   p   +
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,
+                             fun.y = mean, fontface = "bold",col=meancolp,
+                             show.legend=FALSE,size=6)}
+            if (input$Mean!="None" && input$meanN)  {
+              p <-   p   +
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,
+                             fun.y = mean, fontface = "bold", col=meancolp,
+                             show.legend=FALSE,size=6)      
+            }
+            
+            }
         }
         
         if (input$meanignoregroup) {
@@ -2357,6 +2392,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               }
               
             }
+            
+            if (input$Mean!="None" && input$meanvalues )  {
+              p <-   p   +
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,aes(group=NULL),
+                             fun.y = mean, fontface = "bold",
+                             show.legend=FALSE,size=6)}
+            if (input$Mean!="None" && input$meanN)  {
+              p <-   p   +
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,aes(group=NULL),
+                             fun.y = mean, fontface = "bold",
+                             show.legend=FALSE,size=6)      
+            }
+            
           }
           
           
@@ -2435,6 +2483,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               }
               
             }
+            
+            if (input$Mean!="None" && input$meanvalues )  {
+              p <-   p   +
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,col=meancolp,aes(group=NULL),
+                             fun.y = mean, fontface = "bold",
+                             show.legend=FALSE,size=6)}
+            if (input$Mean!="None" && input$meanN)  {
+              p <-   p   +
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,col=meancolp,aes(group=NULL),
+                             fun.y = mean, fontface = "bold",
+                             show.legend=FALSE,size=6)      
+            }
+            
           }
         }
         ###### Mean section  END 

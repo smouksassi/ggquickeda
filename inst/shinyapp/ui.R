@@ -933,8 +933,11 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     ),
                     conditionalPanel(
                       " input.Mean!= 'None' ",
+                      checkboxInput('meanvalues', 'Label Values?') ,
+                      checkboxInput('meanN', 'Label N?') ,
                       checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE)
                     )
+                    
                   ),#first column
                   column (3,
                     conditionalPanel(
