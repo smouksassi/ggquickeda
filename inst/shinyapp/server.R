@@ -1646,6 +1646,24 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     
   })
   
+  
+  output$labeltext <- renderUI({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= items 
+    items= c("None",items, "yvars","yvalues") 
+    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    selectInput("labeltextin", "Label By:",items )
+    
+  })
+  
+  
+  
   output$pointshape <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -3196,7 +3214,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                if(input$addcorrcoeffpvalue){
                 p <- p +
                   stat_cor(data=plotdata,
-                           aes(label = paste(..r.label..,..p.value..,  sep = "~`,`~") ),
+                           aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
                            position = position_identity(),
                            method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
                 
@@ -3219,7 +3237,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if(input$addcorrcoeffpvalue){
               p <- p +
                 stat_cor(data=plotdata,
-                         aes(label = paste(..r.label..,..p.value..,  sep = "~`,`~") ,group=NULL),
+                         aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ,group=NULL),
                          position = position_identity(),
                          method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
               
@@ -3277,6 +3295,68 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         
         #### Corr coefficient END
+        
+        
+        #### data label Start
+        if(input$addcustomlabel&&input$labeltextin != 'None') {
+            p <- p + aes_string(label = input$labeltextin)
+          
+          if(!input$customlabelignorecol ) {
+          if(!input$addcustomlabelignoregroup) {
+            if(input$labelignoresize){
+              p <- p +geom_text_repel(data=plotdata, show.legend = input$customlabellegend,size=input$labelsize)
+             }
+            if(!input$labelignoresize){
+              p <- p +geom_text_repel(data=plotdata, show.legend = input$customlabellegend)
+            } 
+         }#do notignoregroup 
+            
+            if(input$addcustomlabelignoregroup) {
+              if(input$labelignoresize){
+                p <- p +geom_text_repel(data=plotdata,aes(group=NULL), show.legend = input$customlabellegend,size=input$labelsize)
+              }
+              if(!input$labelignoresize){
+                p <- p +geom_text_repel(data=plotdata,aes(group=NULL), show.legend = input$customlabellegend)
+                
+              }
+              
+            }#ignoregroup   
+            
+        }#do not corrignorecol
+        
+          if(input$customlabelignorecol ) {
+            if(!input$addcustomlabelignoregroup) {
+              if(input$labelignoresize){
+                p <- p +geom_text_repel(data=plotdata,color=input$customlabelcol, show.legend = input$customlabellegend,size=input$labelsize)
+                
+              }
+              if(!input$labelignoresize){
+                p <- p +geom_text_repel(data=plotdata,color=input$customlabelcol, show.legend = input$customlabellegend)
+                
+              }
+            }#do notignoregroup 
+            
+            if(input$addcustomlabelignoregroup) {
+              if(input$labelignoresize){
+                p <- p +geom_text_repel(data=plotdata,aes(group=NULL),color=input$customlabelcol, show.legend = input$customlabellegend,size=input$labelsize)
+                
+              }
+              
+              if(!input$labelignoresize){
+                p <- p +geom_text_repel(data=plotdata,aes(group=NULL),color=input$customlabelcol, show.legend = input$customlabellegend)
+                
+              }
+              
+            }#ignoregroup   
+            
+          }# corrignorecol
+          
+          
+          
+ }# addcustom label
+        #### data label END
+        
+        
         
         
         ###### KM SECTION START
@@ -3348,6 +3428,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       
       ###### KM SECTION END
       
+
       ###### Univariate SECTION START
       
       if (is.null(input$y) ) {

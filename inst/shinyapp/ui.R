@@ -655,12 +655,10 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               tabPanel(
                 "Color/Group/Split/Size/Fill Mappings",
                 fluidRow(
-                  column (3, uiOutput("colour"),uiOutput("group")),
-                  column (3, uiOutput("facet_col"),uiOutput("facet_row")),
-                  column (3, uiOutput("facet_col_extra"),uiOutput("facet_row_extra"),
-                          uiOutput("linetype")),
-                  column (3, uiOutput("pointsize"),uiOutput("fill"),
-                          uiOutput("pointshape")),
+                  column (3, uiOutput("colour"),uiOutput("group"),uiOutput("facet_col_extra")),
+                  column (3, uiOutput("facet_col"),uiOutput("facet_row"),uiOutput("facet_row_extra")),
+                 column (3, uiOutput("pointshape") ,uiOutput("linetype")),
+                  column (3, uiOutput("pointsize"),uiOutput("fill")),
                   column (12, h6("Make sure not to choose a variable that is in the y variable(s) list otherwise you will get an error Variable not found. These variables are stacked and become yvars and yvalues.This ensures that colour/group/etc. are kept intact when you apply a new filter or recode a variable. When you combine variables all mappings will be updated so you can choose the newly formed variable and as such the previous state will be lost." ))
                   
                 )
@@ -1304,13 +1302,55 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               ),##tabpanel corr
    
    tabPanel(
-     "Add Custom Label",
+     "Text Labels",
      fluidRow(
-       column (12, h6("addtext regarding labels" )),
        column (
-         3,
-         hr()
-       )
+         3,hr(),
+         checkboxInput('addcustomlabel',
+                       "Add Text Labels from Data?"),
+         checkboxInput('addcustomlabelignoregroup',"Ignore Mapped Group ?", value=TRUE),
+         checkboxInput('customlabellegend',"Show Legend ?", value=FALSE)
+       ),
+          column(3,hr(),
+              conditionalPanel(
+                " input.addcustomlabel ",
+                uiOutput("labeltext")
+                )
+       ),
+       column(3,hr(),
+              conditionalPanel(
+                " input.addcustomlabel ",
+       sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1),
+       checkboxInput('labelignoresize', 'Ignore Mapped Size')
+              )
+       ),
+       
+       column(3,hr(),
+              conditionalPanel(
+                " input.addcustomlabel ",
+                checkboxInput('customlabelignorecol', 'Ignore Mapped Color'),
+                conditionalPanel(
+                  " input.customlabelignorecol ",
+                  conditionalPanel(
+                    " input.addcustomlabel ",
+                    colourpicker::colourInput(
+                      "customlabelcol",
+                      "Text Labels Color",
+                      value =
+                        "black",
+                      showColour = "both",
+                      allowTransparent =
+                        FALSE,
+                      returnName = TRUE
+                    )
+                  )
+                  
+                )
+              )
+       ),
+       
+       column (12, h6("addtext regarding labels" ))
+       
      )
    )
    
