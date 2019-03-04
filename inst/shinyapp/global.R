@@ -3,6 +3,7 @@ suppressMessages({
   library(shinyjs)
   library(colourpicker)
   library(ggplot2)
+  library(ggpubr)
   library(scales)
   library(DT)
   library(tidyr)
@@ -36,6 +37,11 @@ give.n <- function(x){
   return(c(y = min(x)*1,  label = length(x))) 
 }
 
+mean.n <- function(x){
+  return(c(y = ifelse(mean(x)<0,mean(x),mean(x)),
+           label = round(mean(x),2))) 
+}
+
 
 tableau10 <- c("#1F77B4","#FF7F0E","#2CA02C","#D62728","#9467BD",
                "#8C564B","#E377C2","#7F7F7F","#BCBD22","#17BECF")
@@ -49,6 +55,25 @@ cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442",
                "#0072B2", "#D55E00", "#CC79A7")
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", 
                 "#0072B2", "#D55E00", "#CC79A7")
+
+
+manual_scale <- function(aesthetic, values = NULL, ...) {
+  if (rlang::is_missing(values)) {
+    values <- NULL
+  } else {
+    force(values)
+  }
+  pal <- function(n) {
+    if (n > length(values)) {
+      stop("Insufficient values in manual scale. ", n, " needed but only ",
+           length(values), " provided.", call. = FALSE)
+    }
+    values
+  }
+  discrete_scale(aesthetic, "manual", pal, ...)
+}
+
+
 
 which0 <- function(x) {
   result <- which(x)

@@ -463,6 +463,10 @@ fluidPage(
                              "Red White Green"  = "RedWhiteGreen",
                              "ggplot default" = "themeggplot")
                            ,inline=TRUE),
+              
+              numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0),
+              
+              
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
               colourpicker::colourInput("majorgridlinescol", "Major Grid Lines Color:",
@@ -537,8 +541,6 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                 "Points, Lines",
                 
                 fluidRow(
-                  
-                  column (12, hr()),
                   column (
                     3,
                     radioButtons("Points", "Points:",
@@ -653,9 +655,8 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               tabPanel(
                 "Color/Group/Split/Size/Fill Mappings",
                 fluidRow(
-                  column (12, hr()),
                   column (3, uiOutput("colour"),uiOutput("group")),
-                  column(3, uiOutput("facet_col"),uiOutput("facet_row")),
+                  column (3, uiOutput("facet_col"),uiOutput("facet_row")),
                   column (3, uiOutput("facet_col_extra"),uiOutput("facet_row_extra"),
                           uiOutput("linetype")),
                   column (3, uiOutput("pointsize"),uiOutput("fill"),
@@ -701,9 +702,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                 "Histograms/Density/Bar",
                 value = "histograms_density",
                 fluidRow(
-                  column (12, h6("A plot of the mapped x variable
-                                 will be produced when no y variable(s) are selected.This is still limited. Options are to be added as per users requests.")),
-                  
+                                   
                   column (
                     3,
                     radioButtons("histogramaddition", "Add a Histogram ?",
@@ -747,16 +746,17 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                                          "By Frequency" = "frequency",
                                                          "By Reverse Frequency" = "revfrequency"),inline=TRUE ) ,
                           checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
-                          )
+                          ),
                   
-                  )
+                  column (12, h6("A plot of the mapped x variable
+                                 will be produced when no y variable(s) are selected. Options are to be added as per users requests."))
+                  
+                  )#fluidrow
               ),
-              
               
               #rqss quantile regression
               tabPanel("Quantile Regression",
                 fluidRow(
-                  column(12,hr()),
                    column(
                     3,
                     radioButtons("qr","Quantile Regression:",
@@ -835,9 +835,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               
               tabPanel(
                 "Smooth/Linear/Logistic Regressions",
-                
                 fluidRow(
-                  column(12,hr()),
                   column (
                     3, 
                     radioButtons("Smooth", "Smooth:",
@@ -1170,25 +1168,31 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
               
               tabPanel(
                 "Kaplan-Meier (CI)",
-                
                 fluidRow(
-                  column(12,hr()),
-                  column (12, h6("KM curves support is limited. When a KM curve is added nothing else will be plotted (e.g. points, lines etc.).Color/Fill/Group/Facets are expected to work." )),
-                  column (
+                   column (
                     3,
                     radioButtons("KM", "KM:",
                                  c("KM" = "KM",
                                    "KM/CI" = "KM/CI",
-                                   "None" = "None") ,selected="None") 
-                  ),
-                  column (
-                    3,
-                    conditionalPanel(
+                                   "None" = "None") ,selected="None") ,
+                   conditionalPanel(
                       " input.KM== 'KM/CI' ",
                       sliderInput("KMCI", "KM CI:", min=0, max=1, value=c(0.95),step=0.01),
                       sliderInput("KMCItransparency", "KM CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
-                      
-                    )),
+                    ),
+                    conditionalPanel( " input.KM!= 'None' ",
+                    checkboxInput('KMignoregroup', 'Ignore Mapped Group',value = TRUE)
+                    )
+                    
+                  ),
+                  column (
+                    3,
+                    
+                    conditionalPanel( " input.KM!= 'None' ",
+                                      sliderInput("kmlinesize", "KM Line(s) Size:", min=0, max=6, value=c(1),step=0.1),
+                                      sliderInput("kmlinealpha", "KM Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
+                    )
+                    ),
                   
                   column (
                     3,
@@ -1198,27 +1202,63 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                   choices=c("None" ="identity","event"="event",
                                             "cumhaz"="cumhaz","cloglog"="cloglog"),
                                   multiple=FALSE, selectize=TRUE,selected="identity"),
-                      checkboxInput('censoringticks', 'Show Censoring Ticks?') 
-                    )
-                  ),
-                  column (
-                    3,
-                    conditionalPanel(
-                      " input.KM!= 'None' ",
+                      checkboxInput('censoringticks', 'Show Censoring Ticks?'),
                       checkboxInput('reversecenstoevent', 'Status is Censoring Flag ?') 
                     )
+                  ),
+                  column (3,
+                          conditionalPanel(
+                            " input.KM!= 'None' ",
+                            checkboxInput('kmignorecol', 'Ignore Mapped Color'),
+                            conditionalPanel(
+                              " input.kmignorecol ",
+                              conditionalPanel(
+                                " input.KM!= 'None' ",
+                                colourpicker::colourInput(
+                                  "colkml",
+                                  "KM Line(s) Color",
+                                  value =
+                                    "black",
+                                  showColour = "both",
+                                  allowTransparent =
+                                    FALSE,
+                                  returnName = TRUE
+                                )
+                              ),
+                              conditionalPanel(
+                                " input.censoringticks ",
+                                colourpicker::colourInput(
+                                  "colkmticks",
+                                  "Censoring Tick(s) Color",
+                                  value =
+                                    "black",
+                                  showColour = "both",
+                                  allowTransparent =
+                                    FALSE,
+                                  returnName = TRUE
+                                )
+                                
+                                
+                              )
+                            )
+                    
                   )
+                  ),#column
+                  column (12, h6("KM curves support is limited. When a KM curve is added nothing else will be plotted (e.g. points, lines etc.).Color/Fill/Group/Facets work." ))
+                  
+                  
                 )#fluidrow
               ), #tabpanel km
               ### KM section
               tabPanel(
                 "Correlation Coefficient",
                 fluidRow(
-                  column(4,hr(),
+                  column(3,hr(),
                   checkboxInput('addcorrcoeff',
-                      "Add Correlation Coefficient to the plot ?")
+                      "Add Correlation Coefficient to the plot ?"),
+                  checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE)
                   ),
-                  column(4,hr(),
+                  column(3,hr(),
                   conditionalPanel(
                     " input.addcorrcoeff ",
                   selectInput("corrtype", label = "Correlation Method:",
@@ -1228,13 +1268,49 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                           ) ,
                               selected = "pearson"))
                   ),
-                  column(4,hr(),
+                  column(3,hr(),
+                         conditionalPanel(
+                           " input.addcorrcoeff ",
+                           checkboxInput('addcorrcoeffpvalue',"Add p-value?", value=FALSE))
+                  ),
+                  column(3,hr(),
+                         conditionalPanel(
+                           " input.addcorrcoeff ",
+                           checkboxInput('corrignorecol', 'Ignore Mapped Color'),
+                           conditionalPanel(
+                             " input.corrignorecol ",
+                             conditionalPanel(
+                               " input.addcorrcoeff ",
+                               colourpicker::colourInput(
+                                 "corrcol",
+                                 "Correlation Color",
+                                 value =
+                                   "black",
+                                 showColour = "both",
+                                 allowTransparent =
+                                   FALSE,
+                                 returnName = TRUE
+                               )
+                             )
                   
-                  checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE)
+                  )
+                         )
                   )
                   
               )#fluidrow
-              )##tabpanel corr
+              ),##tabpanel corr
+   
+   tabPanel(
+     "Add Custom Label",
+     fluidRow(
+       column (12, h6("addtext regarding labels" )),
+       column (
+         3,
+         hr()
+       )
+     )
+   )
+   
         )#tabsetPanel
         )#tabPanel
         

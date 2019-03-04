@@ -27,6 +27,7 @@ Imports:
     ggplot2,
     ggpmisc,
     ggrepel (>= 0.7.0),
+    ggpubr,
     grDevices,
     grid,
     gridExtra,

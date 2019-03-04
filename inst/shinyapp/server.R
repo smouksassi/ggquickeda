@@ -1795,20 +1795,32 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       if (input$themecontcolorswitcher=="RedWhiteBlue"){
         scale_colour_continuous<- function(...) 
           scale_colour_gradient2(..., low = muted("red"), mid = "white",
-                                 high = muted("blue"), midpoint = 0, space = "Lab",
+                                 high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
+                                 na.value = "grey50", guide = "colourbar")
+        scale_fill_continuous<- function(...) 
+          scale_fill_gradient2(..., low = muted("red"), mid = "white",
+                                 high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
                                  na.value = "grey50", guide = "colourbar")
       }
       if (input$themecontcolorswitcher=="RedWhiteGreen"){
         scale_colour_continuous<- function(...) 
           scale_colour_gradient2(..., low = muted("red"), mid = "white",
-                                 high = muted("darkgreen"), midpoint = 0, space = "Lab",
+                                 high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
+                                 na.value = "grey50", guide = "colourbar")
+        
+        scale_fill_continuous<- function(...) 
+          scale_fill_gradient2(..., low = muted("red"), mid = "white",
+                                 high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
                                  na.value = "grey50", guide = "colourbar")
       }
+      
+
       if (input$themecolorswitcher=="themetableau10"){
         scale_colour_discrete <- function(...) 
           scale_colour_manual(..., values = tableau10,drop=!input$themecolordrop)
         scale_fill_discrete <- function(...) 
           scale_fill_manual(..., values = tableau10,drop=!input$themecolordrop)
+
       }
       
       if (input$themecolorswitcher=="themeuser"){
@@ -1842,48 +1854,10 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           scale_fill_manual(..., values = cbbPalette,drop=!input$themecolordrop)
       }
       
+
+      
+      
       if (!is.null(input$y) ){
-        
-        if(input$addcorrcoeff){
-          if( input$addcorrcoeffignoregroup){
-            listvarcor <- c(input$colorin,input$fillin,
-                            input$facetrowin,input$facetcolin,input$facetrowextrain,input$facetcolextrain)
-          }
-          if( !input$addcorrcoeffignoregroup){
-            listvarcor <- c(input$colorin,input$fillin,input$groupin,
-                            input$facetrowin,input$facetcolin,input$facetrowextrain,input$facetcolextrain)
-          }
-          listvarcor <- listvarcor[!is.element(listvarcor,c("None",".")) ]
-          listvarcor <- listvarcor[!duplicated(listvarcor) ]
-          listvarcor <- c("yvars",listvarcor)
-          if (!is.numeric(plotdata[,"yvalues"]) ){
-            cors <- NULL
-          }
-          if (!is.numeric(plotdata[,input$x]) ){
-            cors <- NULL
-          }
-          if (all( is.numeric(plotdata[,"yvalues"])&&is.numeric(plotdata[,input$x]) ) ){
-            if (length(listvarcor)<=1){
-              cors <-  plotdata %>%
-                group_by(!!!syms("yvars")) %>%
-                dplyr::summarize(corcoeff = round(cor(!!as.name(input$x),
-                                                      !!as.name("yvalues"),
-                                                      use="complete.obs",
-                                                      method =input$corrtype),2))
-            }
-            if (length(listvarcor)>=2){
-              cors <- plotdata %>%
-                group_by_at(.vars= listvarcor ) %>%
-                dplyr::summarize(corcoeff = round(cor(!!as.name(input$x),
-                                                      !!as.name("yvalues"),
-                                                      use="complete.obs",
-                                                      method =input$corrtype),2))
-            }
-            cors<-as.data.frame(cors)
-            
-          } 
-        }
-        
         
         
         p <- sourceable(ggplot(plotdata, aes_string(x=input$x, y="yvalues")))
@@ -3146,17 +3120,99 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         ###### RQSS SECTION END
         
         #### Corr coefficient Start
-        if(input$addcorrcoeff&&!is.null(cors)&&!input$addcorrcoeffignoregroup) {
-          p <- p +
-            geom_text_repel(data=data.frame(cors), aes(label=paste("italic(r) == ", corcoeff)), 
-                            x=Inf, y=Inf, parse=TRUE,size=5)
-        }
-        
-        if(input$addcorrcoeff&&!is.null(cors)&&input$addcorrcoeffignoregroup) {
-          p <- p +
-            geom_text_repel(data=data.frame(cors), aes(group=NULL,label=paste("italic(r) == ", corcoeff)), 
-                            x=Inf, y=Inf, parse=TRUE,size=5)
-        }
+ 
+          if(!input$corrignorecol ) {
+            if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
+           
+              if(!input$addcorrcoeffpvalue){
+                p <- p +
+                stat_cor(data=plotdata,
+                         aes(label = paste(..r.label..,  sep = "~`,`~")),
+                         position = position_identity(),
+                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+                
+              }
+               if(input$addcorrcoeffpvalue){
+                p <- p +
+                  stat_cor(data=plotdata,
+                           aes(label = paste(..r.label..,..p.value..,  sep = "~`,`~") ),
+                           position = position_identity(),
+                           method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+                
+              }
+
+          }#do notignoregroup do not corrignorecol
+          
+          if(input$addcorrcoeff&&input$addcorrcoeffignoregroup) {
+           
+            if(!input$addcorrcoeffpvalue){
+              p <- p +
+                stat_cor(data=plotdata,
+                         aes(label = paste(..r.label..,  sep = "~`,`~") ,group=NULL),
+                         position = position_identity(),
+                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+            
+            }
+            
+            
+            if(input$addcorrcoeffpvalue){
+              p <- p +
+                stat_cor(data=plotdata,
+                         aes(label = paste(..r.label..,..p.value..,  sep = "~`,`~") ,group=NULL),
+                         position = position_identity(),
+                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+              
+            }
+            
+            
+          }#ignoregroup do not corrignorecol 
+          }#do not corrignorecol 
+          
+        if(input$corrignorecol ) {
+          if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
+           
+            if(!input$addcorrcoeffpvalue){
+              p <- p +
+                stat_cor(data=plotdata,
+                         aes(label =paste(..r.label..,  sep = "~`,`~")),
+                         position = position_identity(),
+                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                         color=input$corrcol)
+            }
+
+            if(input$addcorrcoeffpvalue){
+              p <- p +
+                stat_cor(data=plotdata,
+                         aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
+                         position = position_identity(),
+                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                         color=input$corrcol)
+            }
+
+              
+            
+          }#do not ignoregroup corrignorecol
+          
+          if(input$addcorrcoeff&&input$addcorrcoeffignoregroup) {
+            if(!input$addcorrcoeffpvalue){
+            p <- p +
+              stat_cor(data=plotdata,
+                       aes(label =paste(..r.label..,  sep = "~`,`~"),group=NULL),
+                       position = position_identity(),
+                       method = input$corrtype, geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                       color= input$corrcol)
+            }
+            if(input$addcorrcoeffpvalue){
+            p <- p +
+              stat_cor(data=plotdata,
+                       aes(label =paste(..r.label..,..p.label..,  sep = "~`,`~"), group=NULL),
+                       position = position_identity(),
+                       method = input$corrtype, geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                       color= input$corrcol)
+            }
+          }#ignoregroup input$corrignorecol
+          
+        }#input$corrignorecol 
         
         
         #### Corr coefficient END
@@ -3178,10 +3234,18 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p + aes_string(color=input$colorin)
           if (input$fillin != 'None')
             p <- p + aes_string(fill=input$fillin)
-          if (input$groupin != 'None' & !is.factor(plotdata[,input$x]))
-            p <- p + aes_string(group=input$groupin)
+
+          if( !input$KMignoregroup){
+             if (input$groupin != 'None' && !is.factor(plotdata[,input$x]) ){ 
+                  p <- p + aes_string(group=input$groupin)
+             }
+            }
+          
+          
         }
-        p <- p + xlab(input$x)
+        
+        if (!input$kmignorecol){
+          
         if (input$KM=="KM/CI") {
           p <- p +
             geom_kmband(alpha=input$KMCItransparency,conf.int = input$KMCI,trans=input$KMtrans)
@@ -3190,15 +3254,39 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         if (input$KM!="None") {
           p  <- p +
-            geom_smooth(stat="km",trans=input$KMtrans)
+            geom_line(stat="km",trans=input$KMtrans ,size = input$kmlinesize, alpha = input$kmlinealpha)
         
         if (input$censoringticks) {
           p  <- p +
             geom_kmticks(trans=input$KMtrans)
         }
         }
-        ###### KM SECTION END
+        }
+        if (input$kmignorecol){
+          
+          if (input$KM=="KM/CI") {
+            p <- p +
+              geom_kmband(alpha=input$KMCItransparency,conf.int = input$KMCI,trans=input$KMtrans)
+          }
+          
+          
+          if (input$KM!="None") {
+            p  <- p +
+              geom_line(stat="km",trans=input$KMtrans ,size = input$kmlinesize, alpha = input$kmlinealpha,color=input$colkml)
+            
+            if (input$censoringticks) {
+              p  <- p +
+                geom_kmticks(trans=input$KMtrans,color=input$colkmticks)
+            }
+          }
+        }
+        
+        
+        p <- p + xlab(input$x)
       } 
+      
+      ###### KM SECTION END
+      
       ###### Univariate SECTION START
       
       if (is.null(input$y) ) {
@@ -3676,12 +3764,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       if (input$themeaspect)
         p <-    p+
         theme(aspect.ratio=input$aspectratio)
-      
-      if (input$themecolorswitcher=="themeggplot"){
-        p <-  p +
-          scale_colour_hue(drop=!input$themecolordrop)+
-          scale_fill_hue(drop=!input$themecolordrop)
+
+      if (input$themecolorswitcher=="themeggplot"&&!is.numeric(plotdata[,input$colorin])){
+        p <-  p + scale_colour_hue(drop=!input$themecolordrop)
+        p <-  p + scale_fill_hue(drop=!input$themecolordrop)
       }
+      
+      if (input$themecontcolorswitcher=="themeggplot"&&is.numeric(plotdata[,input$colorin])){
+        p <-  p + scale_colour_gradient()
+        p <-  p + scale_fill_gradient()
+      }
+      
+      
+
       
       if (grepl("^\\s+$", input$ylab) ){
         p <- p + theme(
