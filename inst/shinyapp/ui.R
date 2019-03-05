@@ -1314,7 +1314,9 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
           column(3,hr(),
               conditionalPanel(
                 " input.addcustomlabel ",
-                uiOutput("labeltext")
+                uiOutput("labeltext"),
+                checkboxInput('scalesizearea',"Scale Size by Area ?", value=FALSE),
+                sliderInput("scalesizearearange", "Label Size Range:", min=0, max=10, value=c(1,6))
                 )
        ),
        column(3,hr(),

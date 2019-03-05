@@ -3350,8 +3350,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             }#ignoregroup   
             
           }# corrignorecol
-          
-          
+           
+            if(!input$scalesizearea){
+              p <- p +  scale_size(range =c(input$scalesizearearange[1], input$scalesizearearange[2]))   
+              
+            }   
+          if(input$scalesizearea){
+            p <- p +  scale_size_area(max_size =  input$scalesizearearange[2])   
+            
+          }
           
  }# addcustom label
         #### data label END
