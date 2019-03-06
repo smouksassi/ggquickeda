@@ -2557,7 +2557,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
               if (input$Smooth=="Smooth and SE"&& input$weightin == 'None')
                 p <- p + 
-                  geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                  geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                             method=smoothmethodargument,level=levelsmooth,
                             method.args = methodsargument,
                             size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))+
@@ -2574,14 +2574,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE" && input$weightin != 'None')
-                p <- p +       geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p +       geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                method=smoothmethodargument,level=levelsmooth,
                                method.args = methodsargument,
                                size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))+
                   geom_line(stat="smooth",alpha=smoothlinealpha,
                             method=smoothmethodargument,level=levelsmooth,
                             method.args = methodsargument,
-                            size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))++
+                            size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))+
                   aes_string(weight=input$weightin)
             }
             if (input$smoothignorecol) {
@@ -2593,7 +2593,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                      size=smoothlinesize,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
               
               if (input$Smooth=="Smooth and SE")
-                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                   method=smoothmethodargument,level=levelsmooth,
                                   method.args = methodsargument,
                                   size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+
@@ -2610,7 +2610,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE"& input$weightin != 'None')
-                p <- p +   geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p +   geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                     method=smoothmethodargument,level=levelsmooth,
                                     method.args = methodsargument,
                                     size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+
@@ -2632,7 +2632,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                      size=smoothlinesize,se=F,span=spanplot)
               
               if (input$Smooth=="Smooth and SE" && input$weightin == 'None')
-                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                   method=smoothmethodargument,level=levelsmooth,
                                   method.args = methodsargument,
                                   size=smoothlinesize,se=T,span=spanplot)+  
@@ -2649,7 +2649,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE" && input$weightin != 'None')
-                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                      method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=smoothlinesize,se=T,span=spanplot)+
@@ -2668,7 +2668,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                      size=smoothlinesize,se=F,span=spanplot,col=colsmooth)
               
               if (input$Smooth=="Smooth and SE" && input$weightin == 'None')
-                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                    method=smoothmethodargument,level=levelsmooth,
                                      method.args = methodsargument,
                                      size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+
@@ -2685,7 +2685,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   aes_string(weight=input$weightin)
               
               if (input$Smooth=="Smooth and SE" && input$weightin != 'None')
-                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,col=NA,
+                p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                   method=smoothmethodargument,level=levelsmooth,
                                   method.args = methodsargument,
                                   size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+  
