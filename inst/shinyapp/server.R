@@ -1723,6 +1723,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
   outputOptions(output, "pointsize", suspendWhenHidden=FALSE)
   outputOptions(output, "fill", suspendWhenHidden=FALSE)
   outputOptions(output, "weight", suspendWhenHidden=FALSE)
+  outputOptions(output, "linetype", suspendWhenHidden=FALSE)
+  outputOptions(output, "labeltext", suspendWhenHidden=FALSE)
+  outputOptions(output, "pointshape", suspendWhenHidden=FALSE)
   
   
   
@@ -1815,21 +1818,13 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           scale_colour_gradient2(..., low = muted("red"), mid = "white",
                                  high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
                                  na.value = "grey50", guide = "colourbar")
-        scale_fill_continuous<- function(...) 
-          scale_fill_gradient2(..., low = muted("red"), mid = "white",
-                                 high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
-                                 na.value = "grey50", guide = "colourbar")
       }
       if (input$themecontcolorswitcher=="RedWhiteGreen"){
         scale_colour_continuous<- function(...) 
           scale_colour_gradient2(..., low = muted("red"), mid = "white",
                                  high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
                                  na.value = "grey50", guide = "colourbar")
-        
-        scale_fill_continuous<- function(...) 
-          scale_fill_gradient2(..., low = muted("red"), mid = "white",
-                                 high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
-                                 na.value = "grey50", guide = "colourbar")
+
       }
       
 
@@ -3304,19 +3299,21 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           if(!input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p +geom_text_repel(data=plotdata, show.legend = input$customlabellegend,size=input$labelsize)
+              p <- p + stat_identity(data=plotdata, geom=input$geomlabel,show.legend = input$customlabellegend,
+                                     size=input$labelsize)
              }
             if(!input$labelignoresize){
-              p <- p +geom_text_repel(data=plotdata, show.legend = input$customlabellegend)
+              p <- p + stat_identity(data=plotdata,geom=input$geomlabel, show.legend = input$customlabellegend)
             } 
          }#do notignoregroup 
             
             if(input$addcustomlabelignoregroup) {
               if(input$labelignoresize){
-                p <- p +geom_text_repel(data=plotdata,aes(group=NULL), show.legend = input$customlabellegend,size=input$labelsize)
+                p <- p + stat_identity(data=plotdata,aes(group=NULL), geom=input$geomlabel, show.legend = input$customlabellegend,
+                                       size=input$labelsize)
               }
               if(!input$labelignoresize){
-                p <- p +geom_text_repel(data=plotdata,aes(group=NULL), show.legend = input$customlabellegend)
+                p <- p + stat_identity(data=plotdata,aes(group=NULL),geom=input$geomlabel, show.legend = input$customlabellegend)
                 
               }
               
@@ -3327,39 +3324,30 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           if(input$customlabelignorecol ) {
             if(!input$addcustomlabelignoregroup) {
               if(input$labelignoresize){
-                p <- p +geom_text_repel(data=plotdata,color=input$customlabelcol, show.legend = input$customlabellegend,size=input$labelsize)
+                p <- p + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend,
+                                       size=input$labelsize)
                 
               }
               if(!input$labelignoresize){
-                p <- p +geom_text_repel(data=plotdata,color=input$customlabelcol, show.legend = input$customlabellegend)
+                p <- p  + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend)
                 
               }
             }#do notignoregroup 
             
             if(input$addcustomlabelignoregroup) {
               if(input$labelignoresize){
-                p <- p +geom_text_repel(data=plotdata,aes(group=NULL),color=input$customlabelcol, show.legend = input$customlabellegend,size=input$labelsize)
-                
+                p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend,
+                                       size=input$labelsize)
               }
               
               if(!input$labelignoresize){
-                p <- p +geom_text_repel(data=plotdata,aes(group=NULL),color=input$customlabelcol, show.legend = input$customlabellegend)
-                
+                p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend )                
               }
               
             }#ignoregroup   
             
           }# corrignorecol
-           
-            if(!input$scalesizearea){
-              p <- p +  scale_size(range =c(input$scalesizearearange[1], input$scalesizearearange[2]))   
-              
-            }   
-          if(input$scalesizearea){
-            p <- p +  scale_size_area(max_size =  input$scalesizearearange[2])   
-            
-          }
-          
+
  }# addcustom label
         #### data label END
         
@@ -3914,17 +3902,39 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         p <-    p+
         theme(aspect.ratio=input$aspectratio)
 
+      if(input$colorin!="None"){
+      
       if (input$themecolorswitcher=="themeggplot"&&!is.numeric(plotdata[,input$colorin])){
         p <-  p + scale_colour_hue(drop=!input$themecolordrop)
-        p <-  p + scale_fill_hue(drop=!input$themecolordrop)
+      }
+        
+        if (input$themecontcolorswitcher=="themeggplot"&&is.numeric(plotdata[,input$colorin])){
+          p <-  p + scale_colour_gradient2(midpoint = input$colormidpoint)
+        }
       }
       
-      if (input$themecontcolorswitcher=="themeggplot"&&is.numeric(plotdata[,input$colorin])){
-        p <-  p + scale_colour_gradient()
-        p <-  p + scale_fill_gradient()
+      
+      if(input$fillin!="None"){
+        if (input$themecolorswitcher=="themeggplot"&&!is.numeric(plotdata[,input$fillin])){
+          p <-  p + scale_fill_hue(drop=!input$themecolordrop)
+          
+        }
+        
+        if (input$themecontcolorswitcher=="themeggplot"&&is.numeric(plotdata[,input$fillin])){
+          p <-  p + scale_fill_gradient2(midpoint = input$colormidpoint)
+        }
       }
+        
       
-      
+      if(input$pointsizein!="None"){
+        
+        if(!input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
+          p <- p +  scale_size(range =c(input$scalesizearearange1[1], input$scalesizearearange1[2]))   }   
+        if(input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
+          p <- p +  scale_size_area(max_size =  input$scalesizearearange2[1])   }
+        
+      }
+
 
       
       if (grepl("^\\s+$", input$ylab) ){
