@@ -936,8 +936,8 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                       numericInput(
                           inputId = "errbar",
                           label = "CI bar width:",
-                          value = 2,
-                          min = 1,
+                          value = 0.75,
+                          min = 0.1,
                           max = NA
                       )
                     ),
@@ -945,7 +945,13 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                       " input.Mean!= 'None' ",
                       checkboxInput('meanvalues', 'Label Values?') ,
                       checkboxInput('meanN', 'Label N?') ,
-                      checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE)
+                      checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE),
+                      selectInput("positionmean", label = "Mean positioning for overlap:",
+                                  choices = c(
+                                    "Default"="position_identity()",
+                                    "Side By Side"="position_dodge2(width = 0.75)"
+                                    ),selected = "position_identity()")
+                      
                     )
                     
                   ),#first column
