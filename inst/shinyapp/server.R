@@ -1878,9 +1878,10 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         if (input$showtarget)  {
           if ( is.numeric( plotdata[,input$x] ) && is.numeric( plotdata[,"yvalues"] ) ) {
             p <-   p   +
-              annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget,
-                       ymax = input$uppertarget,fill=input$targetcol,
-                       alpha =input$targetopacity)  
+              annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget1,
+                       ymax = input$upperytarget1,fill=input$targetcol1,
+                       alpha =input$targetopacity1)
+
           } 
           
           if ( !is.numeric( plotdata[,input$x] )&& is.numeric( plotdata[,"yvalues"] ) ) {
@@ -1888,12 +1889,36 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             xhigh <- levels( as.factor( plotdata[,input$x] ) )[length(levels( as.factor( plotdata[,input$x] ) ))]
             p <-   p   +
               annotate("rect", xmin = xlow, xmax = xhigh,
-                       ymin = input$lowerytarget,
-                       ymax = input$uppertarget,fill=input$targetcol,
-                       alpha =input$targetopacity)  
-          } 
+                       ymin = input$lowerytarget1,
+                       ymax = input$upperytarget1,fill=input$targetcol1,
+                       alpha =input$targetopacity1)
+
+          }
           
         } 
+        
+        if (input$showtarget2)  {
+          if ( is.numeric( plotdata[,input$x] ) && is.numeric( plotdata[,"yvalues"] ) ) {
+           
+            p <-   p   +
+              annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget2,
+                       ymax = input$upperytarget2,fill=input$targetcol2,
+                       alpha =input$targetopacity2)  
+          } 
+          
+          if ( !is.numeric( plotdata[,input$x] )&& is.numeric( plotdata[,"yvalues"] ) ) {
+            xlow  <-  levels( as.factor( plotdata[,input$x] ) )[1]
+            xhigh <- levels( as.factor( plotdata[,input$x] ) )[length(levels( as.factor( plotdata[,input$x] ) ))]
+            
+            p <-   p   +
+              annotate("rect", xmin = xlow, xmax = xhigh,
+                       ymin = input$lowerytarget2,
+                       ymax = input$upperytarget2,fill=input$targetcol2,
+                       alpha =input$targetopacity2)  
+          }
+          
+        } 
+        
         
         
         if (input$colorin != 'None')

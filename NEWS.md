@@ -1,7 +1,7 @@
 # ggquickeda 0.1.2.9999
 * UI and options improvements for KM (line sizes, transparency, ignore group and color)
 * Using stat_cor from ggpubr to compute correlations for more flexibility and margin in facets
-* added ability to ignore gorouping and or ignore color mapping for correlation coefficient
+* added ability to ignore grouping and or ignore color mapping for correlation coefficient
 
 
 # ggquickeda 0.1.2

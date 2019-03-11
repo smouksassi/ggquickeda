@@ -406,15 +406,24 @@ fluidPage(
                                div( actionButton("hlinecol2reset", "Reset Line Color"), style="text-align: right"),
                                selectInput('hlinetype2','Line Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")),
                                sliderInput("hlinesize2", "Line Size:", min=0, max=4, value=c(1),step=0.1) ),
-              checkboxInput('showtarget', 'Add Target Window', value = FALSE) ,
+              checkboxInput('showtarget', 'Add Target Window 1', value = FALSE) ,
               conditionalPanel(condition = "input.showtarget" , 
-                               numericInput("uppertarget",label = "Upper Target Value",
+                               numericInput("upperytarget1",label = "Upper Target Value 1:",
                                             value = 1,min=NA,max=NA,width='50%'),
-                               numericInput("lowerytarget",label = "Lower Target Value",
+                               numericInput("lowerytarget1",label = "Lower Target Value 1:",
                                             value = 1,min=NA,max=NA,width='50%'),
-                               colourpicker::colourInput("targetcol", "Target  Color:", "gray",showColour = "both",returnName=TRUE),
-                               sliderInput("targetopacity", label = "Target Opacity:",
-                                           min = 0, max = 1, value = 0.7, step = 0.05)
+                               colourpicker::colourInput("targetcol1", "Target  Color 1:", "gray",showColour = "both",returnName=TRUE),
+                               sliderInput("targetopacity1", label = "Target Opacity 1:", min = 0, max = 1, value = 0.7, step = 0.05)
+              ),
+              checkboxInput('showtarget2', 'Add Target Window 2', value = FALSE) ,
+              
+              conditionalPanel(condition = "input.showtarget2" , 
+                               numericInput("upperytarget2",label = "Upper Target Value 2:",
+                                            value = 1,min=NA,max=NA,width='50%'),
+                               numericInput("lowerytarget2",label = "Lower Target Value 2:",
+                                            value = 1,min=NA,max=NA,width='50%'),
+                               colourpicker::colourInput("targetcol2", "Target  Color 2:", "gray",showColour = "both",returnName=TRUE),
+                               sliderInput("targetopacity2", label = "Target Opacity 2", min = 0, max = 1, value = 0.7, step = 0.05)
               ),
               checkboxInput('showtargettext', 'Add Target Text', value = FALSE),
               conditionalPanel(condition = "input.showtargettext" ,
@@ -428,6 +437,8 @@ fluidPage(
                                numericInput("targettextypos",label = "Target Text Y Position",
                                             value = 1,min=NA,max=NA,width='50%')
                                )
+              
+              
               
             ),
             tabPanel(
