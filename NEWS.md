@@ -2,8 +2,9 @@
 * UI and options improvements for KM (line sizes, transparency, ignore group and color)
 * Using stat_cor from ggpubr to compute correlations for more flexibility and margin in facets
 * added ability to ignore grouping and or ignore color mapping for correlation coefficient
-* added the possibility to add one more therapeutic window
-* added possibility to dodge means
+* added the possibility to add one more therapeutic window and fixed a bug with categorical x axis
+* added possibility to dodge means and medians
+* added possibility to specify means and medians N and Values transparency and a default seed for text_repel
 
 
 # ggquickeda 0.1.2
