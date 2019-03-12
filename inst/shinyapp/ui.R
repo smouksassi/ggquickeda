@@ -961,7 +961,7 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                       checkboxInput('meanlines', 'Show lines', value =TRUE)
                     ),
                     conditionalPanel(
-                      " input.Mean!= 'None'&input.meanlines ",
+                      " input.Mean!= 'None'&& input.meanlines ",
                       sliderInput(
                         "meanlinesize",
                         "Mean(s) Line(s) Size:",
@@ -978,7 +978,8 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                         value = c(0.5),
                         step = 0.01
                       )
-                    )
+                    ),
+                    sliderInput("alphameanlabel", "Labels(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
                   ),#second column
                 column (3,
                     conditionalPanel(
@@ -1092,19 +1093,22 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianvalues', 'Label Values?') ,
                                       checkboxInput('medianN', 'Label N?') ,
-                                      checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE)
+                                      checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE),
+                                      selectInput("positionmedian", label = "Median positioning for overlap:",
+                                                  choices = c(
+                                                    "Default"="position_identity()",
+                                                    "Side By Side"="position_dodge2(width = 0.75)"
+                                                  ),selected = "position_identity()")
                                       )
                    ),
                   column (
                     3,
                     conditionalPanel( " input.Median!= 'None' ",
                     checkboxInput('medianlines', 'Show lines',value=TRUE),
-                    
-                    conditionalPanel( " input.Median!= 'None' ",
                     sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1.5),step=0.1),
-                    sliderInput("alphamedianl", "Median(s) Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01) )
-
-                     )
+                    sliderInput("alphamedianl", "Median(s) Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                    sliderInput("alphamedianlabel", "Labels(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
+                    )
 
                   ),
                   column (

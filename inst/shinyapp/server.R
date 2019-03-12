@@ -399,7 +399,7 @@ function(input, output, session) {
   })
   observe({
     if (input$Median== 'Median' ) {
-      shinyjs::enable("medianpoints")
+      shinyjs::enable("medianlines")
       shinyjs::enable("medianpoints")
     }
   })
@@ -1875,52 +1875,31 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         p <- sourceable(ggplot(plotdata, aes_string(x=input$x, y="yvalues")))
         
+        p <- p +
+          geom_blank()# helps in initializing the scales
+        
         if (input$showtarget)  {
-          if ( is.numeric( plotdata[,input$x] ) && is.numeric( plotdata[,"yvalues"] ) ) {
+          if (is.numeric( plotdata[,"yvalues"] ) ) {
             p <-   p   +
               annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget1,
                        ymax = input$upperytarget1,fill=input$targetcol1,
                        alpha =input$targetopacity1)
 
           } 
-          
-          if ( !is.numeric( plotdata[,input$x] )&& is.numeric( plotdata[,"yvalues"] ) ) {
-            xlow  <-  levels( as.factor( plotdata[,input$x] ) )[1]
-            xhigh <- levels( as.factor( plotdata[,input$x] ) )[length(levels( as.factor( plotdata[,input$x] ) ))]
-            p <-   p   +
-              annotate("rect", xmin = xlow, xmax = xhigh,
-                       ymin = input$lowerytarget1,
-                       ymax = input$upperytarget1,fill=input$targetcol1,
-                       alpha =input$targetopacity1)
 
-          }
-          
         } 
         
         if (input$showtarget2)  {
-          if ( is.numeric( plotdata[,input$x] ) && is.numeric( plotdata[,"yvalues"] ) ) {
+          if ( is.numeric( plotdata[,"yvalues"] ) ) {
            
             p <-   p   +
               annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget2,
                        ymax = input$upperytarget2,fill=input$targetcol2,
                        alpha =input$targetopacity2)  
           } 
-          
-          if ( !is.numeric( plotdata[,input$x] )&& is.numeric( plotdata[,"yvalues"] ) ) {
-            xlow  <-  levels( as.factor( plotdata[,input$x] ) )[1]
-            xhigh <- levels( as.factor( plotdata[,input$x] ) )[length(levels( as.factor( plotdata[,input$x] ) ))]
-            
-            p <-   p   +
-              annotate("rect", xmin = xlow, xmax = xhigh,
-                       ymin = input$lowerytarget2,
-                       ymax = input$upperytarget2,fill=input$targetcol2,
-                       alpha =input$targetopacity2)  
-          }
-          
         } 
         
-        
-        
+       
         if (input$colorin != 'None')
           p <- p + aes_string(color=input$colorin)
         if (input$fillin != 'None')
@@ -2178,24 +2157,28 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_sum_single(mean, geom = "line",alpha=input$alphameanl)
               if(input$meanlines&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(mean, geom = "line",size=input$meanlinesize,alpha=input$alphameanl,position = eval(parse(text=input$positionmean)))
+                  stat_sum_single(mean, geom = "line",size=input$meanlinesize,alpha=input$alphameanl,
+                                  position = eval(parse(text=input$positionmean)))
               
               
               if(!input$forcemeanshape)    {
                 if(input$meanpoints&&input$pointsizein != 'None')           
                   p <- p + 
-                    stat_sum_single(mean, geom = "point",alpha=input$alphameanp,position = eval(parse(text=input$positionmean)))
+                    stat_sum_single(mean, geom = "point",alpha=input$alphameanp,
+                                    position = eval(parse(text=input$positionmean)))
                 
                 if(input$meanpoints&&input$pointsizein == 'None')           
                   p <- p + 
                     stat_sum_single(mean, geom = "point",size=input$meanpointsize,
-                                    alpha=input$alphameanp,position = eval(parse(text=input$positionmean)))               
+                                    alpha=input$alphameanp,
+                                    position = eval(parse(text=input$positionmean)))               
               }
               if(input$forcemeanshape)    {
                 if(input$meanpoints&&input$pointsizein != 'None')           
                   p <- p + 
                     stat_sum_single(mean, geom = "point",alpha=input$alphameanp,
-                                    shape=input$meanshapes ,position = eval(parse(text=input$positionmean)))  
+                                    shape=input$meanshapes ,
+                                    position = eval(parse(text=input$positionmean)))  
                 
                 if(input$meanpoints&&input$pointsizein == 'None')           
                   p <- p + 
@@ -2245,14 +2228,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
                              fun.y = mean, fontface = "bold",
-                             show.legend=FALSE,size=6)}
+                             show.legend=FALSE,size=6, seed=1234)
+              }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
                              fun.y = mean, fontface = "bold", 
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }
             
           }#do not ignore col do not ignore group
@@ -2350,14 +2334,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
                              fun.y = mean, fontface = "bold",col=meancolp,
-                             show.legend=FALSE,size=6)}
+                             show.legend=FALSE,size=6, seed=1234)
+              }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
                              fun.y = mean, fontface = "bold", col=meancolp,
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }
             
             }
@@ -2452,14 +2437,17 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,aes(group=NULL),
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
+                             aes(group=NULL),
                              fun.y = mean, fontface = "bold",
-                             show.legend=FALSE,size=6)}
+                             show.legend=FALSE,size=6, seed=1234)
+              }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,aes(group=NULL),
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
+                             aes(group=NULL),
                              fun.y = mean, fontface = "bold",
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }
             
           }
@@ -2556,14 +2544,17 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=0.2,col=meancolp,aes(group=NULL),
+                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
+                             col=meancolp,aes(group=NULL),
                              fun.y = mean, fontface = "bold",
-                             show.legend=FALSE,size=6)}
+                             show.legend=FALSE,size=6, seed=1234)
+              }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=0.2,col=meancolp,aes(group=NULL),
+                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
+                             col=meancolp,aes(group=NULL),
                              fun.y = mean, fontface = "bold",
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }
             
           }
@@ -2806,44 +2797,54 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           if (!input$medianignorecol) {
             
             if (input$Median=="Median") {
-              if(input$medianlines&input$pointsizein != 'None')           
+              if(input$medianlines && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line" ,alpha=input$alphamedianl)
+                  stat_sum_single(median, geom = "line" ,alpha=input$alphamedianl,
+                                  position = eval(parse(text=input$positionmedian)))
               
-              if(input$medianlines&input$pointsizein == 'None')           
+              if(input$medianlines && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "line",size=input$medianlinesize,
-                                  alpha=input$alphamedianl)
+                                  alpha=input$alphamedianl,
+                                  position = eval(parse(text=input$positionmedian)))
               
               if(!input$forcemedianshape)    {
               
-              if(input$medianpoints&input$pointsizein != 'None')           
+              if(input$medianpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",alpha=input$alphamedianp)
+                  stat_sum_single(median, geom = "point",alpha=input$alphamedianp,
+                                  position = eval(parse(text=input$positionmedian)))
               
-              if(input$medianpoints&input$pointsizein == 'None')           
+              if(input$medianpoints && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point",size=input$medianpointsize,
-                                  alpha=input$alphamedianp)
+                                  alpha=input$alphamedianp,
+                                  position = eval(parse(text=input$positionmedian)))
               }
               if(input$forcemedianshape)    {
-                if(input$medianpoints&input$pointsizein != 'None')           
+                if(input$medianpoints && input$pointsizein != 'None')           
                   p <- p + 
-                    stat_sum_single(median, geom = "point",alpha=input$alphamedianp,shape=input$medianshapes)
+                    stat_sum_single(median, geom = "point",alpha=input$alphamedianp,shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
                 
-                if(input$medianpoints&input$pointsizein == 'None')           
+                if(input$medianpoints && input$pointsizein == 'None')           
                   p <- p + 
                     stat_sum_single(median, geom = "point",size=input$medianpointsize,
-                                    alpha=input$alphamedianp,shape=input$medianshapes)
+                                    alpha=input$alphamedianp,shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
               }
               
               
             }
             
-            if (input$Median=="Median/PI"&input$pointsizein == 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein == 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI) ,size=input$medianlinesize,alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI) ,size=input$medianlinesize,alpha=input$alphamedianl)
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI) ,
+                            size=input$medianlinesize,alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+ 
+                stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
+                            size=input$medianlinesize,alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))
               
               if ( input$sepguides )
                 p <-   p + 
@@ -2856,10 +2857,12 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
             }
             
-            if (input$Median=="Median/PI"&input$pointsizein != 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein != 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA)+
-                stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,fun.args=list(conf.int=input$PI),alpha=input$alphamedianl)
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+
+                stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,fun.args=list(conf.int=input$PI),alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))
               
               if ( input$sepguides )
                 p <-   p +
@@ -2872,16 +2875,17 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
             }
             
-            if (input$Median!="None" & input$medianvalues )  {
+            if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n,geom = "label_repel",alpha=0.4,
+                stat_summary(fun.data = median.n,geom = "label_repel",alpha=input$alphamedianlabel,
                              fun.y = median, fontface = "bold",
-                             show.legend=FALSE,size=6)}
-            if (input$Median!="None" & input$medianN)  {
+                             show.legend=FALSE,size=6, seed=1234)
+              }
+            if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, geom = "label_repel",alpha=0.4,
+                stat_summary(fun.data = give.n, geom = "label_repel",alpha=input$alphamedianlabel,
                              fun.y = median, fontface = "bold", 
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }  
           }
           
@@ -2893,44 +2897,52 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             if (input$Median=="Median") {
               if(input$medianlines&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl)
+                  stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl,
+                                  position = eval(parse(text=input$positionmedian)))
               
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "line",col=mediancoll,
                                   alpha=input$alphamedianl,
-                                  size=input$medianlinesize)
+                                  size=input$medianlinesize,
+                                  position = eval(parse(text=input$positionmedian)))
               
               if(!input$forcemedianshape)    {
               if(input$medianpoints&input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",col=mediancolp,alpha=input$alphamedianp )
+                  stat_sum_single(median, geom = "point",col=mediancolp,alpha=input$alphamedianp ,
+                                  position = eval(parse(text=input$positionmedian)))
               
               if(input$medianpoints&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point",col=mediancolp ,
                                   alpha=input$alphamedianp,
-                                  size=input$medianpointsize)
+                                  size=input$medianpointsize,
+                                  position = eval(parse(text=input$positionmedian)))
               }
               if(input$forcemedianshape)    {
                 if(input$medianpoints&input$pointsizein != 'None')           
                   p <- p + 
-                    stat_sum_single(median, geom = "point",col=mediancolp,alpha=input$alphamedianp,shape=input$medianshapes )
+                    stat_sum_single(median, geom = "point",col=mediancolp,alpha=input$alphamedianp,shape=input$medianshapes ,
+                                    position = eval(parse(text=input$positionmedian)))
                 
                 if(input$medianpoints&input$pointsizein == 'None')           
                   p <- p + 
                     stat_sum_single(median, geom = "point",col=mediancolp ,
                                     alpha=input$alphamedianp,
-                                    size=input$medianpointsize,shape=input$medianshapes)
+                                    size=input$medianpointsize,shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
               }
               
             }
             
-            if (input$Median=="Median/PI"&input$pointsizein == 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein == 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon", fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA)+
+                stat_sum_df("median_hilow", geom = "ribbon", fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+
                 stat_sum_df("median_hilow", geom = "line", stat ="smooth", fun.args=list(conf.int=input$PI), size=input$medianlinesize,
-                            col=mediancoll,alpha=input$alphamedianl)
+                            col=mediancoll,alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))
               
               if ( input$sepguides )
                 p <-   p +
@@ -2941,11 +2953,13 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                          override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
                     ) )
             }
-            if (input$Median=="Median/PI"&input$pointsizein != 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein != 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),alpha=input$PItransparency,col=NA)+
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+
                 stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),col=mediancoll,
-                            alpha=input$alphamedianl)          
+                            alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))          
               
               if ( input$sepguides )
                 p <-   p +
@@ -2956,16 +2970,17 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                          override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
                     ) )
             }
-            if (input$Median!="None" & input$medianvalues )  {
+            if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n,geom = "label_repel",alpha=0.4,
+                stat_summary(fun.data = median.n,geom = "label_repel",alpha=input$alphamedianlabel,
                              fun.y = median, fontface = "bold",colour=mediancoll,
-                             show.legend=FALSE,size=6)}
-            if (input$Median!="None" & input$medianN)  {
+                             show.legend=FALSE,size=6, seed=1234)
+              }
+            if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, geom = "label_repel",alpha=0.4,
+                stat_summary(fun.data = give.n, geom = "label_repel",alpha=input$alphamedianlabel,
                              fun.y = median, fontface = "bold", colour=mediancolp,
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }       
             
           }
@@ -2975,48 +2990,57 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         if (input$medianignoregroup) {
           if (!input$medianignorecol) {
             if (input$Median=="Median") {
-              if(input$medianlines&input$pointsizein != 'None')           
+              if(input$medianlines && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "line",aes(group=NULL),alpha=input$alphamedianl)
+                  stat_sum_single(median, geom = "line",aes(group=NULL),alpha=input$alphamedianl,
+                                  position = eval(parse(text=input$positionmedian)))
               if(input$medianlines&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "line",aes(group=NULL),size=input$medianlinesize,
-                                  alpha=input$alphamedianl)
+                                  alpha=input$alphamedianl,
+                                  position = eval(parse(text=input$positionmedian)))
               
               if(!input$forcemedianshape)    {
               
-              if(input$medianpoints&input$pointsizein != 'None')           
+              if(input$medianpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp)
+                  stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,
+                                  position = eval(parse(text=input$positionmedian)))
               
               
-              if(input$medianpoints&input$pointsizein == 'None')           
+              if(input$medianpoints && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point",aes(group=NULL),
                                   alpha=input$alphamedianp,
-                                  size=input$medianpointsize)
+                                  size=input$medianpointsize,
+                                  position = eval(parse(text=input$positionmedian)))
               }
               if(input$forcemedianshape)    {
                 
-                if(input$medianpoints&input$pointsizein != 'None')           
+                if(input$medianpoints && input$pointsizein != 'None')           
                   p <- p + 
-                    stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,shape=input$medianshapes)
+                    stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
                 
                 
-                if(input$medianpoints&input$pointsizein == 'None')           
+                if(input$medianpoints && input$pointsizein == 'None')           
                   p <- p + 
                     stat_sum_single(median, geom = "point",aes(group=NULL),
                                     alpha=input$alphamedianp,
-                                    size=input$medianpointsize,shape=input$medianshapes)
+                                    size=input$medianpointsize,shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
               }
               
             }
             
-            if (input$Median=="Median/PI"&input$pointsizein == 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein == 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
+                            alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+ 
                 stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),
-                            size=input$medianlinesize,alpha=input$alphamedianl)   
+                            size=input$medianlinesize,alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))   
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -3027,10 +3051,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                     ) )
             }
             
-            if (input$Median=="Median/PI"&input$pointsizein != 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein != 'None'){
               p <- p + 
-                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
-                stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),alpha=input$alphamedianl)
+                stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
+                            alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+ 
+                stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
+                            aes(group=NULL),alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -3040,17 +3068,18 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                          override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
                     ) )
             }
-            if (input$Median!="None" & input$medianvalues )  {
+            if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=0.4,
-                             fun.y = median, fontface = "bold",fill="white",
+                stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold", #fill="white",
                              show.legend=FALSE,
-                             size=6)}
-            if (input$Median!="None" & input$medianN)  {
+                             size=6, seed=1234)
+              }
+            if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=0.4,
-                             fun.y = median, fontface = "bold", fill="white",
-                             show.legend=FALSE,size=6)      
+                stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold", #fill="white",
+                             show.legend=FALSE,size=6, seed=1234)      
             }
             
             
@@ -3062,56 +3091,64 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             mediancolp <- input$colmedianp
             
             if (input$Median=="Median") {
-              if(input$medianlines&input$pointsizein != 'None')           
+              if(input$medianlines && input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "line",col=mediancoll,
                                   alpha=input$alphamedianl,
-                                  aes(group=NULL))
-              if(input$medianlines&input$pointsizein == 'None')           
+                                  aes(group=NULL),
+                                  position = eval(parse(text=input$positionmedian)))
+              if(input$medianlines && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl,
-                                  aes(group=NULL),size=input$medianlinesize)
+                                  aes(group=NULL),size=input$medianlinesize,
+                                  position = eval(parse(text=input$positionmedian)))
               
               
               if(!input$forcemedianshape)    {
               
-              if(input$medianpoints&input$pointsizein != 'None')           
+              if(input$medianpoints && input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point",col=mediancolp,
                                   alpha=input$alphamedianp,
-                                  aes(group=NULL))
+                                  aes(group=NULL),
+                                  position = eval(parse(text=input$positionmedian)))
               
-              if(input$medianpoints&input$pointsizein == 'None')           
+              if(input$medianpoints && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_single(median, geom = "point",
                                   col=mediancolp,
                                   alpha=input$alphamedianp,
-                                  aes(group=NULL),size=input$medianpointsize)
+                                  aes(group=NULL),size=input$medianpointsize,
+                                  position = eval(parse(text=input$positionmedian)))
               }
               if(input$forcemedianshape)    {
                 
-                if(input$medianpoints&input$pointsizein != 'None')           
+                if(input$medianpoints && input$pointsizein != 'None')           
                   p <- p + 
                     stat_sum_single(median, geom = "point",col=mediancolp,
                                     alpha=input$alphamedianp,
-                                    aes(group=NULL),shape=input$medianshapes)
+                                    aes(group=NULL),shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
                 
-                if(input$medianpoints&input$pointsizein == 'None')           
+                if(input$medianpoints && input$pointsizein == 'None')           
                   p <- p + 
                     stat_sum_single(median, geom = "point",
                                     col=mediancolp,
                                     alpha=input$alphamedianp,
-                                    aes(group=NULL),size=input$medianpointsize,shape=input$medianshapes)
+                                    aes(group=NULL),size=input$medianpointsize,shape=input$medianshapes,
+                                    position = eval(parse(text=input$positionmedian)))
               } 
               
             }
             
-            if (input$Median=="Median/PI"&input$pointsizein == 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein == 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
-                            alpha=input$PItransparency,col=NA)+ 
+                            alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+ 
                 stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
-                            col=mediancoll,aes(group=NULL),size=input$medianlinesize,alpha=input$alphamedianl)
+                            col=mediancoll,aes(group=NULL),size=input$medianlinesize,alpha=input$alphamedianl,
+                            position = eval(parse(text=input$positionmedian)))
               if ( input$sepguides )
                 p <-   p +
                   guides(
@@ -3121,13 +3158,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                                          override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
                     ) )
             }
-            if (input$Median=="Median/PI"&input$pointsizein != 'None'){
+            if (input$Median=="Median/PI" && input$pointsizein != 'None'){
               p <- p + 
                 stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),
-                            aes(group=NULL),alpha=input$PItransparency,col=NA)+ 
+                            aes(group=NULL),alpha=input$PItransparency,col=NA,
+                            position = eval(parse(text=input$positionmedian)))+ 
                 stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
                             col=mediancoll,alpha=input$alphamedianl,
-                            aes(group=NULL),alpha=0)
+                            aes(group=NULL),alpha=0,
+                            position = eval(parse(text=input$positionmedian)))
               
               
               
@@ -3142,16 +3181,16 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             }
             
             
-            if (input$Median!="None" & input$medianvalues )  {
+            if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=0.4,
+                stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=input$alphamedianlabel,
                              fun.y = median, fontface = "bold",colour=mediancoll,
-                             show.legend=FALSE,size=6)}
-            if (input$Median!="None" & input$medianN)  {
+                             show.legend=FALSE,size=6, seed=1234)}
+            if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=0.4,
+                stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=input$alphamedianlabel,
                              fun.y = median, fontface = "bold", colour=mediancolp,
-                             show.legend=FALSE,size=6)      
+                             show.legend=FALSE,size=6, seed=1234)      
             }
             
           }
