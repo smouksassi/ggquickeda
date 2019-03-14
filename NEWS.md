@@ -1,10 +1,15 @@
 # ggquickeda 0.1.2.9999
-* UI and options improvements for KM (line sizes, transparency, ignore group and color)
+* UI and options improvements for KM (line sizes, transparency, ignore group and color), linetype mappping
 * Using stat_cor from ggpubr to compute correlations for more flexibility and margin in facets
 * added ability to ignore grouping and or ignore color mapping for correlation coefficient
 * added the possibility to add one more therapeutic window and fixed a bug with categorical x axis
 * added possibility to dodge means and medians
 * added possibility to specify means and medians N and Values transparency and a default seed for text_repel
+* added transparency control for densities and histograms as well as linetype mappping
+* added binwidth control for histogram ( user defined or auto)
+* added adjustment control for densities
+* added discrete scale for target areas as a workaround to ggplot scale guessing bug
+
 
 
 # ggquickeda 0.1.2

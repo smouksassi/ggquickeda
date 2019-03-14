@@ -716,26 +716,67 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                   column (
                     3,
                     radioButtons("histogramaddition", "Add a Histogram ?",
-                                 c("Counts" = "Counts",
-                                   "Density" = "Density",
+                                 c("Density" = "Density",
+                                   "Counts" = "Counts",
+                                   "Scaled Counts" = "ncounts",
                                    "None" = "None") ,
                                  selected="None") ,
-                    numericInput("histobinwidth",
-                                 "N Bins",
-                                 value = 30,
-                                 min = 0, step = 0.5)
-                  
-                    
+                    radioButtons("histogrambinwidth", "Binwidth ?",
+                                 c("User Specified" = "userbinwidth",
+                                   "Automatic Binwidth" = "autobinwidth",
+                                   "None" = "None") ,
+                                 selected="None") ,
+                    conditionalPanel(
+                      " input.histogrambinwidth== 'userbinwidth' ", 
+                      numericInput("histobinwidth",
+                                  "Bin Width",
+                                  value = 1,
+                                  min = 0, step = 0.5)
+
+                    ),
+                    conditionalPanel(" input.histogrambinwidth== 'None' ",
+                                     numericInput("histonbins",
+                                                  "N Bins",
+                                                  value = 30,
+                                                  min = 0, step = 0.5)
+                    ),
+                    sliderInput(
+                      "histogramalpha",
+                      "Histogram Transparency:",
+                      min = 0,
+                      max = 1,
+                      value = c(0.2),
+                      step = 0.01
+                    )
                     
                     ),
                   column (
                     3,
                     radioButtons("densityaddition", "Add a Density Curve ?",
                                  c("Density" = "Density",
-                                   "Scaled Density" = "Scaled Density",
                                    "Counts" = "Counts",
+                                   "Match Histo Count"="histocount",
+                                   "Scaled Density" = "Scaled Density",
                                    "None" = "None") ,
-                                 selected="Density") 
+                                 selected="Density"),
+                    sliderInput(
+                      "densityalpha",
+                      "Density Transparency:",
+                      min = 0,
+                      max = 1,
+                      value = c(0.2),
+                      step = 0.01
+                    ),
+                    sliderInput(
+                      "densityadjust",
+                      "Density Binwidth Adjustment:",
+                      min = 0.01,
+                      max = 10,
+                      value = c(1),
+                      step = 0.01
+                    )
+                     
+                    
                   ),
                   
                   column (

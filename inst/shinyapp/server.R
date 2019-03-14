@@ -1875,12 +1875,13 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         p <- sourceable(ggplot(plotdata, aes_string(x=input$x, y="yvalues")))
         
-        p <- p +
-          geom_blank()# helps in initializing the scales
+        p <- p # helps in initializing the scales
         
         if (input$showtarget)  {
           if (is.numeric( plotdata[,"yvalues"] ) ) {
-            p <-   p   +
+            if (!is.numeric( plotdata[,input$x] )){p <-   p   + scale_x_discrete() }
+
+             p <-   p   +
               annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget1,
                        ymax = input$upperytarget1,fill=input$targetcol1,
                        alpha =input$targetopacity1)
@@ -1891,7 +1892,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         if (input$showtarget2)  {
           if ( is.numeric( plotdata[,"yvalues"] ) ) {
-           
+            if (!is.numeric( plotdata[,input$x] )){p <-   p   + scale_x_discrete() }
+            
             p <-   p   +
               annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget2,
                        ymax = input$upperytarget2,fill=input$targetcol2,
@@ -3466,6 +3468,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p + aes_string(color=input$colorin)
           if (input$fillin != 'None')
             p <- p + aes_string(fill=input$fillin)
+          if (input$linetypein != 'None')
+            p <- p + aes_string(linetype=input$linetypein)
 
           if( !input$KMignoregroup){
              if (input$groupin != 'None' && !is.factor(plotdata[,input$x]) ){ 
@@ -3533,39 +3537,91 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p + aes_string(fill=input$fillin)
           if (input$groupin != 'None')
             p <- p + aes_string(group=input$groupin)
-          if (input$groupin == 'None' & !is.numeric(plotdata[,input$x]) 
-              & input$colorin == 'None')
-            p <- p + aes(group=1)
+          if (input$linetypein != 'None'){
+            p <- p  + aes_string(linetype=input$linetypein)
+          }
           
-          if ( input$histogramaddition=="Counts"){
+          if (input$groupin == 'None' && !is.numeric(plotdata[,input$x]) 
+              && input$colorin == 'None' && input$linetypein == 'None' && input$fillin == 'None')
+            p <- p + aes(group=1L)
+          
+          if ( input$histogramaddition=="Counts"  && input$histogrambinwidth =="None"  ){
             p <- p+ 
-              geom_histogram(aes(y=..count..),
-                             alpha=0.2,bins = input$histobinwidth)+
+              geom_histogram(aes(y=..count..), alpha=input$histogramalpha,bins = input$histonbins)+
               ylab("Counts")
           }
-          if ( input$histogramaddition=="Density"){
-            p <- p+
-              geom_histogram(aes(y=..density..),
-                             alpha=0.2,bins = input$histobinwidth)+
-              ylab("Density")
+          
+          if ( input$histogramaddition=="Counts" && input$histogrambinwidth =="userbinwidth" ){
+            p <- p+ 
+              geom_histogram(aes(y=..count..), alpha=input$histogramalpha, binwidth = input$histobinwidth)+
+              ylab("Counts")
+          }
+          if ( input$histogramaddition=="Counts" && input$histogrambinwidth =="autobinwidth" ){
+            p <- p+ 
+              geom_histogram(aes(y=..count..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} )+
+              ylab("Counts")
+          }
+          
+           
+          
+          if ( input$histogramaddition=="Density"  && input$histogrambinwidth =="None"  ){
+            p <- p+ 
+              geom_histogram(aes(y=..density..), alpha=input$histogramalpha,bins = input$histonbins)+
+              ylab("Counts")
+          }
+          
+          if ( input$histogramaddition=="Density" && input$histogrambinwidth =="userbinwidth" ){
+            p <- p+ 
+              geom_histogram(aes(y=..density..), alpha=input$histogramalpha, binwidth = input$histobinwidth)+
+              ylab("Counts")
+          }
+          if ( input$histogramaddition=="Density" && input$histogrambinwidth =="autobinwidth" ){
+            p <- p+ 
+              geom_histogram(aes(y=..density..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} )+
+              ylab("Counts")
+          }
+          
+
+          if ( input$histogramaddition=="ncounts"  && input$histogrambinwidth =="None"  ){
+            p <- p+ 
+              geom_histogram(aes(y=..ncount..), alpha=input$histogramalpha,bins = input$histonbins)+
+              ylab("Counts")
+          }
+          
+          if ( input$histogramaddition=="ncounts" && input$histogrambinwidth =="userbinwidth" ){
+            p <- p+ 
+              geom_histogram(aes(y=..ncount..), alpha=input$histogramalpha, binwidth = input$histobinwidth)+
+              ylab("Counts")
+          }
+          if ( input$histogramaddition=="ncounts" && input$histogrambinwidth =="autobinwidth" ){
+            p <- p+ 
+              geom_histogram(aes(y=..ncount..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} )+
+              ylab("Counts")
           }
           
           
           if ( input$densityaddition=="Density"){
             p <- p+
-              geom_density(aes(y=..density..),alpha=0.1)+
+              geom_density(aes(y=..density..),alpha=input$densityalpha,adjust=input$densityadjust)+
               ylab("Density")
             
           }
           if ( input$densityaddition=="Scaled Density"){
             p <- p+
-              geom_density(aes(y=..scaled..),alpha=0.1)+
+              geom_density(aes(y=..scaled..),alpha=input$densityalpha,adjust=input$densityadjust)+
               ylab("Scaled Density")
             
           }
           if ( input$densityaddition=="Counts"){
             p <- p+
-              geom_density(aes(y=..count..),alpha=0.1)+
+              geom_density(aes(y=..count..),alpha=input$densityalpha,adjust=input$densityadjust)+
+              ylab("Counts")
+            
+          }
+          if ( input$densityaddition=="histocount"){
+            p <- p+
+              geom_density(aes(binwidth=input$histobinwidth,y=binwidth*..count..),
+                           alpha=input$densityalpha,adjust=input$densityadjust)+
               ylab("Counts")
             
           }
