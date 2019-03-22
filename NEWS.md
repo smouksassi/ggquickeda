@@ -13,6 +13,7 @@
 * linetypes for predefined quantiles
 * remove x/y axis tick labels
 * fixes for continuous scales logic
+* geom text and position for median and mean labels
 
 
 

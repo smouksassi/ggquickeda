@@ -2148,8 +2148,6 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         
         
         ###### Mean section  START 
-        
-        
         if (!input$meanignoregroup) {
           if (!input$meanignorecol) {
             
@@ -2230,14 +2228,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
-                             fun.y = mean, fontface = "bold",
+                stat_summary(fun.data = mean.n, geom = input$geommeanlabel,alpha=input$alphameanlabel,
+                             fun.y = mean, fontface = "bold", position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)
               }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
-                             fun.y = mean, fontface = "bold", 
+                stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
+                             fun.y = mean, fontface = "bold", position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)      
             }
             
@@ -2336,14 +2334,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
-                             fun.y = mean, fontface = "bold",col=meancolp,
+                stat_summary(fun.data = mean.n, geom = input$geommeanlabel,alpha=input$alphameanlabel,
+                             fun.y = mean, fontface = "bold",col=meancolp,position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)
               }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
-                             fun.y = mean, fontface = "bold", col=meancolp,
+                stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
+                             fun.y = mean, fontface = "bold", col=meancolp,position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)      
             }
             
@@ -2439,16 +2437,16 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
+                stat_summary(fun.data = mean.n, geom = input$geommeanlabel,alpha=input$alphameanlabel,
                              aes(group=NULL),
-                             fun.y = mean, fontface = "bold",
+                             fun.y = mean, fontface = "bold",position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)
               }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
+                stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
                              aes(group=NULL),
-                             fun.y = mean, fontface = "bold",
+                             fun.y = mean, fontface = "bold",position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)      
             }
             
@@ -2548,14 +2546,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <-   p   +
                 stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
                              col=meancolp,aes(group=NULL),
-                             fun.y = mean, fontface = "bold",
+                             fun.y = mean, fontface = "bold",position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)
               }
             if (input$Mean!="None" && input$meanN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n,  geom = "label_repel",alpha=input$alphameanlabel,
+                stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
                              col=meancolp,aes(group=NULL),
-                             fun.y = mean, fontface = "bold",
+                             fun.y = mean, fontface = "bold",position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)      
             }
             
@@ -2879,14 +2877,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n,geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold",
+                stat_summary(fun.data = median.n,geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold",position = eval(parse(text=input$positionmedian)),
                              show.legend=FALSE,size=6, seed=1234)
               }
             if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold", 
+                stat_summary(fun.data = give.n, geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold", position = eval(parse(text=input$positionmedian)),
                              show.legend=FALSE,size=6, seed=1234)      
             }  
           }
@@ -2974,14 +2972,14 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             }
             if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n,geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold",colour=mediancoll,
+                stat_summary(fun.data = median.n,geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold",colour=mediancoll,position = eval(parse(text=input$positionmedian)),
                              show.legend=FALSE,size=6, seed=1234)
               }
             if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold", colour=mediancolp,
+                stat_summary(fun.data = give.n, geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold", colour=mediancolp,position = eval(parse(text=input$positionmedian)),
                              show.legend=FALSE,size=6, seed=1234)      
             }       
             
@@ -3072,15 +3070,15 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             }
             if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold", #fill="white",
+                stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold",position = eval(parse(text=input$positionmedian)), #fill="white",
                              show.legend=FALSE,
                              size=6, seed=1234)
               }
             if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold", #fill="white",
+                stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold",position = eval(parse(text=input$positionmedian)), #fill="white",
                              show.legend=FALSE,size=6, seed=1234)      
             }
             
@@ -3185,13 +3183,13 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Median!="None" && input$medianvalues )  {
               p <-   p   +
-                stat_summary(fun.data = median.n, aes(group=NULL),geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold",colour=mediancoll,
+                stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold",colour=mediancoll,position = eval(parse(text=input$positionmedian)),
                              show.legend=FALSE,size=6, seed=1234)}
             if (input$Median!="None" && input$medianN)  {
               p <-   p   +
-                stat_summary(fun.data = give.n, aes(group=NULL), geom = "label_repel",alpha=input$alphamedianlabel,
-                             fun.y = median, fontface = "bold", colour=mediancolp,
+                stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
+                             fun.y = median, fontface = "bold", colour=mediancolp,position = eval(parse(text=input$positionmedian)),
                              show.legend=FALSE,size=6, seed=1234)      
             }
             
@@ -3294,6 +3292,10 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         #### Corr coefficient Start
  
           if(!input$corrignorecol ) {
+            label.x.npc.value <- ifelse(input$geomcorr=="text",0.9,1)
+            label.y.npc.value <- ifelse(input$geomcorr=="text",0.9,1)
+            
+            
             if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
            
               if(!input$addcorrcoeffpvalue){
@@ -3301,7 +3303,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,  sep = "~`,`~")),
                          position = position_identity(),
-                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
                 
               }
                if(input$addcorrcoeffpvalue){
@@ -3309,7 +3311,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   stat_cor(data=plotdata,
                            aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
                            position = position_identity(),
-                           method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+                           method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
                 
               }
 
@@ -3322,7 +3324,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,  sep = "~`,`~") ,group=NULL),
                          position = position_identity(),
-                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
             
             }
             
@@ -3332,7 +3334,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ,group=NULL),
                          position = position_identity(),
-                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5)
+                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
               
             }
             
@@ -3348,7 +3350,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 stat_cor(data=plotdata,
                          aes(label =paste(..r.label..,  sep = "~`,`~")),
                          position = position_identity(),
-                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
                          color=input$corrcol)
             }
 
@@ -3357,7 +3359,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
                          position = position_identity(),
-                         method = input$corrtype ,geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
                          color=input$corrcol)
             }
 
@@ -3371,7 +3373,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               stat_cor(data=plotdata,
                        aes(label =paste(..r.label..,  sep = "~`,`~"),group=NULL),
                        position = position_identity(),
-                       method = input$corrtype, geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                       method = input$corrtype, geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
                        color= input$corrcol)
             }
             if(input$addcorrcoeffpvalue){
@@ -3379,7 +3381,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               stat_cor(data=plotdata,
                        aes(label =paste(..r.label..,..p.label..,  sep = "~`,`~"), group=NULL),
                        position = position_identity(),
-                       method = input$corrtype, geom = "text_repel", label.x.npc = 1, label.y.npc=1,size = 5,
+                       method = input$corrtype, geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
                        color= input$corrcol)
             }
           }#ignoregroup input$corrignorecol

@@ -1004,7 +1004,10 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                   choices = c(
                                     "Default"="position_identity()",
                                     "Side By Side"="position_dodge2(width = 0.75)"
-                                    ),selected = "position_identity()")
+                                    ),selected = "position_identity()"),
+                      radioButtons("geommeanlabel", "Label Geom:",
+                                   c("text" = "text",
+                                     "auto text repel" = "text_repel"),selected = "text_repel" )
                       
                     )
                     
@@ -1152,7 +1155,10 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                                   choices = c(
                                                     "Default"="position_identity()",
                                                     "Side By Side"="position_dodge2(width = 0.75)"
-                                                  ),selected = "position_identity()")
+                                                  ),selected = "position_identity()"),
+                                      radioButtons("geommedianlabel", "Label Geom:",
+                                                   c("text" = "text",
+                                                     "auto text repel" = "text_repel"),selected = "text_repel" )
                                       )
                    ),
                   column (
@@ -1335,7 +1341,11 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                   column(3,hr(),
                   checkboxInput('addcorrcoeff',
                       "Add Correlation Coefficient to the plot ?"),
-                  checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE)
+                  checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE),
+                  radioButtons("geomcorr", "Label Geom:",
+                               c("text" = "text",
+                                 "auto text repel" = "text_repel"),selected = "text_repel" )
+                  
                   ),
                   column(3,hr(),
                   conditionalPanel(
