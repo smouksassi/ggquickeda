@@ -8,7 +8,15 @@
 * added transparency control for densities and histograms as well as linetype mappping
 * added binwidth control for histogram ( user defined or auto)
 * added adjustment control for densities
-* added discrete scale for target areas as a workaround to ggplot scale guessing bug
+* added discrete scale for target areas as a workaround to ggplot scale guessing bug 
+* position adjustment for histograms
+* linetypes for predefined quantiles
+* remove x/y axis tick labels
+* fixes for continuous scales logic
+
+
+
+
 
 
 

@@ -490,9 +490,13 @@ fluidPage(
                           value="#E5E5E5",
                           showColour = "both",
                           allowTransparent=TRUE,returnName=TRUE),
-checkboxInput('rmmajorgridlines', 'Remove Major Grid Linee ?',value=FALSE),
-checkboxInput('rmminorgridlines', 'Remove Minor Grid Lines ?',value=FALSE),
 div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), style="text-align: right"),
+              
+checkboxInput('rmmajorgridlines', 'Remove Major Grid Lines ?',value=FALSE),
+checkboxInput('rmminorgridlines', 'Remove Minor Grid Lines ?',value=FALSE),
+
+checkboxInput('rmxaxistickslabels', 'Remove X axis ticks and labels ?',value=FALSE),
+checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FALSE),
 
               checkboxInput('themeaspect', 'Use custom aspect ratio ?')   ,  
               conditionalPanel(condition = "input.themeaspect" , 
@@ -747,7 +751,14 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                       max = 1,
                       value = c(0.2),
                       step = 0.01
-                    )
+                    ),
+                    selectInput("positionhistogram", label = "Histogram positioning for overlap:",
+                                choices = c(
+                                  "Default"="identity",
+                                  "Side By Side"="dodge",
+                                  "Stacked"="stack"
+                                ),selected = "stack")
+                    
                     
                     ),
                   column (
@@ -829,8 +840,10 @@ div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), sty
                                            "10%" = 0.1,
                                            "5%" = 0.05,
                                            "3%" = 0.03
-                                         )
-                      )
+                                         )),
+                      selectInput('predefquantileslinetype','Line Type:',
+                                  c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","1F","blank"),
+                                  selected="dashed")
                     )
 
 

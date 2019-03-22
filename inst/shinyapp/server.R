@@ -3216,7 +3216,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
                 p <- p +  stat_quantile(method = "rqss",quantiles = as.numeric(input$predefquantiles),
                                         size=input$qrlinesize,alpha=input$qrlinealpha,
-                                        linetype="1F",
+                                        linetype=input$predefquantileslinetype,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
               
@@ -3237,7 +3237,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                 p <- p +  stat_quantile(method = "rqss", quantiles = as.numeric(input$predefquantiles),
                                         size=input$qrlinesize,alpha=input$qrlinealpha,
                                          col=colqr,
-                                        linetype="1F",
+                                        linetype=input$predefquantileslinetype,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
             }
@@ -3258,7 +3258,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               
               p <- p +  stat_quantile(aes(group=NULL),
                                       method = "rqss",quantiles = as.numeric(input$predefquantiles),
-                                      linetype="1F",
+                                      linetype=input$predefquantileslinetype,
                                       size=input$qrlinesize,alpha=input$qrlinealpha,
                                       formula=y ~ qss(x, constraint= input$Constraints,
                                                       lambda=input$Penalty)) 
@@ -3280,7 +3280,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p +  stat_quantile(aes(group=NULL),method = "rqss",
                                       quantiles =as.numeric(input$predefquantiles),
                                       size=input$qrlinesize,alpha=input$qrlinealpha,
-                                      linetype="1F",
+                                      linetype=input$predefquantileslinetype,
                                       col=colqr,
                                         formula=y ~ qss(x, constraint= input$Constraints,
                                                         lambda=input$Penalty))
@@ -3547,18 +3547,21 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           if ( input$histogramaddition=="Counts"  && input$histogrambinwidth =="None"  ){
             p <- p+ 
-              geom_histogram(aes(y=..count..), alpha=input$histogramalpha,bins = input$histonbins)+
+              geom_histogram(aes(y=..count..), alpha=input$histogramalpha,bins = input$histonbins,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           
           if ( input$histogramaddition=="Counts" && input$histogrambinwidth =="userbinwidth" ){
             p <- p+ 
-              geom_histogram(aes(y=..count..), alpha=input$histogramalpha, binwidth = input$histobinwidth)+
+              geom_histogram(aes(y=..count..), alpha=input$histogramalpha, binwidth = input$histobinwidth,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           if ( input$histogramaddition=="Counts" && input$histogrambinwidth =="autobinwidth" ){
             p <- p+ 
-              geom_histogram(aes(y=..count..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} )+
+              geom_histogram(aes(y=..count..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} ,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           
@@ -3566,36 +3569,42 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           if ( input$histogramaddition=="Density"  && input$histogrambinwidth =="None"  ){
             p <- p+ 
-              geom_histogram(aes(y=..density..), alpha=input$histogramalpha,bins = input$histonbins)+
+              geom_histogram(aes(y=..density..), alpha=input$histogramalpha,bins = input$histonbins,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           
           if ( input$histogramaddition=="Density" && input$histogrambinwidth =="userbinwidth" ){
             p <- p+ 
-              geom_histogram(aes(y=..density..), alpha=input$histogramalpha, binwidth = input$histobinwidth)+
+              geom_histogram(aes(y=..density..), alpha=input$histogramalpha, binwidth = input$histobinwidth,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           if ( input$histogramaddition=="Density" && input$histogrambinwidth =="autobinwidth" ){
             p <- p+ 
-              geom_histogram(aes(y=..density..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} )+
+              geom_histogram(aes(y=..density..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} ,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           
 
           if ( input$histogramaddition=="ncounts"  && input$histogrambinwidth =="None"  ){
             p <- p+ 
-              geom_histogram(aes(y=..ncount..), alpha=input$histogramalpha,bins = input$histonbins)+
+              geom_histogram(aes(y=..ncount..), alpha=input$histogramalpha,bins = input$histonbins,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           
           if ( input$histogramaddition=="ncounts" && input$histogrambinwidth =="userbinwidth" ){
             p <- p+ 
-              geom_histogram(aes(y=..ncount..), alpha=input$histogramalpha, binwidth = input$histobinwidth)+
+              geom_histogram(aes(y=..ncount..), alpha=input$histogramalpha, binwidth = input$histobinwidth,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           if ( input$histogramaddition=="ncounts" && input$histogrambinwidth =="autobinwidth" ){
             p <- p+ 
-              geom_histogram(aes(y=..ncount..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} )+
+              geom_histogram(aes(y=..ncount..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} ,
+                             position =input$positionhistogram)+
               ylab("Counts")
           }
           
@@ -3782,27 +3791,27 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       }
       
       
-      if (input$yaxisscale=="logy"&& is.numeric(plotdata[,"yvalues"])&&input$yaxisformat=="default")
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="default")
         p <- p + scale_y_log10()
-      if (input$yaxisscale=="logy"&& is.numeric(plotdata[,"yvalues"])&& input$yaxisformat=="logyformat")
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="logyformat")
         p <- p + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)))
       if (input$yaxisscale=="logy"&& is.numeric(plotdata[,"yvalues"])&&input$yaxisformat=="logyformat2")
         p <- p + scale_y_log10(labels=prettyNum)
 
-      if (input$yaxisscale=="logy" && input$customyticks&&input$yaxisformat=="default") {
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="default") {
         p <- p  + 
           scale_y_log10(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
       }
       
-      if (input$yaxisscale=="logy" && input$customyticks && input$yaxisformat=="logyformat") {
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"])  && input$customyticks && input$yaxisformat=="logyformat") {
         p <- p  + 
           scale_y_log10(labels = trans_format("log10", math_format(10^.x)),
             breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
       }
-      if (input$yaxisscale=="logy" && input$customyticks && input$yaxisformat=="logyformat2") {
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"])  && input$customyticks && input$yaxisformat=="logyformat2") {
         p <- p  + 
           scale_y_log10(labels = prettyNum,
                         breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
@@ -3819,20 +3828,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         scale_y_continuous(labels=percent )
       
       
-      if (input$yaxisscale=="lineary" && input$customyticks && input$yaxisformat=="default") {
+      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="default") {
         p <- p  + 
           scale_y_continuous(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
       }
       
-      if (input$yaxisscale=="lineary" && input$customyticks && input$yaxisformat=="scientificy") {
+      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="scientificy") {
         p <- p  + 
           scale_y_continuous(labels=comma,
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
       }
       
-      if (input$yaxisscale=="lineary" && input$customyticks && input$yaxisformat=="percenty") {
+      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="percenty") {
         p <- p  + 
           scale_y_continuous(labels=percent,
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
@@ -3840,9 +3849,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       }
 
       
-      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&&input$xaxisformat=="default")
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$xaxisformat=="default")
         p <- p + scale_x_log10()
-      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&& input$xaxisformat=="logxformat")
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$xaxisformat=="logxformat")
         p <- p + scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)))
       if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&& input$xaxisformat=="logxformat2")
@@ -3851,19 +3860,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       
       
       
-      if (input$xaxisscale=="logx" && input$customxticks && input$xaxisformat=="default") {
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="default") {
         p <- p  + 
           scale_x_log10(breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
       
-      if (input$xaxisscale=="logx" && input$customxticks && input$xaxisformat=="logxformat") {
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="logxformat") {
         p <- p  + 
           scale_x_log10(labels = trans_format("log10", math_format(10^.x)),
                         breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
-      if (input$xaxisscale=="logx" && input$customxticks &&input$xaxisformat=="logxformat2" ) {
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks &&input$xaxisformat=="logxformat2" ) {
         p <- p  + 
           scale_x_log10(labels = prettyNum,
                         breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
@@ -3879,19 +3888,19 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         p <- p  + 
         scale_x_continuous(labels=percent )
       
-      if (input$xaxisscale=="linearx" && input$customxticks && input$xaxisformat=="default") {
+      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="default") {
         p <- p  + 
           scale_x_continuous(
                              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
-      if (input$xaxisscale=="linearx" && input$customxticks && input$xaxisformat=="scientificx") {
+      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="scientificx") {
         p <- p  + 
           scale_x_continuous(labels=comma,
                              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
-      if (input$xaxisscale=="linearx" && input$customxticks && input$xaxisformat=="percentx") {
+      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="percentx") {
         p <- p  + 
           scale_x_continuous(labels=percent,
                              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
@@ -4143,6 +4152,20 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         p <-  p+
           theme(panel.grid.minor = element_blank())
       }
+      
+      if(input$rmxaxistickslabels){
+        p <-  p+
+          theme(axis.text.x=element_blank(),
+                axis.ticks.x=element_blank())
+      }
+      if(input$rmyaxistickslabels){
+        p <-  p+
+          theme(axis.text.y=element_blank(),
+                axis.ticks.y=element_blank())
+      }
+      
+      
+      
       if(input$annotatelogticks){
         p <-  p+
           annotation_logticks(sides=paste(input$logsides,collapse="",sep="") )   
