@@ -1,4 +1,5 @@
 suppressMessages({
+  library(zoo)
   library(shiny)
   library(shinyjs)
   library(colourpicker)

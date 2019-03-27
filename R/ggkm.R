@@ -275,7 +275,7 @@ StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
 StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
                                
                                compute_group = function(data, scales, trans = "identity", firstx = 0, firsty = 1,
-                                                        type = "kaplan-meier", error = "tsiatis", conf.type = "log",
+                                                        type = "kaplan-meier", error = "greenwood", conf.type = "log",
                                                         conf.lower = "usual", start.time = 0, conf.int = 0.95) {
                                  
                                  sf <- survival::survfit.formula(survival::Surv(data$time, data$status) ~ 1, se.fit = TRUE,
@@ -283,7 +283,6 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
                                                                  conf.lower = conf.lower, start.time = start.time, conf.int = conf.int)
                                  
                                  transloc <- scales::as.trans(trans)$trans
-                                 #x <- sf$time
                                  if(is.null(sf$surv)) {
                                    x <- rep(sf$time, 2)
                                    sf$surv <- rep(1, length(x))
@@ -296,24 +295,19 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
                                  
                                  ymin <- transloc(c(firsty, sf$lower))
                                  ymax <- transloc(c(firsty, sf$upper))
+                                 print(ymin)
+                                 print(ymax)
+                                 print(y)
                                  
                                  ymin[ymin == -Inf] <- min(ymin[is.finite(ymin)])
                                  ymin[ymin == Inf] <- max(ymin[is.finite(ymin)])
                                  ymax[ymax == -Inf] <- min(ymax[is.finite(ymax)])
                                  ymax[ymax == Inf] <- max(ymax[is.finite(ymax)])
-                                 
-                                 
-                                 minstep <- dostep(x, ymin)
-                                 maxstep <- dostep(x, ymax)
-                                 
-                                 a1 <- merge_steps(minstep, maxstep)
-                                 
-                                 df.out <- data.frame(time = a1[[1]]$x,
-                                                      lower = a1[[1]]$y,
-                                                      upper = a1[[2]]$y)
-                                 
-                                 df.out
-                                 
+                                 ymax <- zoo::na.locf(ymax)
+                                 ymin <- zoo::na.locf(ymin)
+                                 dfout<-   stairstepn(data=data.frame(x=x,ymin=ymin,ymax=ymax),  yvars=c("ymin", "ymax"))
+                                 names(dfout)<- c("time","lower","upper")
+                                 print(dfout)
                                },
                                
                                default_aes = ggplot2::aes(ymin = ..lower.., ymax = ..upper.., x = ..time..),
@@ -379,7 +373,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 stat_km <- function(mapping = NULL, data = NULL, geom = "km",
                     position = "identity", show.legend = NA, inherit.aes = TRUE,
                     se = TRUE, trans = "identity", firstx = 0, firsty = 1,
-                    type = "kaplan-meier", start.time = 0) {
+                    type = "kaplan-meier", start.time = 0, ...) {
   ggplot2::layer(
     stat = StatKm,
     data = data,
@@ -389,7 +383,7 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
     show.legend = show.legend,
     inherit.aes = inherit.aes,
     params = list(trans = trans, firstx = firstx, firsty = firsty,
-                  type = type, start.time = start.time)
+                  type = type, start.time = start.time, ...)
   )
   
 }
@@ -453,7 +447,7 @@ stat_kmband <- function(mapping = NULL, data = NULL, geom = "kmband",
                         position = "identity", show.legend = NA, inherit.aes = TRUE,
                         trans = "identity", firstx = 0, firsty = 1,
                         type = "kaplan-meier", error = "tsiatis", conf.type = "log",
-                        conf.lower = "usual", start.time = 0, conf.int = 0.95) {
+                        conf.lower = "usual", start.time = 0, conf.int = 0.95, ...) {
   ggplot2::layer(
     stat = StatKmband,
     data = data,
@@ -464,7 +458,7 @@ stat_kmband <- function(mapping = NULL, data = NULL, geom = "kmband",
     inherit.aes = inherit.aes,
     params = list(trans = trans, firstx = firstx, firsty = firsty,
                   type = type, error = error, conf.type = conf.type,
-                  conf.lower = conf.lower, start.time = start.time, conf.int = conf.int)
+                  conf.lower = conf.lower, start.time = start.time, conf.int = conf.int, ...)
   )
   
 }
@@ -701,4 +695,18 @@ merge_steps <- function(s1, s2) {
   list(s1 = res1, s2 = res2)
   
   
+}
+
+## from ggalt
+stairstepn <- function(data,yvars="y") {
+  data <- as.data.frame(data)[order(data$x),]
+  
+    n <- nrow(data)
+    ys <- rep(1:n, each=2)[-2*n]
+    xs <- c(1, rep(2:n, each=2))
+  data.frame(
+    x=data$x[xs],
+    data[ys, yvars, drop=FALSE],
+    data[xs, setdiff(names(data), c("x", yvars)), drop=FALSE]
+  )
 }
