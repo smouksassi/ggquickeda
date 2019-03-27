@@ -14,6 +14,7 @@
 * remove x/y axis tick labels
 * fixes for continuous scales logic
 * geom text and position for median and mean labels
+* changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na
 
 
 
