@@ -19,9 +19,6 @@
 
 
 
-
-
-
 # ggquickeda 0.1.2
 * bug fixed where in some cases plotdata did not apply filtering
 * updated and expanded merge multiple levels of a factor
