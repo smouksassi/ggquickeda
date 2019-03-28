@@ -1006,8 +1006,9 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                     "Side By Side"="position_dodge2(width = 0.75)"
                                     ),selected = "position_identity()"),
                       radioButtons("geommeanlabel", "Label Geom:",
-                                   c("text" = "text",
-                                     "auto text repel" = "text_repel"),selected = "text_repel" )
+                                   c("text" = "text","label"= "label",
+                                     "auto text repel" = "text_repel",
+                                     "auto label repel" = "label_repel"),selected = "text_repel" )
                       
                     )
                     
@@ -1157,8 +1158,9 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                                     "Side By Side"="position_dodge2(width = 0.75)"
                                                   ),selected = "position_identity()"),
                                       radioButtons("geommedianlabel", "Label Geom:",
-                                                   c("text" = "text",
-                                                     "auto text repel" = "text_repel"),selected = "text_repel" )
+                                                   c("text" = "text","label"= "label",
+                                                     "auto text repel" = "text_repel",
+                                                     "auto label repel" = "label_repel"),selected = "text_repel" )
                                       )
                    ),
                   column (
@@ -1266,14 +1268,25 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                       sliderInput("KMCItransparency", "KM CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
                     ),
                     conditionalPanel( " input.KM!= 'None' ",
-                    checkboxInput('KMignoregroup', 'Ignore Mapped Group',value = TRUE)
-                    )
+                    checkboxInput('KMignoregroup', 'Ignore Mapped Group',value = TRUE),
+                    checkboxInput('addrisktable', 'Add Risk Table',value = FALSE)
+                    ),
+                   conditionalPanel( " input.addrisktable ",
+                                     selectizeInput(
+                                       "risktablevariables", 'Numbers to Show:',
+                                       choices = c("n.risk","n.event","n.censor","pct.risk","cum.n.event","cum.n.censor") ,multiple=TRUE,
+                                       selected = c("n.risk","n.event","n.censor")),
+                                 sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
+                                 sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01)
+                                 
+                                     
+
+                   )
                     
                   ),
-                  column (
-                    3,
-                    
-                    conditionalPanel( " input.KM!= 'None' ",
+                  
+                  column (3,
+                     conditionalPanel( " input.KM!= 'None' ",
                                       sliderInput("kmlinesize", "KM Line(s) Size:", min=0, max=6, value=c(1),step=0.1),
                                       sliderInput("kmlinealpha", "KM Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
                     )
@@ -1399,7 +1412,7 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
          checkboxInput('addcustomlabelignoregroup',"Ignore Mapped Group ?", value=TRUE),
          checkboxInput('customlabellegend',"Show Legend ?", value=FALSE),
          radioButtons("geomlabel", "Label Geom:",
-                             c("text" = "text",
+                             c("text" = "text","label" = "label",
                                "auto text repel" = "text_repel"))
        ),
           column(3,hr(),

@@ -74,6 +74,53 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
   discrete_scale(aesthetic, "manual", pal, ...)
 }
 
+# from survminer
+.clean_strata <- function(strata, fit){
+  is_dollar_sign <- grepl("$", as.character(strata)[1], fixed=TRUE)
+  if(is_dollar_sign) {
+    strata <- as.character(strata)
+    data_name <- unlist(strsplit(strata[1], "$", fixed =TRUE))[1]
+    strata <- gsub(paste0(data_name, "$"), "", strata, fixed=TRUE)
+    strata <- as.factor(strata)
+  }
+  else if(!missing(fit)) strata <- factor(strata, levels = names(fit$strata))
+  return(strata)
+}
+
+.get_variables <- function(strata, fit, data = NULL){
+  variables <- sapply(as.vector(strata),
+                      function(x){
+                        x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
+                        x[seq(1, length(x), 2)]
+                      })
+  variables <- unique(as.vector(variables))
+  variables <- intersect(variables, colnames(.get_data(fit, data) ))
+  variables
+}
+.get_data <- function(fit, data = NULL, complain = TRUE) {
+  if(is.null(data)){
+    if (complain)
+      warning ("The `data` argument is not provided. Data will be extracted from model fit.")
+    data <- eval(fit$call$data)
+    if (is.null(data))
+      stop("The `data` argument should be provided either to ggsurvfit or survfit.")
+  }
+  data
+}
+.get_variable_value <- function(variable, strata, fit, data = NULL){
+  res <- sapply(as.vector(strata), function(x){
+    x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
+    index <- grep(paste0("^", variable, "$"), x)
+    .trim(x[index+1])
+  })
+  res <- as.vector(res)
+  var_levels <- levels(.get_data(fit, data)[, variable])
+  if(!is.null(var_levels)) res <- factor(res, levels = var_levels)
+  else res <- as.factor(res)
+  res
+}
+.trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
+# from survminer
 
 
 which0 <- function(x) {

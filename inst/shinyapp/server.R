@@ -2544,7 +2544,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             
             if (input$Mean!="None" && input$meanvalues )  {
               p <-   p   +
-                stat_summary(fun.data = mean.n, geom = "label_repel",alpha=input$alphameanlabel,
+                stat_summary(fun.data = mean.n, geom = input$geommeanlabel,alpha=input$alphameanlabel,
                              col=meancolp,aes(group=NULL),
                              fun.y = mean, fontface = "bold",position = eval(parse(text=input$positionmean)),
                              show.legend=FALSE,size=6, seed=1234)
@@ -3464,7 +3464,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           if (!input$reversecenstoevent){
             plotdata[,"status"]<- plotdata[,"yvalues"]
           }
-          
+           
           p <- sourceable(ggplot(plotdata, aes_string(time=input$x, status="status")))
           if (input$colorin != 'None')
             p <- p + aes_string(color=input$colorin)
@@ -3478,27 +3478,33 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
                   p <- p + aes_string(group=input$groupin)
              }
             }
-          
-          
-        }
         
-        if (!input$kmignorecol){
-          
-        if (input$KM=="KM/CI") {
-          p <- p +
-            geom_kmband(alpha=input$KMCItransparency,conf.int = input$KMCI,trans=input$KMtrans)
+
+        if (!input$kmignorecol) {
+          if (input$KM == "KM/CI") {
+            p <- p +
+              geom_kmband(
+                alpha = input$KMCItransparency,
+                conf.int = input$KMCI,
+                trans = input$KMtrans
+              )
           }
-        
-        
-        if (input$KM!="None") {
-          p  <- p +
-            geom_line(stat="km",trans=input$KMtrans ,size = input$kmlinesize, alpha = input$kmlinealpha)
-        
-        if (input$censoringticks) {
-          p  <- p +
-            geom_kmticks(trans=input$KMtrans)
-        }
-        }
+          
+          
+          if (input$KM != "None") {
+            p  <- p +
+              geom_line(
+                stat = "km",
+                trans = input$KMtrans ,
+                size = input$kmlinesize,
+                alpha = input$kmlinealpha
+              )
+            
+            if (input$censoringticks) {
+              p  <- p +
+                geom_kmticks(trans = input$KMtrans)
+            }
+          }
         }
         if (input$kmignorecol){
           
@@ -3518,9 +3524,45 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             }
           }
         }
+
+        if (input$addrisktable){
+          timevar  <- input$x
+          statusvar<- "status"
+          colorinputvar <-   ifelse(input$kmignorecol,"None" ,input$colorin) 
+          fillinputvar <-  input$fillin
+          linetypeinputvar <-  input$linetypein
+          groupinputvar<-   ifelse(input$KMignoregroup,"None" ,input$groupin)
+          survformula  <-  paste( "Surv","(",timevar,",",statusvar,")",sep="")
+          listvars <- unique(c(colorinputvar,fillinputvar,linetypeinputvar,groupinputvar,
+                               input$facetrowin,input$facetcolin,input$facetrowextrain,input$facetcolextrain))
+          listvars <- listvars[!is.element(listvars,c("None",".")) ]
+          listvars <- listvars[!duplicated(listvars) ]
+          if ( length(listvars) ==0 ){
+            f <- as.formula(paste(survformula, "1", sep = " ~ "))
+          }
+          if ( length(listvars) >0 ){
+            f <- as.formula(paste(survformula, paste(listvars, collapse = " + "), sep = " ~ "))
+          }
+          fitsurv <- eval(bquote( survfit( .(f)  , plotdata, conf.int=input$KMCI) ))
+          ggsurv <- survminer::ggsurvplot(fitsurv, plotdata,risk.table = TRUE,  ggtheme = theme_bw())
+          risktabledata<- ggsurv$table$data
+          if(length(as.vector(input$risktablevariables)) > 0){
+          risktabledatag<- gather(risktabledata,key,value, gather_cols=as.vector(input$risktablevariables) ,factor_key = TRUE)
+          risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
+          p  <- p +
+             geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
+                        position =   position_dodgev(height =input$nriskpositiondodge)
+                        
+                        )+
+            scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                               labels= c(as.vector(input$risktablevariables),
+                                         c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+          }
+        }
         
-        
+        }
         p <- p + xlab(input$x)
+
       } 
       
       ###### KM SECTION END
