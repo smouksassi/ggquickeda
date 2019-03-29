@@ -19,6 +19,8 @@ suppressMessages({
   library(ggpmisc)
   library(ggquickeda)
   library(table1)
+  library(survminer)
+  library(ggstance)
 })
 
 options(shiny.maxRequestSize=250*1024^2) 
