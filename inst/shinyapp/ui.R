@@ -926,7 +926,7 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                             "Poisson"="glm2"),
                                   multiple=FALSE, selectize=TRUE,selected="loess"),
                       conditionalPanel(" input.smoothmethod== 'lm' ",
-                      checkboxInput('showslopepvalue', 'Show p-value ?',value = FALSE),
+                      checkboxInput('showslopepvalue', 'Show Slope p-value ?',value = FALSE),
                       checkboxInput('showadjrsquared', HTML('Show R<sup>2</sup><sub>adj</sub> ?'),value = FALSE)
                                        ),
                       conditionalPanel(" input.smoothmethod== 'loess' ",
@@ -1005,7 +1005,7 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                     "Default"="position_identity()",
                                     "Side By Side"="position_dodge2(width = 0.75)"
                                     ),selected = "position_identity()"),
-                      radioButtons("geommeanlabel", "Label Geom:",
+                      radioButtons("geommeanlabel", "Mean Label Geom:",
                                    c("text" = "text","label"= "label",
                                      "auto text repel" = "text_repel",
                                      "auto label repel" = "label_repel"),selected = "text_repel" )
@@ -1157,7 +1157,7 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                                     "Default"="position_identity()",
                                                     "Side By Side"="position_dodge2(width = 0.75)"
                                                   ),selected = "position_identity()"),
-                                      radioButtons("geommedianlabel", "Label Geom:",
+                                      radioButtons("geommedianlabel", "Median Label Geom:",
                                                    c("text" = "text","label"= "label",
                                                      "auto text repel" = "text_repel",
                                                      "auto label repel" = "label_repel"),selected = "text_repel" )
@@ -1355,9 +1355,14 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                   checkboxInput('addcorrcoeff',
                       "Add Correlation Coefficient to the plot ?"),
                   checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE),
-                  radioButtons("geomcorr", "Label Geom:",
+                  radioButtons("geomcorr", "Corr Label Geom:",
                                c("text" = "text",
-                                 "auto text repel" = "text_repel"),selected = "text_repel" )
+                                 "auto text repel" = "text_repel"),selected = "text_repel" ),
+                  
+                  conditionalPanel( condition = "input.geomcorr=='text'" ,
+                                    numericInput("cortextxpos",label = "x position",value =0),
+                                    numericInput("cortextypos",label = "y position",value =0)
+                  )
                   
                   ),
                   column(3,hr(),
@@ -1373,7 +1378,7 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                   column(3,hr(),
                          conditionalPanel(
                            " input.addcorrcoeff ",
-                           checkboxInput('addcorrcoeffpvalue',"Add p-value?", value=FALSE))
+                           checkboxInput('addcorrcoeffpvalue',"Show R p-value?", value=FALSE))
                   ),
                   column(3,hr(),
                          conditionalPanel(

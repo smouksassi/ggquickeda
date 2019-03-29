@@ -2744,9 +2744,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
                 ggpmisc::stat_fit_glance(method = "lm", 
                                 method.args = list(formula = y ~ x),
-                                geom = "text_repel",
-                                label.x=-Inf ,label.y=Inf,
-                                aes(label = paste("P-value = ",
+                                geom = "text_repel",segment.color=NA,direction="y",
+                                label.x=-Inf ,label.y=Inf,size=3.88,
+                                aes(label = paste("Slope P-value = ",
                                 signif(..p.value.., digits = 3), sep = "")),
             show.legend = FALSE)
             
@@ -2756,8 +2756,8 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
               ggpmisc::stat_fit_glance(method = "lm", 
                                        method.args = list(formula = y ~ x),
-                                       geom = "text_repel",
-                                       label.x=-Inf ,label.y=-Inf,
+                                       geom = "text_repel",segment.color=NA,direction="y",
+                                       label.x=-Inf ,label.y=-Inf,size=3.88,
                                        aes(label = paste("R[adj]^2==",
                                       signif(..adj.r.squared.., digits = 2), sep = "")),
                                        show.legend = FALSE,parse=TRUE)
@@ -2768,18 +2768,18 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p+
               ggpmisc::stat_fit_glance(method = "lm", 
                                        method.args = list(formula = y ~ x),
-                                       geom = "text_repel",
-                                       label.x=-Inf ,label.y=Inf,
-                                       aes(label = paste("P-value = ",
+                                       geom = "text_repel",segment.color=NA,direction="y",
+                                       label.x=-Inf ,label.y=Inf,size=3.88,
+                                       aes(label = paste("Slope P-value = ",
                                                          signif(..p.value.., digits = 3), sep = "")),
                                        show.legend = FALSE)
             
             p <- p+
               ggpmisc::stat_fit_glance(method = "lm", 
                                        method.args = list(formula = y ~ x),
-                                       geom = "text_repel",
+                                       geom = "text_repel",segment.color=NA,direction="y",
                                        #label.x.npc = "left", label.y.npc = "bottom",
-                                       label.x=-Inf ,label.y=-Inf,
+                                       label.x=-Inf ,label.y=-Inf,size=3.88,
                                        aes(label = paste("R[adj]^2==",
                                                          signif(..adj.r.squared.., digits = 2), sep = "")),
                                        show.legend = FALSE,parse=TRUE)
@@ -3292,26 +3292,27 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         #### Corr coefficient Start
  
           if(!input$corrignorecol ) {
-            label.x.npc.value <- ifelse(input$geomcorr=="text",0.9,1)
-            label.y.npc.value <- ifelse(input$geomcorr=="text",0.9,1)
-            
-            
+            label.x.value <- ifelse(input$geomcorr=="text",input$cortextxpos,Inf)
+            label.y.value <- ifelse(input$geomcorr=="text",input$cortextypos,Inf)
+
             if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
            
               if(!input$addcorrcoeffpvalue){
                 p <- p +
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,  sep = "~`,`~")),
-                         position = position_identity(),
-                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
+                         position = position_identity(),size=3.88,
+                         method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                         label.x = label.x.value, label.y = label.y.value)
                 
               }
                if(input$addcorrcoeffpvalue){
                 p <- p +
                   stat_cor(data=plotdata,
                            aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
-                           position = position_identity(),
-                           method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
+                           position = position_identity(),size=3.88,
+                           method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                           label.x = label.x.value, label.y = label.y.value)
                 
               }
 
@@ -3323,9 +3324,10 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p +
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,  sep = "~`,`~") ,group=NULL),
-                         position = position_identity(),
-                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
-            
+                         position = position_identity(),size=3.88,
+                         method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                         label.x = label.x.value, label.y = label.y.value)
+              
             }
             
             
@@ -3333,8 +3335,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p +
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ,group=NULL),
-                         position = position_identity(),
-                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5)
+                         position = position_identity(),size=3.88,
+                         method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                         label.x = label.x.value, label.y = label.y.value)
               
             }
             
@@ -3349,8 +3352,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p +
                 stat_cor(data=plotdata,
                          aes(label =paste(..r.label..,  sep = "~`,`~")),
-                         position = position_identity(),
-                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
+                         position = position_identity(),size=3.88,
+                         method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                         label.x = label.x.value, label.y = label.y.value,
                          color=input$corrcol)
             }
 
@@ -3358,8 +3362,9 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
               p <- p +
                 stat_cor(data=plotdata,
                          aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
-                         position = position_identity(),
-                         method = input$corrtype ,geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
+                         position = position_identity(),size=3.88,
+                         method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                         label.x = label.x.value, label.y = label.y.value,
                          color=input$corrcol)
             }
 
@@ -3372,16 +3377,18 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             p <- p +
               stat_cor(data=plotdata,
                        aes(label =paste(..r.label..,  sep = "~`,`~"),group=NULL),
-                       position = position_identity(),
-                       method = input$corrtype, geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
+                       position = position_identity(),size=3.88,
+                       method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
+                       label.x = label.x.value, label.y = label.y.value,
                        color= input$corrcol)
             }
             if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
                        aes(label =paste(..r.label..,..p.label..,  sep = "~`,`~"), group=NULL),
-                       position = position_identity(),
-                       method = input$corrtype, geom = input$geomcorr, label.x.npc = label.x.npc.value, label.y.npc=label.y.npc.value,size = 5,
+                       position = position_identity(),size=3.88,
+                       method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
+                       label.x = label.x.value, label.y = label.y.value,
                        color= input$corrcol)
             }
           }#ignoregroup input$corrignorecol
