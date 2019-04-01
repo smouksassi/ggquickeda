@@ -3490,10 +3490,12 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
         if (!input$kmignorecol) {
           if (input$KM == "KM/CI") {
             p <- p +
-              geom_kmband(
+              stat_kmband(
                 alpha = input$KMCItransparency,
                 conf.int = input$KMCI,
-                trans = input$KMtrans
+                trans = input$KMtrans,
+                geom="ribbon",
+                linetype=0
               )
           }
           
@@ -3517,7 +3519,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           
           if (input$KM=="KM/CI") {
             p <- p +
-              geom_kmband(alpha=input$KMCItransparency,conf.int = input$KMCI,trans=input$KMtrans)
+              stat_kmband(alpha=input$KMCItransparency,conf.int = input$KMCI,trans=input$KMtrans,geom="ribbon",linetype=0)
           }
           
           
@@ -3532,41 +3534,175 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
           }
         }
 
+          
+          if(input$addmediansurv== "addmediansurvival" || input$addmediansurv== "addmediancisurvival" || input$addrisktable){
+            timevar  <- input$x
+            statusvar<- "status"
+            colorinputvar <-   ifelse(input$kmignorecol,"None" ,input$colorin) 
+            fillinputvar <-  input$fillin
+            linetypeinputvar <-  input$linetypein
+            groupinputvar<-   ifelse(input$KMignoregroup,"None" ,input$groupin)
+            survformula  <-  paste( "Surv","(",timevar,",",statusvar,")",sep="")
+            listvars <- unique(c(colorinputvar,fillinputvar,linetypeinputvar,groupinputvar,
+                                 input$facetrowin,input$facetcolin,input$facetrowextrain,input$facetcolextrain))
+            listvars <- listvars[!is.element(listvars,c("None",".")) ]
+            listvars <- listvars[!duplicated(listvars) ]
+            if ( length(listvars) ==0 ){
+              f <- as.formula(paste(survformula, "1", sep = " ~ "))
+            }
+            if ( length(listvars) >0 ){
+              f <- as.formula(paste(survformula, paste(listvars, collapse = " + "), sep = " ~ "))
+            }
+            fitsurv <- eval(bquote( survfit( .(f)  , plotdata, conf.int=input$KMCI) ))
+            ggsurv <- survminer::ggsurvplot(fitsurv, plotdata,risk.table = TRUE,  ggtheme = theme_bw())
+            risktabledata<- ggsurv$table$data
+            if(length(as.vector(input$risktablevariables)) > 0){
+              risktabledatag<- gather(risktabledata,key,value, gather_cols=as.vector(input$risktablevariables) ,factor_key = TRUE)
+              risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
+           }
+            if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {
+              .table <- as.data.frame(summary(fitsurv)$table)
+            } else {
+              .table <- t(as.data.frame(summary(fitsurv)$table))
+              rownames(.table) <- "All"
+            }
+            surv_median <- as.vector(.table[,"median"])
+            
+            dfmedian <- data.frame(x1 = surv_median,
+                                   x2 = surv_median,
+                                   x1lower =  as.vector(.table[,"0.95LCL"]),
+                                   x1upper =  as.vector(.table[,"0.95UCL"]),
+                                   y1 = rep(0, length(surv_median)),
+                                   y2 = rep(0.5, length(surv_median)),
+                                   strata = .clean_strata(rownames(.table)))
+            if(!is.null(fitsurv$strata)){
+              variables <- .get_variables(dfmedian$strata, fitsurv, plotdata)
+              for(variable in variables) dfmedian[[variable]] <- .get_variable_value(variable, dfmedian$strata, fitsurv, plotdata)
+            }
+             
+          }
+          
         if (input$addrisktable){
-          timevar  <- input$x
-          statusvar<- "status"
-          colorinputvar <-   ifelse(input$kmignorecol,"None" ,input$colorin) 
-          fillinputvar <-  input$fillin
-          linetypeinputvar <-  input$linetypein
-          groupinputvar<-   ifelse(input$KMignoregroup,"None" ,input$groupin)
-          survformula  <-  paste( "Surv","(",timevar,",",statusvar,")",sep="")
-          listvars <- unique(c(colorinputvar,fillinputvar,linetypeinputvar,groupinputvar,
-                               input$facetrowin,input$facetcolin,input$facetrowextrain,input$facetcolextrain))
-          listvars <- listvars[!is.element(listvars,c("None",".")) ]
-          listvars <- listvars[!duplicated(listvars) ]
-          if ( length(listvars) ==0 ){
-            f <- as.formula(paste(survformula, "1", sep = " ~ "))
-          }
-          if ( length(listvars) >0 ){
-            f <- as.formula(paste(survformula, paste(listvars, collapse = " + "), sep = " ~ "))
-          }
-          fitsurv <- eval(bquote( survfit( .(f)  , plotdata, conf.int=input$KMCI) ))
-          ggsurv <- survminer::ggsurvplot(fitsurv, plotdata,risk.table = TRUE,  ggtheme = theme_bw())
-          risktabledata<- ggsurv$table$data
-          if(length(as.vector(input$risktablevariables)) > 0){
-          risktabledatag<- gather(risktabledata,key,value, gather_cols=as.vector(input$risktablevariables) ,factor_key = TRUE)
-          risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
-          p  <- p +
-             geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
+          if (!input$kmignorecol){
+            p  <- p +
+              geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
                         position =   position_dodgev(height =input$nriskpositiondodge)
-                        
-                        )+
-            scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                               labels= c(as.vector(input$risktablevariables),
-                                         c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+              )+
+              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                 labels= c(as.vector(input$risktablevariables),
+                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+            
           }
+          
+         if (input$kmignorecol){
+           p  <- p +
+             geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
+                       position =   position_dodgev(height =input$nriskpositiondodge),color=input$colkml)+
+             scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                labels= c(as.vector(input$risktablevariables),
+                                          c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+         }
+          if(input$addhorizontallines){
+            p  <- p +
+              geom_hline(yintercept =- input$nriskpositionscaler *unique(c(1,(as.numeric(as.factor(risktabledatag$key))+1 )) )  +
+                           (abs(input$nriskpositiondodge)/2 ) )
+                         
+          }
+           
         }
-        
+         
+          if(input$arrowmedian) {
+            arrowmediandraw = arrow(length = unit(0.03, "npc"), type = "closed", ends = "first")
+          }
+            
+          if(!input$arrowmedian) {
+            arrowmediandraw = NULL
+          }
+
+            if(input$addmediansurv== "addmediancisurvival"){
+              if (!input$kmignorecol){
+              p  <-  p +
+                geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
+                                                      status=NULL,time=NULL),show.legend = FALSE,
+                                 label.size = NA, direction="both",fill="white",
+                                 segment.color="black",nudge_y = -0.1,segment.size = 0.5,
+                                 alpha = 0.5,label.padding=.1, 
+                                 na.rm=TRUE,
+                                 seed = 1234) +
+                geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
+                                                      status=NULL,time=NULL),show.legend = FALSE,
+                                 label.size = NA,direction="both",
+                                 nudge_y = -0.1,segment.size = 0.5,
+                                 arrow = arrowmediandraw,
+                                 alpha = 1,label.padding=.1, 
+                                 na.rm=TRUE,
+                                 fill = NA,
+                                 seed = 1234)
+              }
+              if (input$kmignorecol){
+                p  <-  p +
+                  geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
+                                                        status=NULL,time=NULL),show.legend = FALSE,
+                                   label.size = NA, direction="both",fill="white",color=input$colkml,
+                                   segment.color="black",nudge_y = -0.1,segment.size = 0.5,
+                                   alpha = 0.5,label.padding=.1, 
+                                   na.rm=TRUE,
+                                   seed = 1234) +
+                  geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
+                                                        status=NULL,time=NULL),show.legend = FALSE,
+                                   label.size = NA,direction="both",color=input$colkml,
+                                   nudge_y = -0.1,segment.size = 0.5,
+                                   arrow = arrowmediandraw,
+                                   alpha = 1,label.padding=.1, 
+                                   na.rm=TRUE,
+                                   fill = NA,
+                                   seed = 1234)
+              }
+            }
+            
+            if(input$addmediansurv== "addmediansurvival" ){
+              if (!input$kmignorecol){
+              p  <-  p +
+                geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label = sprintf("%#.3g",x1), status=NULL,time=NULL),show.legend = FALSE,
+                                 label.size = NA, direction="both",fill="white",
+                                 segment.color="black",nudge_y = -0.1,segment.size = 0.5,
+                                 alpha = 0.5,label.padding=.1, 
+                                 na.rm=TRUE,
+                                 seed = 1234) +
+                geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g",x1),
+                                                      status=NULL,time=NULL),show.legend = FALSE,
+                                 label.size = NA,direction="both",
+                                 nudge_y = -0.1,segment.size = 0.5,
+                                 arrow = arrowmediandraw,
+                                 alpha = 1,label.padding=.1, 
+                                 na.rm=TRUE,
+                                 fill = NA,
+                                 seed = 1234)
+              }
+              
+              if (input$kmignorecol){
+                p  <-  p +
+                  geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g",x1),
+                                                        status=NULL,time=NULL),show.legend = FALSE,
+                                   label.size = NA, direction="both",fill="white",color=input$colkml,
+                                   segment.color="black",nudge_y = -0.1,segment.size = 0.5,
+                                   alpha = 0.5,label.padding=.1, 
+                                   na.rm=TRUE,
+                                   seed = 1234) +
+                  geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g",x1),
+                                                        status=NULL,time=NULL),show.legend = FALSE,
+                                   label.size = NA,direction="both",color=input$colkml,
+                                   nudge_y = -0.1,segment.size = 0.5,
+                                   arrow = arrowmediandraw,
+                                   alpha = 1,label.padding=.1, 
+                                   na.rm=TRUE,
+                                   fill = NA,
+                                   seed = 1234)
+              }
+              
+              
+            }
+
         }
         p <- p + xlab(input$x)
 

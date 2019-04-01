@@ -1269,31 +1269,36 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                     ),
                     conditionalPanel( " input.KM!= 'None' ",
                     checkboxInput('KMignoregroup', 'Ignore Mapped Group',value = TRUE),
-                    checkboxInput('addrisktable', 'Add Risk Table',value = FALSE)
-                    ),
-                   conditionalPanel( " input.addrisktable ",
-                                     selectizeInput(
-                                       "risktablevariables", 'Numbers to Show:',
-                                       choices = c("n.risk","n.event","n.censor","pct.risk","cum.n.event","cum.n.censor") ,multiple=TRUE,
-                                       selected = c("n.risk","n.event","n.censor")),
-                                 sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
-                                 sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01)
-                                 
-                                     
-
-                   )
+                    checkboxInput('addrisktable', 'Add Risk Table',value = FALSE),
+                    conditionalPanel( " input.addrisktable ",
+                                      selectizeInput("risktablevariables", 'Numbers to Show:',
+                                                     choices = c("n.risk","n.event","n.censor","pct.risk","cum.n.event","cum.n.censor") ,multiple=TRUE,
+                                                     selected = c("n.risk","n.censor")),
+                                      sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
+                                      sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01),
+                                      checkboxInput('addhorizontallines', 'Draw Horizontal lines')
+                                      
+                    )
+                    )
+                  
                     
                   ),
                   
                   column (3,
                      conditionalPanel( " input.KM!= 'None' ",
                                       sliderInput("kmlinesize", "KM Line(s) Size:", min=0, max=6, value=c(1),step=0.1),
-                                      sliderInput("kmlinealpha", "KM Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
-                    )
-                    ),
-                  
-                  column (
-                    3,
+                                      sliderInput("kmlinealpha", "KM Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                                      radioButtons("addmediansurv", "Add Median Survival:",
+                                                   c("Median" ="addmediansurvival"  ,"Median/95%CI" = "addmediancisurvival","None" = "None")
+                                                   ,selected="None")
+
+                     ),
+                     conditionalPanel( " input.addmediansurv!=`None` ",
+                                       checkboxInput('arrowmedian', 'Draw Arrow?')
+                     )
+                     
+       ),
+                  column (3,
                     conditionalPanel(
                       " input.KM!= 'None' ",
                       selectInput('KMtrans', label ='KM Transformation',
@@ -1337,10 +1342,9 @@ checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FAL
                                 )
                                 
                                 
-                              )
-                            )
-                    
-                  )
+                              )#censorticks 
+                            )#ignorecolor
+                  )#kmnotnone
                   ),#column
                   column (12, h6("KM curves support is limited. When a KM curve is added nothing else will be plotted (e.g. points, lines etc.).Color/Fill/Group/Facets work." ))
                   
