@@ -321,7 +321,14 @@ fluidPage(
                 selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
                                  choices = c("none","x","y","both"),
                                  options = list(  maxItems = 1 )  ),
-                checkboxInput('facetmargin', 'Show a facet with all data (margins)?'),
+                selectInput('facetmargin', 'Show facet margins?', 
+                            choices = c("None" = "none",
+                                        "All" = "all",
+                                        "Specific variables" = "some")),
+                conditionalPanel(
+                  "input.facetmargin == 'some'",
+                  selectInput('facetmargin_vars', NULL, choices = c(), multiple = TRUE,)
+                ),
                 selectInput('facetlabeller' ,'Facet Label:',c(
                   "Variable(s) Name(s) and Value(s)" ="label_both",
                   "Value(s)"="label_value",

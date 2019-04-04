@@ -1803,8 +1803,28 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
     })
   })
 
+  observe({
+    facet_choices <- unique(c(
+      input$facetcolextrain,
+      input$facetcolin,
+      input$facetrowin,
+      input$facetrowextrain
+    ))
+    facet_choices <- setdiff(facet_choices, ".")
+    updateSelectInput(session, "facetmargin_vars", choices = facet_choices)
+  })
   
-  
+  facetmargins <- reactive(
+    if (input$facetmargin == "none") {
+      return(FALSE)
+    } else if (input$facetmargin == "all") {
+      return(TRUE)
+    } else if (input$facetmargin == "some") {
+      return(input$facetmargin_vars)
+    } else {
+      stop("Invalid facetmargin input")
+    }
+  )
   
   plotObject <- reactive({
     # Don't generate a new plot if the user wants to refresh manually
@@ -3938,7 +3958,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             space = input$facetspace,
             switch = facetswitch,
             labeller = input$facetlabeller,
-            margins = input$facetmargin,
+            margins = facetmargins(),
             as.table = ASTABLE
           )
       }
