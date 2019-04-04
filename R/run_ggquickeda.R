@@ -27,4 +27,4 @@ run_ggquickeda <- function(data = NULL) {
 }
 
 # Make CRAN happy
-if(getRversion() >= "2.15.1")  utils::globalVariables(c("ggquickeda_initdata"))
+if (getRversion() >= "2.15.1") utils::globalVariables(c("ggquickeda_initdata"))

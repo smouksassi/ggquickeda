@@ -7,9 +7,15 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
+  mockFileUpload <- function(name) {
+    shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
+    shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')
+  }
+  
   # If this app was launched from a function that explicitly set an initial dataset
   if (exists("ggquickeda_initdata")) {
     values$maindata <- get("ggquickeda_initdata")
+    mockFileUpload("Initial Data")
   }
   
   # Kill the application/R session when a single shiny session is closed
@@ -265,6 +271,7 @@ function(input, output, session) {
   observeEvent(input$sample_data_btn, {
     file <- "data/sample_data.csv"
     values$maindata <- read.csv(file, na.strings = c("NA","."))
+    mockFileUpload("Sample Data")
   })
   
   # reset the dynamic "change factor levels" boxes
@@ -1795,7 +1802,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
       )
     })
   })
-  
+
   
   
   
@@ -3931,7 +3938,7 @@ condition = !is.null(input$catvarquantin) && length(input$catvarquantin) >= 1)
             space = input$facetspace,
             switch = facetswitch,
             labeller = input$facetlabeller,
-            margins = input$facetmargin ,
+            margins = input$facetmargin,
             as.table = ASTABLE
           )
       }
