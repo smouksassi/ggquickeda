@@ -12,7 +12,7 @@ StatKmband
 stat_kmband(mapping = NULL, data = NULL, geom = "kmband",
   position = "identity", show.legend = NA, inherit.aes = TRUE,
   trans = "identity", firstx = 0, firsty = 1,
-  type = "kaplan-meier", error = "tsiatis", conf.type = "log",
+  type = "kaplan-meier", error = "greenwood", conf.type = "log",
   conf.lower = "usual", start.time = 0, conf.int = 0.95, ...)
 }
 \arguments{
@@ -102,9 +102,8 @@ ggplot(df, aes(time = time, status = status, color = factor(sex))) +
 
 p1 <- ggplot(df, aes(time = time, status = status))
 p1 + stat_km() + stat_kmband(conf.int = .99)
-p1 + stat_km() + stat_kmband(error = "tsiatis")
-# NOTE this example doesn't work
-# p1 + stat_km() + stat_km(conf.type = "log-log")
+p1 + stat_kmband(error = "greenwood",fill="red",alpha=0.2) + stat_kmband(error = "tsiatis",alpha=1)+ stat_km()
+p1 + stat_km() + stat_kmband(conf.type = "log-log")+ stat_kmband(conf.type = "log")
 
 }
 \keyword{internal}
