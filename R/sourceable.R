@@ -5,7 +5,7 @@
 #' @export
 #' @keywords internal
 sourceable <- function(x) {
-  stopifnot(methods::is(x, "ggplot"))
+  stopifnot(methods::is(x, "ggplot") || methods::is(x, "ggmatrix"))
   attr(x, "source_code") <- deparse(substitute(x))
   attr(x, "source_deps") <- list()
   class(x) <- c("sourceable", class(x))
