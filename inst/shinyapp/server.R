@@ -3562,6 +3562,9 @@ function(input, output, session) {
       }#do not corrignorecol 
       
       if(input$corrignorecol ) {
+        label.x.value <- ifelse(input$geomcorr=="text",input$cortextxpos,Inf)
+        label.y.value <- ifelse(input$geomcorr=="text",input$cortextypos,Inf)
+        
         if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
           
           if(!input$addcorrcoeffpvalue){
