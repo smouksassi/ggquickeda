@@ -102,7 +102,8 @@ ggplot(df, aes(time = time, status = status, color = factor(sex))) +
 
 p1 <- ggplot(df, aes(time = time, status = status))
 p1 + stat_km() + stat_kmband(conf.int = .99)
-p1 + stat_kmband(error = "greenwood",fill="red",alpha=0.2) + stat_kmband(error = "tsiatis",alpha=1)+ stat_km()
+p1 + stat_kmband(error = "greenwood",fill="red",alpha=0.2) +
+ stat_kmband(error = "tsiatis",alpha=1)+ stat_km()
 p1 + stat_km() + stat_kmband(conf.type = "log-log")+ stat_kmband(conf.type = "log")
 
 }

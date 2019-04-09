@@ -1894,7 +1894,16 @@ function(input, output, session) {
     # Determine what type of plot to show based on what variables were chosen
     if (input$show_pairs) {
       # Matrix of pairs of plots of all the Y variables
-      p <- sourceable(GGally::ggpairs(plotdata, columns = input$y, progress = FALSE))
+      if (input$colorin == 'None'){
+        p <- sourceable(GGally::ggpairs(plotdata, columns = input$y, progress = FALSE))
+      }
+      if (input$colorin != 'None'){
+        p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
+                                        mapping=ggplot2::aes_string(color=input$colorin), 
+                                        progress = FALSE))
+      }
+      
+      
     } else if (is.null(input$y)) {
       # Univariate plot
       
@@ -3832,7 +3841,7 @@ function(input, output, session) {
                                                     status=NULL,time=NULL),show.legend = FALSE,
                                label.size = NA, direction="both",fill="white",
                                segment.color="black",nudge_y = -0.1,segment.size = 0.5,
-                               alpha = 0.5,label.padding=.1, 
+                               alpha = 0.5,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                seed = 1234) +
               geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
@@ -3840,7 +3849,7 @@ function(input, output, session) {
                                label.size = NA,direction="both",
                                nudge_y = -0.1,segment.size = 0.5,
                                arrow = arrowmediandraw,
-                               alpha = 1,label.padding=.1, 
+                               alpha = 1,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                fill = NA,
                                seed = 1234)
@@ -3851,7 +3860,7 @@ function(input, output, session) {
                                                     status=NULL,time=NULL),show.legend = FALSE,
                                label.size = NA, direction="both",fill="white",color=input$colkml,
                                segment.color="black",nudge_y = -0.1,segment.size = 0.5,
-                               alpha = 0.5,label.padding=.1, 
+                               alpha = 0.5,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                seed = 1234) +
               geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
@@ -3859,7 +3868,7 @@ function(input, output, session) {
                                label.size = NA,direction="both",color=input$colkml,
                                nudge_y = -0.1,segment.size = 0.5,
                                arrow = arrowmediandraw,
-                               alpha = 1,label.padding=.1, 
+                               alpha = 1,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                fill = NA,
                                seed = 1234)
@@ -3872,7 +3881,7 @@ function(input, output, session) {
               geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label = sprintf("%#.3g",x1), status=NULL,time=NULL),show.legend = FALSE,
                                label.size = NA, direction="both",fill="white",
                                segment.color="black",nudge_y = -0.1,segment.size = 0.5,
-                               alpha = 0.5,label.padding=.1, 
+                               alpha = 0.5,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                seed = 1234) +
               geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g",x1),
@@ -3880,7 +3889,7 @@ function(input, output, session) {
                                label.size = NA,direction="both",
                                nudge_y = -0.1,segment.size = 0.5,
                                arrow = arrowmediandraw,
-                               alpha = 1,label.padding=.1, 
+                               alpha = 1,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                fill = NA,
                                seed = 1234)
@@ -3892,7 +3901,7 @@ function(input, output, session) {
                                                     status=NULL,time=NULL),show.legend = FALSE,
                                label.size = NA, direction="both",fill="white",color=input$colkml,
                                segment.color="black",nudge_y = -0.1,segment.size = 0.5,
-                               alpha = 0.5,label.padding=.1, 
+                               alpha = 0.5,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                seed = 1234) +
               geom_label_repel(data = dfmedian, aes(x= x1 , y= y2 ,label =sprintf("%#.3g",x1),
@@ -3900,7 +3909,7 @@ function(input, output, session) {
                                label.size = NA,direction="both",color=input$colkml,
                                nudge_y = -0.1,segment.size = 0.5,
                                arrow = arrowmediandraw,
-                               alpha = 1,label.padding=.1, 
+                               alpha = 1,label.padding=.1, force = 5,
                                na.rm=TRUE,
                                fill = NA,
                                seed = 1234)

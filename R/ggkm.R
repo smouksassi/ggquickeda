@@ -161,7 +161,8 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
-#' ggplot(df, aes(time = time, status = status, color = factor(sex), fill =factor(sex))) + geom_km() + geom_kmband()
+#' ggplot(df, aes(time = time, status = status, color = factor(sex), fill =factor(sex))) +
+#'  geom_km() + geom_kmband()
 
 geom_kmband <- function(mapping = NULL, data = NULL, stat = "kmband",
                         position = "identity", show.legend = NA,
@@ -201,7 +202,8 @@ geom_kmband <- function(mapping = NULL, data = NULL, stat = "kmband",
 #' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
-#' ggplot(df, aes(time = time, status = status, color = factor(sex), group = factor(sex))) + geom_km() + geom_kmticks(col="black")
+#' ggplot(df, aes(time = time, status = status, color = factor(sex), group = factor(sex))) +
+#'  geom_km() + geom_kmticks(col="black")
 
 geom_kmticks <- function(mapping = NULL, data = NULL, stat = "kmticks",
                          position = "identity", show.legend = NA,
@@ -434,7 +436,8 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #'
 #' p1 <- ggplot(df, aes(time = time, status = status))
 #' p1 + stat_km() + stat_kmband(conf.int = .99)
-#' p1 + stat_kmband(error = "greenwood",fill="red",alpha=0.2) + stat_kmband(error = "tsiatis",alpha=1)+ stat_km()
+#' p1 + stat_kmband(error = "greenwood",fill="red",alpha=0.2) +
+#'  stat_kmband(error = "tsiatis",alpha=1)+ stat_km()
 #' p1 + stat_km() + stat_kmband(conf.type = "log-log")+ stat_kmband(conf.type = "log")
 #'
 

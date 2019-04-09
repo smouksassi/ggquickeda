@@ -1,21 +1,20 @@
 # ggquickeda 0.1.2.9999
 * UI and options improvements for KM (line sizes, transparency, ignore group and color), linetype mappping
+* changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na
+* added the possibility to add median survival with or without CI
 * Using stat_cor from ggpubr to compute correlations for more flexibility and margin in facets
 * added ability to ignore grouping and or ignore color mapping for correlation coefficient
-* added the possibility to add one more therapeutic window and fixed a bug with categorical x axis
 * added possibility to dodge means and medians
 * added possibility to specify means and medians N and Values transparency and a default seed for text_repel
+* geom text,label, withe repel variants and position dodge for median and mean labels
 * added transparency control for densities and histograms as well as linetype mappping
-* added binwidth control for histogram ( user defined or auto)
-* added adjustment control for densities
-* added discrete scale for target areas as a workaround to ggplot scale guessing bug 
-* position adjustment for histograms
+* added binwidth control for histogram (user defined or auto), and position dodge
+* added window adjustment control for densities
 * linetypes for predefined quantiles
-* remove x/y axis tick labels
+* added the possibility to add one more therapeutic window and fixed a bug with categorical x axis
+* addid possibility to remove x/y axis tick labels
 * fixes for continuous scales logic
-* geom text and position for median and mean labels
-* changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na
-
+* Added initial support for ggpairs
 
 
 
