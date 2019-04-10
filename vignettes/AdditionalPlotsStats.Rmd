@@ -60,7 +60,7 @@ Go to **One Row by ID(s)** and map it to ID.
 * Click on the **Descriptive Stats** Tab
 * Map Extra Column Split to Gender and explore with the Flip the order of the columns checkbox
 
-![DescStas](./intro_13.png){width=100%}
+![DescStats](./intro_13.png){width=100%}
 
 To explore some of the univariate plots,remove all y variable(s) keeping Age as x variable gives:
 

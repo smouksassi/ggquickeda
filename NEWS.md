@@ -12,7 +12,7 @@
 * added window adjustment control for densities
 * linetypes for predefined quantiles
 * added the possibility to add one more therapeutic window and fixed a bug with categorical x axis
-* addid possibility to remove x/y axis tick labels
+* added possibility to remove x/y axis tick labels
 * fixes for continuous scales logic
 * Added initial support for ggpairs
 
