@@ -4496,7 +4496,7 @@ function(input, output, session) {
     plotObject()
   })
   
-  output$plotly <- renderPlotly({ggplotly(plotObject())})
+  output$plotly <- renderPlotly({ggplotly(plotObject(),height = input$height)})
   output$ui_plotly <-  renderUI({plotlyOutput('plotly')})
   
   output$ui_plot <-  renderUI({                 
