@@ -1,4 +1,4 @@
-# ggquickeda 0.1.2.9999
+# ggquickeda 0.1.3
 * UI and options improvements for KM (line sizes, transparency, ignore group and color), linetype mappping
 * changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na
 * added the possibility to add median survival with or without CI
