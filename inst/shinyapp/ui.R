@@ -474,9 +474,12 @@ fluidPage(
               h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
                  Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
                  Contact me if you want to add your own set of colors."),
+              conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
+              sliderInput("nusercol", "N of User Colors:", min=2, max=20, value=c(10),step=1)
+                               ),
               uiOutput('userdefinedcolor'),
               conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
-                                actionButton("userdefinedcolorreset", "Back to starting tableau10 colours", icon = icon("undo") ),
+                                actionButton("userdefinedcolorreset", "Back to starting tableau colours", icon = icon("undo") ),
                                actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
                                
               ),

@@ -1764,8 +1764,13 @@ function(input, output, session) {
   })
   
   output$userdefinedcolor <- renderUI({ 
-    lev <- 1:10
-    cols <- tableau10
+    lev <- 1:input$nusercol
+    if( length(lev) > 10 ){
+      cols <- c(tableau20)
+    }
+    if( length(lev) <= 10 ){
+      cols <- c(tableau10)
+    }
     if(input$themecolorswitcher=="themeuser"){
       lapply(seq_along(lev), function(i) {
         colourInput(inputId = paste0("col", lev[i]),label = paste0("Choose color", lev[i]), value = cols[i]
@@ -1776,7 +1781,7 @@ function(input, output, session) {
   })
   
   observeEvent(input$userdefinedcolorreset, {
-    lev <- 1:10
+    lev <- 1:input$nusercol
     cols <- tableau10
     lapply(seq_along(lev), function(i) {
       do.call(what = "updateColourInput",
@@ -1791,7 +1796,7 @@ function(input, output, session) {
   
   observeEvent(input$userdefinedcolorhighlight, {
     lev <- 1:10
-    cols <- c("#D62728",rep("lightgray",9))
+    cols <- c("#D62728",rep("lightgray",input$nusercol-1))
     lapply(seq_along(lev), function(i) {
       do.call(what = "updateColourInput",
               args = list(
@@ -1865,7 +1870,7 @@ function(input, output, session) {
         scale_fill_manual(..., values = tableau10,drop=!input$themecolordrop)
     }
     if (input$themecolorswitcher=="themeuser"){
-      cols <- paste0("c(", paste0("input$col", 1:10, collapse = ", "), ")")
+      cols <- paste0("c(", paste0("input$col", 1:input$nusercol, collapse = ", "), ")")
       cols <- eval(parse(text = cols))
       scale_colour_discrete <- function(...) 
         scale_colour_manual(..., values = cols,drop=!input$themecolordrop)
@@ -4255,7 +4260,7 @@ function(input, output, session) {
       if(input$pointsizein!="None"){
         
         if(!input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
-          p <- p +  scale_size(range =c(input$scalesizearearange1[1], input$scalesizearearange1[2]))   }   
+          p <- p +  scale_size(range = c(input$scalesizearearange1[1], input$scalesizearearange1[2]))   }   
         if(input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
           p <- p +  scale_size_area(max_size =  input$scalesizearearange2[1])   }
         
