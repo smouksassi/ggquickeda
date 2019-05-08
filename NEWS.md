@@ -1,3 +1,7 @@
+# ggquickeda 0.1.3.9999
+* custom labels with text, label, text_repel and label_repel
+
+
 # ggquickeda 0.1.3
 * UI and options improvements for KM (line sizes, transparency, ignore group and color), linetype mappping
 * changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na

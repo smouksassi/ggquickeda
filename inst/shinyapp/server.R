@@ -3626,53 +3626,57 @@ function(input, output, session) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
               p <- p + stat_identity(data=plotdata, geom=input$geomlabel,show.legend = input$customlabellegend,
-                                     size=input$labelsize)
+                                     size=input$labelsize, seed = 1234)
             }
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,geom=input$geomlabel, show.legend = input$customlabellegend)
+              p <- p + stat_identity(data=plotdata,geom=input$geomlabel, show.legend = input$customlabellegend, seed = 1234)
             } 
           }#do notignoregroup 
           
           if(input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
               p <- p + stat_identity(data=plotdata,aes(group=NULL), geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize)
+                                     size=input$labelsize, seed = 1234)
             }
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL),geom=input$geomlabel, show.legend = input$customlabellegend)
+              p <- p + stat_identity(data=plotdata,aes(group=NULL),geom=input$geomlabel,
+                                     show.legend = input$customlabellegend, seed = 1234)
               
             }
             
           }#ignoregroup   
           
-        }#do not corrignorecol
+        }#do not labelignorecol
         
         if(input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
               p <- p + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize)
+                                     size=input$labelsize, seed = 1234)
               
             }
             if(!input$labelignoresize){
-              p <- p  + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend)
+              p <- p  + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel,
+                                      show.legend = input$customlabellegend, seed = 1234)
               
             }
           }#do notignoregroup 
           
           if(input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize)
+              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel,
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize, seed = 1234)
             }
             
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend )                
+              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel,
+                                     show.legend = input$customlabellegend, seed = 1234 )                
             }
             
           }#ignoregroup   
           
-        }# corrignorecol
+        }# label ignorecol
         
       }# addcustom label
       #### data label END

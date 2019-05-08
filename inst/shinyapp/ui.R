@@ -1416,7 +1416,8 @@ fluidPage(
                     checkboxInput('customlabellegend',"Show Legend ?", value=FALSE),
                     radioButtons("geomlabel", "Label Geom:",
                                  c("text" = "text","label" = "label",
-                                   "auto text repel" = "text_repel"))
+                                   "auto text repel" = "text_repel",
+                                   "auto label repel" = "label_repel"))
                   ),
                   column(3,hr(),
                          conditionalPanel(
