@@ -1848,13 +1848,13 @@ function(input, output, session) {
     # Fix the colour palettes
     if (input$themecontcolorswitcher=="RedWhiteBlue"){
       scale_colour_continuous<- function(...) 
-        scale_colour_gradient2(..., low = muted("red"), mid = "white",
+        scale_colour_gradient2(..., low = muted("red"), mid = input$midcolor,
                                high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
     }
     if (input$themecontcolorswitcher=="RedWhiteGreen"){
       scale_colour_continuous<- function(...) 
-        scale_colour_gradient2(..., low = muted("red"), mid = "white",
+        scale_colour_gradient2(..., low = muted("red"), mid = input$midcolor,
                                high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
     }

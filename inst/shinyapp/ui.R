@@ -476,7 +476,7 @@ fluidPage(
                  Contact me if you want to add your own set of colors."),
               uiOutput('userdefinedcolor'),
               conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
-                               actionButton("userdefinedcolorreset", "Back to starting tableau10 colours", icon = icon("undo") ),
+                                actionButton("userdefinedcolorreset", "Back to starting tableau10 colours", icon = icon("undo") ),
                                actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
                                
               ),
@@ -488,7 +488,12 @@ fluidPage(
                            ,inline=TRUE),
               
               numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0),
-              
+              colourpicker::colourInput(
+                "midcolor",
+                "Midpoint Color",
+                value ="white",
+                showColour = "both",
+                allowTransparent = FALSE,returnName = TRUE),
               
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
