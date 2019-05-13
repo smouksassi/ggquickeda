@@ -1,5 +1,8 @@
 # ggquickeda 0.1.3.9999
 * custom labels with text, label, text_repel and label_repel
+* user can now add more custom colors up to 20
+* added user control to specify mid color of continuous color scales
+* added user control to specify strip text colour and more colourpicker background color
 
 
 # ggquickeda 0.1.3

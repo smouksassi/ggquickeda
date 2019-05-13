@@ -1764,6 +1764,7 @@ function(input, output, session) {
   })
   
   output$userdefinedcolor <- renderUI({ 
+    req(input$nusercol)
     lev <- 1:input$nusercol
     if( length(lev) > 10 ){
       cols <- c(tableau20)
@@ -1781,8 +1782,14 @@ function(input, output, session) {
   })
   
   observeEvent(input$userdefinedcolorreset, {
+    req(input$nusercol)
     lev <- 1:input$nusercol
-    cols <- tableau10
+    if( length(lev) > 10 ){
+      cols <- c(tableau20)
+    }
+    if( length(lev) <= 10 ){
+      cols <- c(tableau10)
+    }
     lapply(seq_along(lev), function(i) {
       do.call(what = "updateColourInput",
               args = list(
@@ -1795,7 +1802,8 @@ function(input, output, session) {
   })
   
   observeEvent(input$userdefinedcolorhighlight, {
-    lev <- 1:10
+    req(input$nusercol)
+    lev <- 1:input$nusercol
     cols <- c("#D62728",rep("lightgray",input$nusercol-1))
     lapply(seq_along(lev), function(i) {
       do.call(what = "updateColourInput",
@@ -4446,12 +4454,14 @@ function(input, output, session) {
     if (input$striptextsizex <= 0) {
       x.strip.text <- ggplot2::element_blank()
     } else {
-      x.strip.text <- ggplot2::element_text(size = input$striptextsizex)
+      x.strip.text <- ggplot2::element_text(size = input$striptextsizex,
+                                            colour=input$striptextcolourx)
     }
     if (input$striptextsizey <= 0) {
       y.strip.text <- ggplot2::element_blank()
     } else {
-      y.strip.text <- ggplot2::element_text(size = input$striptextsizey)
+      y.strip.text <- ggplot2::element_text(size = input$striptextsizey,
+                                            colour=input$striptextcoloury)
     }
     
     p <-  p+

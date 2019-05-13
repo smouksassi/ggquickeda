@@ -256,9 +256,12 @@ fluidPage(
             
             tabPanel(
               "Background Color and Legend(s)",
-              selectInput('backgroundcol', label ='Background Color',
-                          choices=c("Gray" ="grey95","White"="white","Dark Gray"="grey90"),
-                          multiple=FALSE, selectize=TRUE,selected="white"),
+              colourpicker::colourInput(
+                "backgroundcol",
+                "Background Color",
+                value =  "white",
+                showColour = "both",
+                allowTransparent = FALSE,returnName=TRUE),
               selectInput('legendposition', label ='Legend Position',
                           choices=c("left", "right", "bottom", "top","none"),
                           multiple=FALSE, selectize=TRUE,selected="bottom"),
@@ -369,6 +372,14 @@ fluidPage(
               div( actionButton("stripbackfillresety", "Reset Y Strip Background Fill"),
                    style="text-align: right"),
               
+              colourpicker::colourInput("striptextcolourx",  "X Text Colour:",
+                                        value="black",
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
+              colourpicker::colourInput("striptextcoloury",  "Y Text Colour:",
+                                        value="black",
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
+              
+              
               selectizeInput(  "stripplacement", "Strip Placement:",
                                choices = c("inside","outside"),
                                options = list(  maxItems = 1 )  ),
@@ -456,9 +467,9 @@ fluidPage(
             tabPanel(
               "Additional Themes Options",
               sliderInput("themebasesize", "Theme Size (affects all text except facet strip):", min=1, max=100, value=c(16),step=1),
-              sliderInput("striptextsizex", "X Strip Text Size:",
+              sliderInput("striptextsizex", "X Strip Text Size: (setzero to hide)",
                           min=0, max=100, value=c(16),step=0.5),
-              sliderInput("striptextsizey", "Y Strip Text Size:",
+              sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
                           min=0, max=100, value=c(16),step=0.5),
               
               
