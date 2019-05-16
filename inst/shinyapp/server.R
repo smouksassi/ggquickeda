@@ -1168,6 +1168,10 @@ function(input, output, session) {
       if(input$functionordervariable=="N" )  {
         df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) length(x[!is.na(x)]))
       }
+      if(input$functionordervariable=="SD" )  {
+        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) sd(x[!is.na(x)]))
+      }
+      
       if(input$reverseorder )  {
         df[,varname] <- factor( df[,varname], levels=rev(levels( df[,varname])))
         

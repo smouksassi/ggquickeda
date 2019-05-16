@@ -3,6 +3,7 @@
 * user can now add more custom colors up to 20
 * added user control to specify mid color of continuous color scales
 * added user control to specify strip text colour and more colourpicker background color
+* order stacked data by sd of value 
 
 
 # ggquickeda 0.1.3
