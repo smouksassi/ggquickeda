@@ -547,7 +547,7 @@ function(input, output, session) {
     if(!is.null(input$catvarin)&length(input$catvarin ) >=1) {
       for (i in 1:length(input$catvarin ) ) {
         varname<- input$catvarin[i]
-        df[,varname] <- cut(df[,varname],input$ncuts , include.lowest = TRUE, right = FALSE, ordered_result = TRUE)
+        df[,varname] <- cut(df[,varname],input$ncuts , include.lowest = TRUE, right = FALSE, ordered_result = FALSE)
         df[,varname]   <- as.factor( df[,varname])
       }
     }
@@ -1785,6 +1785,28 @@ function(input, output, session) {
     
   })
   
+  output$userdefinedcontcolor <- renderUI({ 
+      if(input$themecontcolorswitcher=="themeuser"){
+      list(
+        colourpicker::colourInput(
+          "colcont1",
+          "Starting Color",
+          value = muted("red"),
+          showColour = "both",
+          allowTransparent = FALSE,returnName = TRUE),
+        
+        
+        colourpicker::colourInput(
+          "colcont2",
+          "Ending Color",
+          value =muted("blue"),
+          showColour = "both",
+          allowTransparent = FALSE,returnName = TRUE)
+              )
+      }
+    })
+  
+  
   observeEvent(input$userdefinedcolorreset, {
     req(input$nusercol)
     lev <- 1:input$nusercol
@@ -1818,6 +1840,19 @@ function(input, output, session) {
               )
       )
     })
+  })
+  
+  observeEvent(input$userdefinedcontcolorreset, {
+    cols <- c(muted("red"),muted("blue"))
+    updateColourInput(session = session,
+                      inputId = paste0("colcont1"),
+                      value = cols[1]
+                      )
+                      
+    updateColourInput(session = session,
+                      inputId = paste0("colcont2"),
+                      value = cols[2]
+    )
   })
   
   observe({
@@ -1863,18 +1898,56 @@ function(input, output, session) {
     validate(need(!is.null(plotdata), "Please select a data set") )
     
     # Fix the colour palettes
+    #continuous
+    if (input$themecontcolorswitcher=="themeggplot"){
+      scale_colour_continuous<- function(...) 
+        scale_colour_gradient(...,guide = "colourbar")
+      
+      scale_fill_continuous<- function(...) 
+        scale_fill_gradient(...,guide = "colourbar")
+    }
+    
     if (input$themecontcolorswitcher=="RedWhiteBlue"){
+      
       scale_colour_continuous<- function(...) 
         scale_colour_gradient2(..., low = muted("red"), mid = input$midcolor,
                                high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
+      
+      scale_fill_continuous<- function(...) 
+        scale_fill_gradient2(..., low = muted("red"), mid = input$midcolor,
+                               high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
+                               na.value = "grey50", guide = "colourbar")
     }
     if (input$themecontcolorswitcher=="RedWhiteGreen"){
-      scale_colour_continuous<- function(...) 
+      
+      scale_colour_continuous <- function(...) 
         scale_colour_gradient2(..., low = muted("red"), mid = input$midcolor,
                                high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
+      
+      scale_fill_continuous <- function(...) 
+        scale_fill_gradient2(..., low = muted("red"), mid = input$midcolor,
+                               high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
+                               na.value = "grey50", guide = "colourbar")
+      
     }
+    
+    if (input$themecontcolorswitcher=="themeuser"){
+      
+      scale_colour_continuous <- function(...) 
+        scale_colour_gradient2(..., low = input$colcont1 , mid = input$midcolor,
+                               high =     input$colcont2, midpoint = input$colormidpoint, space = "Lab",
+                               na.value = "grey50", guide = "colourbar")
+      
+      scale_fill_continuous <- function(...) 
+        scale_fill_gradient2(..., low = input$colcont1, mid = input$midcolor,
+                             high = input$colcont2, midpoint = input$colormidpoint, space = "Lab",
+                             na.value = "grey50", guide = "colourbar")
+      
+    }
+    
+    #discrete
     if (input$themecolorswitcher=="themetableau10"){
       scale_colour_discrete <- function(...) 
         scale_colour_manual(..., values = tableau10,drop=!input$themecolordrop)
@@ -4251,9 +4324,15 @@ function(input, output, session) {
           p <-  p + scale_colour_hue(drop=!input$themecolordrop)
         }
         
-        if (input$themecontcolorswitcher=="themeggplot"&&is.numeric(plotdata[,input$colorin])){
-          p <-  p + scale_colour_gradient2(midpoint = input$colormidpoint)
+
+        if (input$themecolorswitcher=="themeviridis" && !is.numeric(plotdata[,input$colorin])){
+          p <-  p + scale_colour_viridis_d(drop=!input$themecolordrop)
         }
+        
+        if (input$themecontcolorswitcher=="themeviridis" && is.numeric(plotdata[,input$colorin])){
+          p <-  p + scale_colour_viridis_c()
+        }
+        
       }
       
       
@@ -4263,9 +4342,15 @@ function(input, output, session) {
           
         }
         
-        if (input$themecontcolorswitcher=="themeggplot"&&is.numeric(plotdata[,input$fillin])){
-          p <-  p + scale_fill_gradient2(midpoint = input$colormidpoint)
+
+        if (input$themecolorswitcher=="themeviridis"&&!is.numeric(plotdata[,input$fillin])){
+          p <-  p + scale_fill_viridis_d(drop=!input$themecolordrop)
         }
+        
+        if (input$themecontcolorswitcher=="themeviridis"&&is.numeric(plotdata[,input$fillin])){
+          p <-  p + scale_fill_viridis_c()
+        }
+        
       }
       
       

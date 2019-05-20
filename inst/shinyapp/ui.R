@@ -480,6 +480,7 @@ fluidPage(
                              "Color Blind" = "themecolorblind",
                              "Color Blind 2" = "themecolorblind2",
                              "ggplot default" = "themeggplot",
+                             "viridis"        = "themeviridis",
                              "User defined" = "themeuser")
                            ,inline=TRUE),
               h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
@@ -496,18 +497,24 @@ fluidPage(
               ),
               
               radioButtons("themecontcolorswitcher", "Continuous Color and Fill Themes:",
-                           c("Red White Blue"  = "RedWhiteBlue",
+                           c("ggplot gradient2"  = "RedWhiteBlue",
                              "Red White Green"  = "RedWhiteGreen",
-                             "ggplot default" = "themeggplot")
+                             "ggplot default" = "themeggplot",
+                             "viridis" = "themeviridis",
+                             "User defined" = "themeuser")
                            ,inline=TRUE),
-              
-              numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0),
+              uiOutput('userdefinedcontcolor'),
+              conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
+                               actionButton("userdefinedcontcolorreset", "Back to starting colours", icon = icon("undo") )
+              ),
               colourpicker::colourInput(
                 "midcolor",
                 "Midpoint Color",
                 value ="white",
                 showColour = "both",
                 allowTransparent = FALSE,returnName = TRUE),
+              
+              numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0),
               
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
