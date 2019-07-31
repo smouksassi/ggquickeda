@@ -2892,12 +2892,15 @@ function(input, output, session) {
           familyargument<- "poisson"
           methodsargument<- list(family = familyargument) 
         }
+
         smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
                                       "glm",input$smoothmethod)
         spanplot <- input$loessens
         levelsmooth<- input$smoothselevel
+        colsmooth <- input$colsmooth
+        
         if ( input$ignoregroup) {
-          if (!input$smoothignorecol) {
+          if (!input$smoothignorecol&& !input$smoothmethod=="emax") {
             if (input$Smooth=="Smooth"&& input$weightin == 'None')
               p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
                                  method=smoothmethodargument,
@@ -2932,16 +2935,62 @@ function(input, output, session) {
                           method.args = methodsargument,
                           size=smoothlinesize,se=T,span=spanplot,aes(group=NULL))+
                 aes_string(weight=input$weightin)
+          
+
           }
-          if (input$smoothignorecol) {
-            colsmooth <- input$colsmooth
-            if (input$Smooth=="Smooth")
+          if (!input$smoothignorecol&& input$smoothmethod=="emax") {
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin == 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F,aes(group=NULL))
+              if(input$shownlsparams){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", 
+                                         method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                         label.x = "right",
+                                         label.y = "bottom",
+                                         aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                           "%+-%", signif(..Vm_se.., digits = 2),
+                                                           "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                           "%+-%", signif(..K_se.., digits = 2),
+                                                           sep = ""),
+                                             group=NULL),
+                                         parse = TRUE)
+              }
+              
+            }
+            
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin != 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F,aes(group=NULL))+
+                aes_string(weight=input$weightin)
+              if(input$shownlsparams){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", 
+                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%", signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%", signif(..K_se.., digits = 2),
+                                                                 sep = ""),
+                                                   group=NULL),
+                                               parse = TRUE)
+              }
+              
+            }
+          }
+          if (input$smoothignorecol && !input$smoothmethod=="emax") {
+            
+            if (input$Smooth=="Smooth"&& input$weightin == 'None')
               p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
                                   method=smoothmethodargument,
                                   method.args = methodsargument,
                                   size=smoothlinesize,se=F,span=spanplot,col=colsmooth,aes(group=NULL))
             
-            if (input$Smooth=="Smooth and SE")
+            if (input$Smooth=="Smooth and SE"&& input$weightin == 'None')
               p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                    method=smoothmethodargument,level=levelsmooth,
                                    method.args = methodsargument,
@@ -2969,11 +3018,56 @@ function(input, output, session) {
                           size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL))+  
                 aes_string(weight=input$weightin)
           }
-          
-        }
+
+          if (input$smoothignorecol&& input$smoothmethod=="emax") {
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin == 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F,col=colsmooth,aes(group=NULL))
+              if(input$shownlsparams){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", col=colsmooth,
+                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%", signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%", signif(..K_se.., digits = 2),
+                                                                 sep = ""),
+                                                   group=NULL),
+                                               parse = TRUE)
+              }
+              
+            }
+            
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin != 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F,col=colsmooth,aes(group=NULL))+
+                aes_string(weight=input$weightin)
+              if(input$shownlsparams){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", col=colsmooth,
+                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%", signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%", signif(..K_se.., digits = 2),
+                                                                 sep = ""),
+                                                   group=NULL),
+                                               parse = TRUE)
+              }
+              
+            }
+            
+          }
+        }#smooth ignore group
         
         if ( !input$ignoregroup) {
-          if (!input$smoothignorecol) {
+          if (!input$smoothignorecol&& !input$smoothmethod=="emax") {
             if (input$Smooth=="Smooth" && input$weightin == 'None')
               p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
                                   method=smoothmethodargument,
@@ -3008,8 +3102,51 @@ function(input, output, session) {
                           size=smoothlinesize,se=T,span=spanplot)+  
                 aes_string(weight=input$weightin)
           }
-          if (input$smoothignorecol) {
-            colsmooth <- input$colsmooth
+          if (!input$smoothignorecol&& input$smoothmethod=="emax") {
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin == 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F)
+              if(input$shownlsparams){
+                p <- p +
+                  ggpmisc::stat_fit_tidy(method = "nls", 
+                                         method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                         label.x = "right",
+                                         label.y = "bottom",
+                                         aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                           "%+-%", signif(..Vm_se.., digits = 2),
+                                                           "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                           "%+-%", signif(..K_se.., digits = 2),
+                                                           sep = "")),
+                                         parse = TRUE)
+              }
+              
+            }
+            
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin != 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F)+
+                aes_string(weight=input$weightin)
+              if(input$shownlsparams){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls",
+                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%", signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%", signif(..K_se.., digits = 2),
+                                                                 sep = "")),
+                                               parse = TRUE)
+              }
+              
+            }
+            }
+          
+          if (input$smoothignorecol&& !input$smoothmethod=="emax") {
             if (input$Smooth=="Smooth" && input$weightin == 'None')
               p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
                                   method=smoothmethodargument,
@@ -3044,8 +3181,51 @@ function(input, output, session) {
                           size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+  
                 aes_string(weight=input$weightin)
           }
-          
-        }
+          if (input$smoothignorecol&& input$smoothmethod=="emax") {
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin == 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,Vm, K),
+                                 size=smoothlinesize,se=F,col=colsmooth)
+              if(input$shownlsparams){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", col=colsmooth,
+                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%", signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%", signif(..K_se.., digits = 2),
+                                                                 sep = "")),
+                                               parse = TRUE)
+            }
+            }
+            if (input$Smooth%in%c("Smooth","Smooth and SE") && input$weightin != 'None'){
+              p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
+                                 method='nls',
+                                 formula=y~SSmicmen(x,EMAX, EC50),
+                                 size=smoothlinesize,se=F,col=colsmooth)+
+                aes_string(weight=input$weightin)
+              if(input$shownlsparams){
+                p <- p +
+                  aes_string(weight=input$weightin)+
+                  ggpmisc::stat_fit_tidy(method = "nls", col=colsmooth,
+                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%", signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%", signif(..K_se.., digits = 2),
+                                                                 sep = "")),
+                                               parse = TRUE)
+              }
+              }
+                
+              
+            }
+          }
+        
         if (input$smoothmethod=="lm"&&input$showslopepvalue&&!input$showadjrsquared){
           p <- p+
             ggpmisc::stat_fit_glance(method = "lm", 
