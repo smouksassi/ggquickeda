@@ -4,6 +4,7 @@
 * added user control to specify mid color of continuous color scales
 * added user control to specify strip text colour and more colourpicker background color
 * order stacked data by sd of value 
+* added smooth emax model via nls
 
 
 # ggquickeda 0.1.3
