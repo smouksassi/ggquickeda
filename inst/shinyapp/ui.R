@@ -451,7 +451,7 @@ fluidPage(
               checkboxInput('showtargettext', 'Add Target Text', value = FALSE),
               conditionalPanel(condition = "input.showtargettext" ,
                                textInput('targettext', 'Target Text', value = "Target: XX-XXX µg/mL"),
-                               sliderInput("targettextsize", "Target Text Size:", min=1, max=10, value=c(5),step=0.5),
+                               sliderInput("targettextsize", "Target Text Size:", min=1, max=10, value=c(5),step=0.1),
                                colourInput("targettextcol", "Target Text Color:", "blue",showColour = "both"),
                                sliderInput("targettextvjust", "Target Text Vertical Justification:", min=0, max=1, value=c(1),step=0.1),
                                sliderInput("targettexthjust", "Target Text Horizontal Justification:", min=0, max=1, value=c(0),step=0.1),
@@ -966,10 +966,11 @@ fluidPage(
                                   multiple=FALSE, selectize=TRUE,selected="loess"),
                       conditionalPanel(" input.smoothmethod== 'lm' ",
                                        checkboxInput('showslopepvalue', 'Show Slope p-value ?',value = FALSE),
-                                       checkboxInput('showadjrsquared', HTML('Show R<sup>2</sup><sub>adj</sub> ?'),value = FALSE)
+                                       checkboxInput('showadjrsquared', HTML('Show R<sup>2</sup><sub>adj</sub> ?'),value = FALSE),
+                                       checkboxInput('showlmequation', HTML('Show Int/Slope values &plusmn SE ?'),value = FALSE)
                       ),
                       conditionalPanel(" input.smoothmethod== 'emax' ",
-                                       checkboxInput('shownlsparams', 'Show Emax/EC50 values ?',value = FALSE)
+                                       checkboxInput('shownlsparams', HTML('Show Emax/EC50 values &plusmn SE ?'),value = FALSE)
                       ),
                       conditionalPanel(" input.smoothmethod== 'loess' ",
                                        sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),
@@ -977,7 +978,11 @@ fluidPage(
                                                    choices=c("Gaussian" ="gaussian","Symmetric"="symmetric"),
                                                    multiple=FALSE, selectize=TRUE,selected="gaussian"),
                                        sliderInput("loessdegree", "Loess Degree:", min=0, max=2, value=c(1),step=1)
+                      ),
+                      conditionalPanel(" input.smoothmethod== 'emax' | input.smoothmethod== 'lm' ",
+                                       sliderInput("smoothtextsize", "Text Size:", min=0, max=10, value=c(3.88),step=0.01)
                       )
+                      
                     ) 
                   ),
                   column (

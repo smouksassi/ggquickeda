@@ -2926,7 +2926,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=3.88,
+                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -2939,12 +2939,26 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=3.88,
+                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              group=NULL,weight=!!aesweight),
                                          show.legend = FALSE)
             }
+            if (input$smoothmethod=="lm" && input$showlmequation){
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",size=input$smoothtextsize,
+                                         method.args = list(formula = y ~ x),
+                                         geom = "text_repel",segment.color=NA,direction="y",
+                                         label.x = Inf ,label.y = -Inf,
+                                         aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
+                                                                   "%+-%", signif(..x_se.., digits = 2),
+                                                                   "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
+                                                                   "%+-%", signif(..Intercept_se.., digits = 2),
+                                                                   sep = ""),
+                                             group=NULL,weight=!!aesweight),
+                                       parse = TRUE, show.legend = FALSE)
+            }
+            
 
             
           }#!input$smoothignorecol && !input$smoothmethod=="emax"
@@ -2956,7 +2970,7 @@ function(input, output, session) {
                                  formula=y~SSmicmen(x,Vm, K),
                                  size=smoothlinesize,se=F,aes(group=NULL,weight=!!aesweight))
               if(input$shownlsparams){
-                p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=3.88, 
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
                                          method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
                                          label.x = "right",
                                          label.y = "bottom",
@@ -2996,7 +3010,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=3.88,
+                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -3006,14 +3020,27 @@ function(input, output, session) {
             }
             if (input$smoothmethod=="lm"&&input$showslopepvalue){
               p <- p+
-                ggpmisc::stat_fit_glance(method = "lm", col=colsmooth,
+                ggpmisc::stat_fit_glance(method = "lm", col=colsmooth,size=input$smoothtextsize,
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=3.88,
+                                         label.x=-Inf ,label.y=Inf,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              group=NULL,weight=!!aesweight),
                                          show.legend = FALSE)
+            }
+            if (input$smoothmethod=="lm" && input$showlmequation){
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,size=input$smoothtextsize,
+                                             method.args = list(formula = y ~ x),
+                                             geom = "text_repel",segment.color=NA,direction="y",
+                                             label.x = Inf ,label.y = -Inf,
+                                             aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
+                                                               "%+-%", signif(..x_se.., digits = 2),
+                                                               "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
+                                                               "%+-%", signif(..Intercept_se.., digits = 2),
+                                                               sep = ""),
+                                                 group=NULL,weight=!!aesweight),
+                                             parse = TRUE, show.legend = FALSE)
             }
             
           }#input$smoothignorecol && !input$smoothmethod=="emax"
@@ -3025,7 +3052,7 @@ function(input, output, session) {
                                  formula=y~SSmicmen(x,Vm, K),
                                  size=smoothlinesize,se=F,col=colsmooth,aes(group=NULL,weight=!!aesweight))
               if(input$shownlsparams){
-                p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=3.88, col=colsmooth,
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
                                                method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
                                                label.x = "right",
                                                label.y = "bottom",
@@ -3066,7 +3093,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=3.88,
+                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              weight=!!aesweight),
@@ -3079,12 +3106,27 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=3.88,
+                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              weight=!!aesweight),
                                          show.legend = FALSE)
             }
+            
+            if (input$smoothmethod=="lm" && input$showlmequation){
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",size=input$smoothtextsize,
+                                             method.args = list(formula = y ~ x),
+                                             geom = "text_repel",segment.color=NA,direction="y",
+                                             label.x = Inf ,label.y = -Inf,
+                                             aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
+                                                               "%+-%", signif(..x_se.., digits = 2),
+                                                               "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
+                                                               "%+-%", signif(..Intercept_se.., digits = 2),
+                                                               sep = ""),
+                                                 weight=!!aesweight),
+                                             parse = TRUE, show.legend = FALSE)
+            }
+            
             
             
           }
@@ -3096,7 +3138,7 @@ function(input, output, session) {
                                  size=smoothlinesize,se=F)
               if(input$shownlsparams){
                 p <- p +
-                  ggpmisc::stat_fit_tidy(method = "nls", size=3.88, 
+                  ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, 
                                          method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
                                          label.x = "right",
                                          label.y = "bottom",
@@ -3134,7 +3176,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=3.88,
+                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              weight=!!aesweight),
@@ -3147,11 +3189,24 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
                                          method.args = list(formula = y ~ x),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=3.88,
+                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              weight=!!aesweight),
                                          show.legend = FALSE)
+            }
+            
+            if (input$smoothmethod=="lm" && input$showlmequation){
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,size=input$smoothtextsize,
+                                             method.args = list(formula = y ~ x),
+                                             geom = "text_repel",segment.color=NA,direction="y",
+                                             label.x = Inf ,label.y = -Inf,
+                                             aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
+                                                               "%+-%", signif(..x_se.., digits = 2),
+                                                               "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
+                                                               "%+-%", signif(..Intercept_se.., digits = 2),
+                                                               sep = ""),weight=!!aesweight),
+                                             parse = TRUE, show.legend = FALSE)
             }
             
           }
@@ -3162,7 +3217,7 @@ function(input, output, session) {
                                  formula=y~SSmicmen(x,Vm, K),
                                  size=smoothlinesize,se=F,col=colsmooth)
               if(input$shownlsparams){
-                p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=3.88, col=colsmooth,
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
                                                method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
                                                label.x = "right",
                                                label.y = "bottom",
@@ -3175,14 +3230,11 @@ function(input, output, session) {
                                                parse = TRUE)
             }
             
+}
+          }#smooth ignore group
 
-              
-            }
-          }
-
-        
-        ###### smooth Section END
-      }
+      }# if smooth not none
+      ###### smooth Section END
       
       
       ###### Median PI section  START  
