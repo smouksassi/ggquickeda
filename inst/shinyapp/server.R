@@ -2892,6 +2892,12 @@ function(input, output, session) {
           familyargument<- "poisson"
           methodsargument<- list(family = familyargument) 
         }
+        
+        if(input$smoothmethod=="emax") {
+          
+          if(! input$customemaxstart) methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K))
+          if( input$customemaxstart)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K),start=c(Vm =input$emaxstart , K =input$ec50start))
+        }
 
         smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
                                       "glm",input$smoothmethod)
@@ -2967,11 +2973,11 @@ function(input, output, session) {
 
               p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
-                                 formula=y~SSmicmen(x,Vm, K),
+                                 method.args = methodsargument,
                                  size=smoothlinesize,se=F,aes(group=NULL,weight=!!aesweight))
               if(input$shownlsparams){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
-                                         method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                         method.args = methodsargument,
                                          label.x = "right",
                                          label.y = "bottom",
                                          aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3049,11 +3055,11 @@ function(input, output, session) {
 
               p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
-                                 formula=y~SSmicmen(x,Vm, K),
+                                 method.args = methodsargument,
                                  size=smoothlinesize,se=F,col=colsmooth,aes(group=NULL,weight=!!aesweight))
               if(input$shownlsparams){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
-                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               method.args = methodsargument,
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3134,12 +3140,12 @@ function(input, output, session) {
            
               p <- p + geom_line(aes(weight=!!aesweight), stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
-                                 formula=y~SSmicmen(x,Vm, K),
+                                 method.args = methodsargument,
                                  size=smoothlinesize,se=F)
               if(input$shownlsparams){
                 p <- p +
                   ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, 
-                                         method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                         method.args = methodsargument,
                                          label.x = "right",
                                          label.y = "bottom",
                                          aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3214,11 +3220,11 @@ function(input, output, session) {
           
               p <- p + geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
-                                 formula=y~SSmicmen(x,Vm, K),
+                                 method.args = methodsargument,
                                  size=smoothlinesize,se=F,col=colsmooth)
               if(input$shownlsparams){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
-                                               method.args = list(formula = y ~ SSmicmen(x, Vm, K)),
+                                               method.args = methodsargument,
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
