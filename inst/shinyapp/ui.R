@@ -467,13 +467,11 @@ fluidPage(
             tabPanel(
               "Additional Themes Options",
               sliderInput("themebasesize", "Theme Size (affects all text except facet strip):", min=1, max=100, value=c(16),step=1),
-              sliderInput("striptextsizex", "X Strip Text Size: (setzero to hide)",
+              sliderInput("striptextsizex", "X Strip Text Size: (zero to hide)",
                           min=0, max=100, value=c(16),step=0.5),
               sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
                           min=0, max=100, value=c(16),step=0.5),
-              
-              
-              
+ 
               radioButtons("themecolorswitcher", "Discrete Color and Fill Themes:",
                            c("Tableau 10"  = "themetableau10",
                              "Tableau 20"  = "themetableau20",
