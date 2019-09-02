@@ -39,6 +39,7 @@ fluidPage(
               ),
               
               uiOutput("catvar2"),
+              uiOutput("contvar"),
               uiOutput("catvar3"),
               uiOutput("ncuts2"),
               uiOutput("asnumeric"),

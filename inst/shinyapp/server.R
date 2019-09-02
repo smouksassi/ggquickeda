@@ -611,9 +611,34 @@ function(input, output, session) {
     }
     df
   })
+  
+  output$contvar <- renderUI({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    MODEDF <- sapply(df, function(x) !is.numeric(x))
+    NAMESTOKEEP2<- names(df)  [ MODEDF ]
+    selectInput('contvarin',label = 'Treat as Numeric:',choices=NAMESTOKEEP2,multiple=TRUE)
+  })
+  outputOptions(output, "contvar", suspendWhenHidden=FALSE)
+  
+  makedatacont  <- reactive({
+    df <- recodedata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if(!is.null(input$contvarin) ){
+      if(length(input$contvarin ) >=1) {
+        for (i in 1:length(input$contvarin ) ) {
+          varname<- input$contvarin[i]
+          df[,varname]   <- as.double( as.character(df[,varname]))
+        }
+      }
+    }
+    df
+  })
 
   recodedata3  <- reactive({
-    df <- recodedata2()
+    df <- makedatacont()
     validate(       need(!is.null(df), "Please select a data set"))
     if (is.null(input$catvar3in)) return(NULL)
     if(input$catvar3in!="" && !is.null(input$xcutoffs)) {

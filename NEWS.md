@@ -9,6 +9,7 @@
 * viridis and custom continuous color scale
 * added possibility to divide multipe columns by a specified one
 * "Treat as Categories:" now accepts character variables in addition to numeric.
+* "Treat as Numeric:" added.
 
 
 # ggquickeda 0.1.3
