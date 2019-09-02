@@ -92,9 +92,11 @@ fluidPage(
             ),
             
             tabPanel(
-              "Simple Rounding",
+              "Rounding/Division",
               uiOutput("roundvar"),
-              numericInput("rounddigits",label = "N Digits",value = 0,min=0,max=10) 
+              numericInput("rounddigits",label = "N Digits",value = 0,min=0,max=10),
+              uiOutput("divideynum"),
+              uiOutput("divideydenom")
             ),
             
             tabPanel(

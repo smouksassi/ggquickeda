@@ -466,7 +466,7 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    MODEDF <- sapply(df, function(x) is.numeric(x))
+    MODEDF <- sapply(df, function(x) !is.factor(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     if (!is.null(input$catvarquantin)) {
       if (length(input$catvarquantin ) >=1) {
@@ -481,6 +481,8 @@ function(input, output, session) {
     selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE)
     
   })
+  
+
   
   output$catvar3 <- renderUI({
     df <-values$maindata
@@ -603,13 +605,13 @@ function(input, output, session) {
       if(length(input$catvar2in ) >=1) {
         for (i in 1:length(input$catvar2in ) ) {
           varname<- input$catvar2in[i]
-          df[,varname]   <- as.factor( df[,varname])
+          df[,varname]   <- as.factor( as.character(df[,varname]))
         }
       }  
     }
     df
   })
-  
+
   recodedata3  <- reactive({
     df <- recodedata2()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1065,15 +1067,63 @@ function(input, output, session) {
     df
   })  
   
+  output$divideynum <- renderUI({
+    df <- rounddata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (!is.null(df)){
+      items=names(df)
+      names(items)=items
+      MODEDF <- sapply(df, function(x) is.numeric(x))
+      NAMESTOKEEP2<- names(df)  [MODEDF]
+      selectizeInput(  "divideynumin", "Divide the Values by the specified column:", choices = NAMESTOKEEP2,multiple=TRUE,
+                       options = list(
+                         placeholder = 'Please select some variables',
+                         onInitialize = I('function() { this.setValue(""); }')
+                       )
+      )
+    }
+  })
+  
+  output$divideydenom <- renderUI({
+    df <- rounddata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (!is.null(df)){
+      items=names(df)
+      names(items)=items
+      MODEDF <- sapply(df, function(x) !is.character(x) )
+      NAMESTOKEEP2<- names(df)  [MODEDF]
+      selectInput(  "divideydenomin", "Variable to divide by", choices = NAMESTOKEEP2,multiple=FALSE)
+    }
+  })
+  
+  outputOptions(output, "divideynum", suspendWhenHidden=FALSE)
+  outputOptions(output, "divideydenom", suspendWhenHidden=FALSE)
+  
+  
+  dividedata <- reactive({
+    df <- rounddata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if(!is.null(input$divideynumin)&&length(input$divideynumin ) >=1 &&
+       !is.null(input$divideydenomin)) {
+      for (i in 1:length(input$roundvarin ) ) {
+        varname<- input$divideynumin[i]
+        dosname<- input$divideydenomin
+        df[,varname]   <-  df[,varname] /as.numeric(as.character(df[,dosname]))
+      }
+    }
+    df
+  })
+  
+  
   
   tabledata <- reactive({
-    df <- rounddata() 
+    df <- dividedata() 
     df
   })
   
   stackdata <- reactive({
     
-    df <- rounddata()
+    df <- dividedata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       validate(  need(!is.element(input$x,input$y) ,
@@ -4672,14 +4722,14 @@ function(input, output, session) {
         axis.title.x=element_blank())
     }
     
-    if (input$rotatexticks ){
+    if (!input$rmxaxistickslabels && input$rotatexticks ){
       p <-  p+
         theme(axis.text.x = element_text(angle = input$xticksrotateangle,
                                          hjust = input$xtickshjust,
                                          vjust = input$xticksvjust) )
       
     }
-    if (input$rotateyticks ){
+    if (!input$rmxaxistickslabels && input$rotateyticks ){
       p <-  p+
         theme(axis.text.y = element_text(angle = input$yticksrotateangle,
                                          hjust = input$ytickshjust,

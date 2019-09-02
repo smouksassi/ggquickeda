@@ -7,6 +7,8 @@
 * added smooth emax model via nls and parameter values
 * added parameter values for lm fit and made text size adjustable
 * viridis and custom continuous color scale
+* added possibility to divide multipe columns by a specified one
+* "Treat as Categories:" now accepts character variables in addition to numeric.
 
 
 # ggquickeda 0.1.3
