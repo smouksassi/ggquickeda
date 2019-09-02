@@ -4747,20 +4747,32 @@ function(input, output, session) {
         axis.title.x=element_blank())
     }
     
-    if (!input$rmxaxistickslabels && input$rotatexticks ){
+    if (!input$rmxaxistickslabels && input$rotatexticks  ){
+      if (input$xlabelsize <= 0) {
+        x.axis.text <- ggplot2::element_blank()
+      } else {
+        x.axis.text <- ggplot2::element_text(size = input$xlabelsize,
+                                             angle = input$xticksrotateangle,
+                                             hjust = input$xtickshjust,
+                                             vjust = input$xticksvjust)
+      }
       p <-  p+
-        theme(axis.text.x = element_text(angle = input$xticksrotateangle,
-                                         hjust = input$xtickshjust,
-                                         vjust = input$xticksvjust) )
+        theme(axis.text.x = x.axis.text )
       
     }
-    if (!input$rmxaxistickslabels && input$rotateyticks ){
+    if (!input$rmyaxistickslabels && input$rotateyticks){
+      if (input$xlabelsize <= 0) {
+        y.axis.text <- ggplot2::element_blank()
+      } else {
+        y.axis.text <- ggplot2::element_text(size = input$ylabelsize,
+                                             angle = input$yticksrotateangle,
+                                             hjust = input$ytickshjust,
+                                             vjust = input$yticksvjust)
+      }
+      
       p <-  p+
-        theme(axis.text.y = element_text(angle = input$yticksrotateangle,
-                                         hjust = input$ytickshjust,
-                                         vjust = input$yticksvjust) )                              
-    }    
-    
+        theme(axis.text.y = y.axis.text )                              
+    }  
     if (input$striptextsizex <= 0) {
       x.strip.text <- ggplot2::element_blank()
     } else {

@@ -167,17 +167,22 @@ fluidPage(
                                       "Comma separated" = "scientificx",
                                       "Percent" = "percentx")))
               ),
-              checkboxInput('rotateyticks', 'Rotate/Justify Y axis Ticks ?', value = FALSE),
-              conditionalPanel(condition = "input.rotateyticks" , 
-                               sliderInput("yticksrotateangle", "Y axis ticks angle:", min=0, max=360, value=c(0),step=10),
-                               sliderInput("ytickshjust", "Y axis ticks horizontal justification:", min=0, max=1, value=c(0.5),step=0.1),
-                               sliderInput("yticksvjust", "Y axis ticks vertical justification:", min=0, max=1, value=c(0.5),step=0.1)
+      
+              checkboxInput('rotateyticks', 'Rotate/Customize Y axis Labels ?', value = FALSE),
+              conditionalPanel(condition = "input.rotateyticks" ,
+                               sliderInput("ylabelsize", "Y axis label size: (zero to hide)",
+                                           min=0, max=100, value=c(16),step=0.5),
+                               sliderInput("yticksrotateangle", "Y axis labels angle:", min=0, max=360, value=c(0),step=10),
+                               sliderInput("ytickshjust", "Y axis labels horizontal justification:", min=0, max=1, value=c(0.5),step=0.1),
+                               sliderInput("yticksvjust", "Y axis labels vertical justification:", min=0, max=1, value=c(0.5),step=0.1)
               ),
-              checkboxInput('rotatexticks', 'Rotate/Justify X axis Ticks ?', value = FALSE),
-              conditionalPanel(condition = "input.rotatexticks" , 
-                               sliderInput("xticksrotateangle", "X axis ticks angle:", min=0, max=360, value=c(20),step=10),
-                               sliderInput("xtickshjust", "X axis ticks horizontal justification:", min=0, max=1, value=c(1),step=0.1),
-                               sliderInput("xticksvjust", "X axis ticks vertical justification:", min=0, max=1, value=c(1),step=0.1)
+              checkboxInput('rotatexticks', 'Rotate/Customize X axis Labels ?', value = FALSE),
+              conditionalPanel(condition = "input.rotatexticks" ,
+                               sliderInput("xlabelsize", "X axis label size: (zero to hide)",
+                                           min=0, max=100, value=c(16),step=0.5),
+                               sliderInput("xticksrotateangle", "X axis labels angle:", min=0, max=360, value=c(20),step=10),
+                               sliderInput("xtickshjust", "X axis labels horizontal justification:", min=0, max=1, value=c(1),step=0.1),
+                               sliderInput("xticksvjust", "X axis labels vertical justification:", min=0, max=1, value=c(1),step=0.1)
               ),
               checkboxInput('customxticks', 'Custom X axis Ticks ?', value = FALSE),
               conditionalPanel(condition = "input.customxticks" , 
