@@ -6,7 +6,7 @@
 \usage{
 stat_km(mapping = NULL, data = NULL, geom = "km",
   position = "identity", show.legend = NA, inherit.aes = TRUE,
-  trans = "identity", firstx = 0, firsty = 1,
+  trans = scales::identity_trans(), firstx = 0, firsty = 1,
   type = "kaplan-meier", start.time = 0, ...)
 }
 \arguments{
