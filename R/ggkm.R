@@ -217,7 +217,7 @@ geom_kmticks <- function(mapping = NULL, data = NULL, stat = "kmticks",
 
 StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
                            
-                           compute_group = function(data, scales, trans = "identity", firstx = 0, firsty = 1,
+                           compute_group = function(data, scales, trans = identity_trans(), firstx = 0, firsty = 1,
                                                     type = "kaplan-meier", start.time = 0) {
                              
                              sf <- survival::survfit.formula(survival::Surv(data$time, data$status) ~ 1, se.fit = FALSE,
@@ -257,7 +257,7 @@ StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
 
 StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
                                
-                               compute_group = function(data, scales, trans = "identity", firstx = 0, firsty = 1,
+                               compute_group = function(data, scales, trans = identity_trans(), firstx = 0, firsty = 1,
                                                         type = "kaplan-meier", error = "greenwood", conf.type = "log",
                                                         conf.lower = "usual", start.time = 0, conf.int = 0.95) {
                                  
@@ -355,7 +355,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 
 stat_km <- function(mapping = NULL, data = NULL, geom = "km",
                     position = "identity", show.legend = NA, inherit.aes = TRUE,
-                    trans = "identity", firstx = 0, firsty = 1,
+                    trans = identity_trans(), firstx = 0, firsty = 1,
                     type = "kaplan-meier", start.time = 0, ...) {
   ggplot2::layer(
     stat = StatKm,
