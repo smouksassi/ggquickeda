@@ -4052,7 +4052,12 @@ function(input, output, session) {
           
           if (input$KM=="KM/CI") {
             p <- p +
-              stat_kmband(alpha=input$KMCItransparency,conf.int = input$KMCI,trans=input$KMtrans,geom="ribbon",linetype=0)
+              stat_kmband(
+                alpha=input$KMCItransparency,
+                          conf.int = input$KMCI,
+                          trans=input$KMtrans,
+                          geom="ribbon",
+                          linetype=0)
           }
           
           

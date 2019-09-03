@@ -1,13 +1,9 @@
-# Code taken from the https://github.com/sachsmc/ggkm/ R package commit ce24953df839d27e4576ac1cde1df05a61698417
-
-#' Display Kaplan Meier Curve
-#'
-#' Kaplan Meier Curve
-#'
-#' @export
+#' Geom Proto
+#' @rdname ggquickeda-ggproto
+#' @format NULL
+#' @usage NULL
 #' @keywords internal
-#' @rdname geom_km
-
+#' @export
 
 GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
                            
@@ -27,14 +23,12 @@ GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
 )
 
 
-#' Display Kaplan Meier Curve
-#'
-#' Kaplan Meier Curve
-#'
-#' @export
+#' Geom Proto
+#' @rdname ggquickeda-ggproto
+#' @format NULL
+#' @usage NULL
 #' @keywords internal
-#' @rdname geom_kmband
-
+#' @export
 
 GeomKmband <- ggplot2::ggproto("GeomKmband", ggplot2::Geom,
                                
@@ -56,13 +50,12 @@ GeomKmband <- ggplot2::ggproto("GeomKmband", ggplot2::Geom,
 )
 
 
-#' Display tick marks on a Kaplan Meier curve
-#'
-#' Ticks are plotted at censoring times that are also not event times
-#'
-#' @export
+#' Geom Proto
+#' @rdname ggquickeda-ggproto
+#' @format NULL
+#' @usage NULL
 #' @keywords internal
-#' @rdname geom_kmticks
+#' @export
 
 GeomKmticks <- ggplot2::ggproto("GeomKmticks", ggplot2::Geom,
                                 
@@ -119,7 +112,6 @@ GeomKmticks <- ggplot2::ggproto("GeomKmticks", ggplot2::Geom,
 #' @seealso The default stat for this geom is \code{\link{stat_km}} see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
-#' @keywords internal
 #' @examples
 #' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
@@ -140,11 +132,11 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #' Add confidence bands to a Kaplan-Meier survival curve
 #'
 #' @section Aesthetics:
-#' \code{geom_km} understands the following aesthetics (required aesthetics
+#' \code{geom_kmband} understands the following aesthetics (required aesthetics
 #' are in bold):
 #' \itemize{
-#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_km}
-#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_km}
+#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_kmband}
+#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_kmband}
 #'   smallest level in sort order is assumed to be 0, with a warning
 #'   \item \code{alpha}
 #'   \item \code{color}
@@ -156,7 +148,6 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #' @seealso The default stat for this geom is \code{\link{stat_kmband}} see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
-#' @keywords internal
 #' @examples
 #' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
@@ -196,7 +187,6 @@ geom_kmband <- function(mapping = NULL, data = NULL, stat = "kmband",
 #' @seealso The default stat for this geom is \code{\link{stat_kmticks}} see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
-#' @keywords internal
 #' @rdname geom_kmticks
 #' @examples
 #' library(ggplot2)
@@ -218,15 +208,12 @@ geom_kmticks <- function(mapping = NULL, data = NULL, stat = "kmticks",
 
 
 
-
-#' @importFrom ggplot2 layer aes ggproto
-#' @import scales
-#' @importFrom survival Surv survfit.formula
-#' @importFrom grid pointsGrob nullGrob unit gpar gList
-
-#' @rdname stat_km
-#' @export
+#' Geom Proto
+#' @rdname ggquickeda-ggproto
+#' @format NULL
+#' @usage NULL
 #' @keywords internal
+#' @export
 
 StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
                            
@@ -261,18 +248,12 @@ StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
                            
 )
 
-## need to create a different stat for kmticks
-
-
-
-#' @importFrom ggplot2 layer aes ggproto
-#' @import scales
-#' @importFrom survival Surv survfit.formula
-#' @importFrom grid pointsGrob nullGrob unit gpar gList
-
-#' @rdname stat_kmband
-#' @export
+#' Geom Proto
+#' @rdname ggquickeda-ggproto
+#' @format NULL
+#' @usage NULL
 #' @keywords internal
+#' @export
 
 StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
                                
@@ -335,12 +316,16 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 #'   define your own using \link{trans_new}.
 #' @param firstx,firsty the starting point for the survival curves. By default,
 #'   the plot program obeys tradition by having the plot start at (0,1).
-#' @param ... Other arguments passed to \code{survival::survfit.formula}
+#' @param start.time numeric value specifying a time to start calculating survival information.
+#'  The resulting curve is the survival conditional on surviving to start.time.
+#' @param type an older argument that combined stype and ctype, now deprecated. Legal values were
+#'  "kaplan-meier" which is equivalent to stype=1, ctype=1,
+#'  "fleming-harrington" which is equivalent to stype=2, ctype=1, and
+#'  "fh2" which is equivalent to stype=2, ctype=2.
+#' @param ... Other arguments passed to \link[survival]{survfit.formula}
 #' @return a data.frame with additional columns: \item{x}{x in data}
 #'   \item{y}{Kaplan-Meier Survival Estimate at x}
 #' @export
-#' @keywords internal
-#'
 #' @rdname stat_km
 #' @details
 #'
@@ -362,7 +347,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 #' p1 <- ggplot(df, aes(time = time, status = status))
 #' p1 + stat_km()
 #' p1 + stat_km(trans = "cumhaz")
-#' # cloglog plots also log transform the time axis
+#' # for cloglog plots also log transform the time axis
 #' p1 + stat_km(trans = "cloglog") + scale_x_log10()
 #' p1 + stat_km(type = "fleming-harrington")
 #' p1 + stat_km(start.time = 5)
@@ -370,7 +355,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 
 stat_km <- function(mapping = NULL, data = NULL, geom = "km",
                     position = "identity", show.legend = NA, inherit.aes = TRUE,
-                    se = TRUE, trans = "identity", firstx = 0, firsty = 1,
+                    trans = "identity", firstx = 0, firsty = 1,
                     type = "kaplan-meier", start.time = 0, ...) {
   ggplot2::layer(
     stat = StatKm,
@@ -403,20 +388,43 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #' }
 #'
 #' @inheritParams ggplot2::stat_identity
-#' @param \code{conf.int} to control significance level which is 0.95 by default
 #' @param trans Transformation to apply to the survival probabilities. Defaults
 #'   to "identity". Other options include "event", "cumhaz", "cloglog", or
 #'   define your own using \link{trans_new}.
 #' @param firstx,firsty the starting point for the survival curves. By default,
 #'   the plot program obeys tradition by having the plot start at (0,1).
-#' @param ... Other arguments passed to \code{survival::survfit.formula}
+#' @inheritParams survival::survfit.formula
+#' @param type an older argument that combined stype and ctype, now deprecated. Legal values were
+#'  "kaplan-meier" which is equivalent to stype=1, ctype=1,
+#'  "fleming-harrington" which is equivalent to stype=2, ctype=1, and
+#'  "fh2" which is equivalent to stype=2, ctype=2.
+#' @param error either the string "greenwood" for the Greenwood formula or "tsiatis" for the Tsiatis formula,
+#'  (only the first character is necessary). The default is "greenwood".
+#' @param conf.type One of "none", "plain", "log" (the default), "log-log" or "logit".
+#' @param conf.lower a character string to specify modified lower limits to the curve,
+#'  the upper limit remains unchanged. Possible values are
+#'   "usual" (unmodified),
+#'   "peto", and
+#'   "modified".
+#' The modified lower limit is based on an "effective n" argument.
+#' The confidence bands will agree with the usual calculation at each death time,
+#' but unlike the usual bands the confidence interval becomes wider at each censored observation.
+#' The extra width is obtained by multiplying the usual variance by a factor m/n,
+#' where n is the number currently at risk and m is the number at risk at the last death time.
+#' (The bands thus agree with the un-modified bands at each death time.)
+#' This is especially useful for survival curves with a long flat tail.
+#' The Peto lower limit is based on the same "effective n" argument as the modified limit,
+#'  but also replaces the usual Greenwood variance term with a simple approximation.
+#'  It is known to be conservative.
+#' @param start.time numeric value specifying a time to start calculating survival information.
+#'  The resulting curve is the survival conditional on surviving to start.time.
+#' @param conf.int the level for a two-sided confidence interval on the survival curve(s). Default is 0.95.
+#' @param ... Other arguments passed to \link[survival]{survfit.formula}
 #' @return a data.frame with additional columns: \item{x}{x in data}
 #'   \item{ymin}{Lower confidence
-#'   limit of KM curve, if \code{se = TRUE}} \item{ymax}{Upper confidence limit
+#'   limit of KM curve} \item{ymax}{Upper confidence limit
 #'   of KM curve}
 #' @export
-#' @keywords internal
-#'
 #' @rdname stat_kmband
 #' @details
 #'
@@ -437,7 +445,7 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #' p1 <- ggplot(df, aes(time = time, status = status))
 #' p1 + stat_km() + stat_kmband(conf.int = .99)
 #' p1 + stat_kmband(error = "greenwood",fill="red",alpha=0.2) +
-#'  stat_kmband(error = "tsiatis",alpha=1)+ stat_km()
+#'  stat_kmband(error = "tsiatis",fill="blue",alpha=0.2)+ stat_km()
 #' p1 + stat_km() + stat_kmband(conf.type = "log-log")+ stat_kmband(conf.type = "log")
 #'
 
@@ -463,14 +471,13 @@ stat_kmband <- function(mapping = NULL, data = NULL, geom = "kmband",
 
 
 
-#' Compute locations for tick marks
-#'
-#' Tick marks are plotted where there are censoring times that are also not event times
-#'
-#' @rdname stat_kmticks
-#' @export
+#' Geom Proto
+#' @rdname ggquickeda-ggproto
+#' @format NULL
+#' @usage NULL
 #' @keywords internal
-
+#' @export
+#' @name ggquickeda-ggproto
 StatKmticks <- ggplot2::ggproto("StatKmticks", ggplot2::Stat,
                                 
                                 compute_group = function(data, scales, trans = "identity", ...) {
@@ -510,16 +517,19 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", ggplot2::Stat,
 #'   \item \code{size}
 #' }
 #'
-#' @seealso \link{stat_km}
+#' @seealso
+#'  \code{\link{stat_km}};
+#'  \code{\link{stat_kmband}}
+#'  
+#' 
 #' @inheritParams ggplot2::stat_identity
 #' @param trans Transformation to apply to the survival probabilities. Defaults
 #'   to "identity". Other options include "event", "cumhaz", "cloglog", or
 #'   define your own using \link{trans_new}.
-#' @param ... Other arguments passed to \code{survival::survfit.formula}
+#' @param ... Other arguments passed to \link[survival]{survfit.formula}
 #' @return a data.frame with additional columns: \item{x}{x in data}
 #'   \item{y}{Kaplan-Meier Survival Estimate at x}
 #' @export
-#' @keywords internal
 #' @rdname stat_kmticks
 #'
 #' @details
@@ -558,10 +568,10 @@ stat_kmticks <- function(mapping = NULL, data = NULL, geom = "kmticks",
 
 
 
-
-
-
-
+#' Cumulative hazard transfomation utility
+#'
+#' @export
+#' @keywords internal
 cumhaz_trans <- function(){
   
   trans <- function(x){
@@ -580,7 +590,10 @@ cumhaz_trans <- function(){
   )
 }
 
-
+#' Event transfomation utility
+#'
+#' @export
+#' @keywords internal
 event_trans <- function(){
   
   trans <- function(x){
@@ -591,7 +604,7 @@ event_trans <- function(){
     1-x
   }
   
-  trans_new("event",
+  scales::trans_new("event",
             trans,
             inv,
             scales::pretty_breaks(),
@@ -599,7 +612,10 @@ event_trans <- function(){
   )
 }
 
-
+#' cloglog transfomation utility
+#'
+#' @export
+#' @keywords internal
 cloglog_trans <- function(){
   
   trans <- function(x){
@@ -610,7 +626,7 @@ cloglog_trans <- function(){
     exp(-exp(x))
   }
   
-  trans_new("cloglog",
+  scales::trans_new("cloglog",
             trans,
             inv,
             scales::pretty_breaks(),
@@ -618,7 +634,11 @@ cloglog_trans <- function(){
   )
 }
 
-
+#' step function utility
+#'
+#' @export
+#' @keywords internal
+#' 
 dostep <- function(x, y) {
   keep <- is.finite(x) & is.finite(y)
   if (!any(keep))
@@ -649,7 +669,11 @@ dostep <- function(x, y) {
 }
 
 
-
+#' merge step function utility
+#'
+#' @export
+#' @keywords internal
+#'
 merge_steps <- function(s1, s2) {
   
   n2 <- s1$x[vapply(s1$x, function(x) !x %in% s2$x, TRUE)]
@@ -695,7 +719,12 @@ merge_steps <- function(s1, s2) {
   
 }
 
-## from ggalt
+#' step function utility from ggalt
+#'
+#' @export
+#' @keywords internal
+#'
+#'
 stairstepn <- function(data,yvars="y") {
   data <- as.data.frame(data)[order(data$x),]
   
