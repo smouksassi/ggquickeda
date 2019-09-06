@@ -2060,14 +2060,36 @@ function(input, output, session) {
     if (input$show_pairs) {
       # Matrix of pairs of plots of all the Y variables
       if (input$colorin == 'None'){
-        p <- sourceable(GGally::ggpairs(plotdata, columns = input$y, progress = FALSE))
+        p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
+                                        diag = list(continuous = GGally::wrap("densityDiag", alpha=0.2),
+                                                    discrete = GGally::wrap("barDiag",  alpha=0.2,position="dodge2")),
+                                        lower = list(continuous = GGally::wrap("smooth", alpha = 0.2, size=0.1),
+                                                     combo = GGally::wrap("facethist", alpha=0.2,position="dodge2"),
+                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")
+                                        ),
+                                        upper = list(continuous = GGally::wrap("cor", size=4, alignPercent=0.8),
+                                                     combo = GGally::wrap("box_no_facet", alpha=0.2),
+                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")),
+                                        progress = FALSE)
+                        )
       }
       if (input$colorin != 'None'){
         p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
-                                        mapping=ggplot2::aes_string(color=input$colorin), 
-                                        progress = FALSE))
+                                        mapping=ggplot2::aes_string(color=input$colorin),
+                                        diag = list(continuous = GGally::wrap("densityDiag", alpha=0.2,linetype=0),
+                                                    discrete = GGally::wrap("barDiag",  alpha=0.2,position="dodge2")),
+                                        lower = list(continuous = GGally::wrap("smooth", alpha = 0.2, size=0.1),
+                                                     combo = GGally::wrap("facethist", alpha=0.2,position="dodge2"),
+                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")
+                                        ),
+                                        upper = list(continuous = GGally::wrap("cor", size=4, alignPercent=0.8),
+                                                     combo = GGally::wrap("box_no_facet", alpha=0.2),
+                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")),
+                                        progress = FALSE)
+        )
       }
-      
+       
+
       
     } else if (is.null(input$y)) {
       # Univariate plot

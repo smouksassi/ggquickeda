@@ -1,3 +1,7 @@
+# ggquickeda 0.1.4.9999
+* modify the appearance of ggpairs ( to do apply custom color scales)
+
+
 # ggquickeda 0.1.4
 * custom labels with text, label, text_repel and label_repel
 * user can now add more custom colors up to 20
