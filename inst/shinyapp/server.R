@@ -2995,10 +2995,11 @@ function(input, output, session) {
           if(!input$customemaxstart && !input$e0fit)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K))
           if( input$customemaxstart && !input$e0fit)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K),start=c(Vm =input$emaxstart , K =input$ec50start))
           
-          if( input$customemaxstart && input$e0fit)  methodsargument<- list(formula = y ~ bsl +  (Vm *x / (K+x)) ,
+          if( input$customemaxstart && input$e0fit)   methodsargument<- list(formula = y ~ bsl +  (Vm *x / (K+x)) ,
                                                                              start=c(Vm =input$emaxstart ,
                                                                                      K =input$ec50start,
                                                                                      bsl =input$e0start))
+          if( !input$customemaxstart && input$e0fit)   methodsargument<- NULL
           
         }
 
@@ -3032,8 +3033,8 @@ function(input, output, session) {
             }
              if (input$smoothmethod=="lm"&&input$showadjrsquared){
                p <- p+
-                ggpmisc::stat_fit_glance(method = "lm",
-                                         method.args = list(formula = y ~ x),
+                ggpmisc::stat_fit_glance(method = "lm", 
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
                                          label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
@@ -3045,8 +3046,8 @@ function(input, output, session) {
             }
             if (input$smoothmethod=="lm"&&input$showslopepvalue){
                p <- p+
-                ggpmisc::stat_fit_glance(method = "lm",
-                                         method.args = list(formula = y ~ x),
+                ggpmisc::stat_fit_glance(method = "lm", force = 3,
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
                                          label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
@@ -3055,10 +3056,10 @@ function(input, output, session) {
                                          show.legend = FALSE)
             }
             if (input$smoothmethod=="lm" && input$showlmequation){
-              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",size=input$smoothtextsize,
-                                         method.args = list(formula = y ~ x),
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",
+                                         method.args = list(formula = y ~ x, weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x = Inf ,label.y = -Inf,
+                                         label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
                                          aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
                                                                    "%+-%", signif(..x_se.., digits = 2),
                                                                    "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
@@ -3132,7 +3133,7 @@ function(input, output, session) {
             if (input$smoothmethod=="lm"&&input$showadjrsquared){
               p <- p+
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
-                                         method.args = list(formula = y ~ x),
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
                                          label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
@@ -3144,10 +3145,10 @@ function(input, output, session) {
             }
             if (input$smoothmethod=="lm"&&input$showslopepvalue){
               p <- p+
-                ggpmisc::stat_fit_glance(method = "lm", col=colsmooth,size=input$smoothtextsize,
-                                         method.args = list(formula = y ~ x),
+                ggpmisc::stat_fit_glance(method = "lm", col=colsmooth,force = 3,
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,
+                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -3155,9 +3156,9 @@ function(input, output, session) {
             }
             if (input$smoothmethod=="lm" && input$showlmequation){
               p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,size=input$smoothtextsize,
-                                             method.args = list(formula = y ~ x),
+                                             method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
-                                             label.x = Inf ,label.y = -Inf,
+                                             label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
                                              aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
                                                                "%+-%", signif(..x_se.., digits = 2),
                                                                "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
@@ -3233,7 +3234,7 @@ function(input, output, session) {
             if (input$smoothmethod=="lm"&&input$showadjrsquared){
               p <- p+
                 ggpmisc::stat_fit_glance(method = "lm",
-                                         method.args = list(formula = y ~ x),
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
                                          label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
@@ -3245,8 +3246,8 @@ function(input, output, session) {
             }
             if (input$smoothmethod=="lm"&&input$showslopepvalue){
               p <- p+
-                ggpmisc::stat_fit_glance(method = "lm",
-                                         method.args = list(formula = y ~ x),
+                ggpmisc::stat_fit_glance(method = "lm", force = 3,
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
                                          label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
@@ -3256,10 +3257,10 @@ function(input, output, session) {
             }
             
             if (input$smoothmethod=="lm" && input$showlmequation){
-              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",size=input$smoothtextsize,
-                                             method.args = list(formula = y ~ x),
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",
+                                             method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
-                                             label.x = Inf ,label.y = -Inf,
+                                             label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
                                              aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
                                                                "%+-%", signif(..x_se.., digits = 2),
                                                                "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
@@ -3335,9 +3336,9 @@ function(input, output, session) {
             if (input$smoothmethod=="lm"&&input$showadjrsquared){
               p <- p+
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
-                                         method.args = list(formula = y ~ x),
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
+                                         label.x=-Inf ,label.y=-Inf, size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              weight=!!aesweight),
@@ -3347,10 +3348,10 @@ function(input, output, session) {
             }
             if (input$smoothmethod=="lm"&&input$showslopepvalue){
               p <- p+
-                ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
-                                         method.args = list(formula = y ~ x),
+                ggpmisc::stat_fit_glance(method = "lm",col=colsmooth, force = 3,
+                                         method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
+                                         label.x=-Inf ,label.y=Inf, size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              weight=!!aesweight),
@@ -3358,10 +3359,10 @@ function(input, output, session) {
             }
             
             if (input$smoothmethod=="lm" && input$showlmequation){
-              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,size=input$smoothtextsize,
-                                             method.args = list(formula = y ~ x),
+              p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,
+                                             method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
-                                             label.x = Inf ,label.y = -Inf,
+                                             label.x = Inf ,label.y = -Inf, size=input$smoothtextsize,
                                              aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
                                                                "%+-%", signif(..x_se.., digits = 2),
                                                                "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),

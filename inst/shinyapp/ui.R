@@ -996,14 +996,15 @@ fluidPage(
                       ),
                       conditionalPanel(" input.smoothmethod== 'emax' | input.smoothmethod== 'lm' ",
                                        sliderInput("smoothtextsize", "Text Size:", min=0, max=10, value=c(3.88),step=0.01)
+                                       
                       )
+                      
                       
                     ) 
                   ),
                   column (
                     3, 
                     uiOutput("weight"),
-                    h6("There is a bug in ggpmisc that prevent rendering of correct stats of the fit (slope/R2) or equation as it always returns the non weighted fit. The correct fitted line will be produced."),
                     conditionalPanel( " input.Smooth!= 'None' ",                    
                                       sliderInput("smoothlinesize", "Smooth Line(s) Size:", min=0, max=4,value=c(1.5),step=0.1),
                                       sliderInput("smoothlinealpha", "Smooth Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
