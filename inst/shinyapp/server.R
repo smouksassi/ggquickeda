@@ -2992,8 +2992,14 @@ function(input, output, session) {
         
         if(input$smoothmethod=="emax") {
           
-          if(! input$customemaxstart) methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K))
-          if( input$customemaxstart)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K),start=c(Vm =input$emaxstart , K =input$ec50start))
+          if(!input$customemaxstart && !input$e0fit)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K))
+          if( input$customemaxstart && !input$e0fit)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K),start=c(Vm =input$emaxstart , K =input$ec50start))
+          
+          if( input$customemaxstart && input$e0fit)  methodsargument<- list(formula = y ~ bsl +  (Vm *x / (K+x)) ,
+                                                                             start=c(Vm =input$emaxstart ,
+                                                                                     K =input$ec50start,
+                                                                                     bsl =input$e0start))
+          
         }
 
         smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
@@ -3072,7 +3078,8 @@ function(input, output, session) {
                                  method='nls',
                                  method.args = methodsargument,
                                  size=smoothlinesize,se=F,aes(group=NULL,weight=!!aesweight))
-              if(input$shownlsparams){
+              
+              if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
                                          method.args = methodsargument,
                                          label.x = "right",
@@ -3086,7 +3093,21 @@ function(input, output, session) {
                                          parse = TRUE)
               }
               
-            
+              if(input$shownlsparams && input$e0fit){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
+                                               method.args = methodsargument,
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..bsl_se.., digits = 2),
+                                                                 "~~~E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..K_se.., digits = 2),
+                                                                 sep = ""),
+                                                   group=NULL,weight=!!aesweight),
+                                               parse = TRUE)
+              }
       
             }#!input$smoothignorecol&& input$smoothmethod=="emax"
           
@@ -3154,7 +3175,8 @@ function(input, output, session) {
                                  method='nls',
                                  method.args = methodsargument,
                                  size=smoothlinesize,se=F,col=colsmooth,aes(group=NULL,weight=!!aesweight))
-              if(input$shownlsparams){
+              
+              if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
                                                method.args = methodsargument,
                                                label.x = "right",
@@ -3166,6 +3188,23 @@ function(input, output, session) {
                                                                  sep = ""),
                                                    group=NULL,weight=!!aesweight),
                                                parse = TRUE)
+              }
+              
+              if(input$shownlsparams && input$e0fit){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
+                                               method.args = methodsargument,
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..bsl_se.., digits = 2),
+                                                                 "~~~E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..K_se.., digits = 2),
+                                                                 sep = ""),
+                                                   group=NULL,weight=!!aesweight),
+                                               parse = TRUE)
+
               }
 
           }#input$smoothignorecol && !input$smoothmethod=="emax"
@@ -3239,7 +3278,8 @@ function(input, output, session) {
                                  method='nls',
                                  method.args = methodsargument,
                                  size=smoothlinesize,se=F)
-              if(input$shownlsparams){
+              
+              if(input$shownlsparams && !input$e0fit){
                 p <- p +
                   ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, 
                                          method.args = methodsargument,
@@ -3253,6 +3293,24 @@ function(input, output, session) {
                                              weight=!!aesweight),
                                          parse = TRUE)
               }
+              if(input$shownlsparams && input$e0fit){
+                p <- p +
+                  ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, 
+                                         method.args = methodsargument,
+                                         label.x = "right",
+                                         label.y = "bottom",
+                                         aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
+                                                           "%+-%"       , signif(..bsl_se.., digits = 2),
+                                                           "~~~E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                           "%+-%"       , signif(..Vm_se.., digits = 2),
+                                                           "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                           "%+-%"       , signif(..K_se.., digits = 2),
+                                                           sep = ""),
+                                             weight=!!aesweight),
+                                         parse = TRUE)
+              }
+              
+              
 
             }
           
@@ -3319,7 +3377,8 @@ function(input, output, session) {
                                  method='nls',
                                  method.args = methodsargument,
                                  size=smoothlinesize,se=F,col=colsmooth)
-              if(input$shownlsparams){
+              
+              if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
                                                method.args = methodsargument,
                                                label.x = "right",
@@ -3331,7 +3390,23 @@ function(input, output, session) {
                                                                  sep = ""),
                                                    weight=!!aesweight),
                                                parse = TRUE)
-            }
+              }
+              
+              if(input$shownlsparams && input$e0fit){
+                p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
+                                               method.args = methodsargument,
+                                               label.x = "right",
+                                               label.y = "bottom",
+                                               aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..bsl_se.., digits = 2),
+                                                                 "~~~E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..Vm_se.., digits = 2),
+                                                                 "~~~EC[50]~`=`~", signif(..K_estimate.., digits = 3),
+                                                                 "%+-%"       , signif(..K_se.., digits = 2),
+                                                                 sep = ""),
+                                                   weight=!!aesweight),
+                                               parse = TRUE)
+              }
             
 }
           }#smooth ignore group

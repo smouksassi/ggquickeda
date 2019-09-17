@@ -976,12 +976,16 @@ fluidPage(
                                        checkboxInput('showlmequation', HTML('Show Int/Slope values &plusmn SE ?'),value = FALSE)
                       ),
                       conditionalPanel(" input.smoothmethod== 'emax' ",
-                                       checkboxInput('shownlsparams', HTML('Show Emax/EC50 values &plusmn SE ?'),value = FALSE),
-                                       checkboxInput('customemaxstart', HTML('Specify Starting values for Emax/EC50 ?'),value = FALSE)
+                                       checkboxInput('shownlsparams', HTML('Show Fitted values &plusmn SE ?'),value = FALSE),
+                                       checkboxInput('customemaxstart', HTML('Specify Starting values ?'),value = FALSE)
                       ),
                       conditionalPanel(" input.customemaxstart ",
                                        numericInput("emaxstart",label = "Emax start",value = 1),
-                                       numericInput("ec50start",label = "EC50 start",value = 1,min=0) 
+                                       numericInput("ec50start",label = "EC50 start",value = 1,min=0),
+                                       checkboxInput('e0fit', 'E0 Fit ?',value = FALSE)
+                      ),
+                      conditionalPanel(" input.e0fit ",
+                                       numericInput("e0start",label = "E0 start",value = 1)
                       ),
                       conditionalPanel(" input.smoothmethod== 'loess' ",
                                        sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),

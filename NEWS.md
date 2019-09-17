@@ -1,5 +1,7 @@
 # ggquickeda 0.1.4.9999
 * modify the appearance of ggpairs ( to do apply custom color scales)
+* add e0
+* fix the weight for poly_eq ( to do)
 
 
 # ggquickeda 0.1.4
