@@ -984,7 +984,8 @@ fluidPage(
                                        numericInput("ec50start",label = "EC50 start",value = 1,min=0),
                                        checkboxInput('e0fit', 'E0 Fit ?',value = FALSE)
                       ),
-                      conditionalPanel(" input.e0fit ",
+                      
+                      conditionalPanel(" input.customemaxstart & input.e0fit ",
                                        numericInput("e0start",label = "E0 start",value = 1)
                       ),
                       conditionalPanel(" input.smoothmethod== 'loess' ",

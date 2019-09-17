@@ -2990,18 +2990,19 @@ function(input, output, session) {
           methodsargument<- list(family = familyargument) 
         }
         
-        if(input$smoothmethod=="emax") {
+        if(input$smoothmethod=="emax" ) {
           
-          if(!input$customemaxstart && !input$e0fit)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K))
-          if( input$customemaxstart && !input$e0fit)  methodsargument<- list(formula = y ~ SSmicmen(x, Vm, K),start=c(Vm =input$emaxstart , K =input$ec50start))
-          
-          if( input$customemaxstart && input$e0fit)   methodsargument<- list(formula = y ~ bsl +  (Vm *x / (K+x)) ,
-                                                                             start=c(Vm =input$emaxstart ,
-                                                                                     K =input$ec50start,
-                                                                                     bsl =input$e0start))
-          if( !input$customemaxstart && input$e0fit)   methodsargument<- NULL
+          if(!input$customemaxstart && !input$e0fit)  methodsargument <- list(formula = y ~ SSmicmen(x, Vm, K))
+          if( input$customemaxstart && !input$e0fit)  methodsargument <- list(formula = y ~ SSmicmen(x, Vm, K),
+                                                                              start=c(Vm =input$emaxstart , K =input$ec50start))
+          if( input$customemaxstart &&  input$e0fit)  methodsargument <- list(formula = y ~ bsl + (Vm *x / (K+x)) ,
+                                                                             start=c(Vm = input$emaxstart ,
+                                                                                      K = input$ec50start,
+                                                                                     bsl= input$e0start))
+          if(!input$customemaxstart &&  input$e0fit)   methodsargument<- NULL
           
         }
+  
 
         smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
                                       "glm",input$smoothmethod)
@@ -3082,7 +3083,7 @@ function(input, output, session) {
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
-                                         method.args = methodsargument,
+                                         method.args = c(methodsargument,weights =quote(weight)),
                                          label.x = "right",
                                          label.y = "bottom",
                                          aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3096,7 +3097,7 @@ function(input, output, session) {
               
               if(input$shownlsparams && input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
-                                               method.args = methodsargument,
+                                               method.args = c(methodsargument,weights =quote(weight)),
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
@@ -3179,7 +3180,7 @@ function(input, output, session) {
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
-                                               method.args = methodsargument,
+                                               method.args = c(methodsargument,weights =quote(weight)),
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3193,7 +3194,7 @@ function(input, output, session) {
               
               if(input$shownlsparams && input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
-                                               method.args = methodsargument,
+                                               method.args = c(methodsargument,weights =quote(weight)),
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
@@ -3283,7 +3284,7 @@ function(input, output, session) {
               if(input$shownlsparams && !input$e0fit){
                 p <- p +
                   ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, 
-                                         method.args = methodsargument,
+                                         method.args = c(methodsargument,weights =quote(weight)),
                                          label.x = "right",
                                          label.y = "bottom",
                                          aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3297,7 +3298,7 @@ function(input, output, session) {
               if(input$shownlsparams && input$e0fit){
                 p <- p +
                   ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, 
-                                         method.args = methodsargument,
+                                         method.args = c(methodsargument,weights =quote(weight)),
                                          label.x = "right",
                                          label.y = "bottom",
                                          aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
@@ -3372,7 +3373,7 @@ function(input, output, session) {
             }
             
           }
-          if (input$smoothignorecol&& input$smoothmethod=="emax") {
+          if (input$smoothignorecol && input$smoothmethod=="emax") {
           
               p <- p + geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
@@ -3381,7 +3382,7 @@ function(input, output, session) {
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
-                                               method.args = methodsargument,
+                                               method.args = c(methodsargument,weights =quote(weight)),
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[max]~`=`~", signif(..Vm_estimate.., digits = 3),
@@ -3395,7 +3396,7 @@ function(input, output, session) {
               
               if(input$shownlsparams && input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
-                                               method.args = methodsargument,
+                                               method.args = c(methodsargument,weights =quote(weight)),
                                                label.x = "right",
                                                label.y = "bottom",
                                                aes(label = paste("E[0]~`=`~", signif(..bsl_estimate.., digits = 3),
