@@ -1160,7 +1160,7 @@ function(input, output, session) {
         validate(need(all(input$y %in% names(df)), "Invalid y value(s)"))
         
         tidydata <- df %>%
-          gather( "yvars", "yvalues", gather_cols=as.vector(input$y) ,factor_key = TRUE) 
+          gather( "yvars", "yvalues", !!!input$y ,factor_key = TRUE) 
         if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
           tidydata <- tidydata %>%
             mutate(yvalues=as.factor(as.character(yvalues) ))
@@ -4194,7 +4194,7 @@ function(input, output, session) {
           ggsurv <- survminer::ggsurvplot(fitsurv, plotdata,risk.table = TRUE,  ggtheme = theme_bw())
           risktabledata<- ggsurv$table$data
           if(length(as.vector(input$risktablevariables)) > 0){
-            risktabledatag<- gather(risktabledata,key,value, gather_cols=as.vector(input$risktablevariables) ,factor_key = TRUE)
+            risktabledatag<- gather(risktabledata,key,value, !!!input$risktablevariables ,factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
           }
           if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {

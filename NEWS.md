@@ -1,7 +1,8 @@
 # ggquickeda 0.1.4.9999
-* modify the appearance of ggpairs ( to do apply custom color scales)
-* add e0
-* fix the weight for poly_eq ( to do)
+* modify the appearance of ggpairs (to do list  apply custom color scales)
+* add e0 and fix some issues with it
+* fix the weight for poly_eq ( to do list )
+* hotfix for tidyr 1.0
 
 
 # ggquickeda 0.1.4
