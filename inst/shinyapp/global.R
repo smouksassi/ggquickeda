@@ -21,6 +21,7 @@ suppressMessages({
   library(table1)
   library(survminer)
   library(ggstance)
+  library(GGally)
 })
 
 options(shiny.maxRequestSize=250*1024^2) 
@@ -167,3 +168,4 @@ allstats <- c("N",
 inline_ui <- function(tag) {
   div(style = "display: inline-block", tag)
 }
+

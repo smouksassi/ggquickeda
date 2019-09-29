@@ -3,6 +3,7 @@
 * add e0 and fix some issues with it
 * fix the weight for poly_eq ( to do list )
 * hotfix for tidyr 1.0
+* user defined shape and linetype scales
 
 
 # ggquickeda 0.1.4

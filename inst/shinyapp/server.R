@@ -1860,6 +1860,74 @@ function(input, output, session) {
     
   })
   
+  output$userdefinedshape <- renderUI({ 
+    req(input$nusershape)
+    lev <- 1:input$nusershape
+      shapes <- c("circle open",
+                  "triangle open",
+                  "square open",
+                  "plus",
+                  "square cross",
+                  "asterisk",
+                  "circle small" ,"triangle" ,"square")
+    shapes <- rep_len(shapes, input$nusershape)
+
+    if(input$scaleshapeswitcher=="themeuser"){
+      lapply(seq_along(lev), function(i) {
+        selectInput(inputId = paste0("shape", lev[i]),label = paste0('User Point(s) Shape:', lev[i]),
+                    c(
+                      "square open"           ,
+                      "circle open"           ,
+                      "triangle open"         ,
+                      "plus"                  ,
+                      "cross"                 ,
+                      "asterisk"              ,
+                      "diamond open"          ,
+                      "triangle down open"    ,
+                      "square cross"          ,
+                      "diamond plus"          ,
+                      "circle plus"           ,
+                      "star"                  ,
+                      "square plus"           ,
+                      "circle cross"          ,
+                      "square triangle"       ,
+                      "square"                ,
+                      "circle small"          ,
+                      "triangle"              ,
+                      "diamond"               ,
+                      "circle"                ,
+                      "bullet"                ,
+                      "circle filled"         ,
+                      "square filled"         ,
+                      "diamond filled"        ,
+                      "triangle filled"       ,
+                      "triangle down filled" 
+                    ), selected = shapes[i]
+        )
+        
+      })
+    }
+    
+  })
+  
+  output$userdefinedlinetype <- renderUI({ 
+    req(input$nuserlinetype)
+    lev <- 1:input$nuserlinetype
+    linetypes <- c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")
+    linetypes <- rep_len(linetypes, input$nuserlinetype)
+    
+    if(input$scalelinetypeswitcher=="themeuser"){
+      lapply(seq_along(lev), function(i) {
+        selectInput(inputId = paste0("linetype", lev[i]),label = paste0('User Linetype(s):', lev[i]),
+                    c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank"), selected = linetypes[i]
+        )
+        
+      })
+    }
+    
+  })
+  
+  
   output$userdefinedcontcolor <- renderUI({ 
       if(input$themecontcolorswitcher=="themeuser"){
       list(
@@ -2056,6 +2124,20 @@ function(input, output, session) {
         scale_fill_manual(..., values = cbbPalette,drop=!input$themecolordrop)
     }
     
+    if (input$scaleshapeswitcher=="themeuser"){
+      shapes <- paste0("c(", paste0("input$shape", 1:input$nusershape, collapse = ", "), ")")
+      shapes <- eval(parse(text = shapes))
+      scale_shape_discrete <- function(...)
+        scale_shape_manual(..., values = shapes)
+    }
+    
+    if (input$scalelinetypeswitcher=="themeuser"){
+      linetypes <- paste0("c(", paste0("input$linetype", 1:input$nuserlinetype, collapse = ", "), ")")
+      linetypes <- eval(parse(text = linetypes))
+      scale_linetype_discrete <- function(...)
+        scale_linetype_manual(..., values = linetypes)
+    }
+    
     # Determine what type of plot to show based on what variables were chosen
     if (input$show_pairs) {
       # Matrix of pairs of plots of all the Y variables
@@ -2067,26 +2149,111 @@ function(input, output, session) {
                                                      combo = GGally::wrap("facethist", alpha=0.2,position="dodge2"),
                                                      discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")
                                         ),
-                                        upper = list(continuous = GGally::wrap("cor", size=4, alignPercent=0.8),
+                                        upper = list(continuous = function(data, mapping, ...) {
+                                          GGally::ggally_cor(data = data, mapping = mapping, size=4, alignPercent=0.8)
+                                            },
                                                      combo = GGally::wrap("box_no_facet", alpha=0.2),
                                                      discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")),
                                         progress = FALSE)
                         )
       }
       if (input$colorin != 'None'){
-        p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
-                                        mapping=ggplot2::aes_string(color=input$colorin),
-                                        diag = list(continuous = GGally::wrap("densityDiag", alpha=0.2,linetype=0),
-                                                    discrete = GGally::wrap("barDiag",  alpha=0.2,position="dodge2")),
-                                        lower = list(continuous = GGally::wrap("smooth", alpha = 0.2, size=0.1),
-                                                     combo = GGally::wrap("facethist", alpha=0.2,position="dodge2"),
-                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")
-                                        ),
-                                        upper = list(continuous = GGally::wrap("cor", size=4, alignPercent=0.8),
-                                                     combo = GGally::wrap("box_no_facet", alpha=0.2),
-                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")),
-                                        progress = FALSE)
+        
+        if( !is.numeric(plotdata[,input$colorin]) ){
+        p <- sourceable(
+          GGally::ggpairs(
+            plotdata,
+            columns = input$y,
+            mapping = ggplot2::aes_string(color = input$colorin),
+            diag = list(
+              continuous = function(data, mapping, ...) {
+                GGally::ggally_densityDiag(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2,
+                  linetype = 0
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              },
+              discrete = function(data, mapping, ...) {
+                GGally::ggally_barDiag(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2,
+                  position = "dodge2"
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              }
+            ),
+            lower = list(
+              continuous = function(data, mapping, ...) {
+                GGally::ggally_smooth(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2,
+                  size = 0.1
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              },
+              combo = function(data, mapping, ...) {
+                GGally::ggally_facethist(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2,
+                  position = "dodge2"
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              },
+              discrete = function(data, mapping, ...) {
+                GGally::ggally_facetbar(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2,
+                  position = "dodge2"
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              }
+            ),
+            upper = list(
+              continuous = function(data, mapping, ...) {
+                GGally::ggally_cor(
+                  data = data,
+                  mapping = mapping,
+                  size = 4,
+                  alignPercent = 0.8
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              },
+              combo = function(data, mapping, ...) {
+                GGally::ggally_box_no_facet(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              },
+              discrete = function(data, mapping, ...) {
+                GGally::ggally_facetbar(
+                  data = data,
+                  mapping = mapping,
+                  alpha = 0.2,
+                  position = "dodge2"
+                ) +
+                  scale_colour_discrete()+
+                  scale_fill_discrete()
+              }
+            ),
+            progress = FALSE
+          )
         )
+        }
+
       }
        
 

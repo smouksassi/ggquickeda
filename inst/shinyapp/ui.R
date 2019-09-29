@@ -480,7 +480,7 @@ fluidPage(
               sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
                           min=0, max=100, value=c(16),step=0.5),
  
-              radioButtons("themecolorswitcher", "Discrete Color and Fill Themes:",
+              radioButtons("themecolorswitcher", "Discrete Color and Fill Scales:",
                            c("Tableau 10"  = "themetableau10",
                              "Tableau 20"  = "themetableau20",
                              "Color Blind" = "themecolorblind",
@@ -501,6 +501,20 @@ fluidPage(
                                actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
                                
               ),
+              
+              radioButtons("scaleshapeswitcher", "Discrete Shape Scales:",
+                           c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
+              conditionalPanel(condition = " input.scaleshapeswitcher=='themeuser' " ,
+                               sliderInput("nusershape", "N of User Shapes:", min=1, max=20, value=c(6),step=1)
+              ),
+              uiOutput('userdefinedshape'),
+              
+              radioButtons("scalelinetypeswitcher", "Discrete Linetype Scales:",
+                           c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
+              conditionalPanel(condition = " input.scalelinetypeswitcher=='themeuser' " ,
+                               sliderInput("nuserlinetype", "N of User Linetypes:", min=1, max=10, value=c(6),step=1)
+              ),
+              uiOutput('userdefinedlinetype'),
               
               radioButtons("themecontcolorswitcher", "Continuous Color and Fill Themes:",
                            c("ggplot gradient2"  = "RedWhiteBlue",
@@ -652,7 +666,6 @@ fluidPage(
                         "diamond open"          ,
                         "triangle down open"    ,
                         "square cross"          ,
-                        "asterisk"              ,
                         "diamond plus"          ,
                         "circle plus"           ,
                         "star"                  ,
@@ -1169,7 +1182,6 @@ fluidPage(
                                                   "diamond open"          ,
                                                   "triangle down open"    ,
                                                   "square cross"          ,
-                                                  "asterisk"              ,
                                                   "diamond plus"          ,
                                                   "circle plus"           ,
                                                   "star"                  ,
@@ -1285,7 +1297,6 @@ fluidPage(
                                                           "diamond open"          ,
                                                           "triangle down open"    ,
                                                           "square cross"          ,
-                                                          "asterisk"              ,
                                                           "diamond plus"          ,
                                                           "circle plus"           ,
                                                           "star"                  ,
