@@ -1,9 +1,10 @@
 # ggquickeda 0.1.4.9999
-* modify the appearance of ggpairs (to do list  apply custom color scales)
-* add e0 and fix some issues with it
-* fix the weight for poly_eq ( to do list )
+* modify the appearance of ggpairs to reflect custom color scales
+* add e0 and fix some initial estimate issue
+* fix the weight aesthetic for emax smoother
 * hotfix for tidyr 1.0
 * user defined shape and linetype scales
+* user defined custom labels for custom x and y axes ticks
 
 
 # ggquickeda 0.1.4
