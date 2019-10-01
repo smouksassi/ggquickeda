@@ -187,27 +187,31 @@ fluidPage(
               checkboxInput('customxticks', 'Custom X axis Ticks ?', value = FALSE),
               conditionalPanel(condition = "input.customxticks" , 
                                textInput("xaxisbreaks",label ="X axis major Breaks",
-                                         value = as.character(paste(
-                                           0,12,24
-                                           ,sep=",") )
-                               ),
+                                         value = as.character(paste(0,12,24,sep=",") )),
                                textInput("xaxisminorbreaks",label ="X axis minor Breaks",
-                                         value = as.character(paste(
-                                           6,18
-                                           ,sep=",") )
+                                         value = as.character(paste(6,18,sep=",") ))
+                               ),
+              conditionalPanel(condition = "input.customxticks & input.xaxisformat=='default' " , 
+                               checkboxInput('customxtickslabel', 'Custom X axis labels ?', value = FALSE)
+              ),
+               conditionalPanel(condition = "input.customxticks & input.customxtickslabel & input.xaxisformat=='default' " , 
+                               textInput("xaxislabels",label ="X axis Labels",
+                                         value = as.character(paste("A","B","C" ,sep=",") )
                                )
               ),
               checkboxInput('customyticks', 'Custom Y axis Ticks ?', value = FALSE),
               conditionalPanel(condition = "input.customyticks" , 
                                textInput("yaxisbreaks",label ="Y axis major Breaks",
-                                         value = as.character(paste(
-                                           0,1,2
-                                           ,sep=",") )
-                               ),
+                                         value = as.character(paste(0,1,2,sep=",") )),
                                textInput("yaxisminorbreaks",label ="Y axis minor Breaks",
-                                         value = as.character(paste(
-                                           0.5,1.5
-                                           ,sep=",") )
+                                         value = as.character(paste(0.5,1.5,sep=",") ))
+              ),
+              conditionalPanel(condition = "input.customyticks & input.yaxisformat=='default' " , 
+                               checkboxInput('customytickslabel', 'Custom Y axis labels ?', value = FALSE)
+              ),
+              conditionalPanel(condition = "input.customyticks & input.customytickslabel & input.yaxisformat=='default' " , 
+                               textInput("yaxislabels",label ="Y axis Labels",
+                                         value = as.character(paste("A","B","C" ,sep=",") )
                                )
               ),
               checkboxInput('annotatelogticks', 'Add Log Tick Annotations ?', value = FALSE),

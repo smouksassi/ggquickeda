@@ -4587,18 +4587,29 @@ function(input, output, session) {
       }
       
       
-      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="default")
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="default")
         p <- p + scale_y_log10()
-      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="logyformat")
+      
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="logyformat")
         p <- p + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)))
-      if (input$yaxisscale=="logy"&& is.numeric(plotdata[,"yvalues"])&&input$yaxisformat=="logyformat2")
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="logyformat2")
         p <- p + scale_y_log10(labels=prettyNum)
       
       if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="default") {
-        p <- p  + 
+        if ( !input$customytickslabel) {
+         p <- p  + 
           scale_y_log10(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
+        }
+        if ( input$customytickslabel) {
+          yaxislabels <- gsub("\\\\n", "\\\n", input$yaxislabels)
+          p <- p  + 
+            scale_y_log10(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
+                          labels= rep_len(unlist(strsplit(yaxislabels, ",")) ,
+                                          length(as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ",")))))),
+                          minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
+        }
       }
       
       if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"])  && input$customyticks && input$yaxisformat=="logyformat") {
@@ -4625,9 +4636,20 @@ function(input, output, session) {
       
       
       if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="default") {
+        if ( !input$customytickslabel) {
         p <- p  + 
           scale_y_continuous(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
+        }
+        if ( input$customytickslabel) {
+          yaxislabels <- gsub("\\\\n", "\\\n", input$yaxislabels)
+          p <- p  + 
+            scale_y_continuous(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
+                               labels= rep_len(unlist(strsplit(yaxislabels, ",")) ,
+                                               length(as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ",")))))),
+                               minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
+        }
+        
       }
       
       if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="scientificy") {
@@ -4645,22 +4667,34 @@ function(input, output, session) {
       }
       
       
-      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$xaxisformat=="default")
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && !input$customxticks && input$xaxisformat=="default")
         p <- p + scale_x_log10()
-      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$xaxisformat=="logxformat")
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && !input$customxticks && input$xaxisformat=="logxformat")
         p <- p + scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)))
-      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x])&& input$xaxisformat=="logxformat2")
+      if (input$xaxisscale=="logx"&& is.numeric(plotdata[,input$x]) && !input$customxticks && input$xaxisformat=="logxformat2")
         p <- p + scale_x_log10(labels = prettyNum)
       
       
       
       
       if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="default") {
+        if ( !input$customxtickslabel) {
         p <- p  + 
           scale_x_log10(breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+        }
+        
+        if ( input$customxtickslabel) {
+          xaxislabels <- gsub("\\\\n", "\\\n", input$xaxislabels)
+          p <- p  + 
+            scale_x_log10(breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                          labels= rep_len(unlist(strsplit(xaxislabels, ",")) ,
+                                          length(as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ",")))))),
+                          minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+        }
       }
+      
       
       if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="logxformat") {
         p <- p  + 
@@ -4668,7 +4702,7 @@ function(input, output, session) {
                         breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
       }
-      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks &&input$xaxisformat=="logxformat2" ) {
+      if (input$xaxisscale=="logx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="logxformat2" ) {
         p <- p  + 
           scale_x_log10(labels = prettyNum,
                         breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
@@ -4676,19 +4710,32 @@ function(input, output, session) {
       }
       
       
-      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$xaxisformat=="scientificx")
+      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x])  && !input$customxticks && input$xaxisformat=="scientificx")
         p <- p  + 
         scale_x_continuous(labels=comma )
       
-      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$xaxisformat=="percentx")
+      if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && !input$customxticks && input$xaxisformat=="percentx")
         p <- p  + 
         scale_x_continuous(labels=percent )
       
       if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="default") {
-        p <- p  + 
-          scale_x_continuous(
-            breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
-            minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+        
+        if ( !input$customxtickslabel) {
+          p <- p  + 
+            scale_x_continuous(
+              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+        }
+        if ( input$customxtickslabel) {
+         xaxislabels <- gsub("\\\\n", "\\\n", input$xaxislabels)
+          p <- p  + 
+            scale_x_continuous(
+              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+              labels= rep_len(unlist(strsplit(xaxislabels, ",")) ,
+                              length(as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ",")))))),
+              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ) 
+        }
+      
       }
       if (input$xaxisscale=="linearx" && is.numeric(plotdata[,input$x]) && input$customxticks && input$xaxisformat=="scientificx") {
         p <- p  + 
