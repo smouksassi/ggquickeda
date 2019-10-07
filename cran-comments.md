@@ -7,8 +7,7 @@
 
 0 errors | 0 warnings | 0 note
 
-* This is an update adding several enhancements and bug fixes to the shiny app and to geom_km geom_kmband docs
-* vignettes have been double checked.
+* This is a minor update adding enhancements and especially fixing a breaking change due to tidyr 1.0
 * some Notes from the previous builds on some platforms are false positives since these are used in the shiny app code and are required for it.
 
 
