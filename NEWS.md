@@ -5,6 +5,7 @@
 * hotfix for tidyr 1.0
 * user defined shape and linetype scales
 * user defined custom labels for custom x and y axes ticks
+* user can divide by a constant not just a column
 
 
 # ggquickeda 0.1.4

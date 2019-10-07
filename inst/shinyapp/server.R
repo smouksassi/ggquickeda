@@ -1083,7 +1083,7 @@ function(input, output, session) {
   rounddata <- reactive({
     df <- filterdata8()
     validate(       need(!is.null(df), "Please select a data set"))
-    if(!is.null(input$roundvarin)&length(input$roundvarin ) >=1) {
+    if(!is.null(input$roundvarin)&&length(input$roundvarin ) >=1) {
       for (i in 1:length(input$roundvarin ) ) {
         varname<- input$roundvarin[i]
         df[,varname]   <- round( df[,varname],input$rounddigits)
@@ -1115,14 +1115,34 @@ function(input, output, session) {
     if (!is.null(df)){
       items=names(df)
       names(items)=items
-      MODEDF <- sapply(df, function(x) !is.character(x) )
+      MODEDF <- sapply(df, function(x) is.numeric(x) )
       NAMESTOKEEP2<- names(df)  [MODEDF]
       selectInput(  "divideydenomin", "Variable to divide by", choices = NAMESTOKEEP2,multiple=FALSE)
     }
   })
   
+  output$divideynum2 <- renderUI({
+    df <- dividedata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (!is.null(df)){
+      items=names(df)
+      names(items)=items
+      MODEDF <- sapply(df, function(x) is.numeric(x))
+      NAMESTOKEEP2<- names(df)  [MODEDF]
+      selectizeInput(  "divideynumin2", "Divide the Values by a constant:", choices = NAMESTOKEEP2,
+                       multiple=TRUE,
+                       options = list(
+                         placeholder = 'Please select some variables',
+                         onInitialize = I('function() { this.setValue(""); }')
+                       )
+      )
+    }
+  })
+  
+  
   outputOptions(output, "divideynum", suspendWhenHidden=FALSE)
   outputOptions(output, "divideydenom", suspendWhenHidden=FALSE)
+  outputOptions(output, "divideynum2", suspendWhenHidden=FALSE)
   
   
   dividedata <- reactive({
@@ -1130,7 +1150,7 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     if(!is.null(input$divideynumin)&&length(input$divideynumin ) >=1 &&
        !is.null(input$divideydenomin)) {
-      for (i in 1:length(input$roundvarin ) ) {
+      for (i in 1:length(input$divideynumin ) ) {
         varname<- input$divideynumin[i]
         dosname<- input$divideydenomin
         df[,varname]   <-  df[,varname] /as.numeric(as.character(df[,dosname]))
@@ -1139,16 +1159,26 @@ function(input, output, session) {
     df
   })
   
-  
+  dividedata2 <- reactive({
+    df <- dividedata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if(!is.null(input$divideynumin2)&&length(input$divideynumin2 ) >=1) {
+      for (i in 1:length(input$divideynumin2 ) ) {
+        varname<- input$divideynumin2[i]
+        df[,varname]   <-  df[,varname] /input$divideyconstant
+      }
+    }
+    df
+  })
   
   tabledata <- reactive({
-    df <- dividedata() 
+    df <- dividedata2() 
     df
   })
   
   stackdata <- reactive({
     
-    df <- dividedata()
+    df <- dividedata2()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       validate(  need(!is.element(input$x,input$y) ,

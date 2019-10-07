@@ -97,7 +97,10 @@ fluidPage(
               uiOutput("roundvar"),
               numericInput("rounddigits",label = "N Digits",value = 0,min=0,max=10),
               uiOutput("divideynum"),
-              uiOutput("divideydenom")
+              uiOutput("divideydenom"),
+              uiOutput("divideynum2"),
+              numericInput("divideyconstant",label = "Divide by",value = 1)
+              
             ),
             
             tabPanel(
