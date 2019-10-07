@@ -1,3 +1,6 @@
+# ggquickeda 0.1.5.9999
+
+
 # ggquickeda 0.1.5
 * let ggpairs plots reflect custom color scales
 * update the emax smoother to add e0
