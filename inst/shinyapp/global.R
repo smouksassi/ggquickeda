@@ -24,6 +24,8 @@ suppressMessages({
   library(GGally)
 })
 
+source("gradientInput.R")
+
 options(shiny.maxRequestSize=250*1024^2) 
 
 stat_sum_df <- function(fun, geom="point", ...) {

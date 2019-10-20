@@ -7,6 +7,8 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
+  callModule(gradientInput, "gradientcol",init_col =3, allow_modify = TRUE, col_expand = FALSE)
+  
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
     shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')

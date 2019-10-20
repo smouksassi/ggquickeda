@@ -9,6 +9,7 @@ fluidPage(
         tabPanel(
           "Inputs", 
           br(),
+          gradientInputUI("gradientcol", "100%", "www"),
           tags$div(
             tags$strong("Choose csv file to upload"),
             "or", actionLink("sample_data_btn", "use sample data")
