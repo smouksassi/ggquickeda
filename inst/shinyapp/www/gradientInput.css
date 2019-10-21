@@ -1,0 +1,64 @@
+.draggables-module {
+  margin-top: 10px;
+  margin-bottom: 14px; /* input_size */
+  height: 35px; /* container_height */
+  border: 1px solid #aaa;
+  cursor: crosshair;
+}
+.draggables-module .draggables-container {
+  width: calc(100% - 4px);
+  height: 100%;
+}
+.draggables-module .gradient-draggable-wrapper {
+  float: left;
+  width: 0;
+  height: 100%;
+}
+.draggables-module .gradient-draggable-delete {
+  position: absolute;
+  top: -10px;
+  font-size: 10px;
+  left: -1px;
+  line-height: 10px;
+  cursor: pointer;
+  color: #000;
+  opacity: 0.4;
+}
+.draggables-module .gradient-draggable-wrapper:hover .gradient-draggable-delete {
+  opacity: 1;
+}
+.draggables-module .gradient-draggable-bar {
+  background: #ccc;
+  width: 4px;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  cursor: move;
+}
+.draggables-module .gradient-draggable-bar:hover {
+  background: rgba(0,0,0,0.8);
+}
+.draggables-module .gradient-draggable-wrapper .colourpicker {
+  left: -5px; /* -(input_size/2-2) */
+}
+.draggables-module .gradient-draggable-wrapper .colourpicker-input-container {
+  background: transparent;
+}
+.draggables-module .gradient-draggable-wrapper input {
+  height: 14px; /* input_size */
+  width: 14px; /* input_size */
+  padding: 0;
+  cursor: pointer;
+  font-size: 0;
+  border-radius: 14px; /* input_size */
+  border: 1px solid #555;
+  position: relative;
+}
+.draggables-module .col-expand .colourpicker input:focus,
+.draggables-module .col-expand .colourpicker:hover input {
+  width: 100px;
+  height: auto;
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 5px;
+  z-index: 2;
+}
