@@ -1,19 +1,25 @@
-// When a colour bar is dragged, send shiny the position
-$(document).on('dragstop', '.ui-draggable', function(e, ui) {
-  var left = ui.position.left;
-  var module = $(this).closest('.draggables-module');
+// Calculate the new position of an element and send it to shiny
+function sendPositionShiny(el) {
+  var module = $(el).closest('.draggables-module');
+  if (!module.attr("data-shiny_init")) {
+    return;
+  }
+
+  var left = el.offsetLeft - $(el).parent()[0].offsetLeft;
   var size = module.attr("data-shiny_size_corrected");
   var position = Math.round(left / size * 100);
-  Shiny.setInputValue(e.target.id + '_percent', position, {priority: 'event'});
+  console.log(position);
+  Shiny.setInputValue(el.id + '_percent', position, {priority: 'event'});
+}
+
+// When a colour bar is dragged, send shiny the position
+$(document).on('dragstop', '.ui-draggable', function(e, ui) {
+  sendPositionShiny(e.target);
 });
 
 // When a colour bar is created, send shiny the position
 $(document).on('dragcreate', '.ui-draggable', function(e, ui) {
-  var left = e.target.offsetLeft - $(e.target).parent()[0].offsetLeft;
-  var module = $(this).closest('.draggables-module');
-  var size = module.attr("data-shiny_size_corrected");
-  var position = Math.round(left / size * 100);
-  Shiny.setInputValue(e.target.id + '_percent', position, {priority: 'event'});
+  sendPositionShiny(e.target);
 });
 
 // When clicking somewhere in the box, send shiny the position of the click
@@ -34,18 +40,40 @@ $(document).on('click', '.draggables-module', function(event) {
 // When the gradient input is resized (or initialized), tell Shiny about the new
 // size
 function GradientInputInitResize(ns) {
+  var parentId = ns + "draggables-box";
+  var $parent = $("#" + parentId);
+
+  // Whenever the size of the input changes, store it in the DOM and inform
+  // shiny that a resize happened
   var calculateNewSize = function() {
-    var $parent = $("#" + ns + "draggables-box");
     var size = $parent[0].offsetWidth;
     $parent.attr("data-shiny_size", size);
     $parent.attr("data-shiny_size_corrected", size - 6);
     Shiny.setInputValue(ns + "gradient_resize", true, {priority: "event"});
   };
 
-  calculateNewSize();
-  new ResizeSensor($("#" + ns + "draggables-box")[0], function() {
-    calculateNewSize();
-  });
+  // To support inputs that are not visible on load (hidden with shinyjs or
+  // on a different tab), we need to use IntersectionObserver to know when the
+  // input is first visible on the screen because only then we can calculate its
+  // width. The first time it's visible we set up the resize callbacks and tell
+  // shiny about the current bars positions values.
+  const visibleCallback = function(entries) {
+    if(entries[0].isIntersecting === true) {
+      observer.unobserve(document.getElementById(parentId));
+      $parent.attr("data-shiny_init", true);
+      calculateNewSize();
+      new ResizeSensor(document.getElementById(parentId), function() {
+        calculateNewSize();
+      });
+
+      const colourBars = $parent.find(".ui-draggable");
+      colourBars.each(function(bar) {
+        sendPositionShiny(colourBars[bar]);
+      });
+    }
+  }
+  const observer = new IntersectionObserver(visibleCallback, {});
+  observer.observe(document.getElementById(parentId));
 }
 
 function GradientInputReposition(ns, data) {

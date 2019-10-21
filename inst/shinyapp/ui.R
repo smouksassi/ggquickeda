@@ -9,7 +9,6 @@ fluidPage(
         tabPanel(
           "Inputs", 
           br(),
-          gradientInputUI("gradientcol", "100%", "www"),
           tags$div(
             tags$strong("Choose csv file to upload"),
             "or", actionLink("sample_data_btn", "use sample data")
@@ -543,7 +542,7 @@ fluidPage(
                 allowTransparent = FALSE,returnName = TRUE),
               
               numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0),
-              
+              gradientInputUI("gradientcol", "100%", "www"),
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
               colourpicker::colourInput("majorgridlinescol", "Major Grid Lines Color:",
