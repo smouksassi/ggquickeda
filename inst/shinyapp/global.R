@@ -23,6 +23,7 @@ suppressMessages({
   library(ggstance)
   library(GGally)
 })
+source("gradientInput.R")
 
 options(shiny.maxRequestSize=250*1024^2) 
 

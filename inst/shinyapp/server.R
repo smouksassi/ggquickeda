@@ -7,6 +7,9 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
+ # callModule(gradientInput, "gradientcol",init_col =3, allow_modify = TRUE, col_expand = TRUE)
+  
+  
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
     shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')
@@ -4394,6 +4397,11 @@ function(input, output, session) {
             risktabledatag<- gather(risktabledata,key,value, !!!input$risktablevariables ,factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
           }
+          if(is.null(input$risktablevariables) ){
+            risktabledatag<- gather(risktabledata,key,value, "n.risk" ,factor_key = TRUE)
+            risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
+          }
+          
           if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {
             .table <- as.data.frame(summary(fitsurv)$table)
           } else {
@@ -4421,11 +4429,25 @@ function(input, output, session) {
             p  <- p +
               geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
                         position =   position_dodgev(height =input$nriskpositiondodge)
-              )+
-              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                 labels= c(as.vector(input$risktablevariables),
-                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+              )
             
+            
+            
+            if(!is.null(input$risktablevariables)){
+              p  <- p +
+                scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                   labels= c(as.vector(input$risktablevariables),
+                                             c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+              
+            }
+            if(is.null(input$risktablevariables)){
+              p  <- p +
+                scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                   labels= c("n.risk",
+                                             c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) )
+              
+            }
+
           }
           
           if (input$kmignorecol){
