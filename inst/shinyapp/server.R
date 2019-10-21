@@ -7,7 +7,7 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
- # callModule(gradientInput, "gradientcol",init_col =3, allow_modify = TRUE, col_expand = TRUE)
+ # callModule(gradientInput, "gradientcol",init_col =3, allow_modify = TRUE, col_expand = TRUE) 
   
   
   mockFileUpload <- function(name) {
