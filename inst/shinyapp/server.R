@@ -7,8 +7,14 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
- # callModule(gradientInput, "gradientcol",init_col =3, allow_modify = TRUE, col_expand = TRUE) 
+  gradientresult <- callModule(gradientInput, "gradientcol",init_col =c("#832424","white",  "#3A3A98"),
+             allow_modify = FALSE, col_expand = TRUE) 
   
+  gradientTableData <- reactive({
+    df <- gradientresult()
+  }
+  )
+    
   
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
@@ -1977,8 +1983,15 @@ function(input, output, session) {
           "Ending Color",
           value =muted("blue"),
           showColour = "both",
+          allowTransparent = FALSE,returnName = TRUE),
+        
+        colourpicker::colourInput(
+          "midcolor",
+          "Midpoint Color",
+          value ="white",
+          showColour = "both",
           allowTransparent = FALSE,returnName = TRUE)
-              )
+  )
       }
     })
   
@@ -2018,18 +2031,10 @@ function(input, output, session) {
     })
   })
   
-  observeEvent(input$userdefinedcontcolorreset, {
-    cols <- c(muted("red"),muted("blue"))
-    updateColourInput(session = session,
-                      inputId = paste0("colcont1"),
-                      value = cols[1]
-                      )
-                      
-    updateColourInput(session = session,
-                      inputId = paste0("colcont2"),
-                      value = cols[2]
-    )
-  })
+   observeEvent(input$userdefinedcontcolorreset, {
+    shinyjs::reset(ns("draggables-box"))
+     
+   })
   
   observe({
     facet_choices <- unique(c(
@@ -2086,39 +2091,38 @@ function(input, output, session) {
     if (input$themecontcolorswitcher=="RedWhiteBlue"){
       
       scale_colour_continuous<- function(...) 
-        scale_colour_gradient2(..., low = muted("red"), mid = input$midcolor,
+        scale_colour_gradient2(..., low = muted("red"), mid = "white",
                                high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous<- function(...) 
-        scale_fill_gradient2(..., low = muted("red"), mid = input$midcolor,
+        scale_fill_gradient2(..., low = muted("red"), mid = "white",
                                high = muted("blue"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
     }
     if (input$themecontcolorswitcher=="RedWhiteGreen"){
       
       scale_colour_continuous <- function(...) 
-        scale_colour_gradient2(..., low = muted("red"), mid = input$midcolor,
+        scale_colour_gradient2(..., low = muted("red"), mid = "white",
                                high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous <- function(...) 
-        scale_fill_gradient2(..., low = muted("red"), mid = input$midcolor,
+        scale_fill_gradient2(..., low = muted("red"), mid = "white",
                                high = muted("darkgreen"), midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
     }
     
     if (input$themecontcolorswitcher=="themeuser"){
-      
       scale_colour_continuous <- function(...) 
-        scale_colour_gradient2(..., low = input$colcont1 , mid = input$midcolor,
-                               high =     input$colcont2, midpoint = input$colormidpoint, space = "Lab",
+        scale_colour_gradient2(..., low = gradientTableData()[1,1] , mid = gradientTableData()[2,1],
+                               high =    gradientTableData()[3,1], midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous <- function(...) 
-        scale_fill_gradient2(..., low = input$colcont1, mid = input$midcolor,
-                             high = input$colcont2, midpoint = input$colormidpoint, space = "Lab",
+        scale_fill_gradient2(..., low = gradientTableData()[1,1], mid = gradientTableData()[2,1],
+                             high = gradientTableData()[3,1], midpoint = input$colormidpoint, space = "Lab",
                              na.value = "grey50", guide = "colourbar")
       
     }

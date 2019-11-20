@@ -530,21 +530,16 @@ fluidPage(
                              "viridis" = "themeviridis",
                              "User defined" = "themeuser")
                            ,inline=TRUE),
-              uiOutput('userdefinedcontcolor'),
+              conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
+                                             input.themecontcolorswitcher=='RedWhiteGreen'|
+                                             input.themecontcolorswitcher=='themeuser'" ,
+                               numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0))
+              ,
               conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
-                               actionButton("userdefinedcontcolorreset", "Back to starting colours", icon = icon("undo") )
-              ),
-              colourpicker::colourInput(
-                "midcolor",
-                "Midpoint Color",
-                value ="white",
-                showColour = "both",
-                allowTransparent = FALSE,returnName = TRUE),
-              
-              numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0),
-              
-#              gradientInputUI("gradientcol", "100%", "www"),
-              
+                               gradientInputUI("gradientcol", "100%", "www")
+                               #,
+                               #actionButton("userdefinedcontcolorreset", "Back to starting colours",icon = icon("undo") )
+                               ),
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
               colourpicker::colourInput("majorgridlinescol", "Major Grid Lines Color:",
