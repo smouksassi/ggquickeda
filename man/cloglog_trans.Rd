@@ -2,11 +2,11 @@
 % Please edit documentation in R/ggkm.R
 \name{cloglog_trans}
 \alias{cloglog_trans}
-\title{cloglog transfomation utility}
+\title{cloglog transformation utility}
 \usage{
 cloglog_trans()
 }
 \description{
-cloglog transfomation utility
+cloglog transformation utility
 }
 \keyword{internal}

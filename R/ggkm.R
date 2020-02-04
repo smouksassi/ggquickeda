@@ -568,7 +568,7 @@ stat_kmticks <- function(mapping = NULL, data = NULL, geom = "kmticks",
 
 
 
-#' Cumulative hazard transfomation utility
+#' Cumulative hazard transformation utility
 #'
 #' @export
 #' @keywords internal
@@ -590,7 +590,7 @@ cumhaz_trans <- function(){
   )
 }
 
-#' Event transfomation utility
+#' Event transformation utility
 #'
 #' @export
 #' @keywords internal
@@ -612,7 +612,7 @@ event_trans <- function(){
   )
 }
 
-#' cloglog transfomation utility
+#' cloglog transformation utility
 #'
 #' @export
 #' @keywords internal

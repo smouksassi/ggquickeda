@@ -2,11 +2,11 @@
 % Please edit documentation in R/ggkm.R
 \name{event_trans}
 \alias{event_trans}
-\title{Event transfomation utility}
+\title{Event transformation utility}
 \usage{
 event_trans()
 }
 \description{
-Event transfomation utility
+Event transformation utility
 }
 \keyword{internal}

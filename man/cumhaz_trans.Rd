@@ -2,11 +2,11 @@
 % Please edit documentation in R/ggkm.R
 \name{cumhaz_trans}
 \alias{cumhaz_trans}
-\title{Cumulative hazard transfomation utility}
+\title{Cumulative hazard transformation utility}
 \usage{
 cumhaz_trans()
 }
 \description{
-Cumulative hazard transfomation utility
+Cumulative hazard transformation utility
 }
 \keyword{internal}
