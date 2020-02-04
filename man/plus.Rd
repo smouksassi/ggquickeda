@@ -4,7 +4,7 @@
 \alias{+}
 \title{Add 'ggplot2' layer to a sourceable 'ggplot2'}
 \usage{
-"+"(e1, e2)
+`+`(e1, e2)
 }
 \description{
 Overwrite the plus operator so that if a "sourceable" object is used,
