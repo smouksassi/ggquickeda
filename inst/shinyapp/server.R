@@ -7,14 +7,18 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
-  gradientresult <- callModule(gradientInput, "gradientcol",init_col =c("#832424","white",  "#3A3A98"),
+  gradient <- callModule(gradientInput, "gradientcol",
+                         init_col =c("#832424","white","#3A3A98"),
              allow_modify = FALSE, col_expand = TRUE) 
   
   gradientTableData <- reactive({
-    df <- gradientresult()
+    df <- gradient$result()
   }
   )
-    
+  observeEvent(input$gradientreset, {
+    gradient$reset()
+  })
+  
   
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
@@ -2030,12 +2034,8 @@ function(input, output, session) {
       )
     })
   })
-  
-   observeEvent(input$userdefinedcontcolorreset, {
-    shinyjs::reset(ns("draggables-box"))
-     
-   })
-  
+
+
   observe({
     facet_choices <- unique(c(
       input$facetcolextrain,

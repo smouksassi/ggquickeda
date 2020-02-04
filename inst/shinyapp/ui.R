@@ -537,9 +537,9 @@ fluidPage(
               ,
               conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
                                gradientInputUI("gradientcol", "100%", "www")
-                               #,
-                               #actionButton("userdefinedcontcolorreset", "Back to starting colours",icon = icon("undo") )
+                               ,actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
                                ),
+
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
               colourpicker::colourInput("majorgridlinescol", "Major Grid Lines Color:",

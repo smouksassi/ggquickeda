@@ -1,5 +1,6 @@
 # ggquickeda 0.1.5.9999
-* prepare for next cran release
+* added gradientInput
+* fixed a bug in risktable when nothing was selected
 
 # ggquickeda 0.1.5
 * let ggpairs plots reflect custom color scales

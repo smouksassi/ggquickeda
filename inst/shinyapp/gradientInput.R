@@ -12,8 +12,6 @@ draggable_colourinput <- function(id,
                                   position = NULL,
                                   allow_modify = TRUE,
                                   col_expand = TRUE) {
-  ns <- getDefaultReactiveDomain()$ns
-
   if (is.null(col)) {
     col <- generate_random_col()
   }
@@ -32,15 +30,15 @@ draggable_colourinput <- function(id,
   }
 
   tag <- tags$div(
-    id = ns(paste0(id, "-draggable")),
+    id = paste0(id, "-draggable"),
     class = paste0("gradient-draggable-wrapper",
                    if (col_expand) " col-expand" else ""),
     style = paste0("left:", left, "%"),
     if (allow_modify)
-      actionLink(ns(paste0(id, "-delete")), icon("close"),
+      actionLink(paste0(id, "-delete"), icon("close"),
                  class = "gradient-draggable-delete"),
     tags$div(class = "gradient-draggable-bar"),
-    colourpicker::colourInput(ns(id), NULL, col, showColour = "both")
+    colourpicker::colourInput(id, NULL, col, showColour = "both")
   )
   if (allow_modify) {
     shinyjqui::jqui_draggable(
@@ -100,6 +98,11 @@ gradientInputUI <- function(id, width = NULL, resource_path = ".") {
 #'   positions of colours.
 #' @param col_expand Whether or not the colour input can expand into a full
 #'   colour picker text box that lets the user write colour names in English.
+#' @return A list containing:
+#'   - result: a dataframe with 2 columns: `position` (the left position, between
+#'   0 and 100) and `col` (the colour hex string).
+#'   - `reset`: a function that will reset the gradient input back to its original
+#'   state.
 gradientInput <- function(input, output, session,
                           init_cols = 2, allow_modify = TRUE, col_expand = FALSE) {
   ns <- session$ns
@@ -109,7 +112,7 @@ gradientInput <- function(input, output, session,
 
   add_input <- function(id, position = NULL, col = NULL) {
     colourinput <- draggable_colourinput(
-      id, col = col,
+      ns(id), col = col,
       position = position, allow_modify = allow_modify, col_expand = col_expand
     )
 
@@ -122,9 +125,13 @@ gradientInput <- function(input, output, session,
     )
 
     observeEvent(input[[paste0(id, "-delete")]], {
-      col_inputs(setdiff(col_inputs(), id))
-      shinyjs::addClass(paste0(id, "-draggable"), "invisible")
+      delete_input(id)
     }, once = TRUE)
+  }
+
+  delete_input <- function(id) {
+    col_inputs(setdiff(col_inputs(), id))
+    shinyjs::addClass(ns(paste0(id, "-draggable")), "invisible", asis = TRUE)
   }
 
   # Initialize the javascript for this input that will take care of fixing the
@@ -254,7 +261,20 @@ gradientInput <- function(input, output, session,
     col_positions_slow()[c("col", "position")]
   })
 
+  reset <- function() {
+    lapply(col_inputs(), delete_input)
+    uuid <- uuid::UUIDgenerate()
+
+    by(init_cols, seq_len(nrow(init_cols)), function(row) {
+      id <- paste0("col_reset_", rownames(row), "_", uuid)
+      add_input(id, position = row$position, col = row$col)
+    })
+  }
+
   return(
-    retval
+    list(
+      result = retval,
+      reset = reset
+    )
   )
 }

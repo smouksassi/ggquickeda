@@ -43,7 +43,7 @@ Imports:
     rlang,
     scales,
     shiny (>= 1.0.4),
-    shinyjs,
+    shinyjs (>= 1.1),
     stats,
     stringr,
     survival,
