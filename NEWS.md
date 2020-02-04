@@ -1,4 +1,4 @@
-# ggquickeda 0.1.5.9999
+# ggquickeda 0.1.6
 * added gradientInput
 * fixed a bug in risktable when nothing was selected
 
