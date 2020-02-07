@@ -225,7 +225,13 @@ fluidPage(
                                                      "Right"="r",
                                                      "Bottom"="b"),
                                            multiple=TRUE, selectize=TRUE,selected="l")
-              )
+              ),
+              
+              checkboxInput('rmmajorgridlines', 'Remove Major Grid Lines ?',value=FALSE),
+              checkboxInput('rmminorgridlines', 'Remove Minor Grid Lines ?',value=FALSE),
+              
+              checkboxInput('rmxaxistickslabels', 'Remove X axis ticks and labels ?',value=FALSE),
+              checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FALSE)
             ),
             tabPanel(
               "Graph Size/Zoom",
@@ -332,13 +338,32 @@ fluidPage(
             ),
             tabPanel(
               "Facets Options",
+              sliderInput("striptextsizex", "X Strip Text Size: (zero to hide)",
+                          min=0, max=100, value=c(16),step=0.5),
+              colourpicker::colourInput("striptextcolourx",  "X Text Colour:",
+                                        value="black",
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
+              colourpicker::colourInput("stripbackgroundfillx",
+                                        "X Strip Background Fill:",
+                                        value="#E5E5E5",
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
+              div( actionButton("stripbackfillresetx", "Reset X Strip Background Fill"),
+                   style="text-align: right"),
+              sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
+                          min=0, max=100, value=c(16),step=0.5),
+              colourpicker::colourInput("striptextcoloury",  "Y Text Colour:",
+                                        value="black",
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
+              colourpicker::colourInput("stripbackgroundfilly",
+                                        "Y Strip Background Fill:",
+                                        value="#E5E5E5",
+                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
+              div( actionButton("stripbackfillresety", "Reset Y Strip Background Fill"),
+                   style="text-align: right"),
+              
+              
               uiOutput("facetscales"),
               selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free")),
-              selectInput('facetordering' ,'Facet Ordering:',c(
-                "Top to Bottom, Left to Right Ordering like a Table" ="table",
-                "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
-                selected="table"),
-              
               conditionalPanel(
                 condition = "!input.facetwrap" ,
                 selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
@@ -351,19 +376,35 @@ fluidPage(
                 conditionalPanel(
                   "input.facetmargin == 'some'",
                   selectInput('facetmargin_vars', NULL, choices = c(), multiple = TRUE,)
+                )
                 ),
-                selectInput('facetlabeller' ,'Facet Label:',c(
-                  "Variable(s) Name(s) and Value(s)" ="label_both",
-                  "Value(s)"="label_value",
-                  "Parsed Expression" ="label_parsed"),
-                  selected="label_both")),
+              selectInput('facetlabeller' ,'Facet Label:',c(
+                "Variable(s) Name(s) and Value(s)" ="label_both",
+                "Value(s)"="label_value",
+                "Parsed Expression" ="label_parsed",
+                "Depends on Context" ="label_context",
+                "Wrap lines" ="label_wrap_gen"),
+                selected="label_both"),
+              conditionalPanel(
+                condition = "input.facetlabeller== 'label_wrap_gen'  " ,
+              sliderInput("labelwrapwidth", "N Characters to Wrap Labels:",
+                          min=5, max=100, value=c(25),step=1),
+              checkboxInput('facetwrapmultiline', 'Strip labels on multiple lines?',
+                            value=FALSE)
+              ),  
+              selectizeInput(  "stripplacement", "Strip Placement:",
+                               choices = c("inside","outside"),
+                               options = list(  maxItems = 1 )  ),
+              selectInput('facetordering' ,'Facet Ordering:',c(
+                "Top to Bottom, Left to Right Ordering like a Table" ="table",
+                "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
+                selected="table"),
               checkboxInput('facetwrap', 'Use facet_wrap?'),
               conditionalPanel(
                 condition = "input.facetwrap" ,
-                checkboxInput('facetwrapmultiline', 'facet_wrap strip labels on multiple lines?',value=FALSE)
-              ),
-              conditionalPanel(
-                condition = "input.facetwrap" ,
+                selectInput('stripposition', label ='Strip Position',
+                            choices=c("left", "right", "bottom", "top"),
+                            multiple=FALSE, selectize=TRUE,selected="top"),
                 checkboxInput('customncolnrow', 'Control N columns an N rows?')
               ),
               conditionalPanel(
@@ -374,36 +415,10 @@ fluidPage(
                 numericInput("wrapncol",label = "N columns",value =NA,min=1,max =10) ,
                 numericInput("wrapnrow",label = "N rows",value = NA,min=1,max=10) 
                 ),
-              colourpicker::colourInput("stripbackgroundfillx",
-                                        "X Strip Background Fill:",
-                                        value="#E5E5E5",
-                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
-              div( actionButton("stripbackfillresetx", "Reset X Strip Background Fill"),
-                   style="text-align: right"),
-              colourpicker::colourInput("stripbackgroundfilly",
-                                        "Y Strip Background Fill:",
-                                        value="#E5E5E5",
-                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
-              div( actionButton("stripbackfillresety", "Reset Y Strip Background Fill"),
-                   style="text-align: right"),
-              
-              colourpicker::colourInput("striptextcolourx",  "X Text Colour:",
-                                        value="black",
-                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
-              colourpicker::colourInput("striptextcoloury",  "Y Text Colour:",
-                                        value="black",
-                                        showColour = "both",allowTransparent=TRUE,returnName=TRUE),
-              
-              
-              selectizeInput(  "stripplacement", "Strip Placement:",
-                               choices = c("inside","outside"),
-                               options = list(  maxItems = 1 )  ),
-              
               sliderInput("panelspacingx", label = "Facets X Spacing:",
                           min = 0, max = 2, value = 0.25, step = 0.05),
               sliderInput("panelspacingy", label = "Facets Y Spacing:",
                           min = 0, max = 2, value = 0.25, step = 0.05)
-              
               ) ,
             
             tabPanel(
@@ -482,12 +497,7 @@ fluidPage(
             tabPanel(
               "Additional Themes Options",
               sliderInput("themebasesize", "Theme Size (affects all text except facet strip):", min=1, max=100, value=c(16),step=1),
-              sliderInput("striptextsizex", "X Strip Text Size: (zero to hide)",
-                          min=0, max=100, value=c(16),step=0.5),
-              sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
-                          min=0, max=100, value=c(16),step=0.5),
- 
-              radioButtons("themecolorswitcher", "Discrete Color and Fill Scales:",
+                            radioButtons("themecolorswitcher", "Discrete Color and Fill Scales:",
                            c("Tableau 10"  = "themetableau10",
                              "Tableau 20"  = "themetableau20",
                              "Color Blind" = "themecolorblind",
@@ -553,13 +563,6 @@ fluidPage(
                                         showColour = "both",
                                         allowTransparent=TRUE,returnName=TRUE),
               div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"), style="text-align: right"),
-              
-              checkboxInput('rmmajorgridlines', 'Remove Major Grid Lines ?',value=FALSE),
-              checkboxInput('rmminorgridlines', 'Remove Minor Grid Lines ?',value=FALSE),
-              
-              checkboxInput('rmxaxistickslabels', 'Remove X axis ticks and labels ?',value=FALSE),
-              checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FALSE),
-              
               checkboxInput('themeaspect', 'Use custom aspect ratio ?')   ,  
               conditionalPanel(condition = "input.themeaspect" , 
                                numericInput("aspectratio",label = "Y/X ratio",

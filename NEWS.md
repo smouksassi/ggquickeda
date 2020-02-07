@@ -1,6 +1,8 @@
 # ggquickeda 0.1.6
 * added gradientInput
 * fixed a bug in risktable when nothing was selected
+* added controls for plot margins
+* strip.position for facet_wrap and more labeller options
 
 # ggquickeda 0.1.5
 * let ggpairs plots reflect custom color scales

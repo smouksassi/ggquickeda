@@ -4014,12 +4014,14 @@ function(input, output, session) {
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold",colour=mediancoll,position = eval(parse(text=input$positionmedian)),
+                           fun.y = median, fontface = "bold",colour=mediancoll,
+                           position = eval(parse(text=input$positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)}
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
               stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold", colour=mediancolp,position = eval(parse(text=input$positionmedian)),
+                           fun.y = median, fontface = "bold", colour=mediancolp,
+                           position = eval(parse(text=input$positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -4589,16 +4591,32 @@ function(input, output, session) {
         else {
           input$facetswitch
         }
-        p <-
-          p + facet_grid(
-            facets,
-            scales = input$facetscalesin,
-            space = input$facetspace,
-            switch = facetswitch,
-            labeller = input$facetlabeller,
-            margins = facetmargins(),
-            as.table = ASTABLE
-          )
+        
+        if (input$facetlabeller != "label_wrap_gen"){
+          p <-
+            p + facet_grid(
+              facets,
+              scales = input$facetscalesin,
+              space = input$facetspace,
+              switch = facetswitch,
+              labeller =input$facetlabeller,
+              margins = facetmargins(),
+              as.table = ASTABLE
+            ) 
+        }
+        if (input$facetlabeller == "label_wrap_gen"){
+          p <-
+            p + facet_grid(
+              facets,
+              scales = input$facetscalesin,
+              space = input$facetspace,
+              switch = facetswitch,
+              labeller =label_wrap_gen(width = input$labelwrapwidth,
+                                       multi_line = input$facetwrapmultiline),
+              margins = facetmargins(),
+              as.table = ASTABLE
+            ) 
+        }
       }
       
       
@@ -4631,14 +4649,30 @@ function(input, output, session) {
             input$facetrowin,
             input$facetrowextrain
           ) != "."]
+        if (input$facetlabeller != "label_wrap_gen"){
+          p <- p + facet_wrap(
+            facetgridvariables,
+            scales = input$facetscalesin,
+            ncol = input$wrapncol,
+            nrow = input$wrapnrow,
+            labeller = input$facetlabeller,
+            strip.position = input$stripposition,
+            as.table = ASTABLE
+          )
+        }
+        if (input$facetlabeller == "label_wrap_gen"){
         p <- p + facet_wrap(
           facetgridvariables,
           scales = input$facetscalesin,
           ncol = input$wrapncol,
           nrow = input$wrapnrow,
-          labeller = label_wrap_gen(width = 25, multi_line = multiline),
+          labeller = label_wrap_gen(width = input$labelwrapwidth,
+                                    multi_line = multiline),
+          strip.position = input$stripposition,
           as.table = ASTABLE
         )
+        }
+        
         
       }
       
