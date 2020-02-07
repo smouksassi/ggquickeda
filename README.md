@@ -67,24 +67,31 @@ After selecting your y variable(s) if any and x variable you can directly procee
 
 * **Categorize/Cut:**
     + **Recode into Binned Categories:** Recode one or more continuous variable(s) into 2 to 10 categories as chosen with the **N of Cut Breaks** Slider.
-    + **Treat as Categories:** Treat as a continuous/numeric variable as a factor.
+    + **Recode into Quantile Categories:** Recode one or more continuous variables(s) into chosen number **N of Quantiles**. Powered by `table1::eqcut`. Additional options is to treat zero as separate category (Placebo) and or to treat missing as a separate category as well.
+    + **Treat as Categories:** Treat a continuous/numeric variable as a factor.
+    + **Treat as Numeric:** Treat a factor variable as numeric.
     + **Custom cuts of this variable:, defaults to min, median, max before any applied filtering:** cut a continuous/numeric variable into a set of bins delimited by the user selected values. By default the min, median, max are filled in int to the **varname Cuts** field and a two levels factor is generated: [min,median] (median,max]. User can change input a comma separated list for example:
 min,value1,value2,max and then the following bins will be generated:
 [min,value1] (value1,value2] (value2,max]. A Checkbox to treat the generated levels as continuous 0,1,... is provided to ease some plotting operations down the line.
-    
-       
+* **Merge factor levels**  
+This subtab is dynamic in the sense that the user can add/remove fields.
+    + **Factor to merge (1):** Check the boxes of categorie you want to pool together.
+    + **Factor to merge (n...):** If user  click the + Merge another group it will creat a new field to iteratively merge categories of interest.
 * **Recode/Reorder Categories**
 This subtab is dynamic in the sense that the user can add/remove variables. Once a non-numeric variable is selected another field with the current variable levels will be generated. The user can reorder the levels using drag and drop and/or edit a level by hitting Backspace and typing in a new character string. Note that the order chosen here might not be reflected on the yvalues a separate subtab after stacking is provided for this **Reorder Facets or axis Levels**
-
 * **Combine Two Variables**
 This enables the user to select two categorical variables Var1 with levels(V1L1,V1L2) and Var2 with levels(V2L1,V2L2) to generate a new variable named Var1_Var2 with levels V1L1_V2L1, V1L1_V2L2, V1L2_V2L1, V1L2_V2L2 and so on.
-
 * **Filters**
 Up to six sequential filters, three for any type of variable **Filter variable (1)**,**Filter variable (2)** or **Filter variable (3)** and three for continuous variables  **Filter continuous (1)**, **Filter continuous (2)** or **Filter continuous (3)**.
 * **One Row by ID(s)**
+    + **Keep First Row by ID(s)**
 Filter the data down to distinct values (one row) of the selected variable(s) which are usually identifiers for subjects, occasions, arms etc. In long data format several variable that are time invariant are repeated this helps in removing the repetitions. User might want the first row of each subject or the first row of each subject/occasion combination etc.
-* **Simple Rounding**
-Rounding a numerical variable to a specified number of digits. It can help to come up with a crude binning.
+    + **Keep Last Row by ID(s)**
+Same as the One Row by ID(s) but keeping the last row instead.
+* **Rounding/Division**
+    + **Round the Values to the Specified N Digits:** Rounding a numerical variable to a specified number of digits **N Digits**. It can help to come up with a crude binning.
+    + **Divide the Values by the specified column:** Divide a column e.g. concentration by another like dose.
+    + **Divide the Values by a constant:** Divide by specified constant for quick unit conversions.
 * **Reorder Facets or axis Levels**
 Enables the user to reorder the yvalues using a statistical function (Median, Mean, Minimum or Maximum of another variable) with a checkbox to quickly reverse the order, if desired.
 The user can also manually drag and drop an order and change the name of the levels where \n is recognized as a line break.
@@ -93,6 +100,7 @@ The user can also manually drag and drop an order and change the name of the lev
 Various options to tweak the plot:
 * Controlling y and x axis labels, legends and other commonly used theme options.
 * Adding a title, subtitle and a caption
+* Controlling color palette, themes, reference lines and more.
 
 ### How To
 A shorter version of this walk-through within the app.
@@ -101,18 +109,19 @@ A shorter version of this walk-through within the app.
 Main plot is output here with the various options to generate the plot below the possibilities include:
 
 ### Summary/Regression functions 
-* **Plot types, Points, Lines (?)**
+* **Points, Lines**
 Selecting scatter plots points and or lines with control over transparency and more.
-* **Color/Group/Split/Size/Fill Mappings (?)**
+* **Color/Group/Split/Size/Fill Mappings**
 `ggplot2` built-in functionality for Group, color, size, fill mappings as well as up to two variable for column and row splits (faceting).
 * **Boxplots**
 * **Histograms/Density/Bar**
-* **Quantile Regression (?)**
-* **Smooth/Linear/Logistic Regressions (?)**
-* **Mean CI (?)**  Mean Confidence Intervals
-* **Median PIs (?)** Median Prediction Intervals
-* **Kaplan-Meier (?)** Survival K-M curves
-* **Correlation Coefficient (?)** add a text label with the correlation coefficient
+* **Quantile Regression**
+* **Smooth/Linear/Logistic Regressions**
+* **Mean CI**  Mean Confidence Intervals
+* **Median PIs** Median Prediction Intervals
+* **Kaplan-Meier** Survival K-M curves
+* **Correlation Coefficient** add a text label with the correlation coefficient
+* **Text Labels** add a text label from a column existent in the data
 
 ### Additional Information
 
