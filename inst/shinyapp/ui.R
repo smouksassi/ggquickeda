@@ -563,7 +563,20 @@ fluidPage(
               checkboxInput('themeaspect', 'Use custom aspect ratio ?')   ,  
               conditionalPanel(condition = "input.themeaspect" , 
                                numericInput("aspectratio",label = "Y/X ratio",
-                                            value = 1,min=0.1,max=10,step=0.01)) 
+                                            value = 1,min=0.1,max=10,step=0.01)),
+              div(style="display:inline-block",
+                  numericInput("margintop",label = "Plot Top Margin",
+                               value = 0,min=0,max=NA,width='50%')),
+              div(style="display:inline-block",
+                  numericInput("marginleft",label = "Plot Left Margin",
+                               value = 5.5,min=0,max=NA,width='50%')),
+              div(style="display:inline-block",
+                  numericInput("marginright",label = "Plot Right Margin",
+                               value = 5.5,min=0,max=NA,width='50%')),
+              div(style="display:inline-block",
+                  numericInput("marginbottom",label = "Plot Bottom Margin",
+                               value = 0,min=0,max=NA,width='50%'))
+              
               ) #tabpanel
             )#tabsetpanel
       ), # tabpanel

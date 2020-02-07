@@ -5093,16 +5093,21 @@ function(input, output, session) {
         theme_gray(base_size=input$themebasesize)
     }
     
+    plot_margin <- c(input$margintop,input$marginright,
+                    input$marginbottom,input$marginleft)
     
-    p <-    p+theme(
+    p <-    p + theme(
       legend.position=input$legendposition,
       legend.box=input$legendbox,
       legend.direction=input$legenddirection,
       panel.background = element_rect(fill=input$backgroundcol),
-      
       legend.spacing.x = ggplot2::unit(input$legendspacex*11, "pt"),
-      legend.margin = ggplot2::margin(t = 0, r = 0.1, l = -0.1, b = 0, unit='cm')
-      
+      legend.margin = ggplot2::margin(t = 0, r = 0.1, l = -0.1, b = 0, unit='cm'),
+      plot.margin =  ggplot2::margin(t = ifelse(is.na(plot_margin[1]),0,plot_margin[1]),
+                                     r = ifelse(is.na(plot_margin[2]),0,plot_margin[2]),
+                                     b = ifelse(is.na(plot_margin[3]),0,plot_margin[3]),
+                                     l = ifelse(is.na(plot_margin[4]),0,plot_margin[4]),
+                                     unit='pt')
     )
     
     if (input$labelguides)
