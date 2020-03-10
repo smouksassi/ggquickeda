@@ -278,27 +278,38 @@ fluidPage(
             tabPanel(
               "Background Color and Legend(s)",
               colourpicker::colourInput(
-                "backgroundcol",
-                "Background Color",
-                value =  "white",
-                showColour = "both",
-                allowTransparent = FALSE,returnName=TRUE),
+                "backgroundcol","Background Color",value =  "white",
+                showColour = "both",allowTransparent = FALSE,returnName=TRUE),
               selectInput('legendposition', label ='Legend Position',
-                          choices=c("left", "right", "bottom", "top","none"),
+                          choices=c("left", "right", "bottom", "top","none","custom"),
                           multiple=FALSE, selectize=TRUE,selected="bottom"),
+              conditionalPanel(
+                condition = "input.legendposition=='custom'",
+                inline_ui(
+                  numericInput("legendpositionx",label = "Legend X Position",
+                               value = 0.5,min=0,max=1,width='50%')),
+                inline_ui(
+                  numericInput("legendpositiony",label = "Legend Y Position",
+                               value = 0.5,min=0,max=1,width='50%'))),
               selectInput('legenddirection', label ='Layout of Items in Legends',
                           choices=c("horizontal", "vertical"),
                           multiple=FALSE, selectize=TRUE,selected="horizontal"),
               selectInput('legendbox', label ='Arrangement of Multiple Legends ',
                           choices=c("horizontal", "vertical"),
                           multiple=FALSE, selectize=TRUE,selected="vertical"),
+              colourpicker::colourInput(
+                "legendbackground","Legend Background Fill",value =  "white",
+                showColour = "both",allowTransparent = TRUE,returnName=TRUE),
+              colourpicker::colourInput(
+                "legendkey","Legend Item Fill",value =  "white",
+                showColour = "both",allowTransparent = TRUE,returnName=TRUE),
               checkboxInput('sepguides', 'Separate Legend Items for Median/PI ?',value = TRUE),       
               checkboxInput('labelguides', 'Hide the Names of the Legend Items ?',value = FALSE),
               sliderInput("legendspacex", "Multiplier for Space between Legend Items",
-                          min = 0, max = 1.5, step = 0.1, value = 1),
-              
-              
-              checkboxInput('customlegendtitle', 'Customization of Legend Titles, number of columns of items and reversing the legend items ?',value = FALSE),
+                          min = 0, max = 3, step = 0.1, value = 1),
+              checkboxInput('customlegendtitle', 'Customization of Legend Titles,
+                            number of columns of items and reversing the legend items ?',
+                            value = FALSE),
               conditionalPanel(
                 condition = "input.customlegendtitle",
                 textInput("customcolourtitle", label ="Colour Legend Title",value="colour"),
@@ -543,8 +554,8 @@ fluidPage(
               conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
                                              input.themecontcolorswitcher=='RedWhiteGreen'|
                                              input.themecontcolorswitcher=='themeuser'" ,
-                               numericInput("colormidpoint", "Continuous Color and Fill Midpoint",value = 0))
-              ,
+                               numericInput("colormidpoint", "Continuous Color and Fill Midpoint",
+                                            value = 0)),
               conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
                                gradientInputUI("gradientcol", "100%", "www")
                                ,actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
@@ -567,19 +578,30 @@ fluidPage(
               conditionalPanel(condition = "input.themeaspect" , 
                                numericInput("aspectratio",label = "Y/X ratio",
                                             value = 1,min=0.1,max=10,step=0.01)),
-              div(style="display:inline-block",
-                  numericInput("margintop",label = "Plot Top Margin",
-                               value = 0,min=0,max=NA,width='50%')),
-              div(style="display:inline-block",
-                  numericInput("marginleft",label = "Plot Left Margin",
-                               value = 5.5,min=0,max=NA,width='50%')),
-              div(style="display:inline-block",
-                  numericInput("marginright",label = "Plot Right Margin",
-                               value = 5.5,min=0,max=NA,width='50%')),
-              div(style="display:inline-block",
-                  numericInput("marginbottom",label = "Plot Bottom Margin",
-                               value = 0,min=0,max=NA,width='50%'))
-              
+              inline_ui(
+                numericInput("margintop",label = "Plot Top Margin",
+                             value = 0,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("marginleft",label = "Plot Left Margin",
+                             value = 5.5,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("marginright",label = "Plot Right Margin",
+                             value = 5.5,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("marginbottom",label = "Plot Bottom Margin",
+                             value = 0,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("legendtop",label = "Legend Top Margin",
+                             value = 0,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("legendleft",label = "Legend Left Margin",
+                             value = 5.5,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("legendright",label = "Legend Right Margin",
+                             value = 5.5,min=0,max=NA,width='120px')),
+              inline_ui(
+                numericInput("legendbottom",label = "Legend Bottom Margin",
+                             value = 0,min=0,max=NA,width='120px'))
               ) #tabpanel
             )#tabsetpanel
       ), # tabpanel
@@ -1439,13 +1461,19 @@ fluidPage(
                          checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE),
                          radioButtons("geomcorr", "Corr Label Geom:",
                                       c("text" = "text",
-                                        "auto text repel" = "text_repel"),selected = "text_repel" ),
+                                        "auto text repel" = "text_repel"),selected = "text_repel" )
                          
-                         conditionalPanel( condition = "input.geomcorr=='text'" ,
-                                           numericInput("cortextxpos",label = "x position",value =0),
-                                           numericInput("cortextypos",label = "y position",value =0)
+                  ),
+                  column(3,hr(),
+                         conditionalPanel(
+                           " input.addcorrcoeff ",
+                           conditionalPanel( condition = "input.geomcorr=='text'" ,
+                                             numericInput("cortextxpos",label = "Correlation x position",
+                                                          value =0),
+                                             numericInput("cortextypos",label = "Correlation y position",
+                                                          value =0)
+                                             )
                          )
-                         
                   ),
                   column(3,hr(),
                          conditionalPanel(
@@ -1455,12 +1483,9 @@ fluidPage(
                                                    "kendall"= "kendall",
                                                    "spearman"= "spearman"
                                        ) ,
-                                       selected = "pearson"))
-                  ),
-                  column(3,hr(),
-                         conditionalPanel(
-                           " input.addcorrcoeff ",
-                           checkboxInput('addcorrcoeffpvalue',"Show R p-value?", value=FALSE))
+                                       selected = "pearson"),
+                           checkboxInput('addcorrcoeffpvalue',"Show R p-value?", value=FALSE)
+                         )
                   ),
                   column(3,hr(),
                          conditionalPanel(

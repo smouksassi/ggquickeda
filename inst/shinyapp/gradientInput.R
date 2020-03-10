@@ -15,7 +15,7 @@ draggable_colourinput <- function(id,
   if (is.null(col)) {
     col <- generate_random_col()
   }
-
+  
   if (is.null(position)) {
     left <- 0
   } else if (is.numeric(position)) {
@@ -28,7 +28,7 @@ draggable_colourinput <- function(id,
   } else {
     stop("Unknown position: ", position)
   }
-
+  
   tag <- tags$div(
     id = paste0(id, "-draggable"),
     class = paste0("gradient-draggable-wrapper",
@@ -57,12 +57,12 @@ draggable_colourinput <- function(id,
 gradientInputUI <- function(id, width = NULL, resource_path = ".") {
   ns <- NS(id)
   addResourcePath("gradientInputRes", resource_path)
-
+  
   if (is.null(width)) {
     width <- 300
   }
   width <- validateCssUnit(width)
-
+  
   tagList(
     shinyjs::useShinyjs(),
     htmltools::singleton(tags$head(
@@ -106,45 +106,45 @@ gradientInputUI <- function(id, width = NULL, resource_path = ".") {
 gradientInput <- function(input, output, session,
                           init_cols = 2, allow_modify = TRUE, col_expand = FALSE) {
   ns <- session$ns
-
+  
   # A list keeping track of all the IDs of the inputs that exist
   col_inputs <- reactiveVal(NULL)
-
+  
   add_input <- function(id, position = NULL, col = NULL) {
     colourinput <- draggable_colourinput(
       ns(id), col = col,
       position = position, allow_modify = allow_modify, col_expand = col_expand
     )
-
+    
     col_inputs(c(col_inputs(), id))
-
+    
     insertUI(
       selector = paste0("#", ns("draggables-container")),
       where = "beforeEnd",
       ui = colourinput
     )
-
+    
     observeEvent(input[[paste0(id, "-delete")]], {
       delete_input(id)
     }, once = TRUE)
   }
-
+  
   delete_input <- function(id) {
     col_inputs(setdiff(col_inputs(), id))
     shinyjs::addClass(ns(paste0(id, "-draggable")), "invisible", asis = TRUE)
   }
-
+  
   # Initialize the javascript for this input that will take care of fixing the
   # colours whenever the element resizes
   shinyjs::runjs(paste0("GradientInputInitResize('", ns(""), "')"))
-
+  
   # Add the initial colours
   isolate({
     err_msg <- paste0("init_cols must be either: a single positive integer, ",
                       "a vector of integers between 0 and 100, ",
                       "a vector of colours, ",
                       "or a dataframe with 'col' and 'position' variables.")
-
+    
     if (is.numeric(init_cols)) {
       if (length(init_cols) == 1) {
         if (init_cols >= 0 && init_cols %% 1 == 0) {
@@ -161,20 +161,20 @@ gradientInput <- function(input, output, session,
       } else {
         stop(err_msg)
       }
-
+      
       init_cols <- data.frame(
         col = unlist(lapply(seq_along(init_positions), function(x) generate_random_col())),
         position = init_positions
       )
     }
-
+    
     if (is.character(init_cols)) {
       init_cols <- data.frame(
         col = init_cols,
         position = seq(0, 100, length.out = length(init_cols))
       )
     }
-
+    
     if (is.data.frame(init_cols) && ncol(init_cols) == 2 &&
         all(c("col", "position") %in% colnames(init_cols))) {
       by(init_cols, seq_len(nrow(init_cols)), function(row) {
@@ -186,7 +186,7 @@ gradientInput <- function(input, output, session,
       stop(err_msg)
     }
   })
-
+  
   gradient_resize_slow <- debounce(reactive(input$gradient_resize), 150)
   observeEvent(gradient_resize_slow(), {
     if (nrow(col_positions_slow()) == 0) {
@@ -195,7 +195,7 @@ gradientInput <- function(input, output, session,
     shinyjs::runjs(paste0("GradientInputReposition('", ns(""), "', ",
                           jsonlite::toJSON(col_positions_slow()), ")"))
   })
-
+  
   observeEvent(input$add_drag_col, {
     if (!allow_modify) {
       return()
@@ -203,7 +203,7 @@ gradientInput <- function(input, output, session,
     id <- paste0("col_direct_", uuid::UUIDgenerate())
     add_input(id, position = input$add_drag_col)
   })
-
+  
   col_positions <- reactive({
     colours <- lapply(col_inputs(), function(col_input) {
       col <- input[[col_input]]
@@ -217,30 +217,30 @@ gradientInput <- function(input, output, session,
         position = pos
       )
     })
-
+    
     colours <- dplyr::bind_rows(colours)
     if (nrow(colours) == 0) {
       return(data.frame(col = character(0), position = character(0)))
     }
-
+    
     colours <- colours[order(colours$position), ]
-
+    
     colours
   })
   col_positions_slow <- debounce(col_positions, 150)
-
+  
   observeEvent(col_positions_slow(), {
     if (nrow(col_positions_slow()) == 0) {
       return()
     }
-
+    
     if (nrow(col_positions_slow()) == 1) {
       background_value <- col_positions_slow()$col
       js_call <- paste0('$("#', ns("draggables-box"), '").css("background", "', background_value, '");')
       shinyjs::runjs(js_call)
       return()
     }
-
+    
     percentages <- apply(col_positions_slow(), 1, function(row) {
       paste0(row[["col"]], " ", round(as.numeric(row[["position"]])), "%")
     })
@@ -256,21 +256,21 @@ gradientInput <- function(input, output, session,
     js_call <- paste0('$("#', ns("draggables-box"), '")', css_calls_string)
     shinyjs::runjs(js_call)
   })
-
+  
   retval <- reactive({
     col_positions_slow()[c("col", "position")]
   })
-
+  
   reset <- function() {
     lapply(col_inputs(), delete_input)
     uuid <- uuid::UUIDgenerate()
-
+    
     by(init_cols, seq_len(nrow(init_cols)), function(row) {
       id <- paste0("col_reset_", rownames(row), "_", uuid)
       add_input(id, position = row$position, col = row$col)
     })
   }
-
+  
   return(
     list(
       result = retval,

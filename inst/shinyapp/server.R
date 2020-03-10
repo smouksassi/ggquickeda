@@ -2116,8 +2116,11 @@ function(input, output, session) {
     
     if (input$themecontcolorswitcher=="themeuser"){
       scale_colour_continuous <- function(...) 
-        scale_colour_gradient2(..., low = gradientTableData()[1,1] , mid = gradientTableData()[2,1],
-                               high =    gradientTableData()[3,1], midpoint = input$colormidpoint, space = "Lab",
+        scale_colour_gradient2(...,
+                               low = gradientTableData()[1,1],
+                               mid = gradientTableData()[2,1],
+                               high =    gradientTableData()[3,1],
+                               midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous <- function(...) 
@@ -4132,16 +4135,19 @@ function(input, output, session) {
           if(!input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label = paste(..r.label..,  sep = "~`,`~")),
+                       aes(label = paste("italic(R)", ..r.., sep = "~`=`~")),
                        position = position_identity(),size=3.88,
-                       method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype,
+                       geom = input$geomcorr,
+                       segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value)
             
           }
           if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
+                       aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
+                           ),
                        position = position_identity(),size=3.88,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value)
@@ -4155,8 +4161,8 @@ function(input, output, session) {
           if(!input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label = paste(..r.label..,  sep = "~`,`~") ,group=NULL),
-                       position = position_identity(),size=3.88,
+                       aes(label = paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
+                       position  = position_identity(),size=3.88,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value)
             
@@ -4166,7 +4172,8 @@ function(input, output, session) {
           if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ,group=NULL),
+                       aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
+                           ,group=NULL),
                        position = position_identity(),size=3.88,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value)
@@ -4186,7 +4193,7 @@ function(input, output, session) {
           if(!input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label =paste(..r.label..,  sep = "~`,`~")),
+                       aes(label =paste("italic(R)", ..r.., sep = "~`=`~")),
                        position = position_identity(),size=3.88,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
@@ -4196,7 +4203,7 @@ function(input, output, session) {
           if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label = paste(..r.label..,..p.label..,  sep = "~`,`~") ),
+                       aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="") ),
                        position = position_identity(),size=3.88,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
@@ -4211,7 +4218,7 @@ function(input, output, session) {
           if(!input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label =paste(..r.label..,  sep = "~`,`~"),group=NULL),
+                       aes(label =paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
                        position = position_identity(),size=3.88,
                        method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
@@ -4220,7 +4227,8 @@ function(input, output, session) {
           if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
-                       aes(label =paste(..r.label..,..p.label..,  sep = "~`,`~"), group=NULL),
+                       aes(label =paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
+                           , group=NULL),
                        position = position_identity(),size=3.88,
                        method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
@@ -5127,20 +5135,35 @@ function(input, output, session) {
         theme_gray(base_size=input$themebasesize)
     }
     
-    plot_margin <- c(input$margintop,input$marginright,
+    plot_margin   <- c(input$margintop,input$marginright,
                     input$marginbottom,input$marginleft)
+    legend_margin <- c(input$legendtop,input$legendright,
+                     input$legendbottom,input$legendleft)
+    plot_margin[ which(is.na(plot_margin) ) ] <- 0
+    legend_margin[ which(is.na(legend_margin) ) ] <- 0
     
+    
+    if( input$legendposition=="custom") {
+      legendpositiontheme <-  c(input$legendpositionx,
+                                input$legendpositiony)
+      legendpositiontheme[ which(is.na(legendpositiontheme) ) ] <- 0
+    }
+    if( input$legendposition!="custom") {
+      legendpositiontheme <-  input$legendposition
+    } 
     p <-    p + theme(
-      legend.position=input$legendposition,
-      legend.box=input$legendbox,
-      legend.direction=input$legenddirection,
       panel.background = element_rect(fill=input$backgroundcol),
+      legend.position=legendpositiontheme,
+      legend.box=input$legendbox,
+      legend.background = element_rect(fill=input$legendbackground),
+      legend.key = element_rect(fill=input$legendkey),
+      legend.direction=input$legenddirection,
       legend.spacing.x = ggplot2::unit(input$legendspacex*11, "pt"),
-      legend.margin = ggplot2::margin(t = 0, r = 0.1, l = -0.1, b = 0, unit='cm'),
-      plot.margin =  ggplot2::margin(t = ifelse(is.na(plot_margin[1]),0,plot_margin[1]),
-                                     r = ifelse(is.na(plot_margin[2]),0,plot_margin[2]),
-                                     b = ifelse(is.na(plot_margin[3]),0,plot_margin[3]),
-                                     l = ifelse(is.na(plot_margin[4]),0,plot_margin[4]),
+      legend.margin = ggplot2::margin(t = legend_margin[1],r = legend_margin[2],
+                                      b = legend_margin[3],l = legend_margin[4],
+                                      unit='pt'),
+      plot.margin =  ggplot2::margin(t = plot_margin[1],r = plot_margin[2],
+                                     b = plot_margin[3],l = plot_margin[4],
                                      unit='pt')
     )
     
