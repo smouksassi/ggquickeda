@@ -11,8 +11,8 @@ ggquickeda
 install.packages("ggquickeda")
 
 # Or the development version from GitHub:
-# install.packages("devtools")
-devtools::install_github("smouksassi/ggquickeda")
+# install.packages("remotes")
+remotes::install_github("smouksassi/ggquickeda")
 
 ```
 
@@ -128,7 +128,7 @@ Selecting scatter plots points and or lines with control over transparency and m
 Installing the package should handle the installation of all dependencies. There are listed here in case you are curious:
 
 ```
-install.packages(c("shiny","shinyjs","colourpicker","ggplot2","scales","DT","tidyr","dplyr","Hmisc","quantreg","markdown","rlang","lazyeval","ggrepel","plotly","devtools"))
+install.packages(c("shiny","shinyjs","colourpicker","ggplot2","scales","DT","tidyr","dplyr","Hmisc","quantreg","markdown","rlang","lazyeval","ggrepel","plotly","remotes"))
 ```
 
 The app can also be directly launched using this command
