@@ -75,8 +75,8 @@ min,value1,value2,max and then the following bins will be generated:
 [min,value1] (value1,value2] (value2,max]. A Checkbox to treat the generated levels as continuous 0,1,... is provided to ease some plotting operations down the line.
 * **Merge factor levels**  
 This subtab is dynamic in the sense that the user can add/remove fields.
-    + **Factor to merge (1):** Check the boxes of categorie you want to pool together.
-    + **Factor to merge (n...):** If user  click the + Merge another group it will creat a new field to iteratively merge categories of interest.
+    + **Factor to merge (1):** Check the boxes of categories you want to pool together.
+    + **Factor to merge (n...):** If user  click the + Merge another group it will create a new field to iteratively merge categories of interest.
 * **Recode/Reorder Categories**
 This subtab is dynamic in the sense that the user can add/remove variables. Once a non-numeric variable is selected another field with the current variable levels will be generated. The user can reorder the levels using drag and drop and/or edit a level by hitting Backspace and typing in a new character string. Note that the order chosen here might not be reflected on the yvalues a separate subtab after stacking is provided for this **Reorder Facets or axis Levels**
 * **Combine Two Variables**
