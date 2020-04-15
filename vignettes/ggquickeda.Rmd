@@ -20,7 +20,9 @@ This package/R Shiny app is a handy interface to ggplot2/table1. It enables you 
 For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
 To get started:
 ```
-devtools::install_github("smouksassi/ggquickeda")
+# Install from CRAN:
+install.packages("ggquickeda")
+
 library(ggquickeda)
 ```
 Let us start by launching the app `run_ggquickeda()` and clicking on use sample_data:

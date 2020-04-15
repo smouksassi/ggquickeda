@@ -1,4 +1,4 @@
-# ggquickeda 0.1.6
+# ggquickeda 0.1.6.9999
 * added gradientInput (broken, submitted an issue)
 * fixed a bug in risktable when nothing was selected
 * added controls for plot margins
@@ -6,6 +6,7 @@
 * strip.position for facet_wrap and more labeller options
 * added parsed x and y axis titles
 * custom position for legends and specification of legend and items background fill
+* updated intro vignette
 
 # ggquickeda 0.1.5
 * let ggpairs plots reflect custom color scales
