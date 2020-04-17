@@ -1,4 +1,4 @@
-# ggquickeda 0.1.6.9999
+# ggquickeda 0.1.6
 * withheld gradientInput addition (shinyjqui issue)
 * fixed a bug in risktable when nothing was selected
 * added controls for plot margins
