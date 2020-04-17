@@ -4,7 +4,8 @@
 \name{sample_data}
 \alias{sample_data}
 \title{Simulated Pharmacokinetic Concentration Data}
-\format{A data frame with 600 rows and 10 variables
+\format{
+A data frame with 600 rows and 10 variables
 \describe{
   \item{ID}{Subject Identifier, an integer from 1 to 150}
   \item{Time}{Time of dose given or drug sample measured, in hours}
@@ -16,7 +17,8 @@
   \item{Race}{Race of the subject, a factor with Asian, Black, Caucasian, Hispanic and Other levels}
   \item{Dose}{dose group of the subject, in milligrams}
   \item{AGECAT}{age category of the subject, a variable cutting Age into two values 0/1}
-}}
+}
+}
 \source{
 "sd_oral_richpk" from 'PKPDmisc' R package with an additional AGECAT variable
 }
