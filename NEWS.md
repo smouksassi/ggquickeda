@@ -1,3 +1,6 @@
+# ggquickeda 0.1.6.9999
+* put back gradientInput when shinyjqui bug is fixed
+
 # ggquickeda 0.1.6
 * withheld gradientInput addition (shinyjqui issue)
 * fixed a bug in risktable when nothing was selected
