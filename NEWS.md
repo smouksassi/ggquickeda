@@ -1,5 +1,5 @@
 # ggquickeda 0.1.6.9999
-* added gradientInput (broken, submitted an issue)
+* withheld gradientInput addition (shinyjqui issue)
 * fixed a bug in risktable when nothing was selected
 * added controls for plot margins
 * added controls for legend margins

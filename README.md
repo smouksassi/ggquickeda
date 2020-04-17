@@ -27,7 +27,13 @@ To use your **data that is already in R** launch the shiny app with the dataset 
 run_ggquickeda(myRdataset)
 ```
 
-`ggquickeda` is an R `Shiny` app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`. It enables you to quickly explore your data and to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall colun. For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
+`ggquickeda` is an R `Shiny` app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`. 
+
+It enables you to quickly explore your data and to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall column.  
+
+It also has the `km`, `kmband` and `kmticks` geoms/stats to facilitate the plotting of **Kaplan-Meier** Survival curves 
+
+For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
 
 The best way to learn how to use ggquickeda is to load a data your are familiar with and start experimenting.
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.  
@@ -49,14 +55,12 @@ The package has also two vignettes:
 ![Example use case 4 with the included sample_df.csv.](./inst/shinyapp/img/snapshot4.1.png)
 
 
-**Export Plots** and **Plot Code** tabs contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
-**Plot Code** will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
+The **Export Plots** and **Plot Code** tabs were contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
+The **Plot Code** tab will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
 
-Quick summary statistics tables using  <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> `table1` package.
+The Quick summary statistics tables using  <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> `table1` package.
 
-
-
-Here is an overview of some of the things that can be done with the various menus:
+Here is a high level overview of some of the things that can be done with the various menus:
 
 ## Details 
 
