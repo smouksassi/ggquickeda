@@ -6,7 +6,6 @@ ggquickeda
 
 ### Installation and Running information
 ```
-
 # Install from CRAN:
 install.packages("ggquickeda")
 
@@ -18,19 +17,24 @@ remotes::install_github("smouksassi/ggquickeda")
 
 ### Usage
 
-**To launch the application, use `run_ggquickeda()` then navigate to your csv file (or `run_ggquickeda(data)` to launch the app with a specific dataset already loaded).**
+To use your **pre-existing csv file** launch the shiny app then navigate to your csv file and load it.
+```
+run_ggquickeda()
+```
 
-R Shiny app/package as a handy interface to ggplot2/table1. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of multiple variable(s) by column(s) splits. For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
+To use your **data that is already in R** launch the shiny app with the dataset object as an argument:
+```
+run_ggquickeda(myRdataset)
+```
 
-**Export Plots** and **Plot Code** tabs contributed by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
-**Plot Code** will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
+`ggquickeda` is an R `Shiny` app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`. It enables you to quickly explore your data and to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall colun. For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
 
-Quick summary statistics tables using  <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> table1 package.
+The best way to learn how to use ggquickeda is to load a data your are familiar with and start experimenting.
+Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.  
 
-The best way to learn is to load a data your are familiar with and start experimenting.
-Try to reproduce the steps below using the included sample_df.csv. This will give you an idea on the kind of ouputs that can be generated.
-
-The package has also two vignettes.
+The package has also two vignettes:  
+1. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
+2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
 
 ### Example 1
 ![Example use case 1 with the included sample_df.csv.](./inst/shinyapp/img/snapshot1.gif)
@@ -43,6 +47,13 @@ The package has also two vignettes.
 
 ### Example 4
 ![Example use case 4 with the included sample_df.csv.](./inst/shinyapp/img/snapshot4.1.png)
+
+
+**Export Plots** and **Plot Code** tabs contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
+**Plot Code** will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
+
+Quick summary statistics tables using  <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> `table1` package.
+
 
 
 Here is an overview of some of the things that can be done with the various menus:
@@ -125,13 +136,9 @@ Selecting scatter plots points and or lines with control over transparency and m
 
 ### Additional Information
 
-Installing the package should handle the installation of all dependencies. There are listed here in case you are curious:
+Installing the package should handle the installation of all dependencies.  
 
-```
-install.packages(c("shiny","shinyjs","colourpicker","ggplot2","scales","DT","tidyr","dplyr","Hmisc","quantreg","markdown","rlang","lazyeval","ggrepel","plotly","remotes"))
-```
-
-The app can also be directly launched using this command
+The app can also be directly launched using this command:
 
 ```
 shiny::runGitHub('ggquickeda', 'smouksassi', subdir = 'inst/shinyapp')

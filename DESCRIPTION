@@ -43,7 +43,7 @@ Imports:
     scales,
     shiny (>= 1.0.4),
     shinyjs (>= 1.1),
-    shinyjqui (<= 0.3.2),
+    shinyjqui,
     stats,
     stringr,
     survival,

@@ -545,21 +545,39 @@ fluidPage(
               uiOutput('userdefinedlinetype'),
               
               radioButtons("themecontcolorswitcher", "Continuous Color and Fill Themes:",
-                           c("ggplot gradient2"  = "RedWhiteBlue",
+                           c("Red White Blue"  = "RedWhiteBlue",
                              "Red White Green"  = "RedWhiteGreen",
                              "ggplot default" = "themeggplot",
                              "viridis" = "themeviridis",
                              "User defined" = "themeuser")
                            ,inline=TRUE),
               conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
+                                             input.themecontcolorswitcher=='RedWhiteGreen'" ,
+                              colourpicker::colourInput(
+                                 "midcolor",
+                                 "Midpoint Color",
+                                 value ="white",
+                                 showColour = "both",
+                                 allowTransparent = FALSE,returnName = TRUE)
+              ),
+              conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
                                              input.themecontcolorswitcher=='RedWhiteGreen'|
                                              input.themecontcolorswitcher=='themeuser'" ,
-                               numericInput("colormidpoint", "Continuous Color and Fill Midpoint",
-                                            value = 0)),
+                       numericInput("colormidpoint", "Continuous Color/Fill Midpoint Value",
+                                            value = 0)
+              ),
+              
+              # conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
+              #                  gradientInputUI("gradientcol", "100%", "www"),
+              #                  actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
+              #                  ),
+              
+              
               conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
-                               gradientInputUI("gradientcol", "100%", "www")
-                               ,actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
-                               ),
+                               uiOutput('userdefinedcontcolor'),
+                               actionButton("userdefinedcontcolorreset", "Back to starting continuous colours", icon = icon("undo") )
+                               
+              ),
 
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
