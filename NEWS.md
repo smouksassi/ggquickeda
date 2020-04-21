@@ -1,5 +1,7 @@
 # ggquickeda 0.1.6.9999
 * put back gradientInput when shinyjqui bug is fixed
+* Rework UI for facets options and added bold, angle and justification options
+
 
 # ggquickeda 0.1.6
 * withheld gradientInput addition (shinyjqui issue)

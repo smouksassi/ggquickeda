@@ -5240,13 +5240,21 @@ function(input, output, session) {
       x.strip.text <- ggplot2::element_blank()
     } else {
       x.strip.text <- ggplot2::element_text(size = input$striptextsizex,
-                                            colour=input$striptextcolourx)
+                                            colour=input$striptextcolourx,
+                                            angle= input$facettextxangle,
+                                            face = ifelse(input$boldfacettextx,"bold","plain"),
+                                            hjust = input$x_facet_text_hjust,
+                                            vjust = input$x_facet_text_vjust)
     }
     if (input$striptextsizey <= 0) {
       y.strip.text <- ggplot2::element_blank()
     } else {
       y.strip.text <- ggplot2::element_text(size = input$striptextsizey,
-                                            colour=input$striptextcoloury)
+                                            colour=input$striptextcoloury,
+                                            angle= input$facettextyangle,
+                                            face = ifelse(input$boldfacettexty,"bold","plain"),
+                                            hjust = input$y_facet_text_hjust,
+                                            vjust = input$y_facet_text_vjust)
     }
     
     p <-  p+

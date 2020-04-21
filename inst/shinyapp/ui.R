@@ -349,8 +349,30 @@ fluidPage(
             ),
             tabPanel(
               "Facets Options",
-              sliderInput("striptextsizex", "X Strip Text Size: (zero to hide)",
-                          min=0, max=100, value=c(16),step=0.5),
+              tabsetPanel(
+                tabPanel("Facet Text Size/Angle/Face",
+                         sliderInput("striptextsizex", "X Strip Text Size: (zero to hide)",
+                                     min = 0, max = 100, step = 0.5, value = 16),
+                         sliderInput("facettextxangle", "Facet Text Angle X",
+                                     min = 0, max = 360, step = 90, value = 0),
+                         checkboxInput('boldfacettextx', "X Strip Text Bold?", value = FALSE),
+                         sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
+                                     min = 0, max = 100, step = 0.5, value = 16),
+                         sliderInput("facettextyangle", "Facet Text Angle Y",
+                                     min = 0, max = 360, step = 90, value = 270),
+                         checkboxInput('boldfacettexty', "Y Strip Text Bold?", value = FALSE),
+                 ),
+                tabPanel("Facet Text Justification",
+                         sliderInput("x_facet_text_vjust", "Facet Text Vertical Justification X",
+                                     min = 0, max = 1, step = 0.1, value = 0.5),
+                         sliderInput("x_facet_text_hjust", "Facet Text Horizontal Justification X",
+                                     min = 0, max = 1, step = 0.1, value = 0.5),
+                         sliderInput("y_facet_text_vjust", "Facet Text Vertical Justification Y",
+                                     min = 0, max = 1, step = 0.1, value = 0.5),
+                         sliderInput("y_facet_text_hjust", "Facet Text Horizontal Justification Y",
+                                     min = 0, max = 1, step = 0.1, value = 0.5)
+                ),
+                tabPanel("Facet Text/Background Colour",
               colourpicker::colourInput("striptextcolourx",  "X Text Colour:",
                                         value="black",
                                         showColour = "both",allowTransparent=TRUE,returnName=TRUE),
@@ -360,8 +382,7 @@ fluidPage(
                                         showColour = "both",allowTransparent=TRUE,returnName=TRUE),
               div( actionButton("stripbackfillresetx", "Reset X Strip Background Fill"),
                    style="text-align: right"),
-              sliderInput("striptextsizey", "Y Strip Text Size: (zero to hide)",
-                          min=0, max=100, value=c(16),step=0.5),
+
               colourpicker::colourInput("striptextcoloury",  "Y Text Colour:",
                                         value="black",
                                         showColour = "both",allowTransparent=TRUE,returnName=TRUE),
@@ -370,25 +391,9 @@ fluidPage(
                                         value="#E5E5E5",
                                         showColour = "both",allowTransparent=TRUE,returnName=TRUE),
               div( actionButton("stripbackfillresety", "Reset Y Strip Background Fill"),
-                   style="text-align: right"),
-              
-              
-              uiOutput("facetscales"),
-              selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free")),
-              conditionalPanel(
-                condition = "!input.facetwrap" ,
-                selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
-                                 choices = c("none","x","y","both"),
-                                 options = list(  maxItems = 1 )  ),
-                selectInput('facetmargin', 'Show facet margins?', 
-                            choices = c("None" = "none",
-                                        "All" = "all",
-                                        "Specific variables" = "some")),
-                conditionalPanel(
-                  "input.facetmargin == 'some'",
-                  selectInput('facetmargin_vars', NULL, choices = c(), multiple = TRUE,)
-                )
+                   style="text-align: right")
                 ),
+              tabPanel("Facet Labels",
               selectInput('facetlabeller' ,'Facet Label:',c(
                 "Variable(s) Name(s) and Value(s)" ="label_both",
                 "Value(s)"="label_value",
@@ -398,38 +403,73 @@ fluidPage(
                 selected="label_both"),
               conditionalPanel(
                 condition = "input.facetlabeller== 'label_wrap_gen'  " ,
-              sliderInput("labelwrapwidth", "N Characters to Wrap Labels:",
-                          min=5, max=100, value=c(25),step=1),
-              checkboxInput('facetwrapmultiline', 'Strip labels on multiple lines?',
-                            value=FALSE)
-              ),  
-              selectizeInput(  "stripplacement", "Strip Placement:",
-                               choices = c("inside","outside"),
-                               options = list(  maxItems = 1 )  ),
-              selectInput('facetordering' ,'Facet Ordering:',c(
-                "Top to Bottom, Left to Right Ordering like a Table" ="table",
-                "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
-                selected="table"),
-              checkboxInput('facetwrap', 'Use facet_wrap?'),
-              conditionalPanel(
-                condition = "input.facetwrap" ,
-                selectInput('stripposition', label ='Strip Position',
-                            choices=c("left", "right", "bottom", "top"),
-                            multiple=FALSE, selectize=TRUE,selected="top"),
-                checkboxInput('customncolnrow', 'Control N columns an N rows?')
+                sliderInput("labelwrapwidth", "N Characters to Wrap Labels:",
+                            min=5, max=100, value=c(25),step=1),
+                checkboxInput('facetwrapmultiline', 'Strip labels on multiple lines?',
+                              value=FALSE)
+              )
               ),
-              conditionalPanel(
-                condition = "input.customncolnrow" ,
-                h6("An error (nrow*ncol >= n is not TRUE) will show up if the total number of facets/panels
+              tabPanel("Facet Wrap",
+                       checkboxInput('facetwrap', 'Use facet_wrap?'),
+                       conditionalPanel(
+                         condition = "input.facetwrap" ,
+                         selectInput('stripposition', label ='Strip Position',
+                                     choices=c("left", "right", "bottom", "top"),
+                                     multiple=FALSE, selectize=TRUE,selected="top"),
+                         checkboxInput('customncolnrow', 'Control N columns an N rows?')
+                       ),
+                       conditionalPanel(
+                         condition = "input.customncolnrow" ,
+                         h6("An error (nrow*ncol >= n is not TRUE) will show up if the total number of facets/panels
                    is greater than the product of the specified  N columns x N rows. Increase the N columns and/or N rows to avoid the error.
                    The default empty values will use ggplot automatic algorithm."),        
-                numericInput("wrapncol",label = "N columns",value =NA,min=1,max =10) ,
-                numericInput("wrapnrow",label = "N rows",value = NA,min=1,max=10) 
-                ),
-              sliderInput("panelspacingx", label = "Facets X Spacing:",
-                          min = 0, max = 2, value = 0.25, step = 0.05),
-              sliderInput("panelspacingy", label = "Facets Y Spacing:",
-                          min = 0, max = 2, value = 0.25, step = 0.05)
+                         numericInput("wrapncol",label = "N columns",value =NA,min=1,max =10) ,
+                         numericInput("wrapnrow",label = "N rows",value = NA,min=1,max=10) 
+                       )
+              ),
+              tabPanel("Facet Spacing",
+                       sliderInput("panelspacingx", label = "Facets X Spacing:",
+                                   min = 0, max = 2, value = 0.25, step = 0.05),
+                       sliderInput("panelspacingy", label = "Facets Y Spacing:",
+                                   min = 0, max = 2, value = 0.25, step = 0.05)
+              )
+              ),
+              hr(),
+              tabsetPanel(
+                tabPanel("Facet Scales, Spaces, Positioning, Ordering",
+                         uiOutput("facetscales"),
+                         selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free")),
+                         conditionalPanel(
+                           condition = "!input.facetwrap" ,
+                           selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
+                                            choices = c("none","x","y","both"),
+                                            options = list(  maxItems = 1 )  )
+                         ),
+                         selectizeInput(  "stripplacement", "Strip Placement:",
+                                          choices = c("inside","outside"),
+                                          options = list(  maxItems = 1 )  ),
+                         selectInput('facetordering' ,'Facet Ordering:',c(
+                           "Top to Bottom, Left to Right Ordering like a Table" ="table",
+                           "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
+                           selected="table")
+                         
+                         ),
+                tabPanel("Facet Grid Margins",
+                         h6("The 'Show facet margins?' options are available when 'Use facet_wrap?' is not checked"),    
+                         conditionalPanel(
+                           condition = "!input.facetwrap" ,
+                           selectInput('facetmargin', 'Show facet margins?', 
+                                       choices = c("None" = "none",
+                                                   "All" = "all",
+                                                   "Specific variables" = "some")),
+                           conditionalPanel(
+                             "input.facetmargin == 'some'",
+                             selectInput('facetmargin_vars', NULL, choices = c(), multiple = TRUE,)
+                           )
+                         ), 
+                )
+                
+                )
               ) ,
             
             tabPanel(
