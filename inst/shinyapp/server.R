@@ -1910,8 +1910,11 @@ function(input, output, session) {
     }
     if(input$themecolorswitcher=="themeuser"){
       lapply(seq_along(lev), function(i) {
-        colourInput(inputId = paste0("col", lev[i]),label = paste0("Choose color", lev[i]), value = cols[i]
-        )        
+        div(
+        colourpicker::colourInput(inputId = paste0("col", lev[i]),
+                                  label = paste0("Choose color", lev[i]),
+                                  value = cols[i]
+        ), style = "display: inline-block;")        
       })
     }
     
@@ -1931,7 +1934,8 @@ function(input, output, session) {
 
     if(input$scaleshapeswitcher=="themeuser"){
       lapply(seq_along(lev), function(i) {
-        selectInput(inputId = paste0("shape", lev[i]),label = paste0('User Point(s) Shape:', lev[i]),
+        div(
+          selectInput(inputId = paste0("shape", lev[i]),label = paste0('Choose shape:', lev[i]),
                     c(
                       "square open"           ,
                       "circle open"           ,
@@ -1960,7 +1964,7 @@ function(input, output, session) {
                       "triangle filled"       ,
                       "triangle down filled" 
                     ), selected = shapes[i]
-        )
+        ), style = "display: inline-block;")  
         
       })
     }
@@ -1975,9 +1979,9 @@ function(input, output, session) {
     
     if(input$scalelinetypeswitcher=="themeuser"){
       lapply(seq_along(lev), function(i) {
-        selectInput(inputId = paste0("linetype", lev[i]),label = paste0('User Linetype(s):', lev[i]),
+        div(selectInput(inputId = paste0("linetype", lev[i]),label = paste0('Choose linetype:', lev[i]),
                     c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank"), selected = linetypes[i]
-        )
+        ), style = "display: inline-block;")  
         
       })
     }
@@ -5152,22 +5156,23 @@ function(input, output, session) {
     }
     
     if (input$themebw) {
-      p <-    p+
-        theme_bw(base_size=input$themebasesize)     
+      p <- p + theme_bw(base_size=input$themebasesize)     
     }
     
     
     if (!input$themebw){
-      p <- p +
-        theme_gray(base_size=input$themebasesize)
+      p <- p + theme_gray(base_size=input$themebasesize)
     }
     
     plot_margin   <- c(input$margintop,input$marginright,
                     input$marginbottom,input$marginleft)
     legend_margin <- c(input$legendtop,input$legendright,
                      input$legendbottom,input$legendleft)
+    legend_box_margin <- c(input$legendboxtop,input$legendboxright,
+                           input$legendboxbottom,input$legendboxleft)
     plot_margin[ which(is.na(plot_margin) ) ] <- 0
     legend_margin[ which(is.na(legend_margin) ) ] <- 0
+    legend_box_margin[ which(is.na(legend_box_margin) ) ] <- 0
     
     
     if( input$legendposition=="custom") {
@@ -5180,8 +5185,12 @@ function(input, output, session) {
     } 
     p <-    p + theme(
       panel.background = element_rect(fill=input$backgroundcol),
-      legend.position=legendpositiontheme,
+      panel.ontop = input$panelontop,
+      legend.position = legendpositiontheme,
+      legend.justification = c(input$legendjustificationh,
+                               input$legendjustificationv),
       legend.box=input$legendbox,
+      legend.box.just = input$legendboxjust,
       legend.background = element_rect(fill=input$legendbackground),
       legend.key = element_rect(fill=input$legendkey),
       legend.direction=input$legenddirection,
@@ -5191,7 +5200,10 @@ function(input, output, session) {
                                       unit='pt'),
       plot.margin =  ggplot2::margin(t = plot_margin[1],r = plot_margin[2],
                                      b = plot_margin[3],l = plot_margin[4],
-                                     unit='pt')
+                                     unit='pt'),
+      legend.box.margin = ggplot2::margin(t = legend_box_margin[1],r = legend_box_margin[2],
+                                          b = legend_box_margin[3],l = legend_box_margin[4],
+                                          unit='pt')
     )
     
     if (input$labelguides)
@@ -5265,6 +5277,7 @@ function(input, output, session) {
             strip.placement  = input$stripplacement,
             strip.text.x =  x.strip.text,
             strip.text.y =  y.strip.text,
+            strip.text.y.left =  y.strip.text,
             panel.spacing.x = unit(input$panelspacingx, "lines"),
             panel.spacing.y = unit(input$panelspacingy, "lines")
             

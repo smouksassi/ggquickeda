@@ -16,13 +16,12 @@ knitr::opts_chunk$set(
 )
 ```
 
-This package/R Shiny app is a handy interface to ggplot2/table1. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics tables
+This R package/Shiny app is a handy interface to `ggplot2`/`table1`. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics tables.
 For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
 To get started:
 ```
 # Install from CRAN:
 install.packages("ggquickeda")
-
 library(ggquickeda)
 ```
 Let us start by launching the app `run_ggquickeda()` and clicking on use sample_data:
