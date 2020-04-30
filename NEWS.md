@@ -2,8 +2,9 @@
 * Updated UI for facets options and added controls for bold, angle and justification.
 * Updated UI for legends options and added controls for legend and legend box, justification and legend box margins.
 * Updated UI for theme options
+* Added theme options for strip.switch.pad.grid and strip.switch.pad.wrap
 * (To do) put back gradientInput when shinyjqui bug is fixed
-* (To do) documentation screenshots
+* (To do) documentation screenshots refresh
 
 # ggquickeda 0.1.6
 * withheld gradientInput addition (shinyjqui issue)

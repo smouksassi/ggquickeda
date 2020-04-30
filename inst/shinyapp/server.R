@@ -5275,6 +5275,8 @@ function(input, output, session) {
             strip.background.x = element_rect(fill=input$stripbackgroundfillx),
             strip.background.y = element_rect(fill=input$stripbackgroundfilly),
             strip.placement  = input$stripplacement,
+            strip.switch.pad.wrap = unit(input$stripswitchpadwrap*11/ 2, "pt"),
+            strip.switch.pad.grid = unit(input$stripswitchpadgrid*11/ 2, "pt"),
             strip.text.x =  x.strip.text,
             strip.text.y =  y.strip.text,
             strip.text.y.left =  y.strip.text,

@@ -2,7 +2,7 @@ fluidPage(
   useShinyjs(),
   tags$link(rel = "stylesheet", href = "app.css"),
   tags$link(rel = "stylesheet", href = "table1-style.css"),
-  titlePanel("Welcome to ggquickeda!"),
+  titlePanel(paste("Welcome to ggquickeda!",utils::packageVersion("ggquickeda"))),
   sidebarLayout(
     sidebarPanel(
       tabsetPanel(
@@ -484,6 +484,18 @@ fluidPage(
                          selectizeInput(  "stripplacement", "Strip Placement:",
                                           choices = c("inside","outside"),
                                           options = list(  maxItems = 1 )  ),
+                         
+                         conditionalPanel(
+                           condition = "!input.facetwrap & input.stripplacement== 'outside'" ,
+                           sliderInput("stripswitchpadgrid", label = "Facets Y Spacing:",
+                                       min = 0, max = 2, value = 0.25, step = 0.05)
+                           ),
+                         conditionalPanel(
+                           condition = "input.facetwrap & input.stripplacement== 'outside'" ,
+                           sliderInput("stripswitchpadwrap", label = "Facets Axis Padding:",
+                                       min = 0, max = 2, value = 0.25, step = 0.05)
+                         ),
+                         
                          selectInput('facetordering' ,'Facet Ordering:',c(
                            "Top to Bottom, Left to Right Ordering like a Table" ="table",
                            "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
