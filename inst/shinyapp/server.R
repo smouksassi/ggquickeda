@@ -291,13 +291,15 @@ function(input, output, session) {
   # Load user data
   observeEvent(input$datafile, {
     file <- input$datafile$datapath
-    values$maindata <- read.csv(file, na.strings = c("NA","."))
+    values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
+                                sep = input$fileseparator)
   })
   
   # Load sample dataset
   observeEvent(input$sample_data_btn, {
     file <- "data/sample_data.csv"
-    values$maindata <- read.csv(file, na.strings = c("NA","."))
+    values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
+                                sep = input$fileseparator)
     mockFileUpload("Sample Data")
   })
   
@@ -5692,6 +5694,7 @@ function(input, output, session) {
   })
   
   if(exists("TESTING") && TESTING) {
-    values$maindata <- read.csv("data/sample_data.csv", na.strings = c("NA","."))
+    values$maindata <- read.csv("data/sample_data.csv", na.strings = c("NA","."),
+                                stringsAsFactors = TRUE)
   }
 }

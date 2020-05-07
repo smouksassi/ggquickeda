@@ -8,13 +8,17 @@ fluidPage(
       tabsetPanel(
         tabPanel(
           "Inputs", 
-          br(),
+          tags$style(".shiny-file-input-progress {margin-bottom: 0px;margin-top: 0px}"),
+          tags$style(".form-group {margin-bottom: 0px;margin-top: 0px}"),
           tags$div(
-            tags$strong("Choose csv file to upload"),
-            "or", actionLink("sample_data_btn", "use sample data")
+            tags$strong("Click Browse to choose csv file to upload with"),
+            inline_ui(radioButtons("fileseparator", NULL,
+                                   choices = c("comma (,)" = ",","or semicolon (;)" = ";"),
+                                   selected = ",", inline = TRUE)),
+            "separators, or",actionLink("sample_data_btn", "use sample data")
           ),
-          fileInput("datafile", NULL,
-                    multiple = FALSE, accept = c("csv")),
+          fileInput("datafile", NULL, multiple = FALSE, accept = c("csv")),
+          checkboxInput("stringasfactor", "Character Variables as Factors?", TRUE),
           uiOutput("ycol"),
           checkboxInput("show_pairs", "Plot a matrix of all Y variables", value = FALSE),
           conditionalPanel(
