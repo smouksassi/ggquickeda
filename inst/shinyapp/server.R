@@ -1853,16 +1853,12 @@ function(input, output, session) {
   })
   
   output$weight <- renderUI({
-    df <-values$maindata
+    df <- recodedata5()
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
-    names(items)=items
-    items= items
-    items= c("None",items, "yvars","yvalues") 
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP2<- names(df)  [ MODEDF ]
+    items= c("None",NAMESTOKEEP2, "yvalues") 
     selectInput("weightin", "Weight By:",items )
   })
   outputOptions(output, "pointsize", suspendWhenHidden=FALSE)
