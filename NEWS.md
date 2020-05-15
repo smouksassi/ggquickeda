@@ -1,8 +1,10 @@
 # ggquickeda 0.1.6.9999
+* Added support for semicolon separated files and added package version in App Title.
 * Updated UI for facets options and added controls for bold, angle and justification.
 * Updated UI for legends options and added controls for legend and legend box, justification and legend box margins.
 * Updated UI for theme options
 * Added theme options for strip.switch.pad.grid and strip.switch.pad.wrap
+* Bumped the minimum R version dependency
 * (To do) put back gradientInput when shinyjqui bug is fixed
 * (To do) documentation screenshots refresh
 

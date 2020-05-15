@@ -18,7 +18,7 @@ Description: Quickly and easily perform exploratory data analysis by uploading y
 URL: https://github.com/smouksassi/ggquickeda
 BugReports: https://github.com/smouksassi/ggquickeda/issues
 Depends:
-    R (>= 3.5.0)
+    R (>= 3.6.0)
 Imports:
     colourpicker,
     dplyr,
