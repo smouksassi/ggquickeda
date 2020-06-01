@@ -1,5 +1,7 @@
 # ggquickeda 0.1.6.9999
 * Added support for semicolon separated files and added package version in App Title.
+* Added geom_rug support
+* Added more geoms for some mean/CI and median/PI
 * Updated UI for facets options and added controls for bold, angle and justification.
 * Updated UI for legends options and added controls for legend and legend box, justification and legend box margins.
 * Updated UI for theme options

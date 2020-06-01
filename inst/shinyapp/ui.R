@@ -1230,7 +1230,7 @@ fluidPage(
               tabPanel("Mean (CI)",
                        fluidRow(
                          column(12, hr()),
-                         column (3,
+                         column (2,
                                  radioButtons(
                                    "Mean",
                                    "Mean:",
@@ -1239,10 +1239,29 @@ fluidPage(
                                      "Mean/CI" = "Mean/CI",
                                      "None" = "None"
                                    ) ,
-                                   selected = "None"
+                                   selected = "None",
+                                   inline = TRUE
                                  ),
                                  conditionalPanel(
+                                   " input.Mean!= 'None' ",
+                                   checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE),
+                                   selectInput("positionmean", label = "Mean positioning for overlap:",
+                                               choices = c(
+                                                 "Default"="position_identity()",
+                                                 "Side By Side"="position_dodge2(width = 0.75)"
+                                               ),selected = "position_identity()")
+                                   
+                                 )
+                                 
+                         ),#first column
+                         column (2,
+                                conditionalPanel(
                                    " input.Mean== 'Mean/CI' ",
+                                   radioButtons("geommeanCI", "CI Geom:",
+                                                c("errorbar" = "errorbar",
+                                                  "ribbon"= "ribbon"),
+                                                selected = "errorbar",
+                                                inline = TRUE),
                                    sliderInput(
                                      "CI",
                                      "CI %:",
@@ -1251,33 +1270,24 @@ fluidPage(
                                      value = c(0.95),
                                      step = 0.01
                                    ),
-                                   numericInput(
-                                     inputId = "errbar",
-                                     label = "CI bar width:",
-                                     value = 0.75,
-                                     min = 0.1,
-                                     max = NA
-                                   )
-                                 ),
-                                 conditionalPanel(
-                                   " input.Mean!= 'None' ",
-                                   checkboxInput('meanvalues', 'Label Values?') ,
-                                   checkboxInput('meanN', 'Label N?') ,
-                                   checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE),
-                                   selectInput("positionmean", label = "Mean positioning for overlap:",
-                                               choices = c(
-                                                 "Default"="position_identity()",
-                                                 "Side By Side"="position_dodge2(width = 0.75)"
-                                               ),selected = "position_identity()"),
-                                   radioButtons("geommeanlabel", "Mean Label Geom:",
-                                                c("text" = "text","label"= "label",
-                                                  "auto text repel" = "text_repel",
-                                                  "auto label repel" = "label_repel"),selected = "text_repel" )
+                                   conditionalPanel(
+                                     " input.geommeanCI== 'errorbar' ",
+                                     numericInput(
+                                       inputId = "errbar",
+                                       label = "CI bar width:",
+                                       value = 0.75,
+                                       min = 0.1,
+                                       max = NA
+                                     )
+                                     ),
+                                     sliderInput("meancitransparency", "CI Transparency:",
+                                                 min=0, max=1, value=c(0.2),step=0.01)
+                                     
                                    
-                                 )
+                                 )       
                                  
-                         ),#first column
-                         column (3,
+                         ),# ci column options
+                         column (2,
                                  conditionalPanel(
                                    " input.Mean!= 'None' ",
                                    checkboxInput('meanlines', 'Show lines', value =TRUE)
@@ -1300,16 +1310,15 @@ fluidPage(
                                      value = c(0.5),
                                      step = 0.01
                                    )
-                                 ),
-                                 sliderInput("alphameanlabel", "Labels(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
+                                 )
                          ),#second column
-                         column (3,
+                         column (2,
                                  conditionalPanel(
                                    " input.Mean!= 'None' ",
                                    checkboxInput('meanpoints', 'Show points')
                                  ),
                                  conditionalPanel(
-                                   " input.Mean!= 'None'&input.meanpoints ",
+                                   " input.Mean!= 'None' & input.meanpoints ",
                                    sliderInput(
                                      "meanpointsize",
                                      "Mean(s) Point(s) Size:",
@@ -1326,11 +1335,64 @@ fluidPage(
                                      value = c(0.5),
                                      step = 0.01
                                    ),
-                                   checkboxInput('forcemeanshape', 'Force Mean(s) Shape', value = FALSE)
+                                   checkboxInput('forcemeanshape', 'Force Mean(s) Shape',
+                                                 value = FALSE),
+                                   conditionalPanel(
+                                     " input.Mean!= 'None'&input.meanpoints & input.forcemeanshape ",
+                                     selectInput('meanshapes','Mean(s) Point(s) Shape:',
+                                                 c(
+                                                   "square open"           ,
+                                                   "circle open"           ,
+                                                   "triangle open"         ,
+                                                   "plus"                  ,
+                                                   "cross"                 ,
+                                                   "asterisk"              ,
+                                                   "diamond open"          ,
+                                                   "triangle down open"    ,
+                                                   "square cross"          ,
+                                                   "diamond plus"          ,
+                                                   "circle plus"           ,
+                                                   "star"                  ,
+                                                   "square plus"           ,
+                                                   "circle cross"          ,
+                                                   "square triangle"       ,
+                                                   "square"                ,
+                                                   "circle small"          ,
+                                                   "triangle"              ,
+                                                   "diamond"               ,
+                                                   "circle"                ,
+                                                   "bullet"                ,
+                                                   "circle filled"         ,
+                                                   "square filled"         ,
+                                                   "diamond filled"        ,
+                                                   "triangle filled"       ,
+                                                   "triangle down filled"
+                                                 ),
+                                                 selected = "diamond"
+                                     )
+                                   )
                                  )
                                  
                          ),#third column
-                         column(3,
+                         column(2,
+                                conditionalPanel(
+                                  " input.Mean!= 'None' ",
+                                  checkboxInput('meanvalues', 'Label Values?') ,
+                                  checkboxInput('meanN', 'Label N?') ),
+                                
+                                conditionalPanel(
+                                  "input.meanvalues | input.meanN ",
+                                  sliderInput("alphameanlabel", "Labels(s) Transparency:",
+                                              min=0, max=1, value=c(0.5),step=0.01),
+                                  radioButtons("geommeanlabel", "Mean Label Geom:",
+                                               c("text" = "text","label"= "label",
+                                                 "auto text repel" = "text_repel",
+                                                 "auto label repel" = "label_repel"),selected = "text_repel",
+                                               inline = TRUE)
+                                )
+                                
+                                ), # fourth column
+                         column(2,
                                 conditionalPanel(
                                   " input.Mean!= 'None' ",
                                   checkboxInput('meanignorecol', 'Ignore Mapped Color') ,
@@ -1354,43 +1416,10 @@ fluidPage(
                                                                       allowTransparent = FALSE,
                                                                       returnName = TRUE)
                                                    )
-                                  ),
-                                  conditionalPanel(
-                                    " input.Mean!= 'None'&input.meanpoints & input.forcemeanshape ",
-                                    selectInput('meanshapes','Mean(s) Point(s) Shape:',
-                                                c(
-                                                  "square open"           ,
-                                                  "circle open"           ,
-                                                  "triangle open"         ,
-                                                  "plus"                  ,
-                                                  "cross"                 ,
-                                                  "asterisk"              ,
-                                                  "diamond open"          ,
-                                                  "triangle down open"    ,
-                                                  "square cross"          ,
-                                                  "diamond plus"          ,
-                                                  "circle plus"           ,
-                                                  "star"                  ,
-                                                  "square plus"           ,
-                                                  "circle cross"          ,
-                                                  "square triangle"       ,
-                                                  "square"                ,
-                                                  "circle small"          ,
-                                                  "triangle"              ,
-                                                  "diamond"               ,
-                                                  "circle"                ,
-                                                  "bullet"                ,
-                                                  "circle filled"         ,
-                                                  "square filled"         ,
-                                                  "diamond filled"        ,
-                                                  "triangle filled"       ,
-                                                  "triangle down filled"
-                                                ),
-                                                selected = "diamond"
-                                    )
                                   )
+
                                 )
-                         )#column 4
+                         )#column 5
                        ) #fluidrow
               ), # tab panel for mean
               
@@ -1406,10 +1435,18 @@ fluidPage(
                     radioButtons("Median", "Median:",
                                  c("Median" = "Median",
                                    "Median/PI" = "Median/PI",
-                                   "None" = "None") ,selected="None") ,
+                                   "None" = "None") ,selected="None",
+                                 inline = TRUE) ,
                     conditionalPanel( " input.Median== 'Median/PI' ",
+                                      radioButtons("geommedianPI", "PI Geom:",
+                                                   c("errorbar" = "errorbar",
+                                                     "ribbon"= "ribbon"),
+                                                   selected = "ribbon",
+                                                   inline = TRUE),
                                       sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
-                                      sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                                      conditionalPanel( " input.geommedianPI== 'ribbon' ",
+                sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                                      )
                     ),
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianvalues', 'Label Values?') ,
@@ -1670,7 +1707,7 @@ fluidPage(
                     radioButtons("geomlabel", "Label Geom:",
                                  c("text" = "text","label" = "label",
                                    "auto text repel" = "text_repel",
-                                   "auto label repel" = "label_repel"))
+                                   "auto label repel" = "label_repel"), inline = TRUE)
                   ),
                   column(3,hr(),
                          conditionalPanel(
@@ -1723,8 +1760,27 @@ fluidPage(
                   column (12, h6("Custom Label Size applies if no Size is applied or if explicitly ignored. Text repelling can take time. Size scales applies to all geoms that use continuous scale size." ))
                   
                 )
-              )
-              
+              ),
+              tabPanel("Geom rug",
+                       fluidRow(
+                         column(3,
+                                 checkboxInput('addrugmarks', 'Add rug marks ?', value = FALSE),
+                                 conditionalPanel(condition = "input.addrugmarks",
+                                                  selectInput('rugsides', label ='Rug marks sides',
+                                                              choices=c("Left" = "l",
+                                                                        "Top" ="t ",
+                                                                        "Right"="r",
+                                                                        "Bottom"="b"),
+                                                              multiple=TRUE, selectize=TRUE,selected="b")
+                                                  
+                                 )
+                         ),
+                         column(3,
+                                conditionalPanel(condition = "input.addrugmarks",
+                                 uiOutput("xcolrug"))
+                         )
+                       )#fluidrow
+              )#tabpanel
               )#tabsetPanel
           )#tabPanel
           

@@ -378,6 +378,15 @@ function(input, output, session) {
     
   })
   
+  output$xcolrug <- renderUI({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    selectizeInput("xrug", "x rug variable(s):",choices=items,
+                   multiple=TRUE,
+                   options = list(plugins = list('remove_button', 'drag_drop')))  })
+  
   # If an X is selected but no Y is selected, switch to the Histograms tab
   observe({
     if (!is.null(input$x) && is.null(input$y)) {
@@ -2829,16 +2838,22 @@ function(input, output, session) {
           
           if (input$Mean=="Mean/CI"){
             p <- p + 
-              stat_sum_df("mean_cl_normal", geom = "errorbar",
-                          fun.args=list(conf.int=input$CI),width=input$errbar,
-                          alpha=input$alphameanl,position = eval(parse(text=input$positionmean)))
+              stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                          fun.args=list(conf.int=input$CI), width=input$errbar,
+                          alpha=input$meancitransparency,
+                          position = eval(parse(text=input$positionmean)))
+
             if(input$meanlines&&input$pointsizein != 'None')  
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line",alpha=input$alphameanl,position = eval(parse(text=input$positionmean)))
+                stat_sum_df("mean_cl_normal", geom = "line",
+                            alpha=input$alphameanl,
+                            position = eval(parse(text=input$positionmean)))
             if(input$meanlines&&input$pointsizein == 'None')  
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = "line",
-                            size=input$meanlinesize,alpha=input$alphameanl,position = eval(parse(text=input$positionmean)))
+                            size=input$meanlinesize,
+                            alpha=input$alphameanl,
+                            position = eval(parse(text=input$positionmean)))
             
             if(!input$forcemeanshape)    {
               if(input$meanpoints&&input$pointsizein != 'None')           
@@ -2931,9 +2946,11 @@ function(input, output, session) {
           
           if (input$Mean=="Mean/CI"){
             p <- p + 
-              stat_sum_df("mean_cl_normal", geom = "errorbar",
+              stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                           fun.args=list(conf.int=input$CI),width=input$errbar,
-                          col=meancoll,alpha=input$alphameanl,position = eval(parse(text=input$positionmean)))
+                          col=meancoll,
+                          alpha=input$meancitransparency,
+                          position = eval(parse(text=input$positionmean)))
             if(input$meanlines&input$pointsizein != 'None')  
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = "line", col=meancoll,alpha=input$alphameanl,position = eval(parse(text=input$positionmean)))
@@ -3030,8 +3047,10 @@ function(input, output, session) {
           
           if (input$Mean=="Mean/CI"){
             p <- p + 
-              stat_sum_df("mean_cl_normal", geom = "errorbar",fun.args=list(conf.int=input$CI),
-                          width=input$errbar,aes(group=NULL),alpha=input$alphameanl,
+              stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                          fun.args=list(conf.int=input$CI),
+                          width=input$errbar,aes(group=NULL),
+                          alpha=input$meancitransparency,
                           position = eval(parse(text=input$positionmean)))
             if(input$meanlines&input$pointsizein != 'None')  
               p <- p + 
@@ -3137,10 +3156,12 @@ function(input, output, session) {
           
           if (input$Mean=="Mean/CI"){
             p <- p + 
-              stat_sum_df("mean_cl_normal", geom = "errorbar",
+              stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                           fun.args=list(conf.int=input$CI), width=input$errbar,
-                          col=meancoll, aes(group=NULL),alpha=input$alphameanl,
+                          col=meancoll, aes(group=NULL),
+                          alpha=input$meancitransparency,
                           position = eval(parse(text=input$positionmean)))
+            
             if(input$meanlines&input$pointsizein != 'None')  
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = "line",col=meancoll,aes(group=NULL),alpha=input$alphameanl,
@@ -3700,8 +3721,9 @@ function(input, output, session) {
           }
           
           if (input$Median=="Median/PI" && input$pointsizein == 'None'){
+            
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI) ,
+              stat_sum_df("median_hilow", geom = input$geommedianPI,fun.args=list(conf.int=input$PI) ,
                           size=input$medianlinesize,alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+ 
               stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
@@ -3721,7 +3743,8 @@ function(input, output, session) {
           
           if (input$Median=="Median/PI" && input$pointsizein != 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA,
+              stat_sum_df("median_hilow", geom = input$geommedianPI,
+                          fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+
               stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,fun.args=list(conf.int=input$PI),alpha=input$alphamedianl,
                           position = eval(parse(text=input$positionmedian)))
@@ -3800,7 +3823,7 @@ function(input, output, session) {
           
           if (input$Median=="Median/PI" && input$pointsizein == 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon", fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA,
+              stat_sum_df("median_hilow", geom = input$geommedianPI, fun.args=list(conf.int=input$PI), alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+
               stat_sum_df("median_hilow", geom = "line", stat ="smooth", fun.args=list(conf.int=input$PI), size=input$medianlinesize,
                           col=mediancoll,alpha=input$alphamedianl,
@@ -3817,7 +3840,7 @@ function(input, output, session) {
           }
           if (input$Median=="Median/PI" && input$pointsizein != 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),alpha=input$PItransparency,col=NA,
+              stat_sum_df("median_hilow", geom = input$geommedianPI,fun.args=list(conf.int=input$PI),alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+
               stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),col=mediancoll,
                           alpha=input$alphamedianl,
@@ -3897,7 +3920,7 @@ function(input, output, session) {
           
           if (input$Median=="Median/PI" && input$pointsizein == 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
+              stat_sum_df("median_hilow", geom = input$geommedianPI,fun.args=list(conf.int=input$PI),aes(group=NULL),
                           alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+ 
               stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),aes(group=NULL),
@@ -3915,7 +3938,7 @@ function(input, output, session) {
           
           if (input$Median=="Median/PI" && input$pointsizein != 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
+              stat_sum_df("median_hilow", geom = input$geommedianPI,fun.args=list(conf.int=input$PI),aes(group=NULL),
                           alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+ 
               stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
@@ -4005,7 +4028,7 @@ function(input, output, session) {
           
           if (input$Median=="Median/PI" && input$pointsizein == 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),aes(group=NULL),
+              stat_sum_df("median_hilow", geom = input$geommedianPI,fun.args=list(conf.int=input$PI),aes(group=NULL),
                           alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+ 
               stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
@@ -4022,7 +4045,7 @@ function(input, output, session) {
           }
           if (input$Median=="Median/PI" && input$pointsizein != 'None'){
             p <- p + 
-              stat_sum_df("median_hilow", geom = "ribbon",fun.args=list(conf.int=input$PI),
+              stat_sum_df("median_hilow", geom = input$geommedianPI,fun.args=list(conf.int=input$PI),
                           aes(group=NULL),alpha=input$PItransparency,col=NA,
                           position = eval(parse(text=input$positionmedian)))+ 
               stat_sum_df("median_hilow", geom = "line", stat ="smooth",fun.args=list(conf.int=input$PI),
@@ -4334,6 +4357,16 @@ function(input, output, session) {
       }# addcustom label
       #### data label END
       
+      ###### rug geom start
+      if(input$addrugmarks&& !is.null(input$xrug) &&length(as.vector(input$xrug)) > 0) {
+        for(i in input$xrug){ 
+          #print(i)
+          p <- p +
+          geom_rug(aes_string(x=i),
+                   sides=paste(input$rugsides,collapse="",sep=""))
+        }
+      }
+      #### rug geom end
       
       
       
@@ -4365,12 +4398,11 @@ function(input, output, session) {
         if (!input$kmignorecol) {
           if (input$KM == "KM/CI") {
             p <- p +
-              stat_kmband(
-                alpha = input$KMCItransparency,
-                conf.int = input$KMCI,
-                trans = input$KMtrans,
-                geom="ribbon",
-                linetype=0
+              geom_ribbon(stat="kmband",
+                          alpha=input$KMCItransparency,
+                          conf.int = input$KMCI,
+                          trans=input$KMtrans,
+                          color="transparent"
               )
           }
           
@@ -4394,14 +4426,14 @@ function(input, output, session) {
           
           if (input$KM=="KM/CI") {
             p <- p +
-              stat_kmband(
-                alpha=input$KMCItransparency,
+              geom_ribbon(stat="kmband",
+                          alpha=input$KMCItransparency,
                           conf.int = input$KMCI,
                           trans=input$KMtrans,
-                          geom="ribbon",
-                          linetype=0)
+                          color="transparent"
+              )
           }
-          
+
           
           if (input$KM!="None") {
             p  <- p +
