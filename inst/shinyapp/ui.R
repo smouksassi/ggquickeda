@@ -1143,12 +1143,11 @@ fluidPage(
               tabPanel(
                 "Smooth/Linear/Logistic Regressions",
                 fluidRow(
-                  column (
-                    3, 
+                  column (3, 
                     radioButtons("Smooth", "Smooth:",
                                  c("Smooth" = "Smooth",
                                    "Smooth and SE" = "Smooth and SE",
-                                   "None" = "None"),selected="None"),
+                                   "None" = "None"),selected="None", inline = TRUE),
                     conditionalPanel(
                       " input.Smooth== 'Smooth and SE' ",
                       sliderInput("smoothselevel", "Confidence Level:", min=0.5, max=0.99, value=c(0.95),step=0.01),
@@ -1425,56 +1424,62 @@ fluidPage(
               
               
               ### median PI section
-              tabPanel(
-                "Median (PIs)",
-                
-                fluidRow(
+              tabPanel("Median (PIs)",
+               fluidRow(
                   column(12,hr()),
-                  column (
-                    3,
+                  column (2,
                     radioButtons("Median", "Median:",
                                  c("Median" = "Median",
                                    "Median/PI" = "Median/PI",
                                    "None" = "None") ,selected="None",
-                                 inline = TRUE) ,
-                    conditionalPanel( " input.Median== 'Median/PI' ",
-                                      radioButtons("geommedianPI", "PI Geom:",
-                                                   c("errorbar" = "errorbar",
-                                                     "ribbon"= "ribbon"),
-                                                   selected = "ribbon",
-                                                   inline = TRUE),
-                                      sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
-                                      conditionalPanel( " input.geommedianPI== 'ribbon' ",
-                sliderInput("PItransparency", "PI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
-                                      )
-                    ),
+                                 inline = TRUE),
                     conditionalPanel( " input.Median!= 'None' ",
-                                      checkboxInput('medianvalues', 'Label Values?') ,
-                                      checkboxInput('medianN', 'Label N?') ,
-                                      checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE),
-                                      selectInput("positionmedian", label = "Median positioning for overlap:",
-                                                  choices = c(
-                                                    "Default"="position_identity()",
-                                                    "Side By Side"="position_dodge2(width = 0.75)"
-                                                  ),selected = "position_identity()"),
-                                      radioButtons("geommedianlabel", "Median Label Geom:",
-                                                   c("text" = "text","label"= "label",
-                                                     "auto text repel" = "text_repel",
-                                                     "auto label repel" = "label_repel"),selected = "text_repel" )
-                    )
-                  ),
-                  column (
-                    3,
-                    conditionalPanel( " input.Median!= 'None' ",
-                                      checkboxInput('medianlines', 'Show lines',value=TRUE),
-                                      sliderInput("medianlinesize", "Median(s) Line(s) Size:", min=0, max=4, value=c(1.5),step=0.1),
-                                      sliderInput("alphamedianl", "Median(s) Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
-                                      sliderInput("alphamedianlabel", "Labels(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
-                    )
+                    checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE),
+                    selectInput("positionmedian", label = "Median positioning for overlap:",
+                                choices = c(
+                                  "Default"="position_identity()",
+                                  "Side By Side"="position_dodge2(width = 0.75)"
+                                ),selected = "position_identity()"),
                     
-                  ),
-                  column (
-                    3,
+                    )
+                  ),#first column
+                column (2,
+                  conditionalPanel( " input.Median== 'Median/PI' ",
+                                    radioButtons("geommedianPI", "PI Geom:",
+                                                 c("errorbar" = "errorbar",
+                                                   "ribbon"= "ribbon"),
+                                                 selected = "ribbon",
+                                                 inline = TRUE),
+                                    sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
+                                    conditionalPanel(
+                                      " input.geommedianPI== 'errorbar' ",
+                                      numericInput(
+                                        inputId = "medianerrbar",
+                                        label = "PI bar width:",
+                                        value = 0.75,
+                                        min = 0.1,
+                                        max = NA
+                                      )
+                                    ),
+                                    sliderInput("PItransparency", "PI Transparency:",
+                                                min=0, max=1, value=c(0.2),step=0.01)
+                                    
+                  )
+                ), # Pi color options
+                
+                  column (2,
+                    conditionalPanel( " input.Median!= 'None' ",
+                                      checkboxInput('medianlines', 'Show lines',value=TRUE)
+                                      ),
+                    conditionalPanel(
+                      " input.Median!= 'None'&& input.medianlines ",
+                                      sliderInput("medianlinesize", "Median(s) Line(s) Size:",
+                                                  min=0, max=4, value=c(1.5),step=0.1),
+                                      sliderInput("alphamedianl", "Median(s) Line(s) Transparency:",
+                                                  min=0, max=1, value=c(0.5),step=0.01)
+                      )
+                  ), # lines options
+                  column (2,
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianpoints', 'Show points')
                     ),
@@ -1482,11 +1487,61 @@ fluidPage(
                                       sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1),
                                       sliderInput("alphamedianp", "Median(s) Point(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
                                       checkboxInput('forcemedianshape', 'Force Median(s) Shape',value = FALSE)
+                    ),
+                    
+                    conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
+                                      selectInput('medianshapes','Median(s) Point(s) Shape:',c(
+                                        "square open"           ,
+                                        "circle open"           ,
+                                        "triangle open"         ,
+                                        "plus"                  ,
+                                        "cross"                 ,
+                                        "asterisk"              ,
+                                        "diamond open"          ,
+                                        "triangle down open"    ,
+                                        "square cross"          ,
+                                        "diamond plus"          ,
+                                        "circle plus"           ,
+                                        "star"                  ,
+                                        "square plus"           ,
+                                        "circle cross"          ,
+                                        "square triangle"       ,
+                                        "square"                ,
+                                        "circle small"          ,
+                                        "triangle"              ,
+                                        "diamond"               ,
+                                        "circle"                ,
+                                        "bullet"                ,
+                                        "circle filled"         ,
+                                        "square filled"         ,
+                                        "diamond filled"        ,
+                                        "triangle filled"       ,
+                                        "triangle down filled" 
+                                      ),selected="square")  
+                                      
                     )
                     
-                  ),
-                  column (
-                    3,
+                  ), # points options
+
+                column(2,
+                       conditionalPanel(
+                         " input.Median!= 'None' ",
+                       checkboxInput('medianvalues', 'Label Values?') ,
+                       checkboxInput('medianN', 'Label N?') ),
+                       conditionalPanel(
+                         "input.medianvalues | input.medianN ",
+                         sliderInput("alphamedianlabel", "Labels(s) Transparency:",
+                                     min=0, max=1, value=c(0.5),step=0.01),
+                         radioButtons("geommedianlabel", "Median Label Geom:",
+                                      c("text" = "text","label"= "label",
+                                        "auto text repel" = "text_repel",
+                                        "auto label repel" = "label_repel"),selected = "text_repel",
+                                      inline = TRUE)
+                       )
+                       
+                ), # fourth column
+                
+                  column (2,
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianignorecol', 'Ignore Mapped Color'),
                                       conditionalPanel(" input.medianignorecol ",
@@ -1508,37 +1563,6 @@ fluidPage(
                                                                          
                                                                          
                                                        )
-                                      ),
-                                      conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
-                                                        selectInput('medianshapes','Median(s) Point(s) Shape:',c(
-                                                          "square open"           ,
-                                                          "circle open"           ,
-                                                          "triangle open"         ,
-                                                          "plus"                  ,
-                                                          "cross"                 ,
-                                                          "asterisk"              ,
-                                                          "diamond open"          ,
-                                                          "triangle down open"    ,
-                                                          "square cross"          ,
-                                                          "diamond plus"          ,
-                                                          "circle plus"           ,
-                                                          "star"                  ,
-                                                          "square plus"           ,
-                                                          "circle cross"          ,
-                                                          "square triangle"       ,
-                                                          "square"                ,
-                                                          "circle small"          ,
-                                                          "triangle"              ,
-                                                          "diamond"               ,
-                                                          "circle"                ,
-                                                          "bullet"                ,
-                                                          "circle filled"         ,
-                                                          "square filled"         ,
-                                                          "diamond filled"        ,
-                                                          "triangle filled"       ,
-                                                          "triangle down filled" 
-                                                        ),selected="square")  
-                                                        
                                       )
                                       
                                       
