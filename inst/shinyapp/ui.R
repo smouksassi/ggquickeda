@@ -1785,12 +1785,12 @@ fluidPage(
                   
                 )
               ),
-              tabPanel("Geom rug",
+              tabPanel("Rug Marks",
                        fluidRow(
                          column(3,
-                                 checkboxInput('addrugmarks', 'Add rug marks ?', value = FALSE),
+                                 checkboxInput('addrugmarks', 'Add X/Y rug marks ?', value = FALSE),
                                  conditionalPanel(condition = "input.addrugmarks",
-                                                  selectInput('rugsides', label ='Rug marks sides',
+                                                  selectInput('rugsides', label ='X/Y rug marks sides',
                                                               choices=c("Left" = "l",
                                                                         "Top" ="t ",
                                                                         "Right"="r",
@@ -1800,9 +1800,22 @@ fluidPage(
                                  )
                          ),
                          column(3,
-                                conditionalPanel(condition = "input.addrugmarks",
+                                checkboxInput('addextrarugmarks', 'Add rug marks to addtional variables?', value = FALSE),
+                                conditionalPanel(condition = "input.addextrarugmarks",
+                                                 selectInput('extrarugsides', label ='Extra Variables rug marks sides',
+                                                             choices=c("Left" = "l",
+                                                                       "Top" ="t ",
+                                                                       "Right"="r",
+                                                                       "Bottom"="b"),
+                                                             multiple=TRUE, selectize=TRUE,selected="b"),
                                  uiOutput("xcolrug"))
-                         )
+                         ),
+                         column(3,
+                                conditionalPanel(condition = "input.addrugmarks | input.addextrarugmarks",
+                                sliderInput("ruglinelength", "rug line length (percentage of the plot area):", min=0, max=1,value=c(0.03),step=0.005),
+                                sliderInput("ruglinealpha", "rug line transparency:", min=0, max=1, value=c(0.5),step=0.01)
+                                )
+                                )
                        )#fluidrow
               )#tabpanel
               )#tabsetPanel

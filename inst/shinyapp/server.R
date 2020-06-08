@@ -381,9 +381,10 @@ function(input, output, session) {
   output$xcolrug <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    selectizeInput("xrug", "x rug variable(s):",choices=items,
+    items = names(df)
+    items = c("None",items, "yvars","yvalues") 
+    names(items) = items
+    selectizeInput("xrug", "rug variable(s):",choices = items,
                    multiple=TRUE,
                    options = list(plugins = list('remove_button', 'drag_drop')))  })
   
@@ -1677,7 +1678,12 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items
-    items= c("None",items, "yvars","yvalues") 
+    if ( !is.null(input$y) ){
+      items = c("None",items, "yvars","yvalues") 
+    }
+    if ( is.null(input$y) ){
+      items = c("None",items) 
+    }
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -3737,12 +3743,14 @@ function(input, output, session) {
           if (input$Median=="Median") {
             if(input$medianlines && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "line" ,alpha=input$alphamedianl,
+                stat_sum_single(median, geom = "line",
+                                alpha=input$alphamedianl,
                                 position = eval(parse(text=input$positionmedian)))
             
             if(input$medianlines && input$pointsizein == 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "line",size=input$medianlinesize,
+                stat_sum_single(median, geom = "line",
+                                size=input$medianlinesize,
                                 alpha=input$alphamedianl,
                                 position = eval(parse(text=input$positionmedian)))
             
@@ -3767,8 +3775,10 @@ function(input, output, session) {
               
               if(input$medianpoints && input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_single(median, geom = "point",size=input$medianpointsize,
-                                  alpha=input$alphamedianp,shape=input$medianshapes,
+                  stat_sum_single(median, geom = "point",
+                                  size=input$medianpointsize,
+                                  alpha=input$alphamedianp,
+                                  shape=input$medianshapes,
                                   position = eval(parse(text=input$positionmedian)))
             }
             
@@ -3781,7 +3791,9 @@ function(input, output, session) {
                p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), 
-                            size=input$medianlinesize,alpha=input$PItransparency,col=NA,
+                            size=input$medianlinesize,
+                            alpha=input$PItransparency,
+                            col=NA,
                             position = eval(parse(text=input$positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
@@ -4539,12 +4551,23 @@ function(input, output, session) {
       #### data label END
       
       ###### rug geom start
-      if(input$addrugmarks&& !is.null(input$xrug) &&length(as.vector(input$xrug)) > 0) {
+      if(input$addrugmarks) {
+        p <- p +
+          geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
+                   show.legend = FALSE,
+                   alpha = input$ruglinealpha,
+                   length = ggplot2::unit(input$ruglinelength ,"npc") 
+          )
+      }
+        if(input$addextrarugmarks && !is.null(input$xrug) && length(as.vector(input$xrug)) > 0) {
         for(i in input$xrug){ 
-          #print(i)
           p <- p +
           geom_rug(aes_string(x=i),
-                   sides=paste(input$rugsides,collapse="",sep=""))
+                   sides = paste(input$extrarugsides, collapse="",sep=""),
+                   show.legend = FALSE,
+                   alpha = input$ruglinealpha,
+                   length = ggplot2::unit(input$ruglinelength ,"npc") 
+          )
         }
       }
       #### rug geom end
