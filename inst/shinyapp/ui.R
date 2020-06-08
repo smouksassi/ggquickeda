@@ -267,8 +267,36 @@ fluidPage(
                 column(6,
                        conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("uppery")) ),
                 column(12,
+                       inline_ui(
+                         numericInput("xexpansion_l_add",label = "x expansion left additive",
+                                      value = 0,min=0,max=NA,width='120px')),
+                       inline_ui(
+                         numericInput("xexpansion_r_add",label = "x expansion right additive",
+                                      value = 0,min=0,max=NA,width='120px')),
+                       inline_ui(
+                         numericInput("xexpansion_l_mult",label = "x expansion left multiplicative",
+                                      value = 0.05,min=0,max=NA,width='120px')),
+                       inline_ui(
+                         numericInput("xexpansion_r_mult",label = "x expansion right multiplicative",
+                                      value = 0.05, min=0,max=NA,width='120px'))
+                       ),
+                column(12,
+                       inline_ui(
+                         numericInput("yexpansion_l_add",label = "y expansion bottom additive",
+                                      value = 0,min=0,max=NA,width='120px')),
+                       inline_ui(
+                         numericInput("yexpansion_r_add",label = "y expansion top additive",
+                                      value = 0,min=0,max=NA,width='120px')),
+                       inline_ui(
+                         numericInput("yexpansion_l_mult",label = "y expansion bottom multiplicative",
+                                      value = 0.05,min=0,max=NA,width='120px')),
+                       inline_ui(
+                         numericInput("yexpansion_r_mult",label = "y expansion top multiplicative",
+                                      value = 0.05, min=0,max=NA,width='120px'))
+                ),
+                column(12,
                        conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
-                                        checkboxInput('expand', 'Expand X/Y axis Range ?', value = TRUE)
+                                        checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE)
                        )
                 )
               ) # fluidrow
@@ -1788,9 +1816,11 @@ fluidPage(
               tabPanel("Rug Marks",
                        fluidRow(
                          column(3,
-                                 checkboxInput('addrugmarks', 'Add X/Y rug marks ?', value = FALSE),
+                                 checkboxInput('addrugmarks', 'Add X/Y rug marks?',
+                                               value = FALSE),
                                  conditionalPanel(condition = "input.addrugmarks",
-                                                  selectInput('rugsides', label ='X/Y rug marks sides',
+                                                  selectInput('rugsides',
+                                                              label ='X/Y rug marks sides',
                                                               choices=c("Left" = "l",
                                                                         "Top" ="t ",
                                                                         "Right"="r",
@@ -1800,9 +1830,12 @@ fluidPage(
                                  )
                          ),
                          column(3,
-                                checkboxInput('addextrarugmarks', 'Add rug marks to addtional variables?', value = FALSE),
+                                checkboxInput('addextrarugmarks',
+                                              'Add rug marks to addtional variables?',
+                                              value = FALSE),
                                 conditionalPanel(condition = "input.addextrarugmarks",
-                                                 selectInput('extrarugsides', label ='Extra Variables rug marks sides',
+                                                 selectInput('extrarugsides',
+                                                             label ='Extra Variables rug marks sides',
                                                              choices=c("Left" = "l",
                                                                        "Top" ="t ",
                                                                        "Right"="r",
@@ -1815,7 +1848,17 @@ fluidPage(
                                 sliderInput("ruglinelength", "rug line length (percentage of the plot area):", min=0, max=1,value=c(0.03),step=0.005),
                                 sliderInput("ruglinealpha", "rug line transparency:", min=0, max=1, value=c(0.5),step=0.01)
                                 )
-                                )
+                                ),
+                         column(3,
+                         conditionalPanel(condition = "input.addrugmarks | input.addextrarugmarks",
+                           checkboxInput('rugignorecol', 'Ignore Mapped Color'),
+                           conditionalPanel(condition = " input.rugignorecol ",
+                             colourpicker::colourInput("colrug", "rug Color", value="black",
+                                                       showColour = "both",
+                                                       allowTransparent=FALSE, returnName=TRUE)
+                           )
+                         )
+                         )
                        )#fluidrow
               )#tabpanel
               )#tabsetPanel
