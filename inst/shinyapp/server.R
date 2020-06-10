@@ -4805,7 +4805,6 @@ function(input, output, session) {
             risktabledatag<- gather(risktabledata,key,value, n.risk, factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
           }
-          print(head(risktabledatag))
           if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {
             .table <- as.data.frame(summary(fitsurv)$table)
           } else {
