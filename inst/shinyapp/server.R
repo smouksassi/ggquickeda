@@ -2615,12 +2615,15 @@ function(input, output, session) {
       
       if (input$showtarget)  {
         if (is.numeric( plotdata[,"yvalues"] ) ) {
-          if (!is.numeric( plotdata[,input$x] )){p <-   p   + scale_x_discrete() }
+          if (!is.numeric( plotdata[,input$x] )){
+            p <-   p   + scale_x_discrete() }
           
           p <-   p   +
-            annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget1,
-                     ymax = input$upperytarget1,fill=input$targetcol1,
-                     alpha =input$targetopacity1)
+            annotate("rect", xmin = -Inf, xmax = Inf,
+                     ymin = input$lowerytarget1,
+                     ymax = input$upperytarget1,
+                     fill = input$targetcol1,
+                     alpha = input$targetopacity1)
           
         } 
         
@@ -2628,12 +2631,16 @@ function(input, output, session) {
       
       if (input$showtarget2)  {
         if ( is.numeric( plotdata[,"yvalues"] ) ) {
-          if (!is.numeric( plotdata[,input$x] )){p <-   p   + scale_x_discrete() }
+          if (!is.numeric( plotdata[,input$x] )){
+            p <-   p   + scale_x_discrete() }
           
           p <-   p   +
-            annotate("rect", xmin = -Inf, xmax = Inf, ymin = input$lowerytarget2,
-                     ymax = input$upperytarget2,fill=input$targetcol2,
-                     alpha =input$targetopacity2)  
+            annotate("rect", xmin = -Inf,
+                     xmax = Inf,
+                     ymin = input$lowerytarget2,
+                     ymax = input$upperytarget2,
+                     fill = input$targetcol2,
+                     alpha = input$targetopacity2)  
         } 
       } 
       
@@ -4777,17 +4784,28 @@ function(input, output, session) {
             f <- as.formula(paste(survformula, paste(listvars, collapse = " + "), sep = " ~ "))
           }
           fitsurv <- eval(bquote( survfit( .(f)  , plotdata, conf.int=input$KMCI) ))
-          ggsurv <- survminer::ggsurvplot(fitsurv, plotdata,risk.table = TRUE,  ggtheme = theme_bw())
+
+          if (is.null(input$breaktimeby) || input$breaktimeby == '' || is.na(input$breaktimeby)){
+            ggsurv <- survminer::ggsurvplot(fitsurv,
+                                            plotdata,risk.table = TRUE,
+                                            ggtheme = theme_bw())
+          } else {
+            ggsurv <- survminer::ggsurvplot(fitsurv,
+                                            plotdata,risk.table = TRUE,
+                                            break.time.by = input$breaktimeby,
+                                            ggtheme = theme_bw())
+          }
+
           risktabledata<- ggsurv$table$data
-          if(length(as.vector(input$risktablevariables)) > 0){
-            risktabledatag<- gather(risktabledata,key,value, !!!input$risktablevariables ,factor_key = TRUE)
+          if(!is.null(input$risktablevariables) && length(as.vector(input$risktablevariables)) > 0){
+            risktabledatag<- gather(risktabledata,key,value, !!!input$risktablevariables , factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
           }
           if(is.null(input$risktablevariables) ){
-            risktabledatag<- gather(risktabledata,key,value, "n.risk" ,factor_key = TRUE)
+            risktabledatag<- gather(risktabledata,key,value, n.risk, factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
           }
-          
+          print(head(risktabledatag))
           if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {
             .table <- as.data.frame(summary(fitsurv)$table)
           } else {
@@ -4817,46 +4835,42 @@ function(input, output, session) {
                         position =   position_dodgev(height =input$nriskpositiondodge)
               )
             
-            
-            
-            if(!is.null(input$risktablevariables)){
-              p  <- p +
-                scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                   labels= c(as.vector(input$risktablevariables),
-                                             c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) ,
-                                   expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                      add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
-              
-            }
-            if(is.null(input$risktablevariables)){
-              p  <- p +
-                scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                   labels= c("n.risk",
-                                             c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) ,
-                                   expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                      add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
-              
-            }
-
-          }
-          
-          if (input$kmignorecol){
+           }
+           if (input$kmignorecol){
             p  <- p +
               geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
-                        position =   position_dodgev(height =input$nriskpositiondodge),color=input$colkml)+
-              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                 labels= c(as.vector(input$risktablevariables),
-                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ) ,
-                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
-          }
+                        position =   position_dodgev(height =input$nriskpositiondodge),color=input$colkml)
+           }
+          
+          
           if(input$addhorizontallines){
             p  <- p +
               geom_hline(yintercept =- input$nriskpositionscaler *unique(c(1,(as.numeric(as.factor(risktabledatag$key))+1 )) )  +
                            (abs(input$nriskpositiondodge)/2 ) )
             
           }
-          
+          if(!is.null(input$risktablevariables)){
+            p  <- p +
+              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
+                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                 labels= c(as.vector(input$risktablevariables),
+                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
+              )
+            
+          }
+          if(is.null(input$risktablevariables)){
+            p  <- p +
+              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
+                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                 labels= c("n.risk",
+                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
+              )
+            
+          } 
         }
         
         if(input$arrowmedian) {
@@ -4951,7 +4965,7 @@ function(input, output, session) {
           
         }
         
-      } ###### KM SECTION END
+      } ###### KM SECTION END still need to fix y scale labels
       
       p <- p + xlab(input$x)
     }
@@ -5063,7 +5077,10 @@ function(input, output, session) {
       }
       
       
-      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="default")
+      if (input$yaxisscale=="logy" &&
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          !input$customyticks && input$yaxisformat=="default")
         p <- p + scale_y_log10()
       
       if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="logyformat")
@@ -5102,11 +5119,12 @@ function(input, output, session) {
       }
       
       if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) &&
-          input$yaxisformat=="default")
+          input$yaxisformat=="default"&& ! input$addrisktable)
         p <- p  + 
         scale_y_continuous(
                            expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
                                               add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+      
       
       if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="scientificy")
         p <- p  + 
