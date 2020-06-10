@@ -17,7 +17,7 @@ function(input, output, session) {
   # )
   # observeEvent(input$gradientreset, {
   #   gradient$reset()
-  # })
+  # })  
   observeEvent(input$userdefinedcontcolorreset, {
     cols <- c(muted("red"),"white",muted("blue"))
     updateColourInput(session = session,
