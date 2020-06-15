@@ -395,11 +395,33 @@ function(input, output, session) {
     }
   })
   observe({
-    if (input$yaxisscale=="lineary") {
+    if (input$KM!="None") {
+      updateRadioButtons(session, "yaxisscale", choices = c(
+        "Linear" = "lineary"))
+    }
+    if (input$KM=="None") {
+      updateRadioButtons(session, "yaxisscale", choices = c(
+        "Linear" = "lineary",
+        "Log10" = "logy"))
+    }
+ })
+  observe({
+    if (input$KM=="None") {
+      updateCheckboxInput(session, "addrisktable", value = FALSE)
+    }
+  })
+
+  observe({
+    if (input$yaxisscale=="lineary"&& input$KM=="None") {
       updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
                                                              "Comma separated" = "scientificy",
                                                              "Percent" = "percenty"))
     }
+    if (input$yaxisscale=="lineary" && input$KM!="None") {
+      updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
+                                                             "Percent" = "percenty"))
+    }
+    
     if (input$yaxisscale!="lineary") {
       updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
                                                              "Log 10^x Format" = "logyformat",
@@ -4765,7 +4787,9 @@ function(input, output, session) {
         }
         
         
-        if(input$addmediansurv== "addmediansurvival" || input$addmediansurv== "addmediancisurvival" || input$addrisktable){
+        if(input$KM!="None" && (input$addmediansurv== "addmediansurvival" ||
+                                input$addmediansurv== "addmediancisurvival" ||
+                                input$addrisktable) ){
           timevar  <- input$x
           statusvar<- "status"
           colorinputvar <-   ifelse(input$kmignorecol,"None" ,input$colorin) 
@@ -4826,6 +4850,7 @@ function(input, output, session) {
           }
           
         }
+        if (input$KM!="None") {
         
         if (input$addrisktable){
           if (!input$kmignorecol){
@@ -4837,8 +4862,11 @@ function(input, output, session) {
            }
            if (input$kmignorecol){
             p  <- p +
-              geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
-                        position =   position_dodgev(height =input$nriskpositiondodge),color=input$colkml)
+              geom_text(data=risktabledatag,
+                        aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),
+                        show.legend = FALSE,
+                        position =   position_dodgev(height =input$nriskpositiondodge),
+                        color=input$colkml)
            }
           
           
@@ -4848,29 +4876,8 @@ function(input, output, session) {
                            (abs(input$nriskpositiondodge)/2 ) )
             
           }
-          if(!is.null(input$risktablevariables)){
-            p  <- p +
-              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
-                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                 labels= c(as.vector(input$risktablevariables),
-                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
-                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-              )
-            
-          }
-          if(is.null(input$risktablevariables)){
-            p  <- p +
-              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
-                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                 labels= c("n.risk",
-                                           c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
-                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-              )
-            
-          } 
-        }
+
+        }#addrisktable input$addrisktable
         
         if(input$arrowmedian) {
           arrowmediandraw = arrow(length = unit(0.03, "npc"), type = "closed", ends = "first")
@@ -4963,7 +4970,7 @@ function(input, output, session) {
           
           
         }
-        
+}
       } ###### KM SECTION END still need to fix y scale labels
       
       p <- p + xlab(input$x)
@@ -5082,13 +5089,19 @@ function(input, output, session) {
           !input$customyticks && input$yaxisformat=="default")
         p <- p + scale_y_log10()
       
-      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="logyformat")
+      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          !input$customyticks && input$yaxisformat=="logyformat")
         p <- p + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)))
       if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && !input$customyticks && input$yaxisformat=="logyformat2")
         p <- p + scale_y_log10(labels=prettyNum)
       
-      if (input$yaxisscale=="logy" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="default") {
+      if (input$yaxisscale=="logy" &&
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          input$customyticks &&
+          input$yaxisformat=="default") {
         if ( !input$customytickslabel) {
          p <- p  + 
           scale_y_log10(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
@@ -5117,27 +5130,100 @@ function(input, output, session) {
                         minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ) 
       }
       
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) &&
-          input$yaxisformat=="default"&& ! input$addrisktable)
+      if (input$yaxisscale=="lineary" && 
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          !input$customyticks &&
+          input$yaxisformat=="default"){
+        if (!input$addrisktable){
         p <- p  + 
-        scale_y_continuous(
-                           expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                              add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+          scale_y_continuous(
+            expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                               add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+        }#norisktable
+        if(input$KM!="None" &&  input$addrisktable){
+        if(!is.null(input$risktablevariables)){
+          p  <- p +
+            scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
+                                         c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                               labels= c(as.vector(input$risktablevariables),
+                                         c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
+            )
+        }
+        if(is.null(input$risktablevariables)){
+          p  <- p +
+            scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
+                                         c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                               labels= c("n.risk",
+                                         c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
+            )
+          
+        } #defaultrisktablevariable is n.risk
+      }#addrisktable
+      } #yaxisscale=="lineary" yaxisformat=="default"
       
-      
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="scientificy")
+      if (input$yaxisscale=="lineary"
+          && !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"])&&
+          !input$customyticks &&
+          input$yaxisformat=="scientificy"){
         p <- p  + 
-        scale_y_continuous(labels=comma ,
-                           expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                              add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$yaxisformat=="percenty")
-        p <- p  + 
-        scale_y_continuous(labels=percent ,
-                           expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                              add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+          scale_y_continuous(labels=comma ,
+                             expand = expansion(mult = c(input$yexpansion_l_mult,
+                                                         input$yexpansion_r_mult),
+                                                add  = c(input$yexpansion_l_add,
+                                                         input$yexpansion_r_add)))
+        
+      }# input$yaxisscale=="lineary" input$yaxisformat=="scientificy"
+      if (input$yaxisscale=="lineary" &&
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          input$customyticks &&
+          input$yaxisformat=="percenty"){ 
+        if (!input$addrisktable){
+          p <- p  + 
+            scale_y_continuous(labels=percent,
+              expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                 add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+        }#norisktable
+        if (input$KM!="None" && input$addrisktable){
+          if(!is.null(input$risktablevariables)){
+            p  <- p +
+              scale_y_continuous(
+                breaks =c(unique(risktabledatag$keynumeric),
+                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                 labels= c(as.vector(input$risktablevariables),
+                                           c("0%","10%","20%","30%","40%","50%","60%","70%","80%","90%","100%") ),
+                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
+              )
+          }
+          if(is.null(input$risktablevariables)){
+            p  <- p +
+              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
+                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                 labels= c("n.risk",
+                                           c("0%","10%","20%","30%","40%","50%","60%","70%","80%","90%","100%") ),
+                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
+                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
+              )
+            
+          } #defaultrisktablevariable is n.risk
+        }#addrisktable        
+        
+        
+      } # input$yaxisscale=="lineary" input$yaxisformat=="percenty"
+              
       
-      
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) && input$customyticks && input$yaxisformat=="default") {
+      if (input$yaxisscale=="lineary" &&
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"])&&
+          input$customyticks &&
+          input$yaxisformat=="default") {
         if ( !input$customytickslabel) {
         p <- p  + 
           scale_y_continuous(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
@@ -5157,17 +5243,13 @@ function(input, output, session) {
         }
         
       }
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"])
-          && input$customyticks && input$yaxisformat=="default") {
-        p <- p  + 
-          scale_y_continuous(
-                             breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
-                             minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
-                             expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                add  = c(input$yexpansion_l_add, input$yexpansion_r_add)) ) 
-      }
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"])
-          && input$customyticks && input$yaxisformat=="scientificy") {
+
+      if (input$yaxisscale=="lineary" &&
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          input$customyticks &&
+          !input$customytickslabel &&
+          input$yaxisformat=="scientificy" ) {
         p <- p  + 
           scale_y_continuous(labels=comma,
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
@@ -5176,8 +5258,12 @@ function(input, output, session) {
                                                 add  = c(input$yexpansion_l_add, input$yexpansion_r_add)) ) 
       }
       
-      if (input$yaxisscale=="lineary" && !is.null(plotdata$yvalues) && is.numeric(plotdata[,"yvalues"]) &&
-          input$customyticks && input$yaxisformat=="percenty") {
+      if (input$yaxisscale=="lineary" &&
+          !is.null(plotdata$yvalues) &&
+          is.numeric(plotdata[,"yvalues"]) &&
+          input$customyticks &&
+          !input$customytickslabel &&
+          input$yaxisformat=="percenty" ) {
         p <- p  + 
           scale_y_continuous(labels=percent,
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),

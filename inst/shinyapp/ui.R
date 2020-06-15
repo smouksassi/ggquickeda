@@ -1608,9 +1608,9 @@ fluidPage(
                        fluidRow(
                          column (3,
                                  radioButtons("KM", "KM:",
-                                              c("KM" = "KM",
-                                                "KM/CI" = "KM/CI",
-                                                "None" = "None") ,selected="None") ,
+                                              c("KM" = "KM","KM/CI" = "KM/CI","None" = "None"),
+                                              selected="None",
+                                              inline = TRUE) ,
                                  conditionalPanel( " input.KM== 'KM/CI' ",
                                                    sliderInput("KMCI", "KM CI:", min=0, max=1, value=c(0.95),step=0.01),
                                                    sliderInput("KMCItransparency", "KM CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)              
