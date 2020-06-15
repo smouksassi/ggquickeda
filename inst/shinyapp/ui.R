@@ -198,10 +198,10 @@ fluidPage(
                                textInput("xaxisminorbreaks",label ="X axis minor Breaks",
                                          value = as.character(paste(6,18,sep=",") ))
                                ),
-              conditionalPanel(condition = "input.customxticks & input.xaxisformat=='default' " , 
+              conditionalPanel(condition = "input.customxticks && input.xaxisformat=='default' " , 
                                checkboxInput('customxtickslabel', 'Custom X axis labels ?', value = FALSE)
               ),
-               conditionalPanel(condition = "input.customxticks & input.customxtickslabel & input.xaxisformat=='default' " , 
+               conditionalPanel(condition = "input.customxticks && input.customxtickslabel && input.xaxisformat=='default' " , 
                                textInput("xaxislabels",label ="X axis Labels",
                                          value = as.character(paste("A","B","C" ,sep=",") )
                                )
@@ -213,7 +213,7 @@ fluidPage(
                                textInput("yaxisminorbreaks",label ="Y axis minor Breaks",
                                          value = as.character(paste(0.5,1.5,sep=",") ))
               ),
-              conditionalPanel(condition = "input.customyticks & input.yaxisformat=='default' " , 
+              conditionalPanel(condition = "input.customyticks && input.yaxisformat=='default' " , 
                                checkboxInput('customytickslabel', 'Custom Y axis labels ?', value = FALSE)
               ),
               conditionalPanel(condition = "input.customyticks & input.customytickslabel & input.yaxisformat=='default' " , 
