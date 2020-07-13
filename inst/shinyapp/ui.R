@@ -848,8 +848,11 @@ fluidPage(
                                    ,inline=TRUE),
                       conditionalPanel(
                         " input.jitterdirection== 'Custom' ",
-                        numericInput("jittervertical",label = "Vertical Jitter Height",value =0.1,min=0) ,
-                        numericInput("jitterhorizontal",label = "Horizontal Jitter Width",value =0.1,min=0) 
+                        inline_ui(
+                        numericInput("jittervertical",label = "Vertical Jitter Height",
+                                     value =0.1,min=0,width='120px')) ,
+                        inline_ui(numericInput("jitterhorizontal",
+                                               label = "Horizontal Jitter Width",value =0.1,min=0,width='120px'))
                       )
                     )
                   ),

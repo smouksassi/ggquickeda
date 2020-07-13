@@ -127,7 +127,7 @@ Main plot is output here with the various options to generate the plot below the
 * **Points, Lines**
 Selecting scatter plots points and or lines with control over transparency and more.
 * **Color/Group/Split/Size/Fill Mappings**
-`ggplot2` built-in functionality for Group, color, size, fill mappings as well as up to two variable for column and row splits (faceting).
+`ggplot2` built-in functionality for Group, color, size, fill mappings as well as up to two variables for column and row splits (faceting).
 * **Boxplots**
 * **Histograms/Density/Bar**
 * **Quantile Regression**
