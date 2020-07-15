@@ -5900,6 +5900,7 @@ function(input, output, session) {
       legend.key = element_rect(fill=input$legendkey),
       legend.direction=input$legenddirection,
       legend.spacing.x = ggplot2::unit(input$legendspacex*11, "pt"),
+      legend.spacing.y = ggplot2::unit(input$legendspacey*11, "pt"),
       legend.margin = ggplot2::margin(t = legend_margin[1],r = legend_margin[2],
                                       b = legend_margin[3],l = legend_margin[4],
                                       unit='pt'),

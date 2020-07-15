@@ -7,6 +7,7 @@
 * Updated UI for theme options
 * Added theme options for `strip.switch.pad.grid` and `strip.switch.pad.wrap`
 * Added continuous x/y scale(s) asymmetrical expansion values
+* Added control for `legend.spacing.y`
 * Minor enhancements for correlation coefficients
 * Added support for the `break.time.by` argument for risk table
 * Bumped the minimum R version dependency
