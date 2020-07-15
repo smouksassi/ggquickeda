@@ -1696,21 +1696,26 @@ fluidPage(
                   column(3,hr(),
                          checkboxInput('addcorrcoeff',
                                        "Add Correlation Coefficient to the plot ?"),
+                         conditionalPanel(
+                           " input.addcorrcoeff ",
                          checkboxInput('addcorrcoeffignoregroup',"Ignore Mapped Group ?", value=TRUE),
                          radioButtons("geomcorr", "Corr Label Geom:",
                                       c("text" = "text",
-                                        "auto text repel" = "text_repel"),selected = "text_repel" )
-                         
+                                        "auto text repel" = "text_repel"),selected = "text_repel",
+                                      inline = TRUE)
+                         )
                   ),
                   column(3,hr(),
                          conditionalPanel(
                            " input.addcorrcoeff ",
                            conditionalPanel( condition = "input.geomcorr=='text'" ,
-                                             numericInput("cortextxpos",label = "Correlation x position",
-                                                          value =0),
-                                             numericInput("cortextypos",label = "Correlation y position",
-                                                          value =0)
-                                             )
+                                             inline_ui(numericInput("cortextxpos",label = "Correlation x position",
+                                                          value =0,width='120px') ),
+                                             inline_ui(numericInput("cortextypos",label = "Correlation y position",
+                                                          value =0,width='120px') )
+                                             ),
+                           sliderInput("corrlabelsize", "Text Size:", min=0, max=6, value=c(3.88), step=0.01),
+                           
                          )
                   ),
                   column(3,hr(),
@@ -1745,7 +1750,8 @@ fluidPage(
                                )
                              )
                              
-                           )
+                           ),
+                           checkboxInput('correlationshowlegend', "Show Legend ?", value=TRUE)
                          )
                   )
                   

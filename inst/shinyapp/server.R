@@ -4576,8 +4576,15 @@ function(input, output, session) {
       #### Corr coefficient Start
       
       if(!input$corrignorecol ) {
-        label.x.value <- ifelse(input$geomcorr=="text",input$cortextxpos,Inf)
-        label.y.value <- ifelse(input$geomcorr=="text",input$cortextypos,Inf)
+        
+        cortextxpos <- input$cortextxpos
+        cortextypos <- input$cortextypos
+
+        if (is.null(cortextxpos) || is.na(cortextxpos)  ) cortextxpos <- Inf
+        if (is.null(cortextypos) || is.na(cortextypos) ) cortextypos <- Inf
+        
+        label.x.value <- ifelse(input$geomcorr=="text",cortextxpos,Inf)
+        label.y.value <- ifelse(input$geomcorr=="text",cortextypos,Inf)
         
         if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
           
@@ -4585,11 +4592,12 @@ function(input, output, session) {
             p <- p +
               stat_cor(data=plotdata,
                        aes(label = paste("italic(R)", ..r.., sep = "~`=`~")),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype,
                        geom = input$geomcorr,
                        segment.color=NA,direction="y",
-                       label.x = label.x.value, label.y = label.y.value)
+                       label.x = label.x.value, label.y = label.y.value,
+                       show.legend = input$correlationshowlegend)
             
           }
           if(input$addcorrcoeffpvalue){
@@ -4597,9 +4605,10 @@ function(input, output, session) {
               stat_cor(data=plotdata,
                        aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
                            ),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
-                       label.x = label.x.value, label.y = label.y.value)
+                       label.x = label.x.value, label.y = label.y.value,
+                       show.legend = input$correlationshowlegend)
             
           }
           
@@ -4611,9 +4620,10 @@ function(input, output, session) {
             p <- p +
               stat_cor(data=plotdata,
                        aes(label = paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
-                       position  = position_identity(),size=3.88,
+                       position  = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
-                       label.x = label.x.value, label.y = label.y.value)
+                       label.x = label.x.value, label.y = label.y.value,
+                       show.legend = input$correlationshowlegend)
             
           }
           
@@ -4623,9 +4633,11 @@ function(input, output, session) {
               stat_cor(data=plotdata,
                        aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
                            ,group=NULL),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
-                       label.x = label.x.value, label.y = label.y.value)
+                       label.x = label.x.value,
+                       label.y = label.y.value,
+                       show.legend = input$correlationshowlegend)
             
           }
           
@@ -4634,29 +4646,36 @@ function(input, output, session) {
       }#do not corrignorecol 
       
       if(input$corrignorecol ) {
-        label.x.value <- ifelse(input$geomcorr=="text",input$cortextxpos,Inf)
-        label.y.value <- ifelse(input$geomcorr=="text",input$cortextypos,Inf)
         
-        if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
+        cortextxpos <- input$cortextxpos
+        cortextypos <- input$cortextypos
+        
+        if (is.null(cortextxpos) || is.na(cortextxpos) ) cortextxpos <- Inf
+        if (is.null(cortextypos) || is.na(cortextypos) ) cortextypos <- Inf
+        
+        label.x.value <- ifelse(input$geomcorr=="text",cortextxpos,Inf)
+        label.y.value <- ifelse(input$geomcorr=="text",cortextypos,Inf)
+        
+        if(input$addcorrcoeff && !input$addcorrcoeffignoregroup) {
           
           if(!input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
                        aes(label =paste("italic(R)", ..r.., sep = "~`=`~")),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
-                       color=input$corrcol)
+                       color=input$corrcol, show.legend = input$correlationshowlegend)
           }
           
           if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
                        aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="") ),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
-                       color=input$corrcol)
+                       color=input$corrcol, show.legend = input$correlationshowlegend)
           }
           
           
@@ -4668,20 +4687,20 @@ function(input, output, session) {
             p <- p +
               stat_cor(data=plotdata,
                        aes(label =paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
-                       color= input$corrcol)
+                       color= input$corrcol, show.legend = input$correlationshowlegend)
           }
           if(input$addcorrcoeffpvalue){
             p <- p +
               stat_cor(data=plotdata,
                        aes(label =paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
                            , group=NULL),
-                       position = position_identity(),size=3.88,
+                       position = position_identity(),size=input$corrlabelsize,
                        method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
-                       color= input$corrcol)
+                       color= input$corrcol, show.legend = input$correlationshowlegend)
           }
         }#ignoregroup input$corrignorecol
         

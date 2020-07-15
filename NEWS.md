@@ -1,14 +1,15 @@
 # ggquickeda 0.1.7
-* Added support for semicolon separated files and added package version in App Title.
-* Added `geom_rug` support for x/y and for additional variable(s).
-* Added `geom_ribbon` for mean/CI and `geom_errorbar` for median/PI.
-* Updated UI for facets options and added controls for bold, angle and justification.
-* Updated UI for legends options and added controls for legend/legend box, justification and margins.
+* Added support for semicolon separated files and added package version in App Title
+* Added `geom_rug` support for x/y and for additional variable(s)
+* Added `geom_ribbon` for mean/CI and `geom_errorbar` for median/PI
+* Updated UI for facets options and added controls for bold, angle and justification
+* Updated UI for legends options and added controls for legend/legend box, justification and margins
 * Updated UI for theme options
-* Added theme options for strip.switch.pad.grid and strip.switch.pad.wrap
-* Added continuous x/y scale(s) asymmetrical expansion values.
-* Added support for the `break.time.by` argument for risk table.
-* Bumped the minimum R version dependency.
+* Added theme options for `strip.switch.pad.grid` and `strip.switch.pad.wrap`
+* Added continuous x/y scale(s) asymmetrical expansion values
+* Minor enhancements for correlation coefficients
+* Added support for the `break.time.by` argument for risk table
+* Bumped the minimum R version dependency
 
 # ggquickeda 0.1.6
 * withheld gradientInput addition (shinyjqui issue)
