@@ -5974,7 +5974,7 @@ function(input, output, session) {
                                             vjust = input$y_facet_text_vjust)
     }
     
-    p <-  p+
+    p <-  p +
       theme(panel.grid.major = element_line(colour = input$majorgridlinescol),
             panel.grid.minor = element_line(colour = input$minorgridlinescol),
             strip.background.x = element_rect(fill=input$stripbackgroundfillx),
@@ -5989,6 +5989,15 @@ function(input, output, session) {
             panel.spacing.y = unit(input$panelspacingy, "lines")
             
       )
+    if(input$removexstrip){
+    p <-  p +
+      theme(strip.background.x = element_blank())
+    }
+    if(input$removeystrip){
+    p <-  p +
+      theme(strip.background.y = element_blank())
+    }
+    
     if(input$rmmajorgridlines){
       p <-  p+
         theme(panel.grid.major = element_blank())
