@@ -2714,8 +2714,7 @@ function(input, output, session) {
         positionj<-  position_jitter(height=input$jittervertical,
                                      width=input$jitterhorizontal)
       }
-      
-      
+
       if (input$Points=="Points"){
         
         if (input$pointshapein != 'None' && !input$pointignoreshape){
@@ -5879,6 +5878,10 @@ function(input, output, session) {
     legend_margin[ which(is.na(legend_margin) ) ] <- 0
     legend_box_margin[ which(is.na(legend_box_margin) ) ] <- 0
     
+    p <- attach_source_dep(p, "plot_margin")
+    p <- attach_source_dep(p, "legend_margin")
+    p <- attach_source_dep(p, "legend_box_margin")
+    
     
     if( input$legendposition=="custom") {
       legendpositiontheme <-  c(input$legendpositionx,
@@ -5888,6 +5891,8 @@ function(input, output, session) {
     if( input$legendposition!="custom") {
       legendpositiontheme <-  input$legendposition
     } 
+    p <- attach_source_dep(p, "legendpositiontheme")
+    
     p <-    p + theme(
       panel.background = element_rect(fill=input$backgroundcol),
       panel.ontop = input$panelontop,
@@ -5974,6 +5979,9 @@ function(input, output, session) {
                                             hjust = input$y_facet_text_hjust,
                                             vjust = input$y_facet_text_vjust)
     }
+    p <- attach_source_dep(p, "y.strip.text")
+    p <- attach_source_dep(p, "x.strip.text")
+    
     
     p <-  p +
       theme(panel.grid.major = element_line(colour = input$majorgridlinescol),
@@ -6032,6 +6040,7 @@ function(input, output, session) {
       p <- attach_source_dep(p, "captionlinebreak")
     }
     p
+    
   }
   
   output$plot <- renderPlot({
