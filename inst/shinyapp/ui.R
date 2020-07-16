@@ -1181,23 +1181,33 @@ fluidPage(
               tabPanel(
                 "Smooth/Linear/Logistic Regressions",
                 fluidRow(
-                  column (3, 
+                  column (2, 
                     radioButtons("Smooth", "Smooth:",
                                  c("Smooth" = "Smooth",
                                    "Smooth and SE" = "Smooth and SE",
                                    "None" = "None"),selected="None", inline = TRUE),
                     conditionalPanel(
-                      " input.Smooth== 'Smooth and SE' ",
-                      sliderInput("smoothselevel", "Confidence Level:", min=0.5, max=0.99, value=c(0.95),step=0.01),
-                      sliderInput("smoothCItransparency", "CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
-                    ),
-                    conditionalPanel(
                       " input.Smooth!= 'None' ",
-                      checkboxInput('ignoregroup', 'Ignore Mapped Group',value = TRUE)
+                      checkboxInput('ignoregroup', 'Ignore Mapped Group',value = TRUE),
+                      uiOutput("weight")
                     ) 
                   ),
-                  column (
-                    3, 
+                  column (2,
+                          conditionalPanel(
+                            " input.Smooth== 'Smooth and SE' ",
+                            sliderInput("smoothselevel", "CI %:", min=0.5, max=0.99, value=c(0.95),step=0.01),
+                            sliderInput("smoothCItransparency", "CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)
+                          )    
+                  ),
+                  column (2, 
+                          conditionalPanel( " input.Smooth!= 'None' ",                    
+                            sliderInput("smoothlinesize", "Smooth Line(s) Size:",
+                                        min=0, max=4,value=c(1.5),step=0.1),
+                            sliderInput("smoothlinealpha", "Smooth Line(s) Transparency:",
+                                        min=0, max=1, value=c(0.5),step=0.01)
+                          )
+                  ),
+                  column(2, 
                     conditionalPanel(
                       " input.Smooth!= 'None' ",
                       selectInput('smoothmethod', label ='Smoothing Method',
@@ -1205,49 +1215,55 @@ fluidPage(
                                             "Logistic"="glm1",
                                             "Poisson"="glm2",
                                             "Emax"="emax"),
-                                  multiple=FALSE, selectize=TRUE,selected="loess"),
-                      conditionalPanel(" input.smoothmethod== 'lm' ",
-                                       checkboxInput('showslopepvalue', 'Show Slope p-value ?',value = FALSE),
-                                       checkboxInput('showadjrsquared', HTML('Show R<sup>2</sup><sub>adj</sub> ?'),value = FALSE),
-                                       checkboxInput('showlmequation', HTML('Show Int/Slope values &plusmn SE ?'),value = FALSE)
-                      ),
-                      conditionalPanel(" input.smoothmethod== 'emax' ",
-                                       checkboxInput('shownlsparams', HTML('Show Fitted values &plusmn SE ?'),value = FALSE),
-                                       checkboxInput('customemaxstart', HTML('Specify Starting values ?'),value = FALSE)
-                      ),
-                      conditionalPanel(" input.customemaxstart ",
-                                       numericInput("emaxstart",label = "Emax start",value = 1),
-                                       numericInput("ec50start",label = "EC50 start",value = 1,min=0),
-                                       checkboxInput('e0fit', 'E0 Fit ?',value = FALSE)
-                      ),
-                      
-                      conditionalPanel(" input.customemaxstart & input.e0fit ",
-                                       numericInput("e0start",label = "E0 start",value = 1)
-                      ),
-                      conditionalPanel(" input.smoothmethod== 'loess' ",
-                                       sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),
-                                       selectInput('loessfamily', label ='Loess Family:',
-                                                   choices=c("Gaussian" ="gaussian","Symmetric"="symmetric"),
-                                                   multiple=FALSE, selectize=TRUE,selected="gaussian"),
-                                       sliderInput("loessdegree", "Loess Degree:", min=0, max=2, value=c(1),step=1)
-                      ),
-                      conditionalPanel(" input.smoothmethod== 'emax' | input.smoothmethod== 'lm' ",
-                                       sliderInput("smoothtextsize", "Text Size:", min=0, max=10, value=c(3.88),step=0.01)
-                                       
-                      )
-                      
-                      
-                    ) 
+                                  multiple=FALSE, selectize=TRUE,selected="loess")
+                    )
                   ),
-                  column (
-                    3, 
-                    uiOutput("weight"),
-                    conditionalPanel( " input.Smooth!= 'None' ",                    
-                                      sliderInput("smoothlinesize", "Smooth Line(s) Size:", min=0, max=4,value=c(1.5),step=0.1),
-                                      sliderInput("smoothlinealpha", "Smooth Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01)
-                    )),
-                  
-                  column (3,
+                 column (2,
+                          conditionalPanel(" input.Smooth!= 'None' ",
+                                           
+                          conditionalPanel(" input.smoothmethod== 'lm' ",
+                                           checkboxInput('showslopepvalue', 'Show Slope p-value ?',value = FALSE),
+                                           checkboxInput('showadjrsquared', HTML('Show R<sup>2</sup><sub>adj</sub> ?'),value = FALSE),
+                                           checkboxInput('showlmequation', HTML('Show Int/Slope values &plusmn SE ?'),value = FALSE)
+                          ),
+                          conditionalPanel(" input.smoothmethod== 'emax' ",
+                                           checkboxInput('shownlsparams', HTML('Show Fitted values &plusmn SE ?'),
+                                                         value = FALSE),
+                                           checkboxInput('customemaxstart', HTML('Specify Starting values ?'),
+                                                         value = FALSE),
+                                           checkboxInput('e0fit', 'E0 Fit ?',value = FALSE)
+                          ),
+                          conditionalPanel(" input.smoothmethod== 'emax' & input.customemaxstart ",
+                                           inline_ui(
+                                             numericInput("emaxstart",label = "Emax start",
+                                                          value = 1, width='80px')
+                                             ),
+                                           inline_ui(
+                                             numericInput("ec50start",label = "EC50 start",
+                                                          value = 1, min=0, width='80px')
+                                             )
+                          ),
+                          
+                          conditionalPanel(" input.customemaxstart & input.e0fit ",
+                                           inline_ui(numericInput("e0start",label = "E0 start",
+                                                                  value = 1 , width='80px')
+                                                     )
+                          ),
+                          conditionalPanel(" input.smoothmethod== 'loess' ",
+                                           sliderInput("loessens", "Loess Span:", min=0, max=1, value=c(0.75),step=0.05),
+                                           selectInput('loessfamily', label ='Loess Family:',
+                                                       choices=c("Gaussian" ="gaussian","Symmetric"="symmetric"),
+                                                       multiple=FALSE, selectize=TRUE,selected="gaussian"),
+                                           sliderInput("loessdegree", "Loess Degree:", min=0, max=2, value=c(1),step=1)
+                          ),
+                          conditionalPanel(" input.smoothmethod== 'emax' | input.smoothmethod== 'lm' ",
+                                           sliderInput("smoothtextsize", "Text Size:", min=0, max=10,
+                                                       value=c(3.88),step=0.01)
+                                           
+                          )
+                  )
+                  ),
+                  column (2,
                           conditionalPanel( " input.Smooth!= 'None' ",
                                             checkboxInput('smoothignorecol', 'Ignore Mapped Color'),
                                             conditionalPanel(
@@ -1266,7 +1282,6 @@ fluidPage(
               ### Mean CI section
               tabPanel("Mean (CI)",
                        fluidRow(
-                         column(12, hr()),
                          column (2,
                                  radioButtons(
                                    "Mean",
@@ -1464,7 +1479,6 @@ fluidPage(
               ### median PI section
               tabPanel("Median (PIs)",
                fluidRow(
-                  column(12,hr()),
                   column (2,
                     radioButtons("Median", "Median:",
                                  c("Median" = "Median",
@@ -1700,7 +1714,7 @@ fluidPage(
               tabPanel(
                 "Correlation Coefficient",
                 fluidRow(
-                  column(3,hr(),
+                  column(3,
                          checkboxInput('addcorrcoeff',
                                        "Add Correlation Coefficient to the plot ?"),
                          conditionalPanel(
@@ -1712,7 +1726,7 @@ fluidPage(
                                       inline = TRUE)
                          )
                   ),
-                  column(3,hr(),
+                  column(3,
                          conditionalPanel(
                            " input.addcorrcoeff ",
                            conditionalPanel( condition = "input.geomcorr=='text'" ,
@@ -1725,7 +1739,7 @@ fluidPage(
                            
                          )
                   ),
-                  column(3,hr(),
+                  column(3,
                          conditionalPanel(
                            " input.addcorrcoeff ",
                            selectInput("corrtype", label = "Correlation Method:",
@@ -1737,7 +1751,7 @@ fluidPage(
                            checkboxInput('addcorrcoeffpvalue',"Show R p-value?", value=FALSE)
                          )
                   ),
-                  column(3,hr(),
+                  column(3,
                          conditionalPanel(
                            " input.addcorrcoeff ",
                            checkboxInput('corrignorecol', 'Ignore Mapped Color'),
@@ -1768,8 +1782,7 @@ fluidPage(
               tabPanel(
                 "Text Labels",
                 fluidRow(
-                  column (
-                    3,hr(),
+                  column (3,
                     checkboxInput('addcustomlabel',
                                   "Add Text Labels from Data?"),
                     checkboxInput('addcustomlabelignoregroup',"Ignore Mapped Group ?", value=TRUE),
@@ -1779,7 +1792,7 @@ fluidPage(
                                    "auto text repel" = "text_repel",
                                    "auto label repel" = "label_repel"), inline = TRUE)
                   ),
-                  column(3,hr(),
+                  column(3,
                          conditionalPanel(
                            " input.addcustomlabel ",
                            uiOutput("labeltext")
@@ -1795,7 +1808,7 @@ fluidPage(
                          )
                          
                   ),
-                  column(3,hr(),
+                  column(3,
                          conditionalPanel(
                            " input.addcustomlabel ",
                            sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1),
@@ -1803,7 +1816,7 @@ fluidPage(
                          )
                   ),
                   
-                  column(3,hr(),
+                  column(3,
                          conditionalPanel(
                            " input.addcustomlabel ",
                            checkboxInput('customlabelignorecol', 'Ignore Mapped Color'),
