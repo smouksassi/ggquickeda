@@ -5090,7 +5090,7 @@ function(input, output, session) {
     if (!input$show_pairs) {
       allfacetsvariables<- c(input$facetrowin,input$facetrowextrain,input$facetcolin,input$facetcolextrain)
       allfacetsvariables[which(duplicated(allfacetsvariables))]<- "." # make it not fail
-      
+      labelwrapwidth <- input$labelwrapwidth
       facets <- paste(allfacetsvariables[1],
                       '+',
                       allfacetsvariables[2],
@@ -5110,16 +5110,18 @@ function(input, output, session) {
         }
         
         if (input$facetlabeller != "label_wrap_gen"){
-          p <-
-            p + facet_grid(
-              facets,
-              scales = input$facetscalesin,
-              space = input$facetspace,
-              switch = facetswitch,
-              labeller =input$facetlabeller,
-              margins = facetmargins(),
-              as.table = ASTABLE
-            ) 
+          p <- p + facet_grid(
+            facets,
+            scales = input$facetscalesin,
+            space = input$facetspace,
+            switch = facetswitch,
+            labeller = eval(parse(
+              text=paste0("function(labs){",input$facetlabeller,
+                          "(labs, multi_line = ",input$facetwrapmultiline,")}")
+            )),
+            margins = facetmargins(),
+            as.table = ASTABLE
+          )
         }
         if (input$facetlabeller == "label_wrap_gen"){
           p <-
@@ -5172,7 +5174,10 @@ function(input, output, session) {
             scales = input$facetscalesin,
             ncol = input$wrapncol,
             nrow = input$wrapnrow,
-            labeller = input$facetlabeller,
+            labeller = eval(parse(
+              text=paste0("function(labs){",input$facetlabeller,
+                          "(labs, multi_line = ",input$facetwrapmultiline,")}")
+            )),
             strip.position = input$stripposition,
             as.table = ASTABLE
           )
@@ -5184,7 +5189,7 @@ function(input, output, session) {
           ncol = input$wrapncol,
           nrow = input$wrapnrow,
           labeller = label_wrap_gen(width = input$labelwrapwidth,
-                                    multi_line = multiline),
+                                    multi_line = input$facetwrapmultiline),
           strip.position = input$stripposition,
           as.table = ASTABLE
         )

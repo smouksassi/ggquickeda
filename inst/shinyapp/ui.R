@@ -533,10 +533,11 @@ fluidPage(
                          conditionalPanel(
                            condition = "input.facetlabeller== 'label_wrap_gen'  " ,
                            sliderInput("labelwrapwidth", "N Characters to Wrap Labels:",
-                                       min=5, max=100, value=c(25),step=1),
-                           checkboxInput('facetwrapmultiline', 'Strip labels on multiple lines?',
-                                         value=FALSE)
-                         )
+                                       min=5, max=100, value=c(25),step=1)
+                         ),
+                         checkboxInput('facetwrapmultiline',
+                                       'Strip labels on multiple lines?',
+                                       value = TRUE)
                 ),
                 tabPanel("Facet Wrap",
                          checkboxInput('facetwrap', 'Use facet_wrap?'),
