@@ -5916,6 +5916,9 @@ function(input, output, session) {
                                           b = legend_box_margin[3],l = legend_box_margin[4],
                                           unit='pt')
     )
+    p <-    p + theme(
+      plot.title.position =input$titleposition ,
+      plot.caption.position =input$captionposition 	)
     
     if (input$labelguides)
       p <-    p+

@@ -151,7 +151,13 @@ fluidPage(
               textInput('xlab', 'X axis label', value = "") ,
               textInput('title', 'Plot Title', value = "") ,
               textInput('subtitle', 'Plot Subtitle', value = "") ,
+              radioButtons("titleposition", "Title Positioning:",
+                           c("Panel" = "panel",
+                             "Plot" = "plot"), inline = TRUE),
               textInput('caption', 'Plot Caption', value = "") ,
+              radioButtons("captionposition", "Caption Positioning:",
+                           c("Panel" = "panel",
+                             "Plot" = "plot"), inline = TRUE),
               hr(),
               
               fluidRow(
