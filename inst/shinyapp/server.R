@@ -5102,6 +5102,8 @@ function(input, output, session) {
       ASTABLE <- ifelse(input$facetordering == "table", TRUE, FALSE)
       if (facets != '. + . ~ . + .' && !input$facetwrap) {
         facets<- as.formula(facets)
+        p <- attach_source_dep(p, "facets")
+        
         facetswitch <-
           if (input$facetswitch == "none")
             NULL

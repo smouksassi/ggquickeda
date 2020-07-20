@@ -1223,6 +1223,10 @@ fluidPage(
                                             "Poisson"="glm2",
                                             "Emax"="emax"),
                                   multiple=FALSE, selectize=TRUE,selected="loess")
+                    ),
+                    conditionalPanel(
+                      "input.Smooth== 'Smooth and SE' & input.smoothmethod== 'emax' ",
+                    h5("The emax fit is based on a nonlinear `nls` fit which does not support providing standard errors."),
                     )
                   ),
                  column (2,
