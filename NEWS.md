@@ -11,7 +11,7 @@
 * Added continuous x/y scale(s) asymmetrical expansion values
 * Minor enhancements for correlation coefficients
 * Updated UI for theme options
-* Added support for the `break.time.by` argument for risk table
+* Added support for the `break.time.by` argument for risk table, enhaned the K-M UI and added inputs for `conf.type` and `conf.lower`
 * Bumped the minimum R version to 3.6.0 and the minimum ggplot version to 3.3.1
 * Refreshed vignettes and readme screenshots
 

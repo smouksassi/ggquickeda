@@ -4856,6 +4856,8 @@ function(input, output, session) {
               geom_ribbon(stat="kmband",
                           alpha=input$KMCItransparency,
                           conf.int = input$KMCI,
+                          conf.type = input$kmconftype,
+                          conf.lower = input$kmconflower,
                           trans=input$KMtrans,
                           color="transparent"
               )
@@ -4884,6 +4886,8 @@ function(input, output, session) {
               geom_ribbon(stat="kmband",
                           alpha=input$KMCItransparency,
                           conf.int = input$KMCI,
+                          conf.type = input$kmconftype,
+                          conf.lower = input$kmconflower,
                           trans=input$KMtrans,
                           color="transparent"
               )

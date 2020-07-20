@@ -1660,31 +1660,37 @@ fluidPage(
               
               tabPanel("Kaplan-Meier (CI)",
                        fluidRow(
-                         column (3,
+                         column (2,
                                  radioButtons("KM", "KM:",
                                               c("KM" = "KM","KM/CI" = "KM/CI","None" = "None"),
                                               selected="None",
                                               inline = TRUE) ,
-                                 conditionalPanel( " input.KM== 'KM/CI' ",
-                                                   sliderInput("KMCI", "KM CI:", min=0, max=1, value=c(0.95),step=0.01),
-                                                   sliderInput("KMCItransparency", "KM CI Transparency:", min=0, max=1, value=c(0.2),step=0.01)              
-                                 ),
                                  conditionalPanel( " input.KM!= 'None' ",
-                                                   checkboxInput('KMignoregroup', 'Ignore Mapped Group',value = TRUE),
-                                                   checkboxInput('addrisktable', 'Add Risk Table',value = FALSE),
-                                                   conditionalPanel( " input.addrisktable ",
-                                                                     selectizeInput("risktablevariables", 'Numbers to Show:',
-                                                                                    choices = c("n.risk","n.event","n.censor","pct.risk","cum.n.event","cum.n.censor") ,multiple=TRUE,
-                                                                                    selected = c("n.risk","n.censor")),
-                                                                     checkboxInput('addhorizontallines', 'Draw Horizontal lines',value = TRUE),
-                                                                     numericInput(inputId = "breaktimeby",
-                                                                       label = "Show Numbers Every x time unit:",value="", min = 0,max = NA),
-                                                                     sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
-                                                                     sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01)
-                                                   )#risktable
+                                                   checkboxInput('KMignoregroup', 'Ignore Mapped Group',value = TRUE)
                                  )#kmnotnotnone
                          ) ,#first km column
-                         column (3,
+                         column (2,
+                                 
+                                 conditionalPanel( " input.KM== 'KM/CI' ",
+                                                   sliderInput("KMCI", "KM CI:", min=0, max=1, value=c(0.95),step=0.01),
+                                                   sliderInput("KMCItransparency", "KM CI Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                                                   radioButtons("kmconftype", "KM CI type:",
+                                                                c("none" = "none",
+                                                                  "plain" = "plain",
+                                                                  "log" = "log",
+                                                                  "log-log" = "log-log",
+                                                                  "logit" = "logit"),
+                                                                selected = "log",
+                                                                inline = TRUE),
+                                                   radioButtons("kmconflower", "KM lower CI type:",
+                                                                c("usual" = "usual",
+                                                                  "peto" = "peto",
+                                                                  "modified" = "modified"),
+                                                                selected = "log",
+                                                                inline = TRUE)
+                                 )
+                         ),#second km colonne
+                         column (2,
                                  conditionalPanel( " input.KM!= 'None' ",
                                                    sliderInput("kmlinesize", "KM Line(s) Size:", min=0, max=6, value=c(1),step=0.1),
                                                    sliderInput("kmlinealpha", "KM Line(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
@@ -1698,8 +1704,8 @@ fluidPage(
                                                    )#addmedian
                                                    
                                  )#kmnotnotnone
-                         ),#second km column
-                         column (3,
+                         ),#3 km column
+                         column (2,
                                  conditionalPanel(" input.KM!= 'None' ",
                                                   selectInput('KMtrans', label ='KM Transformation',
                                                               choices=c("None" ="identity","event"="event",
@@ -1708,8 +1714,23 @@ fluidPage(
                                                   checkboxInput('censoringticks', 'Show Censoring Ticks?'),
                                                   checkboxInput('reversecenstoevent', 'Status is Censoring Flag ?') 
                                  )#kmnotnotnone
-                         ),#third km column
-                         column (3,
+                         ),#4 km column
+                         column (2,
+                                 conditionalPanel(" input.KM!= 'None' ",
+                                checkboxInput('addrisktable', 'Add Risk Table',value = FALSE)),
+                                 conditionalPanel( " input.KM!= 'None' & input.addrisktable ",
+                                                   selectizeInput("risktablevariables", 'Numbers to Show:',
+                                                                  choices = c("n.risk","n.event","n.censor","pct.risk","cum.n.event","cum.n.censor") ,multiple=TRUE,
+                                                                  selected = c("n.risk","n.censor")),
+                                                   checkboxInput('addhorizontallines', 'Draw Horizontal lines',value = TRUE),
+                                                   numericInput(inputId = "breaktimeby",
+                                                                label = "Show Numbers Every x time unit:",value="", min = 0,max = NA),
+                                                   sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
+                                                   sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01)
+                                 )#risktable
+                         ),
+                         
+                         column (2,
                                  conditionalPanel(" input.KM!= 'None' ",
                                                   checkboxInput('kmignorecol', 'Ignore Mapped Color'),
                                                   conditionalPanel(" input.kmignorecol ",
