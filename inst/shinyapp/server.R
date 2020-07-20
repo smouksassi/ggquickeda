@@ -325,10 +325,14 @@ function(input, output, session) {
   })
   
   observeEvent(input$majorgridlinescolreset, {
-    shinyjs::reset("majorgridlinescol")
+    shinyjs::reset("majorgridlinescolx")
+    shinyjs::reset("majorgridlinescoly")
+    
   })
   observeEvent(input$minorgridlinescolreset, {
-    shinyjs::reset("minorgridlinescol")
+    shinyjs::reset("minorgridlinescolx")
+    shinyjs::reset("minorgridlinescoly")
+    
   })
   
   observeEvent(input$colpointreset, {
@@ -5994,8 +5998,10 @@ function(input, output, session) {
     
     
     p <-  p +
-      theme(panel.grid.major = element_line(colour = input$majorgridlinescol),
-            panel.grid.minor = element_line(colour = input$minorgridlinescol),
+      theme(panel.grid.major.x = element_line(colour = input$majorgridlinescolx),
+            panel.grid.minor.x = element_line(colour = input$minorgridlinescolx),
+            panel.grid.major.y = element_line(colour = input$majorgridlinescoly),
+            panel.grid.minor.y = element_line(colour = input$minorgridlinescoly),
             strip.background.x = element_rect(fill=input$stripbackgroundfillx),
             strip.background.y = element_rect(fill=input$stripbackgroundfilly),
             strip.placement  = input$stripplacement,
@@ -6017,13 +6023,21 @@ function(input, output, session) {
       theme(strip.background.y = element_blank())
     }
     
-    if(input$rmmajorgridlines){
+    if(input$rmmajorgridlinesx){
       p <-  p+
-        theme(panel.grid.major = element_blank())
+        theme(panel.grid.major.x = element_blank())
     }
-    if(input$rmminorgridlines){
+    if(input$rmminorgridlinesx){
       p <-  p+
-        theme(panel.grid.minor = element_blank())
+        theme(panel.grid.minor.x = element_blank())
+    }
+    if(input$rmmajorgridlinesy){
+      p <-  p+
+        theme(panel.grid.major.y = element_blank())
+    }
+    if(input$rmminorgridlinesy){
+      p <-  p+
+        theme(panel.grid.minor.y = element_blank())
     }
     
     if(input$rmxaxistickslabels){
