@@ -871,12 +871,14 @@ fluidPage(
                       " input.Points!= 'None' ",
                       sliderInput("pointsizes", "Points Size:", min=0, max=6, value=c(1),step=0.1),
                       checkboxInput('pointignoresize', 'Ignore Mapped Size'),
-                      radioButtons("jitterdirection", "Jitter Direction:",
+                      radioButtons("jitterdirection", "Add noise/adjust points:",
                                    c("None" = "None",
-                                     "Vertical"  = "Vertical",
-                                     "Horizontal"  = "Horizontal",
-                                     "Default" = "Default",
-                                     "Custom" = "Custom"
+                                     "Jitter Vertical"  = "Vertical",
+                                     "Jitter Horizontal"  = "Horizontal",
+                                     "Jitter Both" = "Default",
+                                     "Jitter Custom" = "Custom",
+                                     "Side By Side"= "dodge",
+                                     "Top on Top"= "dodgev"
                                    ),selected="None"
                                    ,inline=TRUE),
                       conditionalPanel(
@@ -886,6 +888,18 @@ fluidPage(
                                      value =0.1,min=0,width='120px')) ,
                         inline_ui(numericInput("jitterhorizontal",
                                                label = "Horizontal Jitter Width",value =0.1,min=0,width='120px'))
+                      ),
+                      conditionalPanel(
+                        " input.jitterdirection== 'dodge' ",
+                        inline_ui(
+                          numericInput("pointdodgewidth",label = "Points dodge width",
+                                       value =0.75,min=0,width='120px'))
+                      ),
+                      conditionalPanel(
+                        " input.jitterdirection== 'dodgev' ",
+                        inline_ui(
+                          numericInput("pointdodgeheight",label = "Points dodge height",
+                                       value =0.75,min=0,width='120px'))
                       )
                     )
                   ),
@@ -1329,9 +1343,9 @@ fluidPage(
                                    checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE),
                                    selectInput("positionmean", label = "Mean positioning for overlap:",
                                                choices = c(
-                                                 "Default"="position_identity()",
-                                                 "Side By Side"="position_dodge2(width = 0.75)"
-                                               ),selected = "position_identity()")
+                                                 "Default"="position_identity",
+                                                 "Side By Side"="position_dodge"
+                                               ),selected = "position_identity")
                                    
                                  )
                                  
@@ -1352,20 +1366,18 @@ fluidPage(
                                      value = c(0.95),
                                      step = 0.01
                                    ),
-                                   conditionalPanel(
-                                     " input.geommeanCI== 'errorbar' ",
+                                   sliderInput("meancitransparency", "CI Transparency:",
+                                               min=0, max=1, value=c(0.2),step=0.01)
+                                ),
+                                conditionalPanel(
+                                  " input.Mean== 'Mean/CI' | input.positionmean =='position_dodge'  ",
                                      numericInput(
                                        inputId = "errbar",
-                                       label = "CI bar width:",
+                                       label = "CI bar/dodge width:",
                                        value = 0.75,
                                        min = 0.1,
                                        max = NA
                                      )
-                                     ),
-                                     sliderInput("meancitransparency", "CI Transparency:",
-                                                 min=0, max=1, value=c(0.2),step=0.01)
-                                     
-                                   
                                  )       
                                  
                          ),# ci column options
@@ -1519,9 +1531,9 @@ fluidPage(
                     checkboxInput('medianignoregroup', 'Ignore Mapped Group',value = TRUE),
                     selectInput("positionmedian", label = "Median positioning for overlap:",
                                 choices = c(
-                                  "Default"="position_identity()",
-                                  "Side By Side"="position_dodge2(width = 0.75)"
-                                ),selected = "position_identity()"),
+                                  "Default"="position_identity",
+                                  "Side By Side"="position_dodge"
+                                ),selected = "position_identity")
                     
                     )
                   ),#first column
@@ -1533,20 +1545,22 @@ fluidPage(
                                                  selected = "ribbon",
                                                  inline = TRUE),
                                     sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
-                                    conditionalPanel(
-                                      " input.geommedianPI== 'errorbar' ",
-                                      numericInput(
-                                        inputId = "medianerrbar",
-                                        label = "PI bar width:",
-                                        value = 0.75,
-                                        min = 0.1,
-                                        max = NA
-                                      )
-                                    ),
                                     sliderInput("PItransparency", "PI Transparency:",
                                                 min=0, max=1, value=c(0.2),step=0.01)
                                     
-                  )
+                  ),
+                  
+                  conditionalPanel(
+                    " input.Median== 'Median/PI' | input.positionmedian =='position_dodge'  ",
+                    numericInput(
+                      inputId = "medianerrbar",
+                      label = "PI bar/dodge width:",
+                      value = 0.75,
+                      min = 0.1,
+                      max = NA
+                    )
+                  ) 
+                  
                 ), # Pi color options
                 
                   column (2,

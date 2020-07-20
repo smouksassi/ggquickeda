@@ -2701,106 +2701,115 @@ function(input, output, session) {
           & input$colorin == 'None')
         p <- p + aes(group=1)
       
-      if (input$jitterdirection=="None"){
-        positionj<- position_identity()
+      if (input$jitterdirection =="None"){
+        positionj <- "position_identity()"
       }
+      
       if (input$jitterdirection=="Vertical"){
-        positionj<- position_jitter(width=0)
+        positionj<- "position_jitter(width=0)"
       }
+      
       if (input$jitterdirection=="Horizontal"){
-        positionj<-  position_jitter(height=0)
+        positionj<-  "position_jitter(height=0)"
       }
       
       if (input$jitterdirection=="Default"){
-        positionj<-  position_jitter()
+        positionj<-  "position_jitter()"
       }
       if (input$jitterdirection=="Custom"){
-        positionj<-  position_jitter(height=input$jittervertical,
-                                     width=input$jitterhorizontal)
+        positionj<-  paste0("position_jitter(height=",
+                            input$jittervertical,
+                            ",width=",input$jitterhorizontal,")")
       }
-
+      if (input$jitterdirection=="dodge"){
+        positionj<-  paste0("position_dodge(width=",input$pointdodgewidth,")")
+      }
+      if (input$jitterdirection=="dodgev"){
+        positionj<-  paste0("position_dodgev(height=",input$pointdodgeheight,")")
+      }
+      
       if (input$Points=="Points"){
         
         if (input$pointshapein != 'None' && !input$pointignoreshape){
           
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,
                                 alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
         }
         
         if (input$pointshapein != 'None' && input$pointignoreshape){
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
         }
         
         if(input$pointshapein == 'None' ){
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=positionj)
+                                position=eval(parse(text=positionj)))
           
           
         }
@@ -2924,7 +2933,14 @@ function(input, output, session) {
       #### Boxplot Section END
       
       
-      ###### Mean section  START 
+      ###### Mean section  START
+      if (input$positionmean=="position_identity"){
+        positionmean<-  "position_identity()"
+      }
+      if (input$positionmean=="position_dodge"){
+        positionmean<-  paste0("position_dodge(width=",input$errbar,")")
+      }
+      
       if (!input$meanignoregroup) {
         
         if (!input$meanignorecol) {
@@ -2935,14 +2951,14 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(mean, geom = "line",
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
             
             if(input$meanlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(mean, geom = "line",
                                 size=input$meanlinesize,
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
             
 
           }# mean
@@ -2955,7 +2971,7 @@ function(input, output, session) {
                             size=input$meanlinesize,
                             alpha=input$meancitransparency,
                             col=NA,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
@@ -2963,7 +2979,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             size=input$meanlinesize,
                             alpha=input$meancitransparency,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if (input$meanlines){
               p <- p + 
@@ -2971,7 +2987,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI),
                             size=input$meanlinesize,
                             alpha=input$alphameanl,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
           }
           
@@ -2983,21 +2999,21 @@ function(input, output, session) {
                               fun.args=list(conf.int=input$CI), 
                               alpha=input$meancitransparency,
                               col=NA,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
             if (input$meanlines){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
                             fun.args=list(conf.int=input$CI),
                             alpha=input$alphameanl,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
               
             }
@@ -3006,13 +3022,13 @@ function(input, output, session) {
             if(input$meanpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(mean, geom = "point", alpha=input$alphameanp,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
             
             if(input$meanpoints && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(mean, geom = "point", size=input$meanpointsize,
                                 alpha=input$alphameanp,
-                                position = eval(parse(text=input$positionmean)))               
+                                position = eval(parse(text=positionmean)))               
           }
           
             if(input$Mean!="None" && input$forcemeanshape)    {
@@ -3021,7 +3037,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = "point",
                               alpha=input$alphameanp,
                               shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
@@ -3029,7 +3045,7 @@ function(input, output, session) {
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
                               shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
             }
           
 
@@ -3040,7 +3056,7 @@ function(input, output, session) {
                            alpha=input$alphameanlabel,
                            fun.y = mean,
                            fontface = "bold",
-                           position = eval(parse(text=input$positionmean)),
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Mean!="None" && input$meanN)  {
@@ -3048,7 +3064,7 @@ function(input, output, session) {
               stat_summary(fun.data = give.n,  geom = input$geommeanlabel,
                            alpha=input$alphameanlabel,
                            fun.y = mean, fontface = "bold",
-                           position = eval(parse(text=input$positionmean)),
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -3064,14 +3080,14 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(mean, geom = "line",col=meancoll,
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
             
             if(input$meanlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(mean, geom = "line",col=meancoll,
                                 size=input$meanlinesize,
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
 
           }
           
@@ -3083,7 +3099,7 @@ function(input, output, session) {
                               fun.args=list(conf.int=input$CI), 
                               alpha=input$meancitransparency,
                               col=NA,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
@@ -3091,7 +3107,7 @@ function(input, output, session) {
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
                               col=meancoll,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
               if(input$meanlines) {
                 p <- p + 
@@ -3099,7 +3115,7 @@ function(input, output, session) {
                               fun.args=list(conf.int=input$CI),
                               alpha=input$alphameanl,
                               col=meancoll,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
                 
               }
               
@@ -3113,7 +3129,7 @@ function(input, output, session) {
                               size=input$meanlinesize,
                               alpha=input$meancitransparency,
                               col=NA,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
@@ -3122,7 +3138,7 @@ function(input, output, session) {
                               col=meancoll,
                               size=input$meanlinesize,
                               alpha=input$meancitransparency,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
               if(input$meanlines) {
                 p <- p + 
@@ -3131,7 +3147,7 @@ function(input, output, session) {
                               alpha=input$alphameanl,
                               col=meancoll,
                               size=input$meanlinesize,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
                 
               }
               
@@ -3144,7 +3160,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = "point",
                               col=meancolp,
                               alpha=input$alphameanp,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
@@ -3152,7 +3168,7 @@ function(input, output, session) {
                               col=meancolp,
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
             }
             if(input$Mean!="None" && input$forcemeanshape)    {
@@ -3163,7 +3179,7 @@ function(input, output, session) {
                               col=meancolp,
                               alpha=input$alphameanp,
                               shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
@@ -3171,7 +3187,7 @@ function(input, output, session) {
                               col=meancolp,
                               size=input$meanpointsize,
                               alpha=input$alphameanp,shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
             }
             
@@ -3180,13 +3196,13 @@ function(input, output, session) {
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
                            alpha=input$alphameanlabel,
                            fun.y = mean, fontface = "bold",
-                           col=meancolp,position = eval(parse(text=input$positionmean)),
+                           col=meancolp,position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Mean!="None" && input$meanN)  {
             p <-   p   +
               stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
-                           fun.y = mean, fontface = "bold", col=meancolp,position = eval(parse(text=input$positionmean)),
+                           fun.y = mean, fontface = "bold", col=meancolp,position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -3201,12 +3217,12 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(mean, geom = "line",aes(group=NULL),
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))     
+                                position = eval(parse(text=positionmean)))     
             if(input$meanlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(mean, geom = "line",aes(group=NULL),size=input$meanlinesize,
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))     
+                                position = eval(parse(text=positionmean)))     
             
   
           } # input = mean
@@ -3220,7 +3236,7 @@ function(input, output, session) {
                               alpha=input$meancitransparency,
                               col=NA,
                               size=input$meanlinesize,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
@@ -3228,7 +3244,7 @@ function(input, output, session) {
                               fun.args=list(conf.int=input$CI),aes(group=NULL), 
                               alpha=input$meancitransparency,
                               size=input$meanlinesize, width = input$errbar,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               }
             if(input$meanlines){
               p <- p + 
@@ -3237,7 +3253,7 @@ function(input, output, session) {
                             aes(group=NULL),
                             alpha=input$alphameanl,
                             size=input$meanlinesize,
-                            position = eval(parse(text=input$positionmean))) 
+                            position = eval(parse(text=positionmean))) 
               
             }
           }
@@ -3249,7 +3265,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI), aes(group=NULL),
                             alpha=input$meancitransparency,
                             col=NA,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
@@ -3257,7 +3273,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI),aes(group=NULL), 
                             alpha=input$meancitransparency,
                             width = input$errbar,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if(input$meanlines){
               p <- p + 
@@ -3265,7 +3281,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI),
                             aes(group=NULL),
                             alpha=input$alphameanl,
-                            position = eval(parse(text=input$positionmean))) 
+                            position = eval(parse(text=positionmean))) 
               
             }
           }
@@ -3276,13 +3292,13 @@ function(input, output, session) {
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
                               alpha=input$alphameanp,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
             }
             if(input$Mean!="None" && input$forcemeanshape)    {
@@ -3290,13 +3306,13 @@ function(input, output, session) {
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
                               alpha=input$alphameanp,shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               if(input$meanpoints&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
                               size=input$meanpointsize,
                               alpha=input$alphameanp,shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               
             }
 
@@ -3306,7 +3322,7 @@ function(input, output, session) {
                            alpha=input$alphameanlabel,
                            aes(group=NULL),
                            fun.y = mean, fontface = "bold",
-                           position = eval(parse(text=input$positionmean)),
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Mean!="None" && input$meanN)  {
@@ -3315,7 +3331,7 @@ function(input, output, session) {
                            alpha=input$alphameanlabel,
                            aes(group=NULL),
                            fun.y = mean, fontface = "bold",
-                           position = eval(parse(text=input$positionmean)),
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -3331,12 +3347,12 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),
                                 alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
             if(input$meanlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),
                                 size=input$meanlinesize,alpha=input$alphameanl,
-                                position = eval(parse(text=input$positionmean)))
+                                position = eval(parse(text=positionmean)))
 
           } # selected input mean
           
@@ -3349,7 +3365,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI), 
                             alpha=input$meancitransparency,
                             col=NA,aes(group=NULL),
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
@@ -3357,7 +3373,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             alpha=input$meancitransparency,
                             col=meancoll,aes(group=NULL),
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if(input$meanlines) {
               p <- p + 
@@ -3365,7 +3381,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI),
                             alpha=input$alphameanl,
                             col=meancoll,aes(group=NULL),
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
               
             }
             
@@ -3379,7 +3395,7 @@ function(input, output, session) {
                             size=input$meanlinesize,
                             alpha=input$meancitransparency,
                             col=NA,aes(group=NULL),
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
@@ -3388,7 +3404,7 @@ function(input, output, session) {
                             col=meancoll,aes(group=NULL),
                             size=input$meanlinesize,
                             alpha=input$meancitransparency,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
             }
             if(input$meanlines) {
               p <- p + 
@@ -3397,7 +3413,7 @@ function(input, output, session) {
                             alpha=input$alphameanl,
                             col=meancoll,aes(group=NULL),
                             size=input$meanlinesize,
-                            position = eval(parse(text=input$positionmean)))
+                            position = eval(parse(text=positionmean)))
               
             }
             
@@ -3410,12 +3426,12 @@ function(input, output, session) {
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
                               alpha=input$alphameanp,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               if(input$meanpoints & input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
                               size=input$meanpointsize,alpha=input$alphameanp,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
             }
             
             if(input$Mean!="None" && input$forcemeanshape)    {
@@ -3424,12 +3440,12 @@ function(input, output, session) {
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
                               alpha=input$alphameanp,shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
                               size=input$meanpointsize,alpha=input$alphameanp,shape=input$meanshapes,
-                              position = eval(parse(text=input$positionmean)))
+                              position = eval(parse(text=positionmean)))
             }
 
           if (input$Mean!="None" && input$meanvalues )  {
@@ -3437,7 +3453,7 @@ function(input, output, session) {
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,alpha=input$alphameanlabel,
                            col=meancolp,aes(group=NULL),
                            fun.y = mean, fontface = "bold",
-                           position = eval(parse(text=input$positionmean)),
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Mean!="None" && input$meanN)  {
@@ -3445,7 +3461,7 @@ function(input, output, session) {
               stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
                            col=meancolp,aes(group=NULL),
                            fun.y = mean, fontface = "bold",
-                           position = eval(parse(text=input$positionmean)),
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -3906,7 +3922,14 @@ function(input, output, session) {
       ###### smooth Section END
       
       
-      ###### Median PI section  START  
+      ###### Median PI section  START 
+      if (input$positionmedian=="position_identity"){
+        positionmedian<-  "position_identity()"
+      }
+      if (input$positionmedian=="position_dodge"){
+        positionmedian<-  paste0("position_dodge(width=",input$medianerrbar,")")
+      }
+      
       if (!input$medianignoregroup) {
         
         if (!input$medianignorecol) {
@@ -3917,14 +3940,14 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(median, geom = "line",
                                 alpha=input$alphamedianl,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "line",
                                 size=input$medianlinesize,
                                 alpha=input$alphamedianl,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             } #input$Median=="Median"
             
@@ -3938,21 +3961,21 @@ function(input, output, session) {
                             size=input$medianlinesize,
                             alpha=input$PItransparency,
                             col=NA,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             size=input$medianlinesize, alpha=input$PItransparency,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
               p <- p + stat_sum_df("median_hilow", geom = "line", stat ="smooth",
                                    fun.args=list(conf.int=input$PI),
                                    size=input$medianlinesize,
                                    alpha=input$alphamedianl,
-                                   position = eval(parse(text=input$positionmedian)))
+                                   position = eval(parse(text=positionmedian)))
               
             }
             
@@ -3977,20 +4000,20 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),
                             alpha=input$PItransparency,col=NA,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
               
             p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
                         fun.args=list(conf.int=input$PI),alpha=input$alphamedianl,
-                        position = eval(parse(text=input$positionmedian)))
+                        position = eval(parse(text=positionmedian)))
             }
             if ( input$sepguides ){
               p <-   p +
@@ -4010,20 +4033,20 @@ function(input, output, session) {
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",alpha=input$alphamedianp,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",size=input$medianpointsize,
                                 alpha=input$alphamedianp,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           
           if(input$Median!="None" && input$forcemedianshape)    {
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",alpha=input$alphamedianp,shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
@@ -4031,19 +4054,19 @@ function(input, output, session) {
                                 size=input$medianpointsize,
                                 alpha=input$alphamedianp,
                                 shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n,geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold",position = eval(parse(text=input$positionmedian)),
+                           fun.y = median, fontface = "bold",position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
               stat_summary(fun.data = give.n, geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold", position = eval(parse(text=input$positionmedian)),
+                           fun.y = median, fontface = "bold", position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }  
         } # do not ignore col
@@ -4058,14 +4081,14 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "line",
                                 col=mediancoll,
                                 alpha=input$alphamedianl,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "line",col=mediancoll,
                                 alpha=input$alphamedianl,
                                 size=input$medianlinesize,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
 
           }
           
@@ -4077,7 +4100,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI),
                             alpha=input$PItransparency,col=NA,
                             size=input$medianlinesize,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
@@ -4086,7 +4109,7 @@ function(input, output, session) {
                             alpha=input$PItransparency,
                             col=mediancoll,
                             size=input$medianlinesize,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
               p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
@@ -4094,7 +4117,7 @@ function(input, output, session) {
                                       size=input$medianlinesize,
                                       alpha=input$alphamedianl,
                                       col=mediancoll,
-                                      position = eval(parse(text=input$positionmedian)))
+                                      position = eval(parse(text=positionmedian)))
               
             }
               
@@ -4117,7 +4140,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),
                             alpha=input$PItransparency,col=NA,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
@@ -4125,14 +4148,14 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
                             col=mediancoll,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
             p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
                                     fun.args=list(conf.int=input$PI),
                                     alpha=input$alphamedianl,
                                     col=mediancoll,
-                                    position = eval(parse(text=input$positionmedian)))
+                                    position = eval(parse(text=positionmedian)))
             }
             
             if ( input$sepguides ){
@@ -4154,7 +4177,7 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",
                                 col=mediancolp,
                                 alpha=input$alphamedianp ,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints&input$pointsizein == 'None')           
               p <- p + 
@@ -4162,7 +4185,7 @@ function(input, output, session) {
                                 col=mediancolp ,
                                 alpha=input$alphamedianp,
                                 size=input$medianpointsize,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           
           if(input$Median!="None" && input$forcemedianshape)    {
@@ -4173,26 +4196,26 @@ function(input, output, session) {
                                 col=mediancolp,
                                 alpha=input$alphamedianp,
                                 shape=input$medianshapes ,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",col=mediancolp ,
                                 alpha=input$alphamedianp,
                                 size=input$medianpointsize,shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n,geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold",colour=mediancoll,position = eval(parse(text=input$positionmedian)),
+                           fun.y = median, fontface = "bold",colour=mediancoll,position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
               stat_summary(fun.data = give.n, geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold", colour=mediancolp,position = eval(parse(text=input$positionmedian)),
+                           fun.y = median, fontface = "bold", colour=mediancolp,position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }       
           
@@ -4206,13 +4229,13 @@ function(input, output, session) {
             if(input$medianlines && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "line",aes(group=NULL),alpha=input$alphamedianl,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "line",aes(group=NULL),size=input$medianlinesize,
                                 alpha=input$alphamedianl,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
            }
           
           if (input$Median=="Median/PI" && input$pointsizein == 'None'){
@@ -4223,7 +4246,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA,
                             size=input$medianlinesize,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
@@ -4231,14 +4254,14 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             size=input$medianlinesize,
                             alpha=input$PItransparency,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
               p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
                                       fun.args=list(conf.int=input$PI),aes(group=NULL),
                                       alpha=input$alphamedianl,
                                       size=input$medianlinesize,
-                                      position = eval(parse(text=input$positionmedian))) 
+                                      position = eval(parse(text=positionmedian))) 
             }
 
             if ( input$sepguides ){
@@ -4259,20 +4282,20 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
             p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
                                     fun.args=list(conf.int=input$PI),aes(group=NULL),
                                     alpha=input$alphamedianl,
-                                    position = eval(parse(text=input$positionmedian)))
+                                    position = eval(parse(text=positionmedian)))
             }
             if ( input$sepguides ){
               p <-   p +
@@ -4290,7 +4313,7 @@ function(input, output, session) {
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             
             if(input$medianpoints && input$pointsizein == 'None')           
@@ -4298,7 +4321,7 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",aes(group=NULL),
                                 alpha=input$alphamedianp,
                                 size=input$medianpointsize,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           
           if(input$Median!="None" && input$forcemedianshape)    {
@@ -4306,7 +4329,7 @@ function(input, output, session) {
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             
             if(input$medianpoints && input$pointsizein == 'None')           
@@ -4314,20 +4337,20 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",aes(group=NULL),
                                 alpha=input$alphamedianp,
                                 size=input$medianpointsize,shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold",position = eval(parse(text=input$positionmedian)), #fill="white",
+                           fun.y = median, fontface = "bold",position = eval(parse(text=positionmedian)), #fill="white",
                            show.legend=FALSE,
                            size=6, seed=1234)
           }
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
               stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun.y = median, fontface = "bold",position = eval(parse(text=input$positionmedian)), #fill="white",
+                           fun.y = median, fontface = "bold",position = eval(parse(text=positionmedian)), #fill="white",
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -4345,12 +4368,12 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "line",col=mediancoll,
                                 alpha=input$alphamedianl,
                                 aes(group=NULL),
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             if(input$medianlines && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl,
                                 aes(group=NULL),size=input$medianlinesize,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
           }
           
@@ -4362,7 +4385,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA,
                             size=input$medianlinesize,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
@@ -4370,7 +4393,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
                             size=input$medianlinesize,col=mediancoll,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
               p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
@@ -4378,7 +4401,7 @@ function(input, output, session) {
                                       alpha=input$alphamedianl,
                                       size=input$medianlinesize,
                                       col=mediancoll,
-                                      position = eval(parse(text=input$positionmedian))) 
+                                      position = eval(parse(text=positionmedian))) 
               
             }
 
@@ -4401,7 +4424,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if (input$geommedianPI== "errorbar"){
               p <- p + 
@@ -4409,14 +4432,14 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
                             col=mediancoll,
-                            position = eval(parse(text=input$positionmedian)))
+                            position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
             p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
                                     fun.args=list(conf.int=input$PI),aes(group=NULL),
                                     alpha=input$alphamedianl,
                                     col=mediancoll,
-                                    position = eval(parse(text=input$positionmedian)))
+                                    position = eval(parse(text=positionmedian)))
             
             }
             if ( input$sepguides ){
@@ -4438,7 +4461,7 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",col=mediancolp,
                                 alpha=input$alphamedianp,
                                 aes(group=NULL),
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
@@ -4446,7 +4469,7 @@ function(input, output, session) {
                                 col=mediancolp,
                                 alpha=input$alphamedianp,
                                 aes(group=NULL),size=input$medianpointsize,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           }
           if(input$Median!="None" && input$forcemedianshape)    {
             
@@ -4455,7 +4478,7 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",col=mediancolp,
                                 alpha=input$alphamedianp,
                                 aes(group=NULL),shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
@@ -4463,20 +4486,20 @@ function(input, output, session) {
                                 col=mediancolp,
                                 alpha=input$alphamedianp,
                                 aes(group=NULL),size=input$medianpointsize,shape=input$medianshapes,
-                                position = eval(parse(text=input$positionmedian)))
+                                position = eval(parse(text=positionmedian)))
           } 
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
                            fun.y = median, fontface = "bold",colour=mediancoll,
-                           position = eval(parse(text=input$positionmedian)),
+                           position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)}
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
               stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
                            fun.y = median, fontface = "bold", colour=mediancolp,
-                           position = eval(parse(text=input$positionmedian)),
+                           position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
