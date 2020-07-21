@@ -5945,23 +5945,29 @@ function(input, output, session) {
     
     p <-    p + theme(
       panel.background = element_rect(fill=input$backgroundcol),
-      panel.ontop = input$panelontop,
+      panel.ontop = input$panelontop)
+    p <-    p + theme(
       legend.position = legendpositiontheme,
       legend.justification = c(input$legendjustificationh,
                                input$legendjustificationv),
       legend.box=input$legendbox,
-      legend.box.just = input$legendboxjust,
+      legend.box.just = input$legendboxjust)
+    p <-    p + theme(
       legend.background = element_rect(fill=input$legendbackground),
       legend.key = element_rect(fill=input$legendkey),
-      legend.direction=input$legenddirection,
+      legend.direction=input$legenddirection)
+    p <-    p + theme(
       legend.spacing.x = ggplot2::unit(input$legendspacex*11, "pt"),
-      legend.spacing.y = ggplot2::unit(input$legendspacey*11, "pt"),
+      legend.spacing.y = ggplot2::unit(input$legendspacey*11, "pt"))
+    p <-    p + theme(
       legend.margin = ggplot2::margin(t = legend_margin[1],r = legend_margin[2],
                                       b = legend_margin[3],l = legend_margin[4],
-                                      unit='pt'),
+                                      unit='pt'))
+    p <-    p + theme(
       plot.margin =  ggplot2::margin(t = plot_margin[1],r = plot_margin[2],
                                      b = plot_margin[3],l = plot_margin[4],
-                                     unit='pt'),
+                                     unit='pt'))
+    p <-    p + theme(
       legend.box.margin = ggplot2::margin(t = legend_box_margin[1],r = legend_box_margin[2],
                                           b = legend_box_margin[3],l = legend_box_margin[4],
                                           unit='pt')
@@ -5971,10 +5977,10 @@ function(input, output, session) {
       plot.caption.position =input$captionposition 	)
     
     if (input$labelguides)
-      p <-    p+
+      p <-    p +
       theme(legend.title=element_blank())
     if (input$themeaspect)
-      p <-    p+
+      p <-    p +
       theme(aspect.ratio=input$aspectratio)
     
     if (grepl("^\\s+$", input$ylab) ){
@@ -6036,23 +6042,26 @@ function(input, output, session) {
     p <- attach_source_dep(p, "x.strip.text")
     
     
-    p <-  p +
-      theme(panel.grid.major.x = element_line(colour = input$majorgridlinescolx),
-            panel.grid.minor.x = element_line(colour = input$minorgridlinescolx),
+    p <-  p + theme(
+            panel.grid.major.x = element_line(colour = input$majorgridlinescolx),
+            panel.grid.minor.x = element_line(colour = input$minorgridlinescolx))
+    p <-  p + theme(
             panel.grid.major.y = element_line(colour = input$majorgridlinescoly),
-            panel.grid.minor.y = element_line(colour = input$minorgridlinescoly),
+            panel.grid.minor.y = element_line(colour = input$minorgridlinescoly))
+    p <- p + theme(
             strip.background.x = element_rect(fill=input$stripbackgroundfillx),
             strip.background.y = element_rect(fill=input$stripbackgroundfilly),
-            strip.placement  = input$stripplacement,
+            strip.placement  = input$stripplacement)
+    p <- p + theme(
             strip.switch.pad.wrap = unit(input$stripswitchpadwrap*11/ 2, "pt"),
-            strip.switch.pad.grid = unit(input$stripswitchpadgrid*11/ 2, "pt"),
+            strip.switch.pad.grid = unit(input$stripswitchpadgrid*11/ 2, "pt"))
+    p <- p + theme(
             strip.text.x =  x.strip.text,
             strip.text.y =  y.strip.text,
-            strip.text.y.left =  y.strip.text,
+            strip.text.y.left =  y.strip.text)
+    p <- p + theme(
             panel.spacing.x = unit(input$panelspacingx, "lines"),
-            panel.spacing.y = unit(input$panelspacingy, "lines")
-            
-      )
+            panel.spacing.y = unit(input$panelspacingy, "lines"))
     if(input$removexstrip){
     p <-  p +
       theme(strip.background.x = element_blank())
@@ -6063,16 +6072,16 @@ function(input, output, session) {
     }
     
     if(input$rmmajorgridlinesx){
-      p <-  p+
-        theme(panel.grid.major.x = element_blank())
+      p <-  p + theme(
+          panel.grid.major.x = element_blank())
     }
     if(input$rmminorgridlinesx){
-      p <-  p+
-        theme(panel.grid.minor.x = element_blank())
+      p <-  p + theme(
+        panel.grid.minor.x = element_blank())
     }
     if(input$rmmajorgridlinesy){
-      p <-  p+
-        theme(panel.grid.major.y = element_blank())
+      p <-  p + theme(
+        panel.grid.major.y = element_blank())
     }
     if(input$rmminorgridlinesy){
       p <-  p+

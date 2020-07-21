@@ -100,8 +100,8 @@ get_source_code <- function(x) {
     }
     dep_code <- paste0(dep_code, "\n")
   }
-  
+  readdata_code <- paste0("plotdata <- read.csv('plotdata.csv')", "\n") 
   # Paste together the input variables, dependency variables, and plot code
-  full_code <- paste0(input_code, dep_code, plot_code)
+  full_code <- paste0(readdata_code,input_code, dep_code, plot_code)
   full_code
 }

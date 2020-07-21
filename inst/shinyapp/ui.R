@@ -2087,7 +2087,7 @@ fluidPage(
       
       tabPanel(
         'Plot Code',
-        h5("Plot reproducibility initial support. To reproduce a plot, in the data tab save the plotdata into a csv, read back to R naming it plotdata then copy paste the code below. Some inputs might not be yet supported we will be adding those during the coming weeks."),
+        h5("Plot code generation: to reproduce a plot, in the data tab show all rows and save the plotdata into a csv, read back to R naming it plotdata then copy paste the code below. If you face inputs that are not yet supported, please file a github issue."),
         verbatimTextOutput("plotcode")
       )
       )#tabsetPanel
