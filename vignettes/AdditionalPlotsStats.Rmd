@@ -74,7 +74,7 @@ In the following part we will generate a descriptive stats table that reflect th
 
 * Click on the **Descriptive Stats** Tab
 * Map Extra Column Split to Gender and explore with the Flip the order of the columns checkbox
-* Try to add more statistics in the Statistics to display for continous variables
+* Try to add more statistics in the Statistics to display for continuous variables
 * Add Race to the y variable(s) to see the statistics for a categorical variable
 
 ![DescStats](./intro_13.png){width=100%}
