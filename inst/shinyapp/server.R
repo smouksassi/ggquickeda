@@ -2701,115 +2701,118 @@ function(input, output, session) {
           & input$colorin == 'None')
         p <- p + aes(group=1)
       
-      if (input$jitterdirection =="None"){
-        positionj <- "position_identity()"
-      }
       
-      if (input$jitterdirection=="Vertical"){
-        positionj<- "position_jitter(width=0)"
-      }
-      
-      if (input$jitterdirection=="Horizontal"){
-        positionj<-  "position_jitter(height=0)"
-      }
-      
-      if (input$jitterdirection=="Default"){
-        positionj<-  "position_jitter()"
-      }
-      if (input$jitterdirection=="Custom"){
-        positionj<-  paste0("position_jitter(height=",
-                            input$jittervertical,
-                            ",width=",input$jitterhorizontal,")")
-      }
-      if (input$jitterdirection=="dodge"){
-        positionj<-  paste0("position_dodge(width=",input$pointdodgewidth,")")
-      }
-      if (input$jitterdirection=="dodgev"){
-        positionj<-  paste0("position_dodgev(height=",input$pointdodgeheight,")")
-      }
       
       if (input$Points=="Points"){
+        if (input$jitterdirection =="None"){
+          positionpoints <- "position_identity()"
+        }
+        
+        if (input$jitterdirection=="Vertical"){
+          positionpoints <- "position_jitter(width=0)"
+        }
+        
+        if (input$jitterdirection=="Horizontal"){
+          positionpoints <-  "position_jitter(height=0)"
+        }
+        
+        if (input$jitterdirection=="Default"){
+          positionpoints <-  "position_jitter()"
+        }
+        if (input$jitterdirection=="Custom"){
+          positionpoints <-  paste0("position_jitter(height=",
+                              input$jittervertical,
+                              ",width=",input$jitterhorizontal,")")
+        }
+        if (input$jitterdirection=="dodge"){
+          positionpoints <-  paste0("position_dodge(width=",input$pointdodgewidth,")")
+        }
+        if (input$jitterdirection=="dodgev"){
+          positionpoints <-  paste0("position_dodgev(height=",input$pointdodgeheight,")")
+        }
+        
+        p <- attach_source_dep(p, "positionpoints")
         
         if (input$pointshapein != 'None' && !input$pointignoreshape){
           
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,
                                 alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
         }
         
         if (input$pointshapein != 'None' && input$pointignoreshape){
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
         }
         
         if(input$pointshapein == 'None' ){
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=input$pointshapes,
-                                position=eval(parse(text=positionj)))
+                                position=eval(parse(text=positionpoints)))
           
           
         }
@@ -2934,11 +2937,14 @@ function(input, output, session) {
       
       
       ###### Mean section  START
+      if (input$Mean!="None") {
       if (input$positionmean=="position_identity"){
-        positionmean<-  "position_identity()"
+        positionmean <-  "position_identity()"
       }
       if (input$positionmean=="position_dodge"){
         positionmean<-  paste0("position_dodge(width=",input$errbar,")")
+      }
+      p <- attach_source_dep(p, "positionmean")
       }
       
       if (!input$meanignoregroup) {
@@ -3922,14 +3928,16 @@ function(input, output, session) {
       ###### smooth Section END
       
       
-      ###### Median PI section  START 
+      ###### Median PI section  START
+      if (input$Median!="None") {
       if (input$positionmedian=="position_identity"){
         positionmedian<-  "position_identity()"
       }
       if (input$positionmedian=="position_dodge"){
         positionmedian<-  paste0("position_dodge(width=",input$medianerrbar,")")
       }
-      
+      p <- attach_source_dep(p, "positionmedian")
+      }
       if (!input$medianignoregroup) {
         
         if (!input$medianignorecol) {
@@ -5131,6 +5139,7 @@ function(input, output, session) {
                       allfacetsvariables[4])
       
       ASTABLE <- ifelse(input$facetordering == "table", TRUE, FALSE)
+      p <- attach_source_dep(p, "ASTABLE")
       if (facets != '. + . ~ . + .' && !input$facetwrap) {
         facets<- as.formula(facets)
         p <- attach_source_dep(p, "facets")
@@ -5141,6 +5150,9 @@ function(input, output, session) {
         else {
           input$facetswitch
         }
+        p <- attach_source_dep(p, "facetswitch")
+        facetmargins <- facetmargins()
+        p <- attach_source_dep(p, "facetmargins")
         
         if (input$facetlabeller != "label_wrap_gen"){
           p <- p + facet_grid(
@@ -5152,7 +5164,7 @@ function(input, output, session) {
               text=paste0("function(labs){",input$facetlabeller,
                           "(labs, multi_line = ",input$facetwrapmultiline,")}")
             )),
-            margins = facetmargins(),
+            margins = facetmargins,
             as.table = ASTABLE
           )
         }
@@ -5165,7 +5177,7 @@ function(input, output, session) {
               switch = facetswitch,
               labeller =label_wrap_gen(width = input$labelwrapwidth,
                                        multi_line = input$facetwrapmultiline),
-              margins = facetmargins(),
+              margins = facetmargins,
               as.table = ASTABLE
             ) 
         }
