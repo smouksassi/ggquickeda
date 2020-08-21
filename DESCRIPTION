@@ -1,6 +1,6 @@
 Package: ggquickeda
 Title: Quickly Explore Your Data Using 'ggplot2' and 'table1' Summary Tables
-Version: 0.1.7
+Version: 0.1.7.9999
 Authors@R: c(
     person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
       role = c("aut", "cre"),comment = c(ORCID = "https://orcid.org/0000-0002-7152-6654")),
