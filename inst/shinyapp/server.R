@@ -565,13 +565,13 @@ function(input, output, session) {
     names(items)=items
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
-    if (!is.null(input$catvarin)&length(input$catvarin ) >=1) {
+    if (!is.null(input$catvarin) && length(input$catvarin ) >=1) {
       NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
     }
-    if (!is.null(input$catvarquantin)&length(input$catvarquantin ) >=1) {
+    if (!is.null(input$catvarquantin) && length(input$catvarquantin ) >=1) {
       NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarquantin) ]
     }
-    if (!is.null(input$catvar2in)&length(input$catvar2in ) >=1) {
+    if (!is.null(input$catvar2in) && length(input$catvar2in ) >=1) {
       NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvar2in) ]
     }
     selectizeInput(  "catvar3in", 'Custom cuts of this variable, defaults to min, median, max before any applied filtering:',
@@ -587,13 +587,15 @@ function(input, output, session) {
     if (is.null(input$catvar3in)) return()
     if (!is.null(input$catvar3in) && length(input$catvar3in ) <1)  return(NULL)
     if ( input$catvar3in!=""){
-      textInput("xcutoffs", label =  paste(input$catvar3in,"Cuts"),
+      column(12,textInput("xcutoffs", label =  paste(input$catvar3in,"Cuts"),
                 value = as.character(paste(
                   min(df[,input$catvar3in] ,na.rm=T),
                   median(df[,input$catvar3in],na.rm=T),
                   max(df[,input$catvar3in],na.rm=T)
                   ,sep=",")
                 )
+      ),
+      checkboxInput('missingcategory2', 'Missing as a Category ?', value = FALSE)
       )
     }
   })
@@ -721,8 +723,12 @@ function(input, output, session) {
       nxintervals <- length(as.numeric(unique(unlist (strsplit(xlimits, ",")) ))) -1
       df[,varname] <- cut( as.numeric ( as.character(  df[,varname])),
                            breaks=   as.numeric(unique(unlist (strsplit(xlimits, ","))) ),include.lowest=TRUE)
-      df[,"custombins"] <-   df[,varname] 
       
+      if(input$missingcategory2) {
+        df[,varname] <- addNA(df[,varname])
+        levels(df[,varname])[length(levels(df[,varname]))] <- "Missing"
+      }
+      df[,"custombins"] <-   df[,varname] 
       if(input$asnumericin) {
         df[,varname] <- as.numeric(as.factor(df[,varname]) ) -1 
       }
@@ -730,7 +736,7 @@ function(input, output, session) {
     df
   })
   output$bintext <- renderText({
-    df <- factor_merge_data()
+    df <- recodedata3()
     validate(       need(!is.null(df), "Please select a data set"))
     bintextout <- ""
     if(input$catvar3in!="" && !is.null(input$asnumericin)) {
@@ -6245,7 +6251,7 @@ function(input, output, session) {
     items= items
     items= items[!is.element(items,input$x)]
     items =c(None='.',items)
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
     }
