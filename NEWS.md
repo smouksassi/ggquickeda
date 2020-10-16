@@ -1,5 +1,7 @@
 # ggquickeda 0.1.7.9999
 * Added option for an explicit Missing Category with custom cuts
+* Added option to compute the inverse of Numeric variables
+* Moved the rounding to after division/inverse
 
 # ggquickeda 0.1.7
 * Added support for semicolon separated files and added package version in App Title

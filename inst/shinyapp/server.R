@@ -1126,6 +1126,7 @@ function(input, output, session) {
     
   })
   outputOptions(output, "onerowidlastgroup", suspendWhenHidden=FALSE)  
+  
   filterdata8  <- reactive({
     df <- filterdata7()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1142,38 +1143,9 @@ function(input, output, session) {
     as.data.frame(df)
   })
   
-  output$roundvar <- renderUI({
-    df <- filterdata8()
-    validate(       need(!is.null(df), "Please select a data set"))
-    if (!is.null(df)){
-      items=names(df)
-      names(items)=items
-      MODEDF <- sapply(df, function(x) is.numeric(x))
-      NAMESTOKEEP2<- names(df)  [MODEDF]
-      selectizeInput(  "roundvarin", "Round the Values to the Specified N Digits:", choices = NAMESTOKEEP2,multiple=TRUE,
-                       options = list(
-                         placeholder = 'Please select some variables',
-                         onInitialize = I('function() { this.setValue(""); }')
-                       )
-      )
-    }
-  }) 
-  outputOptions(output, "roundvar", suspendWhenHidden=FALSE)
-  
-  rounddata <- reactive({
-    df <- filterdata8()
-    validate(       need(!is.null(df), "Please select a data set"))
-    if(!is.null(input$roundvarin)&&length(input$roundvarin ) >=1) {
-      for (i in 1:length(input$roundvarin ) ) {
-        varname<- input$roundvarin[i]
-        df[,varname]   <- round( df[,varname],input$rounddigits)
-      }
-    }
-    df
-  })  
   
   output$divideynum <- renderUI({
-    df <- rounddata()
+    df <- filterdata8()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       items=names(df)
@@ -1188,9 +1160,24 @@ function(input, output, session) {
       )
     }
   })
+  outputOptions(output, "divideynum", suspendWhenHidden=FALSE)
+  
+  dividedata <- reactive({
+    df <- filterdata8()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if(!is.null(input$divideynumin)&&length(input$divideynumin ) >=1 &&
+       !is.null(input$divideydenomin)) {
+      for (i in 1:length(input$divideynumin ) ) {
+        varname<- input$divideynumin[i]
+        dosname<- input$divideydenomin
+        df[,varname]   <-  df[,varname] /as.numeric(as.character(df[,dosname]))
+      }
+    }
+    df
+  })
   
   output$divideydenom <- renderUI({
-    df <- rounddata()
+    df <- filterdata8()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       items=names(df)
@@ -1200,6 +1187,7 @@ function(input, output, session) {
       selectInput(  "divideydenomin", "Variable to divide by", choices = NAMESTOKEEP2,multiple=FALSE)
     }
   })
+  outputOptions(output, "divideydenom", suspendWhenHidden=FALSE)
   
   output$divideynum2 <- renderUI({
     df <- dividedata()
@@ -1218,26 +1206,7 @@ function(input, output, session) {
       )
     }
   })
-  
-  
-  outputOptions(output, "divideynum", suspendWhenHidden=FALSE)
-  outputOptions(output, "divideydenom", suspendWhenHidden=FALSE)
   outputOptions(output, "divideynum2", suspendWhenHidden=FALSE)
-  
-  
-  dividedata <- reactive({
-    df <- rounddata()
-    validate(       need(!is.null(df), "Please select a data set"))
-    if(!is.null(input$divideynumin)&&length(input$divideynumin ) >=1 &&
-       !is.null(input$divideydenomin)) {
-      for (i in 1:length(input$divideynumin ) ) {
-        varname<- input$divideynumin[i]
-        dosname<- input$divideydenomin
-        df[,varname]   <-  df[,varname] /as.numeric(as.character(df[,dosname]))
-      }
-    }
-    df
-  })
   
   dividedata2 <- reactive({
     df <- dividedata()
@@ -1251,14 +1220,76 @@ function(input, output, session) {
     df
   })
   
+  output$inversenum <- renderUI({
+    df <- dividedata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (!is.null(df)){
+      items=names(df)
+      names(items)=items
+      MODEDF <- sapply(df, function(x) is.numeric(x))
+      NAMESTOKEEP2<- names(df)  [MODEDF]
+      selectizeInput(  "inversenumin", "Inverse the Values by the specified column:",
+                       choices = NAMESTOKEEP2,multiple=TRUE,
+                       options = list(
+                         placeholder = 'Please select some variables',
+                         onInitialize = I('function() { this.setValue(""); }')
+                       )
+      )
+    }
+  })
+  outputOptions(output, "inversenum", suspendWhenHidden=FALSE)
+
+  inversedata <- reactive({
+    df <- dividedata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if(!is.null(input$inversenumin)&&length(input$inversenumin ) >=1) {
+      for (i in 1:length(input$inversenumin ) ) {
+        varname<- input$inversenumin[i]
+        df[,varname]   <-  1/df[,varname]
+      }
+    }
+    df
+  })
+  
+
+  
+  output$roundvar <- renderUI({
+    df <- inversedata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (!is.null(df)){
+      items=names(df)
+      names(items)=items
+      MODEDF <- sapply(df, function(x) is.numeric(x))
+      NAMESTOKEEP2<- names(df)  [MODEDF]
+      selectizeInput(  "roundvarin", "Round the Values to the Specified N Digits:", choices = NAMESTOKEEP2,multiple=TRUE,
+                       options = list(
+                         placeholder = 'Please select some variables',
+                         onInitialize = I('function() { this.setValue(""); }')
+                       )
+      )
+    }
+  }) 
+  outputOptions(output, "roundvar", suspendWhenHidden=FALSE)
+  
+  rounddata <- reactive({
+    df <- inversedata()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if(!is.null(input$roundvarin)&&length(input$roundvarin ) >=1) {
+      for (i in 1:length(input$roundvarin ) ) {
+        varname<- input$roundvarin[i]
+        df[,varname]   <- round( df[,varname],input$rounddigits)
+      }
+    }
+    df
+  })  
+  
   tabledata <- reactive({
-    df <- dividedata2() 
+    df <- rounddata() 
     df
   })
   
   stackdata <- reactive({
-    
-    df <- dividedata2()
+    df <- rounddata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
       validate(  need(!is.element(input$x,input$y) ,

@@ -97,14 +97,14 @@ fluidPage(
             ),
             
             tabPanel(
-              "Rounding/Division",
-              uiOutput("roundvar"),
-              numericInput("rounddigits",label = "N Digits",value = 0,min=0,max=10),
+              "Division/Inverse/Rounding",
               uiOutput("divideynum"),
               uiOutput("divideydenom"),
               uiOutput("divideynum2"),
-              numericInput("divideyconstant",label = "Divide by",value = 1)
-              
+              numericInput("divideyconstant",label = "Divide by",value = 1),
+              uiOutput("inversenum"),
+              uiOutput("roundvar"),
+              numericInput("rounddigits",label = "N Digits",value = 0,min=0,max=10)
             ),
             
             tabPanel(
