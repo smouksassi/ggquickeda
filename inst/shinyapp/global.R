@@ -4,10 +4,10 @@
 Sys.setenv(PGHOST = "10.0.0.4")
 #.libPaths("../R/3.6.3")
 
-unloadNamespace("xaputils")
-unloadNamespace("dbplyr")
-unloadNamespace("dplyr")
-unloadNamespace("tibble")
+# unloadNamespace("xaputils")
+# unloadNamespace("dbplyr")
+# unloadNamespace("dplyr")
+# unloadNamespace("tibble")
 
 # unloadNamespace("tidyselect")
 # unloadNamespace("purrr")
@@ -49,24 +49,35 @@ suppressMessages({
 })
 
 DATABASE_CONN <- NULL
-if (dbCanConnect(RPostgres::Postgres(), dbname = Sys.getenv("PGDATABASE"), 
-                 host = Sys.getenv("PGHOST"), 
-                 port = Sys.getenv("PORT"), 
-                 user = Sys.getenv("PGUSER"), 
-                 password = Sys.getenv("PGPASSWORD"))) {
-  # get connection to database
-  DATABASE_CONN <- dbConnect(RPostgres::Postgres(), dbname = Sys.getenv("PGDATABASE"), 
-                             host = Sys.getenv("PGHOST"), 
-                             port = Sys.getenv("PORT"), 
-                             user = Sys.getenv("PGUSER"), 
-                             password = Sys.getenv("PGPASSWORD"))
+PGDATABASE <- Sys.getenv("PGDATABASE")
+PGHOST <- Sys.getenv("PGHOST")
+PORT <- Sys.getenv("PORT")
+PGUSER <- Sys.getenv("PGUSER")
+PGPASSWORD <- Sys.getenv("PGPASSWORD")
+if (PGDATABASE != "" && PGHOST != "" && PORT != "" && PGUSER != "" && PGPASSWORD != "") {
+  if (dbCanConnect(RPostgres::Postgres(),
+    dbname = PGDATABASE,
+    host = PGHOST,
+    port = PORT,
+    user = PGUSER,
+    password = PGPASSWORD)
+  ) {
+    # get connection to database
+    DATABASE_CONN <- dbConnect(RPostgres::Postgres(),
+      dbname = PGDATABASE,
+      host = PGHOST,
+      port = PORT,
+      user = PGUSER,
+      password = PGPASSWORD)
+  }
 }
+
 #### ARIDHIA ADDITIONS ####
 ###########################
 
 #source("gradientInput.R") pending a shinyjqui fix
 
-options(shiny.maxRequestSize=250*1024^2) 
+options(shiny.maxRequestSize = 250*1024^2)
 
 stat_sum_df <- function(fun, geom="point", ...) {
   stat_summary(fun.data=fun,  geom=geom,  ...)
