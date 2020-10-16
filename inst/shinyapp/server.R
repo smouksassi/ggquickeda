@@ -4783,7 +4783,17 @@ function(input, output, session) {
       
       #### data label Start
       if(input$addcustomlabel&&input$labeltextin != 'None') {
-        p <- p + aes_string(label = input$labeltextin)
+        
+        if ( is.numeric(plotdata[,input$labeltextin]) && input$roundlabeldigits) {
+          plotdata[,input$labeltextin] <- round(plotdata[,input$labeltextin],input$nroundlabeldigits)
+            p <- p + aes_string(label = input$labeltextin)
+        }
+        if ( is.numeric(plotdata[,input$labeltextin]) && !input$roundlabeldigits) {
+          p <- p + aes_string(label = input$labeltextin)
+        }          
+        if ( !is.numeric(plotdata[,input$labeltextin]) ) {
+          p <- p + aes_string(label = input$labeltextin)
+        }
         
         if(!input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {

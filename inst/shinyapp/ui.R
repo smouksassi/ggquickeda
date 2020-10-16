@@ -1876,9 +1876,16 @@ fluidPage(
                   column(3,
                          conditionalPanel(
                            " input.addcustomlabel ",
-                           sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1),
-                           checkboxInput('labelignoresize', 'Ignore Mapped Size')
-                         )
+                           checkboxInput('labelignoresize', 'Ignore Mapped Size')),
+                         conditionalPanel(
+                           " input.addcustomlabel && input.labelignoresize  ",
+                           sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1)
+                         ),
+                         conditionalPanel(
+                           " input.addcustomlabel ",
+                           checkboxInput('roundlabeldigits', 'Round the numeric labels digits?'),
+                           numericInput("nroundlabeldigits",label = "N Digits",value = 0,min=0,max=10)
+                           )
                   ),
                   
                   column(3,
