@@ -176,12 +176,12 @@ export_file_name <- reactive({
 # Download the saved plots
 ##########################
 #### ARIDHIA ADDITION ####
-shinyFileSave(input, 'export_btn', roots=c(files='./..'),
+shinyFileSave(input, 'export_btn', roots=c(files='/home/workspace/files'),
               defaultPath='', defaultRoot='files')
 
 observeEvent(input$export_btn, {
   if (!is.integer(input$export_btn)) { # shinyFiles check if file has been selected
-    export_file <- parseSavePath(c(files='./..'), input$export_btn)
+    export_file <- parseSavePath(c(files='/home/workspace/files'), input$export_btn)
     
     tryCatch({
       file_type <- input$export_file_type
