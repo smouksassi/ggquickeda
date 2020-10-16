@@ -17,8 +17,19 @@ fluidPage(
                                    selected = ",", inline = TRUE)),
             "separators, or",actionLink("sample_data_btn", "use sample data")
           ),
-          fileInput("datafile", NULL, multiple = FALSE, accept = c("csv")),
+          
+          ##########################
+          #### ARIDHIA ADDITION ####
+          # fileInput("datafile", NULL, multiple = FALSE, accept = c("csv")),
+          shinyFilesButton('datafile', 'Dataset file...', 'Please select a Dataset file ...', multiple = FALSE),
+          #### ARIDHIA ADDITION ####
+          ##########################
           checkboxInput("stringasfactor", "Character Variables as Factors?", TRUE),
+          ##########################
+          #### ARIDHIA ADDITION ####
+          uiOutput("dataset_list_ui"),
+          #### ARIDHIA ADDITION ####
+          ##########################
           uiOutput("ycol"),
           checkboxInput("show_pairs", "Plot a matrix of all Y variables", value = FALSE),
           conditionalPanel(

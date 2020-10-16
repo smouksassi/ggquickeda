@@ -13,7 +13,21 @@ output$export_btn_ui <- renderUI({
   btn_text <- paste0("Download ",
                      countNoun(length(input$plots_order), "plot"),
                      " (", countNoun(export_num_pages(), "page"), ")")
-  downloadButton("export_btn", btn_text)
+  
+  if (export_num_pages() == 1 || input$export_file_type == "pdf") {
+    file_type <- input$export_file_type
+  } else {
+    file_type <- 'zip'
+  }
+  
+  ##########################
+  #### ARIDHIA ADDITION ####
+  # fileInput("datafile", NULL, multiple = FALSE, accept = c("csv")),
+  shinySaveButton('export_btn', btn_text, 'Select download location...', filetype = (c(file_type)))
+  # downloadButton("export_btn", btn_text)
+  #### ARIDHIA ADDITION ####
+  ##########################
+  
 })
 
 # Select the plots and the order of the plots to export
@@ -160,11 +174,15 @@ export_file_name <- reactive({
 })
 
 # Download the saved plots
-output$export_btn <- downloadHandler(
-  filename = function() {
-    export_file_name()
-  },
-  content = function(file) {
+##########################
+#### ARIDHIA ADDITION ####
+shinyFileSave(input, 'export_btn', roots=c(files='./..'),
+              defaultPath='', defaultRoot='files')
+
+observeEvent(input$export_btn, {
+  if (!is.integer(input$export_btn)) { # shinyFiles check if file has been selected
+    export_file <- parseSavePath(c(files='./..'), input$export_btn)
+    
     tryCatch({
       file_type <- input$export_file_type
       
@@ -210,9 +228,9 @@ output$export_btn <- downloadHandler(
       
       # If there's a single file, download the file. If multiple files, zip
       if (length(file_names) == 1) {
-        file.copy(file_names, file, overwrite = TRUE)
+        file.copy(file_names, export_file$datapath, overwrite = TRUE)
       } else {
-        zip(file, file_names)
+        zip(export_file$datapath, file_names)
       }
       
       # Remove the generated files so that we don't run out of disk space :)
@@ -222,5 +240,74 @@ output$export_btn <- downloadHandler(
     error = function(err) {
       stop(err$message)
     })
+    
   }
-)
+  
+})
+
+# output$export_btn <- downloadHandler(
+#   filename = function() {
+#     export_file_name()
+#   },
+#   content = function(file) {
+#     tryCatch({
+#       file_type <- input$export_file_type
+#       
+#       # If saving as PDF, save all pages in one file
+#       if (file_type == "pdf") {
+#         width <- pdf_page_dim()$width
+#         height <- pdf_page_dim()$height
+#         
+#         file_names <- "export_plots.pdf"
+#         grDevices::pdf(file = file_names, width = width, height = height,
+#                        title = file_names, onefile = TRUE)
+#         
+#         if (!input$export_multiple) {
+#           plots <- values$plots[input$plots_order]
+#           invisible <- lapply(plots, print)
+#         } else {
+#           num_pages <- export_num_pages()
+#           for (page in seq(num_pages)) {
+#             suppressMessages(print(export_print_page(page)))
+#           }
+#         }
+#         
+#         grDevices::dev.off()
+#       }
+#       # If saving as raw images, save each page as a separate file
+#       else {
+#         num_pages <- export_num_pages()
+#         for (page in seq(num_pages)) {
+#           export_print_page(page)
+#         }
+#         file_names <- lapply(seq(num_pages), function(page) { 
+#           file_name <- paste0("export_plots_p", page, ".", file_type)
+#           export_params <- list(file_name,
+#                                 width = input$export_file_width,
+#                                 height = input$export_file_height)
+#           do.call(file_type, export_params)
+#           print(export_print_page(page))
+#           grDevices::dev.off()
+#           file_name
+#         })
+#         file_names <- unlist(file_names)
+#       }
+#       
+#       # If there's a single file, download the file. If multiple files, zip
+#       if (length(file_names) == 1) {
+#         file.copy(file_names, file, overwrite = TRUE)
+#       } else {
+#         zip(file, file_names)
+#       }
+#       
+#       # Remove the generated files so that we don't run out of disk space :)
+#       
+#       file.remove(file_names)
+#     },
+#     error = function(err) {
+#       stop(err$message)
+#     })
+#   }
+# )
+#### ARIDHIA ADDITION ####
+##########################

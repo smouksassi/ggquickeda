@@ -35,8 +35,13 @@ function(input, output, session) {
   })
   
   mockFileUpload <- function(name) {
-    shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
-    shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')
+    ##########################
+    #### ARIDHIA ADDITION ####
+    print("MOCK FILE UPLOAD")
+    # shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')'))
+    # shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')
+    #### ARIDHIA ADDITION ####
+    ##########################
   }
   
   # If this app was launched from a function that explicitly set an initial dataset
@@ -46,7 +51,12 @@ function(input, output, session) {
   }
   
   # Kill the application/R session when a single shiny session is closed
-  session$onSessionEnded(stopApp)
+  ##########################
+  #### ARIDHIA ADDITION ####
+  # Removing this prevents the miniapp pod from shutting down if a session is ended by a user
+  # session$onSessionEnded(stopApp)
+  #### ARIDHIA ADDITION ####
+  ##########################
   
   # Variables to help with maintaining the dynamic number of "change the labels
   # of a variable" boxes
@@ -288,13 +298,54 @@ function(input, output, session) {
     shinyjs::toggleState("factor_lvl_change_remove", condition = changeLblsVals$numCurrent > 0)
   })
   
-  # Load user data
-  observeEvent(input$datafile, {
-    file <- input$datafile$datapath
-    values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
-                                sep = input$fileseparator)
+  ##########################
+  #### ARIDHIA ADDITION ####
+  # database UI and loading
+  output$dataset_list_ui <- renderUI({
+    if (!is.null(DATABASE_CONN)) {
+      list_of_datasets <- RPostgres::dbListTables(DATABASE_CONN)
+      if (length(list_of_datasets) < 1) {
+        # If no tables in database show disabled dropdown with message
+        shinyjs::disabled(selectInput("database_select", "Import from database table: ", selectize=TRUE, choices = list("No database tables to display"= ""), multiple=FALSE))
+      } else {
+        # If tables exist show in dropdown menu
+        choices <- append(list("Select dataset:"= ""), list_of_datasets)
+        selectInput("database_select", "Import from database table: ", selectize=TRUE, choices = choices, multiple=FALSE)
+      }
+    } else {
+      # If no connection (DATABASE_CONN = NULL) show disabled dropdown with message
+      shinyjs::disabled(selectInput("database_select", "Import from database table: ", selectize=TRUE, choices = list("No connection to database"= ""), multiple=FALSE))
+    }
   })
   
+  observeEvent(input$database_select, {
+    if (!is.null(input$database_select) && input$database_select != ""){
+      values$maindata <- RPostgres::dbReadTable(DATABASE_CONN, input$database_select)
+    }
+  })
+  
+  # serverside .csv file loading
+  shinyFileChoose(input, 'datafile', roots=c(files='./..'), filetypes=c('', 'csv'),
+                  defaultPath='', defaultRoot='files', session=session)
+  observeEvent(input$datafile, {
+    if (!is.integer(input$datafile)) { # shinyFiles check if file has been selected
+      datafile <- parseFilePaths(c(files='./..'), input$datafile)
+      values$maindata <- read.csv(datafile$datapath, 
+                                  na.strings = c("NA","."), 
+                                  stringsAsFactors = input$stringasfactor,
+                                  sep = input$fileseparator)
+    }
+  })
+  # Load user data
+  # observeEvent(input$datafile, {
+  #   file <- input$datafile$datapath
+  #   values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
+  #                               sep = input$fileseparator)
+  # })
+  #### ARIDHIA ADDITION ####
+  ##########################
+  
+
   # Load sample dataset
   observeEvent(input$sample_data_btn, {
     file <- "data/sample_data.csv"
@@ -1969,14 +2020,19 @@ function(input, output, session) {
                              lengthMenu = list(c(5, 10, 15, -1), c('5','10', '15', 'All')),
                              colReorder = list(realtime = TRUE),
                              buttons = 
-                               list('colvis', 'pageLength','print','copy', list(
-                                 extend = 'collection',
-                                 buttons = list(
-                                   list(extend='csv'  ,filename = 'plotdata'),
-                                   list(extend='excel',filename = 'plotdata'),
-                                   list(extend='pdf'  ,filename = 'plotdata')),
-                                 text = 'Download'
-                               )),
+                             ##########################
+                             #### ARIDHIA ADDITION ####
+                             list('colvis', 'pageLength'),
+                             # list('colvis', 'pageLength','print','copy', list(
+                             #   extend = 'collection',
+                             #   buttons = list(
+                             #     list(extend='csv'  ,filename = 'plotdata'),
+                             #     list(extend='excel',filename = 'plotdata'),
+                             #     list(extend='pdf'  ,filename = 'plotdata')),
+                             #   text = 'Download'
+                             # )),
+                             #### ARIDHIA ADDITION ####
+                             ##########################
                              scrollX = TRUE,scrollY = 400,
                              fixedColumns = TRUE
               ), 

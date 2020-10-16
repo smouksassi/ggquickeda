@@ -1,3 +1,20 @@
+
+###########################
+#### ARIDHIA ADDITIONS ####
+Sys.setenv(PGHOST = "10.0.0.4")
+#.libPaths("../R/3.6.3")
+
+unloadNamespace("xaputils")
+unloadNamespace("dbplyr")
+unloadNamespace("dplyr")
+unloadNamespace("tibble")
+
+# unloadNamespace("tidyselect")
+# unloadNamespace("purrr")
+# unloadNamespace("pillar")
+#### ARIDHIA ADDITIONS ####
+###########################
+
 suppressMessages({
   library(zoo)
   library(shiny)
@@ -23,6 +40,30 @@ suppressMessages({
   library(ggstance)
   library(GGally)
 })
+
+###########################
+#### ARIDHIA ADDITIONS ####
+suppressMessages({
+  library(shinyFiles)
+  library(RPostgres)
+})
+
+DATABASE_CONN <- NULL
+if (dbCanConnect(RPostgres::Postgres(), dbname = Sys.getenv("PGDATABASE"), 
+                 host = Sys.getenv("PGHOST"), 
+                 port = Sys.getenv("PORT"), 
+                 user = Sys.getenv("PGUSER"), 
+                 password = Sys.getenv("PGPASSWORD"))) {
+  # get connection to database
+  DATABASE_CONN <- dbConnect(RPostgres::Postgres(), dbname = Sys.getenv("PGDATABASE"), 
+                             host = Sys.getenv("PGHOST"), 
+                             port = Sys.getenv("PORT"), 
+                             user = Sys.getenv("PGUSER"), 
+                             password = Sys.getenv("PGPASSWORD"))
+}
+#### ARIDHIA ADDITIONS ####
+###########################
+
 #source("gradientInput.R") pending a shinyjqui fix
 
 options(shiny.maxRequestSize=250*1024^2) 
