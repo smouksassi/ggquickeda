@@ -325,11 +325,11 @@ function(input, output, session) {
   })
   
   # serverside .csv file loading
-  shinyFileChoose(input, 'datafile', roots=c(files='./..'), filetypes=c('', 'csv'),
+  shinyFileChoose(input, 'datafile', roots=c(files='/home/workspace/files'), filetypes=c('', 'csv'),
                   defaultPath='', defaultRoot='files', session=session)
   observeEvent(input$datafile, {
     if (!is.integer(input$datafile)) { # shinyFiles check if file has been selected
-      datafile <- parseFilePaths(c(files='./..'), input$datafile)
+      datafile <- parseFilePaths(c(files='/home/workspace/files'), input$datafile)
       values$maindata <- read.csv(datafile$datapath, 
                                   na.strings = c("NA","."), 
                                   stringsAsFactors = input$stringasfactor,
