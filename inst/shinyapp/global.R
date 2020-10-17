@@ -1,7 +1,7 @@
 
 ###########################
 #### ARIDHIA ADDITIONS ####
-Sys.setenv(PGHOST = "10.0.0.4")
+# Sys.setenv(PGHOST = "10.0.0.4")
 #.libPaths("../R/3.6.3")
 
 # unloadNamespace("xaputils")
