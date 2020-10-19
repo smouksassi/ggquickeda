@@ -7,6 +7,6 @@ Docker configuration for the R package ggquickeda
 Run:
 
 ```bash
-docker build . -t ggquickeda 
-docker run -itd -p 8000:8080 ggquickeda
+docker build . -t ggquickeda
+docker run -itd -p 8080:8080 ggquickeda
 ```
