@@ -9,6 +9,7 @@ RUN install2.r colourpicker Formula GGally ggpmisc ggrepel ggstance ggpubr \
     gridExtra Hmisc plotly quantreg scales shinyjs shinyjqui survminer table1 \
     shinyFiles RPostgres
 
+# Install ggquickeda package
 COPY data /home/shiny/pkg/data
 COPY inst /home/shiny/pkg/inst
 COPY man /home/shiny/pkg/man
@@ -19,7 +20,7 @@ COPY .Rbuildignore /home/shiny/pkg/.Rbuildignore
 
 RUN R -e "devtools::install('/home/shiny/pkg')"
 
-# install shiny app
+# "Install" shiny app
 RUN rm -rf /srv/shiny-server/*
 RUN cp -r /home/shiny/pkg/inst/shinyapp/* /srv/shiny-server
 RUN rm -rf /tmp/*
@@ -31,6 +32,8 @@ EXPOSE 8080
 COPY docker/mini-app /usr/bin/mini-app
 RUN chmod 755 /usr/bin/mini-app
 
-# run
-# CMD /usr/bin/mini-app && tail -f /dev/null
+# Update shiny server config
+COPY docker/shiny-server.conf /etc/shiny-server/shiny-server.conf
+
+# Run
 ENTRYPOINT /usr/bin/mini-app

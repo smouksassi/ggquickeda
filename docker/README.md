@@ -8,5 +8,5 @@ Run:
 
 ```bash
 docker build . -t ggquickeda 
-docker run -itd -p 8000:3838 ggquickeda
+docker run -itd -p 8080:8080 ggquickeda
 ```
