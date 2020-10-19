@@ -7,11 +7,6 @@ Docker configuration for the R package ggquickeda
 Run:
 
 ```bash
-sudo docker pull smouksassi/ggquickeda
-sudo docker run -i -t -p 3838:3838 smouksassi/ggquickeda
+docker build . -t ggquickeda 
+docker run -itd -p 8000:3838 ggquickeda
 ```
-
-
-# Using the App
-
-Go to http://localhost:3838/ in a web browser.

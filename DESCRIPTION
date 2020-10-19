@@ -50,7 +50,9 @@ Imports:
     survminer,
     tidyr,
     table1 (>= 1.1),
-    utils
+    utils,
+    shinyFiles,
+    RPostgres
 Suggests:
     knitr,
     rmarkdown
