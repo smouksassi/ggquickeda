@@ -5702,6 +5702,12 @@ function(input, output, session) {
       if (!is.null(input$y) && length(input$y) < 2 && input$ylab=="" ){
         p <- p + ylab(input$y)
       }
+      if (!is.null(input$x) && length(input$x) >= 2 && input$xlab=="" ){
+        p <- p + xlab("X variable(s)")
+      }
+      if (!is.null(input$x) && length(input$x) < 2 && input$xlab=="" ){
+        p <- p + xlab(input$x)
+      }
       
       if (input$horizontalzero)
         p <-    p+
