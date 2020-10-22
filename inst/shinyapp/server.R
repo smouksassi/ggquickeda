@@ -378,7 +378,9 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    selectInput("x", "x variable:",items,selected=items[2])
+    selectizeInput("x", "x variable(s):",choices=items,selected=items[2],multiple=TRUE,
+                   options = list(
+                     plugins = list('remove_button', 'drag_drop')))
     
   })
   
@@ -386,7 +388,7 @@ function(input, output, session) {
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
     items = names(df)
-    items = c("None",items, "yvars","yvalues") 
+    items = c("None",items, "yvars","yvalues","xvars","xvalues") 
     names(items) = items
     selectizeInput("xrug", "rug variable(s):",choices = items,
                    multiple=TRUE,
@@ -1292,31 +1294,58 @@ function(input, output, session) {
     df <- rounddata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
+      validate(  need(! (is.null(input$x) & is.null(input$y)),
+"Please select at least one x or at least one y."))
+    }
+    if (!is.null(df)){
+      validate(  need( nrow(df) > 0,
+    "The dataset has to have at least one row."))
+    }
+    
+    if (!is.null(df) & !is.null(input$x)){
       validate(  need(!is.element(input$x,input$y) ,
-                      "Please select a different x variable or remove the x variable from the list of y variable(s)"))
-      
-      tidydata <- NULL
-      if(!is.null(input$y) ){
-        
-        validate(need(all(input$y %in% names(df)), "Invalid y value(s)"))
-        
-        tidydata <- df %>%
-          gather( "yvars", "yvalues", !!!input$y ,factor_key = TRUE) 
-        if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
-          tidydata <- tidydata %>%
-            mutate(yvalues=as.factor(as.character(yvalues) ))
-        }
-        
-      } else {
+  "Please select a different x variable or remove the x variable from the list of y variable(s)"))
+    }
+    if(is.null(input$y) && !is.null(input$x) ){
         tidydata <- df
-        if (nrow(tidydata) > 0) {
+          tidydata <- tidydata %>%
+            gather( "xvars", "xvalues", !!!input$x ,factor_key = TRUE)
           tidydata$yvars <- "None"
           tidydata$yvalues <- NA
-        }
+          if (!all( sapply(df[,as.vector(input$x)], is.numeric)) ) {
+            tidydata <- tidydata %>%
+              mutate(xvalues=as.factor(as.character(xvalues) ))
+          }
       }
-      
-      tidydata
+      if(!is.null(input$y) && is.null(input$x) ){
+        tidydata <- df %>%
+            gather( "yvars", "yvalues", !!!input$y ,factor_key = TRUE)
+          tidydata$xvars <- "None"
+          tidydata$xvalues <- NA
+          if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
+            tidydata <- tidydata %>%
+              mutate(yvalues=as.factor(as.character(yvalues) ))
+          }
+      }
+    
+    if(!is.null(input$y) & !is.null(input$x) ){
+      validate(need(all(input$y %in% names(df)), "Invalid y value(s)"))
+      tidydata <- df %>%
+        gather( "yvars", "yvalues", !!!input$y ,factor_key = TRUE)
+      tidydata <- tidydata %>%
+        gather( "xvars", "xvalues", !!!input$x ,factor_key = TRUE)
+      if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
+        tidydata <- tidydata %>%
+          mutate(yvalues=as.factor(as.character(yvalues) ))
+      }
+      if (!all( sapply(df[,as.vector(input$x)], is.numeric)) ) {
+        tidydata <- tidydata %>%
+          mutate(xvalues=as.factor(as.character(xvalues) ))
+      }
     }
+    print(head(tidydata))
+      tidydata
+    
   })
   
   
@@ -1647,11 +1676,11 @@ function(input, output, session) {
     df <- finalplotdata()
     validate(       need(!is.null(df), "Please select a data set"))
     
-    if (!is.numeric(df[,input$x] ) ) return(NULL)
-    if (all(is.numeric(df[,input$x]) &&
+    if (!is.numeric(df[,"xvalues"] ) ) return(NULL)
+    if (all(is.numeric(df[,"xvalues"]) &&
             input$facetscalesin!="free_x"&&
             input$facetscalesin!="free")){
-      xvalues <- df[,input$x][!is.na( df[,input$x])]
+      xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
       if (length(xvalues) > 0) {
         xmin <- min(xvalues)
         xmax <- max(xvalues)
@@ -1666,11 +1695,11 @@ function(input, output, session) {
   
   output$lowerx <- renderUI({
     df <-finalplotdata()
-    if (is.null(df)| !is.numeric(df[,input$x] ) ) return(NULL)
-    if (all(is.numeric(df[,input$x]) &&
+    if (is.null(df)| !is.numeric(df[,"xvalues"] ) ) return(NULL)
+    if (all(is.numeric(df[,"xvalues"]) &&
             input$facetscalesin!="free_x"&&
             input$facetscalesin!="free")){
-      xvalues <- df[,input$x][!is.na( df[,input$x])]
+      xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
       if (length(xvalues) > 0) {
         xmin <- min(xvalues)
         numericInput("lowerxin",label = "Lower X Limit",value = xmin,min=NA,max=NA,width='100%')
@@ -1679,11 +1708,11 @@ function(input, output, session) {
   })
   output$upperx <- renderUI({
     df <-finalplotdata()
-    if (is.null(df)| !is.numeric(df[,input$x] ) ) return(NULL)
-    if (all(is.numeric(df[,input$x]) &&
+    if (is.null(df)| !is.numeric(df[,"xvalues"] ) ) return(NULL)
+    if (all(is.numeric(df[,"xvalues"]) &&
             input$facetscalesin!="free_x"&&
             input$facetscalesin!="free")){
-      xvalues <- df[,input$x][!is.na( df[,input$x])]
+      xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
       if (length(xvalues) > 0) {
         xmax <- max(xvalues)
         numericInput("upperxin",label = "Upper X Limit",value = xmax,min=NA,max=NA,width='100%')
@@ -1751,7 +1780,7 @@ function(input, output, session) {
     names(items)=items
     items= items
     if ( !is.null(input$y) ){
-      items = c("None",items, "yvars","yvalues") 
+      items = c("None",items, "yvars","yvalues","xvars","xvalues") 
     }
     if ( is.null(input$y) ){
       items = c("None",items) 
@@ -1771,7 +1800,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues") 
+    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1788,7 +1817,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items =c(None='.',items,"yvars", "yvalues")
+    items =c(None='.',items,"yvars", "yvalues","xvars", "xvalues")
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1801,7 +1830,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items =c(None='.',items,"yvars", "yvalues")
+    items =c(None='.',items,"yvars", "yvalues","xvars", "xvalues")
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1815,7 +1844,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items
-    items =c(None='.',items,"yvars", "yvalues")
+    items =c(None='.',items,"yvars", "yvalues","xvars", "xvalues")
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1830,7 +1859,7 @@ function(input, output, session) {
     items= items
     
     if (length(input$y) < 2 ){
-      items= c(None=".",items,"yvars", "yvalues")    
+      items= c(None=".",items,"yvars", "yvalues","xvars", "xvalues")    
       if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
         nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
         items= c(items,nameofcombinedvariables)    
@@ -1869,7 +1898,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues") 
+    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1885,7 +1914,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues") 
+    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1902,7 +1931,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues") 
+    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1917,7 +1946,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues") 
+    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -1931,7 +1960,7 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items
-    items= c("None",items, "yvars","yvalues") 
+    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -2417,9 +2446,9 @@ function(input, output, session) {
     } else if (is.null(input$y)) {
       # Univariate plot
       
-      if(is.numeric(plotdata[,input$x]) ){
-        #validate(       need(is.numeric(plotdata[,input$x]), "Please select a numeric x variable"))
-        p <- sourceable(ggplot(plotdata, aes_string(x=input$x)))
+      if(is.numeric(plotdata[,"xvalues"]) ){
+        #validate(       need(is.numeric(plotdata[,"xvalues"]), "Please select a numeric x variable"))
+        p <- sourceable(ggplot(plotdata, aes_string(x="xvalues")))
         if (input$colorin != 'None')
           p <- p + aes_string(color=input$colorin)
         if (input$fillin != 'None')
@@ -2430,7 +2459,7 @@ function(input, output, session) {
           p <- p  + aes_string(linetype=input$linetypein)
         }
         
-        if (input$groupin == 'None' && !is.numeric(plotdata[,input$x]) 
+        if (input$groupin == 'None' && !is.numeric(plotdata[,"xvalues"]) 
             && input$colorin == 'None' && input$linetypein == 'None' && input$fillin == 'None')
           p <- p + aes(group=1L)
         
@@ -2600,18 +2629,18 @@ function(input, output, session) {
         #### rug geom end  
       }
       
-      if(!is.numeric(plotdata[,input$x]) ){
+      if(!is.numeric(plotdata[,"xvalues"]) ){
         if(input$barplotorder=="frequency"){
-          plotdata[,input$x]<- factor(as.factor(plotdata[,input$x]),
-                                      levels=names(sort(table(plotdata[,input$x]), 
+          plotdata[,"xvalues"]<- factor(as.factor(plotdata[,"xvalues"]),
+                                      levels=names(sort(table(plotdata[,"xvalues"]), 
                                                         decreasing=FALSE)))
         }
         if(input$barplotorder=="revfrequency"){
-          plotdata[,input$x]<- factor(as.factor(plotdata[,input$x]),
-                                      levels=names(sort(table(plotdata[,input$x]), 
+          plotdata[,"xvalues"]<- factor(as.factor(plotdata[,"xvalues"]),
+                                      levels=names(sort(table(plotdata[,"xvalues"]), 
                                                         decreasing=TRUE)))           
         }
-        p <- sourceable(ggplot(plotdata, aes_string(x=input$x)))
+        p <- sourceable(ggplot(plotdata, aes_string(x="xvalues")))
         
         
         
@@ -2624,7 +2653,7 @@ function(input, output, session) {
         if (input$groupin != 'None')
           p <- p + aes_string(group=input$groupin)
         
-        #if (input$groupin == 'None' & !is.numeric(plotdata[,input$x]) 
+        #if (input$groupin == 'None' & !is.numeric(plotdata[,"xvalues"]) 
         #   & input$colorin == 'None')
         # p <- p + aes(group=1)
         
@@ -2681,13 +2710,13 @@ function(input, output, session) {
     } else {
       # X-Y plot
       
-      p <- sourceable(ggplot(plotdata, aes_string(x=input$x, y="yvalues")))
+      p <- sourceable(ggplot(plotdata, aes_string(x="xvalues", y="yvalues")))
       
       p <- p # helps in initializing the scales
       
       if (input$showtarget)  {
         if (is.numeric( plotdata[,"yvalues"] ) ) {
-          if (!is.numeric( plotdata[,input$x] )){
+          if (!is.numeric( plotdata[,"xvalues"] )){
             p <-   p   + scale_x_discrete() }
           
           p <-   p   +
@@ -2703,7 +2732,7 @@ function(input, output, session) {
       
       if (input$showtarget2)  {
         if ( is.numeric( plotdata[,"yvalues"] ) ) {
-          if (!is.numeric( plotdata[,input$x] )){
+          if (!is.numeric( plotdata[,"xvalues"] )){
             p <-   p   + scale_x_discrete() }
           
           p <-   p   +
@@ -2731,10 +2760,10 @@ function(input, output, session) {
         p <- p  + aes_string(linetype=input$linetypein)
       }
       
-      # if (input$groupin != 'None' & !is.factor(plotdata[,input$x]))
+      # if (input$groupin != 'None' & !is.factor(plotdata[,"xvalues"]))
       if (input$groupin != 'None')
         p <- p + aes_string(group=input$groupin)
-      if (input$groupin == 'None' & !is.numeric(plotdata[,input$x]) 
+      if (input$groupin == 'None' & !is.numeric(plotdata[,"xvalues"]) 
           & input$colorin == 'None')
         p <- p + aes(group=1)
       
@@ -4913,7 +4942,7 @@ function(input, output, session) {
           plotdata[,"status"]<- plotdata[,"yvalues"]
         }
         
-        p <- sourceable(ggplot(plotdata, aes_string(time=input$x, status="status")))
+        p <- sourceable(ggplot(plotdata, aes_string(time="xvalues", status="status")))
         if (input$colorin != 'None')
           p <- p + aes_string(color=input$colorin)
         if (input$fillin != 'None')
@@ -4922,7 +4951,7 @@ function(input, output, session) {
           p <- p + aes_string(linetype=input$linetypein)
         
         if( !input$KMignoregroup){
-          if (input$groupin != 'None' && !is.factor(plotdata[,input$x]) ){ 
+          if (input$groupin != 'None' && !is.factor(plotdata[,"xvalues"]) ){ 
             p <- p + aes_string(group=input$groupin)
           }
         }
@@ -4987,7 +5016,7 @@ function(input, output, session) {
         if(input$KM!="None" && (input$addmediansurv== "addmediansurvival" ||
                                 input$addmediansurv== "addmediancisurvival" ||
                                 input$addrisktable) ){
-          timevar  <- input$x
+          timevar  <- "xvalues"
           statusvar<- "status"
           colorinputvar <-   ifelse(input$kmignorecol,"None" ,input$colorin) 
           fillinputvar <-  input$fillin
@@ -5170,7 +5199,7 @@ function(input, output, session) {
 }
       } ###### KM SECTION END still need to fix y scale labels
       
-      p <- p + xlab(input$x)
+      p <- p + xlab("xvalues")
     }
     
     if (!input$show_pairs) {
@@ -5525,7 +5554,7 @@ function(input, output, session) {
       }
       
       if (input$xaxisscale=="logx" &&
-          is.numeric(plotdata[,input$x])) {
+          is.numeric(plotdata[,"xvalues"])) {
         
         if (!input$customxticks){
           if (input$xaxisformat=="default") {
@@ -5594,7 +5623,7 @@ function(input, output, session) {
       }#logx      
 
       if (input$xaxisscale=="linearx" &&
-          is.numeric(plotdata[,input$x])) {
+          is.numeric(plotdata[,"xvalues"])) {
         if (!input$customxticks){
         if (input$xaxisformat=="default") {
           p <- p  + 
@@ -5827,7 +5856,7 @@ function(input, output, session) {
       if (all(
         input$yaxiszoom=='noyzoom'&&
         !is.null(input$xaxiszoomin[1])&&
-        is.numeric(plotdata[,input$x] )&&
+        is.numeric(plotdata[,"xvalues"] )&&
         input$facetscalesin!="free_x"&&
         input$facetscalesin!="free")
       ){
@@ -5875,7 +5904,7 @@ function(input, output, session) {
       
       
       if (all(!is.null(input$xaxiszoomin[1])&&
-              is.numeric(plotdata[,input$x] ) && !is.null(plotdata$yvalues) &&
+              is.numeric(plotdata[,"xvalues"] ) && !is.null(plotdata$yvalues) &&
               is.numeric(plotdata[,"yvalues"]) &&
               input$facetscalesin!="free_x"&&input$facetscalesin!="free_y"&&
               input$facetscalesin!="free")
@@ -6193,7 +6222,7 @@ function(input, output, session) {
   output$plot_clickedpoints <- renderTable({
     df<- finalplotdata()  
     validate(       need(!is.null(df), "Please select a data set"))
-    res <- nearPoints(df, input$plot_click, input$x, "yvalues")
+    res <- nearPoints(df, input$plot_click, "xvalues", "yvalues")
     if (nrow(res) == 0|is.null(res))
       return(NULL)
     res
@@ -6201,7 +6230,7 @@ function(input, output, session) {
   output$plot_brushedpoints <- renderTable({
     df<- finalplotdata()  
     validate(       need(!is.null(df), "Please select a data set"))
-    res <- brushedPoints(df, input$plot_brush, input$x,"yvalues")
+    res <- brushedPoints(df, input$plot_brush, "xvalues","yvalues")
     if (nrow(res) == 0|is.null(res))
       return(NULL)
     res
@@ -6290,7 +6319,7 @@ function(input, output, session) {
     items=names(tabledata())
     names(items)=items
     items= items
-    items= items[!is.element(items,input$x)]
+    items= items[!is.element(items,"xvalues")]
     items =c(None='.',items)
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
