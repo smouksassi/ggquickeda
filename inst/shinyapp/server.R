@@ -1844,13 +1844,24 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items
-    items =c(None='.',items,"yvars", "yvalues","xvars", "xvalues")
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
+    
+    if (length(input$x) < 2 ){
+      items= c(None=".",items,"yvars", "yvalues","xvars", "xvalues")    
+      if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+        nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+        items= c(items,nameofcombinedvariables)    
+      }
+    }
+    if (length(input$x) > 1  ){
+      items= c("xvars",None=".",items, "yvalues","yvars", "xvalues")    
+      if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+        nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="")
+        items= c(items,nameofcombinedvariables)    
+      }
     }
     selectInput("facetcolextrain", "Extra Column Split:",items)
   })
+  
   output$facet_row_extra <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1866,7 +1877,7 @@ function(input, output, session) {
       }
     }
     if (length(input$y) > 1  ){
-      items= c("yvars",None=".",items, "yvalues")    
+      items= c("yvars",None=".",items, "yvalues","xvars", "xvalues")    
       if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
         nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="")
         items= c(items,nameofcombinedvariables)    
@@ -6358,6 +6369,8 @@ function(input, output, session) {
     )
     validate(need(!is.null(input$y), 
                   "No y variable(s) selected"))
+    validate(need(!is.null(input$x), 
+                  "No x variable(s) selected"))
     req(input$dstatscolextrain)
     
     tabledata <- df

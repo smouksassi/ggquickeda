@@ -2042,7 +2042,7 @@ fluidPage(
                p("Note: This is experimental and does not work all the time due to ploty::ggploty limitations."),
                uiOutput('ui_plotly')),
       tabPanel("Descriptive Stats",
-               p("Note: use y for variables of interest (rows) and x for stratification (columns). Drag and Drop the y variable(s) list on the left to the order of your liking"),
+               p("Note: use y for variables of interest (rows) and x for stratification (columns). Drag and Drop the y variable(s) list on the left to the order of your liking. When more than one x is selected the first will be used."),
                htmlOutput("dstats"),
                shinyjs::hidden(div(
                  id = "table_options_area",
