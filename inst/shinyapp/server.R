@@ -2454,11 +2454,10 @@ function(input, output, session) {
        
 
       
-    } else if (is.null(input$y)) {
+    } else if (is.null(input$y) || is.null(input$x)) {
       # Univariate plot
-      
+      if(is.null(input$y)){
       if(is.numeric(plotdata[,"xvalues"]) ){
-        #validate(       need(is.numeric(plotdata[,"xvalues"]), "Please select a numeric x variable"))
         p <- sourceable(ggplot(plotdata, aes_string(x="xvalues")))
         if (input$colorin != 'None')
           p <- p + aes_string(color=input$colorin)
@@ -2639,7 +2638,228 @@ function(input, output, session) {
         }
         #### rug geom end  
       }
-      
+      }
+      if(is.null(input$x)){
+      if(is.numeric(plotdata[,"yvalues"]) ){
+        p <- sourceable(ggplot(plotdata, aes_string(y="yvalues")))
+        if (input$colorin != 'None')
+          p <- p + aes_string(color=input$colorin)
+        if (input$fillin != 'None')
+          p <- p + aes_string(fill=input$fillin)
+        if (input$groupin != 'None')
+          p <- p + aes_string(group=input$groupin)
+        if (input$linetypein != 'None'){
+          p <- p  + aes_string(linetype=input$linetypein)
+        }
+        
+        if (input$groupin == 'None' && !is.numeric(plotdata[,"yvalues"]) 
+            && input$colorin == 'None' && input$linetypein == 'None' &&
+            input$fillin == 'None')
+          p <- p + aes(group=1L)
+        
+        if ( input$histogramaddition=="Counts"  && input$histogrambinwidth =="None"  ){
+          p <- p+ 
+            geom_histogram(aes(x=..count..), alpha=input$histogramalpha,
+                           bins = input$histonbins,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add)))+
+            xlab("Counts")
+        }
+        
+        if ( input$histogramaddition=="Counts" && input$histogrambinwidth =="userbinwidth" ){
+          p <- p+ 
+            geom_histogram(aes(x=..count..), alpha=input$histogramalpha,
+                           binwidth = input$histobinwidth,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add)))+
+            xlab("Counts")
+        }
+        if ( input$histogramaddition=="Counts" && input$histogrambinwidth =="autobinwidth" ){
+          p <- p+ 
+            geom_histogram(aes(x=..count..),alpha=input$histogramalpha,
+                           binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} ,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add)))+
+            xlab("Counts")
+        }
+        
+        
+        
+        if ( input$histogramaddition=="Density"  && input$histogrambinwidth =="None"  ){
+          p <- p+ 
+            geom_histogram(aes(x=..density..), alpha=input$histogramalpha,
+                           bins = input$histonbins,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+        }
+        
+        if ( input$histogramaddition=="Density" && input$histogrambinwidth =="userbinwidth" ){
+          p <- p+ 
+            geom_histogram(aes(x=..density..), alpha=input$histogramalpha,
+                           binwidth = input$histobinwidth,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+        }
+        if ( input$histogramaddition=="Density" && input$histogrambinwidth =="autobinwidth" ){
+          p <- p+ 
+            geom_histogram(aes(x=..density..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} ,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+        }
+        
+        
+        if ( input$histogramaddition=="ncounts"  && input$histogrambinwidth =="None"  ){
+          p <- p+ 
+            geom_histogram(aes(x=..ncount..), alpha=input$histogramalpha,bins = input$histonbins,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xyexpansion_r_add))) +
+            xlab("Counts")
+        }
+        
+        if ( input$histogramaddition=="ncounts" && input$histogrambinwidth =="userbinwidth" ){
+          p <- p+ 
+            geom_histogram(aes(x=..ncount..), alpha=input$histogramalpha,
+                           binwidth = input$histobinwidth,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+        }
+        if ( input$histogramaddition=="ncounts" && input$histogrambinwidth =="autobinwidth" ){
+          p <- p+ 
+            geom_histogram(aes(x=..ncount..),alpha=input$histogramalpha, binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )} ,
+                           position =input$positionhistogram)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+        }
+        
+        
+        if ( input$densityaddition=="Density"){
+          p <- p+
+            geom_density(aes(x=..density..),alpha=input$densityalpha,adjust=input$densityadjust)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Density")
+          
+        }
+        if ( input$densityaddition=="Scaled Density"){
+          p <- p+
+            geom_density(aes(x=..scaled..),alpha=input$densityalpha,
+                         adjust=input$densityadjust)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Scaled Density")
+          
+        }
+        if ( input$densityaddition=="Counts"){
+          p <- p+
+            geom_density(aes(x=..count..),alpha=input$densityalpha,
+                         adjust=input$densityadjust)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+          
+        }
+        if ( input$densityaddition=="histocount"){
+          p <- p+
+            geom_density(aes(binwidth=input$histobinwidth,
+                             x=binwidth*..count..),
+                         alpha=input$densityalpha,adjust=input$densityadjust)+
+            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add))) +
+            xlab("Counts")
+          
+        } #numeric x
+        
+        
+        ###### rug geom start
+        if(input$addrugmarks) {
+          
+          if(! input$rugignorecol){
+            p <- p +
+              geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
+                       show.legend = FALSE,
+                       alpha = input$ruglinealpha,
+                       length = ggplot2::unit(input$ruglinelength ,"npc") 
+              ) 
+          }
+          if(input$rugignorecol){
+            p <- p +
+              geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
+                       show.legend = FALSE,
+                       alpha = input$ruglinealpha,
+                       length = ggplot2::unit(input$ruglinelength ,"npc"),
+                       col = input$colrug
+              ) 
+          }
+          
+        }
+        if(input$addextrarugmarks &&
+           !is.null(input$xrug) &&
+           length(as.vector(input$xrug)) > 0) {
+          for(i in input$xrug) {
+            if(!input$rugignorecol){
+              p <- p +
+                geom_rug(aes_string(y=i),
+                         sides = paste(input$extrarugsides, collapse="",sep=""),
+                         show.legend = FALSE, inherit.aes = FALSE,
+                         alpha = input$ruglinealpha,
+                         length = ggplot2::unit(input$ruglinelength ,"npc")
+                )
+            }
+            if(input$rugignorecol){
+              p <- p +
+                geom_rug(aes_string(y=i),
+                         sides = paste(input$extrarugsides, collapse="",sep=""),
+                         show.legend = FALSE, inherit.aes = FALSE,
+                         alpha = input$ruglinealpha,
+                         length = ggplot2::unit(input$ruglinelength ,"npc"),
+                         col = input$colrug 
+                )
+            }
+          }
+        }
+        #### rug geom end  
+      }#numericyvalues
+      }
+      if(is.null(input$y)){
       if(!is.numeric(plotdata[,"xvalues"]) ){
         if(input$barplotorder=="frequency"){
           plotdata[,"xvalues"]<- factor(as.factor(plotdata[,"xvalues"]),
@@ -2717,8 +2937,87 @@ function(input, output, session) {
               coord_flip()
           }
         }
-      }
-    } else {
+      }# not numericx
+       }#null y
+      if(is.null(input$x)){
+        if(!is.numeric(plotdata[,"yvalues"]) ){
+          if(input$barplotorder=="frequency"){
+            plotdata[,"yvalues"]<- factor(as.factor(plotdata[,"yvalues"]),
+                                          levels=names(sort(table(plotdata[,"yvalues"]), 
+                                                            decreasing=FALSE)))
+          }
+          if(input$barplotorder=="revfrequency"){
+            plotdata[,"yvalues"]<- factor(as.factor(plotdata[,"yvalues"]),
+                                          levels=names(sort(table(plotdata[,"yvalues"]), 
+                                                            decreasing=TRUE)))           
+          }
+          p <- sourceable(ggplot(plotdata, aes_string(y="yvalues")))
+          
+          if (input$colorin != 'None')
+            p <- p + aes_string(color=input$colorin)
+          
+          if (input$fillin != 'None')
+            p <- p + aes_string(fill=input$fillin)
+          
+          if (input$groupin != 'None')
+            p <- p + aes_string(group=input$groupin)
+          
+          if ( input$barplotaddition && !input$barplotpercent){
+            p <- p + 
+              geom_bar(alpha=0.2,position = eval(parse(text=input$positionbar)))
+            
+            p <- p +
+              scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                             input$xexpansion_r_mult),
+                                                    add  = c(input$xexpansion_l_add,
+                                                             input$xexpansion_r_add))) +
+              xlab("Count")
+            
+            if ( input$barplotlabel){
+              p <- p+   geom_text(aes(x = ((..count..)),
+                                      label = ((..count..))),
+                                  stat = "count", vjust = 0.5,size=5,
+                                  position = eval(parse(text=input$positionbar)))
+            }
+            
+            
+            if ( input$barplotflip){
+              p <- p +
+                coord_flip()
+            }
+          }
+          if ( input$barplotaddition && input$barplotpercent){
+            p <- p+  
+              geom_bar(alpha=0.2,aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
+                       position = eval(parse(text=input$positionbar)))
+            
+            if ( input$barplotlabel){
+              if(input$positionbar!="position_fill(vjust = 0.5)")
+              {
+                p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                        label = scales::percent(
+                                          ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
+                                    stat = "count", vjust = 0.5,size=5,
+                                    position = eval(parse(text=input$positionbar)))    
+              }
+              
+            }
+            
+            
+            p <- p +   scale_x_continuous(labels = percent,
+                                          expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                                      input$xexpansion_r_mult),
+                                                             add  = c(input$xexpansion_l_add,
+                                                                      input$xexpansion_r_add))) +
+              ylab("Percentage")
+            if ( input$barplotflip){
+              p <- p +
+                coord_flip()
+            }
+          }
+        }# not numeric yvalues no x
+      } # is null x   
+    } else { # end of univariate
       # X-Y plot
       
       p <- sourceable(ggplot(plotdata, aes_string(x="xvalues", y="yvalues")))
