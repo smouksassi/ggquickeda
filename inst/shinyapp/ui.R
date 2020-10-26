@@ -1119,9 +1119,9 @@ fluidPage(
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
                                 selected = "position_stack(vjust = 0.5)"),
-                    checkboxInput('barplotpercent', 'Show Percentages instead of Counts ?',value = FALSE),
-                    checkboxInput('barplotlabel', 'Show Labels ?',value = FALSE)
-                    
+                    checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
+                                  value = FALSE),
+                      checkboxInput('barplotlabel', 'Show Labels ?',value = FALSE)
                   ),
                   column (3,
                           radioButtons("barplotorder", "Bar Ordering:",
@@ -1131,9 +1131,14 @@ fluidPage(
                           checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
                   ),
                   
-                  column (12, h6("A plot of the mapped x variable
-                                 will be produced when no y variable(s) are selected. Options are to be added as per users requests."))
-                  
+                  column (6,
+                  h6("A barplot for non-numeric x or y variable(s), or a density/histogram for numeric x or y variabl(s)
+                                 will be produced,only when the x or y variable(s) are empty.
+                                 Options are to be added as per users requests.")
+                  ),
+                  column (6,
+                  h6("Currently it is not possible to label the barplot when position Sum to 100% is used.")
+                  )
                   )#fluidrow
               ),
               
@@ -2042,7 +2047,7 @@ fluidPage(
                p("Note: This is experimental and does not work all the time due to ploty::ggploty limitations."),
                uiOutput('ui_plotly')),
       tabPanel("Descriptive Stats",
-               p("Note: use y for variables of interest (rows) and x for stratification (columns). Drag and Drop the y variable(s) list on the left to the order of your liking"),
+               p("Note: use y for variables of interest (rows) and x for stratification (columns). Drag and Drop the y variable(s) list on the left to the order of your liking. When more than one x is selected the first will be used."),
                htmlOutput("dstats"),
                shinyjs::hidden(div(
                  id = "table_options_area",
