@@ -1343,7 +1343,7 @@ function(input, output, session) {
           mutate(xvalues=as.factor(as.character(xvalues) ))
       }
     }
-    print(head(tidydata))
+    #print(head(tidydata))
       tidydata
     
   })
@@ -6414,7 +6414,8 @@ function(input, output, session) {
       }
       
       p <-  p+
-        theme(axis.text.y = y.axis.text )                              
+        theme(axis.text.y = y.axis.text,
+              axis.text.y.left = y.axis.text)                              
     }  
     if (input$striptextsizex <= 0) {
       x.strip.text <- ggplot2::element_blank()
@@ -6493,7 +6494,7 @@ function(input, output, session) {
     }
     if(input$rmyaxistickslabels){
       p <-  p+
-        theme(axis.text.y=element_blank(),
+        theme(axis.text.y=element_blank(),axis.text.y.left=element_blank(),
               axis.ticks.y=element_blank())
     }
     
