@@ -2888,13 +2888,15 @@ function(input, output, session) {
         #   & input$colorin == 'None')
         # p <- p + aes(group=1)
         
-        if ( input$barplotaddition&!input$barplotpercent){
+        if ( input$barplotaddition && !input$barplotpercent){
           p <- p + 
             geom_bar(alpha=0.2,position = eval(parse(text=input$positionbar)))
           
           p <- p +
-            scale_y_continuous(expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))) +
+            scale_y_continuous(expand = expansion(mult = c(input$yexpansion_l_mult,
+                                                           input$yexpansion_r_mult),
+                                                  add  = c(input$yexpansion_l_add,
+                                                           input$yexpansion_r_add))) +
             ylab("Count")
           
           if ( input$barplotlabel){
@@ -2910,7 +2912,7 @@ function(input, output, session) {
               coord_flip()
           }
         }
-        if ( input$barplotaddition&input$barplotpercent){
+        if ( input$barplotaddition && input$barplotpercent){
           p <- p+  
             geom_bar(alpha=0.2,aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
                      position = eval(parse(text=input$positionbar)))
@@ -2922,15 +2924,18 @@ function(input, output, session) {
                                       label = scales::percent(
                                         ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
                                   stat = "count", vjust = 0.5,size=5,
-                                  position = eval(parse(text=input$positionbar)))    
+                                  position = eval(parse(text=input$positionbar)))+
+                ylab("Percentage")    
             }
             
           }
           
           
           p <- p +   scale_y_continuous(labels = percent,
-                                       expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                          add  = c(input$yexpansion_l_add, input$yexpansion_r_add))) +
+                                       expand = expansion(mult = c(input$yexpansion_l_mult,
+                                                                   input$yexpansion_r_mult),
+                                                          add  = c(input$yexpansion_l_add,
+                                                                   input$yexpansion_r_add))) +
             ylab("Percentage")
           if ( input$barplotflip){
             p <- p +
@@ -2998,7 +3003,8 @@ function(input, output, session) {
                                         label = scales::percent(
                                           ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
                                     stat = "count", vjust = 0.5,size=5,
-                                    position = eval(parse(text=input$positionbar)))    
+                                    position = eval(parse(text=input$positionbar)))+
+                  ylab("Percentage")    
               }
               
             }
