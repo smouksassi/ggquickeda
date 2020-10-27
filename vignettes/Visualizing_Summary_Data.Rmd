@@ -1,5 +1,7 @@
 ---
 title: "Visualizing Summary Data"
+author: "Samer Mouksassi"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Visualizing Summary Data}
@@ -14,6 +16,104 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo=TRUE, warning=FALSE, message=FALSE}
 library(ggquickeda)
 ```
+
+In this vignette we will demo how to visualize data only available in summary format e.g. data coming from a published paper table:
+
+
+![JH Beigel et al. N Engl J Med 2020. DOI: 10.1056/NEJMoa2007764](./nejmfigure.png){width=100%}
+
+The data has been made available in a csv data file named remdesivirfig3.csv
+
+```{r datainput, echo=TRUE, warning=FALSE, message=FALSE}
+remdesivirdata <- read.csv("./remdesivirfig3.csv")
+knitr::kable(remdesivirdata)
+```
+
+
+##Load the Data into the app 
+```{r runtheapp, echo=TRUE, warning=FALSE, message=FALSE}
+# from R lauch the app with the data 
+#run_ggquickeda(remdesivirdata) 
+# if you have access the the app on a server browse to the file and load it
+
+```
+
+* After the app finishes loading the data:  
+    + Change the mapped **y variable(s)** to 'Subgroupvalue'  
+    + Change the mapped **x variable(s)** to 'RRLCI', 'Recovery Rate Ratio' and  'RRUCI' 
+    
+![Summary Data Mapping](./sumdata1.png){width=70%}
+
+* Go to **Color/Group/Split/Size/Fill Mappings** below the graph
+    + cancel the automatic **Extra Column Split** and set it to 'None'
+    + set **Select Row Split** to 'Subgroup'.
+    
+![Graph Splitting](./sumdata2.png){width=70%}
+
+* Go to **Graph Options** tab and select the **Facets Options** subtab. We will be using advanced Faceting (graph splitting options):
+    + Set **Facet Scales** to 'free_y' (this allows only subgroupvalues specific to the subgroup to appear on each graph panel)
+    + Set **Facet Spaces** to 'free_y' (this allows for each panel to occupy space proportional to the number of subgroupvalues)
+    + Set **Facet Switch to Near Axis** to 'y' (this will move the y strips to the left)
+
+We still have to set text formatting options using the group of subtabs in the lower part of the page:  
+
+* Default subtab: **Facet Text Size/Angle/Face**    
+    + Set **Facet Text Angle Y** to 0
+    + Check the **Y strip Text Bold**
+
+* Second subtab: **Facet Text Justification**  
+    + Set **Facet Text Vertical Justification Y** to 1 
+    + Set **Facet Text Horizontal Justification Y** to 0     
+(not shown in the screenshot)
+* Fourth subtab: **Facet Labels**  
+    + Set **Facet Label** to 'Value(s)'  
+(not shown in the screenshot)
+    
+At this point you should have this graph:  
+
+![Facet Options](./sumdata3.png){width=100%}
+
+* Go to main **Inputs** tab and select the **Recode/Reorder Categories** subtab. 
+    + Set **Select a variable(s)** to  'Subgroup'
+    + Drag and drop the order of levels as in the screenshot
+
+![reordering of subgroups](./sumdata4.png){width=50%}
+
+While you can add another variable and manually drag and drop we will demo next another possibility to reorder yvalues using a statisitc of another variable e.g. median:
+
+* Select the **Reorder Facets or axis Levels** subtab 
+    + Set **Reorder This Variable** to  'yvalues'
+    + Keep **By the:** to  'Median'
+    + Set **Of this Variable:** to 'subroupvalueorder' 
+    
+![reordering of subgroupsvalue](./sumdata5.png){width=50%}
+
+
+* Select the **Points, Lines** subtab 
+    + Set **Points** to  'None'
+
+* Select the **Median (PIs)** subtab 
+    + Set **Median** to  'Median/PI'
+    + Set **PI Geom:** to  'errorbar'
+    + Set **PI %:** to 1
+    + Check **Show points**
+    + Set **Median(s) Point(s) Size:** to 6
+    
+![Median/PI options](./sumdata6.png){width=75%}
+
+* Select the **Graph Options** subtab next to the **Inputs** and in the first default subtab **X/Y Axes Log/Labels**:   
+    + Type in one space in the  **Y axis label** (this removes the default label)
+    + Type in one space in the  **X axis label** (this removes the default label)
+    + Type in "Time to Recovery According to Subgroup" in the **Plot Title** field
+    + Type in "The widths of the confidence intervals have not been adjusted for multiplicity\\nand therefore cannot be used to infer treatment effects.\\nRace and ethnic group were reported by the patients." in the **Plot Caption** field (notice how the\\n produce a line break)
+    + Set **X Axis scale** to 'log10'
+
+And now you should get the below plot !: 
+![xy label options](./sumdata7.png){width=100%}
+
+As an example of even more advanced features consider the screenshot below where the N of patients as well as the Intervals Values are shown.
+
+![more options](./sumdata8.png){width=100%}
