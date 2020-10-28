@@ -725,7 +725,8 @@ fluidPage(
                 )
               ),
               hr(),
-              checkboxInput('themeaspect', 'Use custom aspect ratio ?')   ,  
+              checkboxInput('themeaspect', 'Use custom aspect ratio ?'),
+              h6("Setting aspect ratio does not work when facets spacing x or y is free."),
               conditionalPanel(condition = "input.themeaspect" , 
                                numericInput("aspectratio",label = "Y/X ratio",
                                             value = 1,min=0.1,max=10,step=0.01)),
