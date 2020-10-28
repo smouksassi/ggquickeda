@@ -1,8 +1,10 @@
-# ggquickeda 0.1.7.9999
+# ggquickeda 0.1.8
 * Added option for an explicit Missing Category with custom cuts
 * Added option to compute the inverse of Numeric variables
 * Moved the rounding to after division/inverse
 * Added possibility to round data labels before plotting
+* Added possibility to use more than one x variable
+* Added fixes to summary tables and univariate plots when only y variable(s) are selected
 
 # ggquickeda 0.1.7
 * Added support for semicolon separated files and added package version in App Title

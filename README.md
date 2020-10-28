@@ -1,7 +1,10 @@
 ggquickeda
 ========
-![CRAN](http://www.r-pkg.org/badges/version-last-release/ggquickeda)
+<img src="./ggquickedahex.png" width="160px" align="right" />
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/ggquickeda)](https://cran.r-project.org/package=ggquickeda)
 [![Travis-CI Build Status](https://travis-ci.org/smouksassi/ggquickeda.svg?branch=master)](https://travis-ci.org/smouksassi/ggquickeda)
+![MonthlyDOWNLOADS](http://cranlogs.r-pkg.org/badges/ggquickeda)
 ![DOWNLOADS](http://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)
 
 ### Installation and Running information
@@ -72,10 +75,11 @@ This execute the code to load your csv file or the internal sample_data.csv:
 read.csv("youruploadeddata.csv",na.strings = c("NA","."))
 ```
 Once your data is uploaded the first column will be selected for the **y variable(s):** and the second column for the **x variable:**, respectively. A simple scatter plot of y versus x variables is shown. 
-ggquickeda can handle one or more y variable(s) selections but only one x variable.
-Note that the x variable should be different from those selected for y variable(s).
+ggquickeda can handle one or more y variable(s) selections and more recently one or more x variable(s).
+Note that the x variable(x) should be different from those selected for y variable(s).
 Whether the user selects one or more y variable(s), the y variable(s) data will be automatically stacked (gathered) into two columns named yvalues (values) and yvars (identifier from which variable the value is coming from) and a scatter plot of yvalues versus x, faceted plot by yvars will be shown. Mixing categorical and continuous variables will render all yvalues to be treated as character. The order of the selected y variables(s) matters and can be changed via drag and drop. Selections can be removed by clicking on the small x.
-When no y variable(s) is selected a histogram (if x variable is continuous) or a barplot (if x variable is categorical) is shown. 
+When no y variable(s) is selected a histogram (if x variable is continuous) or a barplot (if x variable is categorical) is shown.
+The same applies when ore or more x variable(x) where the values are named (xvalues) and the identifier variable name is (xvars). When no x variable(s) is selected a histogram (if y variable is continuous) or a barplot (if y variable is categorical) is shown.
 
 ### Data Manipulations 
 After selecting your y variable(s) if any and x variable you can directly proceed into data manipulation within the **Inputs** tab using the following subtabs. Note that the subtabs execution is sequential i.e. each subtab actions are executed in the order they appear. If the user changes an upstream action this will reset the subsequent ones.
@@ -93,7 +97,7 @@ This subtab is dynamic in the sense that the user can add/remove fields.
     + **Factor to merge (1):** Check the boxes of categories you want to pool together.
     + **Factor to merge (n...):** If user  click the + Merge another group it will create a new field to iteratively merge categories of interest.
 * **Recode/Reorder Categories**
-This subtab is dynamic in the sense that the user can add/remove variables. Once a non-numeric variable is selected another field with the current variable levels will be generated. The user can reorder the levels using drag and drop and/or edit a level by hitting Backspace and typing in a new character string. Note that the order chosen here might not be reflected on the yvalues a separate subtab after stacking is provided for this **Reorder Facets or axis Levels**
+This subtab is dynamic in the sense that the user can add/remove variables. Once a non-numeric variable is selected another field with the current variable levels will be generated. The user can reorder the levels using drag and drop and/or edit a level by hitting Backspace and typing in a new character string. Note that the order chosen here will not be reflected on the yvalues/xvalues and a separate subtab after stacking is provided for this **Reorder Facets or axis Levels**
 * **Combine Two Variables**
 This enables the user to select two categorical variables Var1 with levels(V1L1,V1L2) and Var2 with levels(V2L1,V2L2) to generate a new variable named Var1_Var2 with levels V1L1_V2L1, V1L1_V2L2, V1L2_V2L1, V1L2_V2L2 and so on.
 * **Filters**
@@ -108,7 +112,7 @@ Same as the One Row by ID(s) but keeping the last row instead.
     + **Divide the Values by the specified column:** Divide a column e.g. concentration by another like dose.
     + **Divide the Values by a constant:** Divide by specified constant for quick unit conversions.
 * **Reorder Facets or axis Levels**
-Enables the user to reorder the yvalues using a statistical function (Median, Mean, Minimum or Maximum of another variable) with a checkbox to quickly reverse the order, if desired.
+Enables the user to reorder the yvalues/xvalues using a statistical function (Median, Mean, Minimum, Maximum, length or standard deviation of another variable) with a checkbox to quickly reverse the order, if desired.
 The user can also manually drag and drop an order and change the name of the levels where \n is recognized as a line break.
 
 ### Graph Options
