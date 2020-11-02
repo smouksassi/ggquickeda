@@ -79,11 +79,11 @@ if (PGDATABASE != "" && PGHOST != "" && PORT != "" && PGUSER != "" && PGPASSWORD
 
 options(shiny.maxRequestSize = 250*1024^2)
 
-stat_sum_df <- function(fun, geom="point", ...) {
-  stat_summary(fun.data=fun,  geom=geom,  ...)
+stat_sum_df <- function(fun, geom = "point", ...) {
+  stat_summary(fun.data = fun,  geom = geom,  ...)
 }
 stat_sum_single <- function(fun, geom="point", ...) {
-  stat_summary(fun.y=fun,  geom=geom,  ...)
+  stat_summary(fun = fun,  geom = geom,  ...)
 }
 
 median.n <- function(x){
