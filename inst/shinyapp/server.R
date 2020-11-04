@@ -1315,6 +1315,14 @@ function(input, output, session) {
           if (!all( sapply(df[,as.vector(input$x)], is.numeric)) ) {
             tidydata <- tidydata %>%
               mutate(xvalues=as.factor(as.character(xvalues) ))
+            xlevelsall<- vector(mode = "character", length = 0L)
+            for (i in 1:length(input$x) ) {
+              levelsvar <- levels(df[,input$x[i]])
+              xlevelsall<- c(xlevelsall,levelsvar)
+            }
+            xlevelsall <-  unique(xlevelsall, fromLast = TRUE)
+            tidydata$xvalues   <- factor(tidydata$xvalues,
+                                         levels=xlevelsall)
           }
       }
       if(!is.null(input$y) && is.null(input$x) ){
@@ -1325,6 +1333,14 @@ function(input, output, session) {
           if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
             tidydata <- tidydata %>%
               mutate(yvalues=as.factor(as.character(yvalues) ))
+            ylevelsall<- vector(mode = "character", length = 0L)
+            for (i in 1:length(input$y) ) {
+              levelsvar <- levels(df[,input$y[i]])
+              ylevelsall<- c(ylevelsall,levelsvar)
+            }
+            ylevelsall <-  unique(ylevelsall, fromLast = TRUE)
+            tidydata$yvalues   <- factor(tidydata$yvalues,
+                                         levels=ylevelsall)
           }
       }
     
@@ -1337,13 +1353,28 @@ function(input, output, session) {
       if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
         tidydata <- tidydata %>%
           mutate(yvalues=as.factor(as.character(yvalues) ))
+        ylevelsall<- vector(mode = "character", length = 0L)
+        for (i in 1:length(input$y) ) {
+          levelsvar <- levels(df[,input$y[i]])
+          ylevelsall<- c(ylevelsall,levelsvar)
+        }
+        ylevelsall <-  unique(ylevelsall, fromLast = TRUE)
+        tidydata$yvalues   <- factor(tidydata$yvalues,
+                                     levels=ylevelsall)
       }
       if (!all( sapply(df[,as.vector(input$x)], is.numeric)) ) {
         tidydata <- tidydata %>%
           mutate(xvalues=as.factor(as.character(xvalues) ))
+        xlevelsall<- vector(mode = "character", length = 0L)
+        for (i in 1:length(input$x) ) {
+          levelsvar <- levels(df[,input$x[i]])
+          xlevelsall<- c(xlevelsall,levelsvar)
+        }
+        xlevelsall <-  unique(xlevelsall, fromLast = TRUE)
+        tidydata$xvalues   <- factor(tidydata$xvalues,
+                                        levels=xlevelsall)
       }
     }
-    #print(head(tidydata))
       tidydata
     
   })
@@ -1373,7 +1404,7 @@ function(input, output, session) {
     if (is.null(input$reordervarin)) return()
     if (length(input$reordervarin ) <1)  return(NULL)
     if ( input$reordervarin!=""){
-      yinputs <- input$y
+      #yinputs <- input$y
       items=names(df)
       names(items)=items
       MODEDF <- sapply(df, function(x) is.numeric(x))
@@ -1432,7 +1463,7 @@ function(input, output, session) {
     if(!is.null(input$reordervarin)&&length(input$reordervarin ) >=1  ){
       NAMESTOKEEP<- NAMESTOKEEP  [ NAMESTOKEEP!=input$reordervarin ]
     }
-    NAMESTOKEEP<- NAMESTOKEEP[ NAMESTOKEEP!="yvars" ]
+    #NAMESTOKEEP<- NAMESTOKEEP[ NAMESTOKEEP!="yvars" ]
     selectInput("reordervar2in" , "Custom Reorder this variable:",c('None',NAMESTOKEEP ) )
   })
   
@@ -1446,6 +1477,7 @@ function(input, output, session) {
                   choices = list(""),multiple=TRUE, selectize=FALSE)   
     }
     if(input$reordervar2in!="None"&&!is.null(input$reordervar2in) )  {
+      
       choices <- levels(as.factor(as.character(df[,input$reordervar2in])))
       selectizeInput('reordervar2valuesnotnull',
                      label = paste("Drag/Drop to reorder",input$reordervar2in, "values"),
@@ -6798,7 +6830,7 @@ function(input, output, session) {
         }
       }
       LHS <- paste(vars, collapse=" + ")
-      RHS <- input$x
+      RHS <- input$x[1]
       if (!is.null(df[[input$dstatscolextrain]])) {
         RHS <- paste(c(RHS, input$dstatscolextrain), collapse=" * ")
         if (!is.null(input$flipthelevelsin)&&input$flipthelevelsin )
