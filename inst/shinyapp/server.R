@@ -5137,8 +5137,7 @@ function(input, output, session) {
       if(input$addcustomlabel&&input$labeltextin != 'None') {
         
         if ( is.numeric(plotdata[,input$labeltextin]) && input$roundlabeldigits) {
-          plotdata[,input$labeltextin] <- round(plotdata[,input$labeltextin],input$nroundlabeldigits)
-            p <- p + aes_string(label = input$labeltextin)
+            p <- p + aes_string(label = paste("round(",input$labeltextin,",",input$nroundlabeldigits,")"))
         }
         if ( is.numeric(plotdata[,input$labeltextin]) && !input$roundlabeldigits) {
           p <- p + aes_string(label = input$labeltextin)

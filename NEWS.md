@@ -3,8 +3,8 @@
 * Added option to compute the inverse of Numeric variables
 * Moved the rounding to after division/inverse
 * Added possibility to round data labels before plotting
-* Added possibility to use more than one x variable
-* Added fixes to summary tables and univariate plots when only y variable(s) are selected
+* Added possibility to use more than one x variable(s) and or no y variable(s)
+* Added Docker configuration 
 
 # ggquickeda 0.1.7
 * Added support for semicolon separated files and added package version in App Title

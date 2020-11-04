@@ -16,8 +16,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette we will demo how to visualize data only available in summary format e.g. data coming from a published paper table:
+In this vignette we will demo how to visualize data which is only available in summary format as it is coming from a published paper table or figure for example Figure 3 from this paper:  
 
+"Remdesivir for the Treatment of Covid-19 — Final Report"
 
 ![JH Beigel et al. N Engl J Med 2020. DOI: 10.1056/NEJMoa2007764](./nejmfigure.png){width=100%}
 
