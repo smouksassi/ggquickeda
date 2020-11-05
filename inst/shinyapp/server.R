@@ -2126,7 +2126,8 @@ function(input, output, session) {
                       "square filled"         ,
                       "diamond filled"        ,
                       "triangle filled"       ,
-                      "triangle down filled" 
+                      "triangle down filled"  ,
+                      "blank"
                     ), selected = shapes[i]
         ), style = "display: inline-block;")  
         
@@ -2362,6 +2363,7 @@ function(input, output, session) {
     if (input$scaleshapeswitcher=="themeuser"){
       shapes <- paste0("c(", paste0("input$shape", 1:input$nusershape, collapse = ", "), ")")
       shapes <- eval(parse(text = shapes))
+      shapes <- translate_shape_string(shapes)
       scale_shape_discrete <- function(...)
         scale_shape_manual(..., values = shapes)
     }
@@ -3184,21 +3186,21 @@ function(input, output, session) {
         if (input$pointshapein != 'None' && input$pointignoreshape){
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
                                 colour=input$colpoint,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
@@ -3211,28 +3213,28 @@ function(input, output, session) {
         if(input$pointshapein == 'None' ){
           if (input$pointsizein == 'None'&& !input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& !input$pointignorecol&& input$pointignoresize)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           
           if (input$pointsizein == 'None'&&input$pointignorecol)
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol&& !input$pointignoresize)
             p <- p + geom_point(alpha=input$pointstransparency,colour=input$colpoint,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           if (input$pointsizein != 'None'&& input$pointignorecol && input$pointignoresize )
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
-                                shape=input$pointshapes,
+                                shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
           
           
@@ -3463,7 +3465,7 @@ function(input, output, session) {
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",
                               alpha=input$alphameanp,
-                              shape=input$meanshapes,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
@@ -3471,7 +3473,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = "point",
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
-                              shape=input$meanshapes,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
             }
           
@@ -3605,7 +3607,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = "point",
                               col=meancolp,
                               alpha=input$alphameanp,
-                              shape=input$meanshapes,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
@@ -3613,7 +3615,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = "point",
                               col=meancolp,
                               size=input$meanpointsize,
-                              alpha=input$alphameanp,shape=input$meanshapes,
+                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               
             }
@@ -3732,13 +3734,13 @@ function(input, output, session) {
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
-                              alpha=input$alphameanp,shape=input$meanshapes,
+                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               if(input$meanpoints&input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
                               size=input$meanpointsize,
-                              alpha=input$alphameanp,shape=input$meanshapes,
+                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               
             }
@@ -3866,12 +3868,12 @@ function(input, output, session) {
               if(input$meanpoints &input$pointsizein != 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
-                              alpha=input$alphameanp,shape=input$meanshapes,
+                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
-                              size=input$meanpointsize,alpha=input$alphameanp,shape=input$meanshapes,
+                              size=input$meanpointsize,alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
             }
 
@@ -4474,7 +4476,8 @@ function(input, output, session) {
           if(input$Median!="None" && input$forcemedianshape)    {
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",alpha=input$alphamedianp,shape=input$medianshapes,
+                stat_sum_single(median, geom = "point",alpha=input$alphamedianp,
+                                shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
@@ -4482,7 +4485,7 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",
                                 size=input$medianpointsize,
                                 alpha=input$alphamedianp,
-                                shape=input$medianshapes,
+                                shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
           }
           
@@ -4624,14 +4627,14 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",
                                 col=mediancolp,
                                 alpha=input$alphamedianp,
-                                shape=input$medianshapes ,
+                                shape=translate_shape_string(input$medianshapes) ,
                                 position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",col=mediancolp ,
                                 alpha=input$alphamedianp,
-                                size=input$medianpointsize,shape=input$medianshapes,
+                                size=input$medianpointsize,shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
           }
           
@@ -4757,7 +4760,8 @@ function(input, output, session) {
             
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,shape=input$medianshapes,
+                stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,
+                                shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
             
             
@@ -4765,7 +4769,8 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(median, geom = "point",aes(group=NULL),
                                 alpha=input$alphamedianp,
-                                size=input$medianpointsize,shape=input$medianshapes,
+                                size=input$medianpointsize,
+                                shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
           }
           
@@ -4906,7 +4911,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_single(median, geom = "point",col=mediancolp,
                                 alpha=input$alphamedianp,
-                                aes(group=NULL),shape=input$medianshapes,
+                                aes(group=NULL),shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
@@ -4914,7 +4919,8 @@ function(input, output, session) {
                 stat_sum_single(median, geom = "point",
                                 col=mediancolp,
                                 alpha=input$alphamedianp,
-                                aes(group=NULL),size=input$medianpointsize,shape=input$medianshapes,
+                                aes(group=NULL),size=input$medianpointsize,
+                                shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
           } 
           

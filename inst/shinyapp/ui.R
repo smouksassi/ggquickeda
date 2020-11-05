@@ -947,13 +947,11 @@ fluidPage(
                         "square filled"         ,
                         "diamond filled"        ,
                         "triangle filled"       ,
-                        "triangle down filled" 
+                        "triangle down filled"  ,
+                        "blank"
                       ),selected="circle small")
-                      
-                      
                     )
                   ),
-                  
                   column(
                     3,
                     radioButtons("line", "Lines:",
@@ -1466,7 +1464,8 @@ fluidPage(
                                                    "square filled"         ,
                                                    "diamond filled"        ,
                                                    "triangle filled"       ,
-                                                   "triangle down filled"
+                                                   "triangle down filled"  ,
+                                                   "blank"
                                                  ),
                                                  selected = "diamond"
                                      )
@@ -1618,7 +1617,8 @@ fluidPage(
                                         "square filled"         ,
                                         "diamond filled"        ,
                                         "triangle filled"       ,
-                                        "triangle down filled" 
+                                        "triangle down filled"  ,
+                                        "blank"
                                       ),selected="square")  
                                       
                     )
