@@ -45,6 +45,7 @@ Try to reproduce the steps below using the included sample_df.csv. This will giv
 The package has also two vignettes:  
 1. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
 2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
+3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
 
 ### Example 1
 ![Example use case 1 with the included sample_df.csv.](./inst/shinyapp/img/snapshot1.gif)

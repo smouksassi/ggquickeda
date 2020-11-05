@@ -6,3 +6,6 @@
 .git
 ^cran-comments\.md$
 ^revdep$
+^docker$
+^Dockerfile$
+^ggquickedahex.png$
