@@ -7,6 +7,7 @@ ggquickeda
 ![MonthlyDOWNLOADS](http://cranlogs.r-pkg.org/badges/ggquickeda)
 ![DOWNLOADS](http://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)
 
+
 ### Installation and Running information
 ```
 # Install from CRAN:
@@ -44,6 +45,7 @@ Try to reproduce the steps below using the included sample_df.csv. This will giv
 The package has also two vignettes:  
 1. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
 2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
+3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
 
 ### Example 1
 ![Example use case 1 with the included sample_df.csv.](./inst/shinyapp/img/snapshot1.gif)
@@ -79,6 +81,7 @@ ggquickeda can handle one or more y variable(s) selections and more recently one
 Note that the x variable(x) should be different from those selected for y variable(s).
 Whether the user selects one or more y variable(s), the y variable(s) data will be automatically stacked (gathered) into two columns named yvalues (values) and yvars (identifier from which variable the value is coming from) and a scatter plot of yvalues versus x, faceted plot by yvars will be shown. Mixing categorical and continuous variables will render all yvalues to be treated as character. The order of the selected y variables(s) matters and can be changed via drag and drop. Selections can be removed by clicking on the small x.
 When no y variable(s) is selected a histogram (if x variable is continuous) or a barplot (if x variable is categorical) is shown.
+
 The same applies when ore or more x variable(x) where the values are named (xvalues) and the identifier variable name is (xvars). When no x variable(s) is selected a histogram (if y variable is continuous) or a barplot (if y variable is categorical) is shown.
 
 ### Data Manipulations 
