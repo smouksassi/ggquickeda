@@ -1,10 +1,10 @@
 # ggquickeda 0.1.8
+* Added possibility to use more than one x variable(s) and or no y variable(s)
 * Added option for an explicit Missing Category with custom cuts
 * Added option to compute the inverse of Numeric variables
 * Moved the rounding to after division/inverse
 * Added possibility to round data labels before plotting
-* Added possibility to use more than one x variable(s) and or no y variable(s)
-* Added a blank shape type so we can do multiple y(s) when some layers does not have a point plotted.
+* Added a blank shape type so we can do multiple y(s) when some layers do not have a point plotted.
 * Added Docker configuration 
 
 # ggquickeda 0.1.7
