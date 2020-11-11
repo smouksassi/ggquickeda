@@ -1551,10 +1551,13 @@ fluidPage(
                                                  inline = TRUE),
                                     sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
                                     sliderInput("PItransparency", "PI Transparency:",
-                                                min=0, max=1, value=c(0.2),step=0.01)
+                                                min=0, max=1, value=c(0.2),step=0.01),
+                                    conditionalPanel(" input.geommedianPI == 'errorbar' ",
+                                    sliderInput("PIerrorbarsize","Errorbar(s) Line(s) Size:",
+                                                min=0, max=4, value=c(1),step=0.1)
+                                    )
                                     
                   ),
-                  
                   conditionalPanel(
                     " input.Median== 'Median/PI' | input.positionmedian =='position_dodge'  ",
                     numericInput(
@@ -1573,18 +1576,21 @@ fluidPage(
                                       checkboxInput('medianlines', 'Show lines',value=TRUE)
                                       ),
                     conditionalPanel(
-                      " input.Median!= 'None'&& input.medianlines ",
+                      " input.Median!= 'None' && input.medianlines && (input.pointsizein == 'None' ) ",
                                       sliderInput("medianlinesize", "Median(s) Line(s) Size:",
-                                                  min=0, max=4, value=c(1.5),step=0.1),
-                                      sliderInput("alphamedianl", "Median(s) Line(s) Transparency:",
-                                                  min=0, max=1, value=c(0.5),step=0.01)
-                      )
+                                                  min=0, max=4, value=c(1.5),step=0.1)
+                      ),
+                    conditionalPanel(
+                      " input.Median!= 'None'&& input.medianlines",
+                      sliderInput("alphamedianl", "Median(s) Line(s) Transparency:",
+                                  min=0, max=1, value=c(0.5),step=0.01)
+                    )
                   ), # lines options
                   column (2,
                     conditionalPanel( " input.Median!= 'None' ",
                                       checkboxInput('medianpoints', 'Show points')
                     ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
+                    conditionalPanel( " input.Median!= 'None' & input.medianpoints ",
                                       sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1),
                                       sliderInput("alphamedianp", "Median(s) Point(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
                                       checkboxInput('forcemedianshape', 'Force Median(s) Shape',value = FALSE)
@@ -1626,8 +1632,7 @@ fluidPage(
                   ), # points options
 
                 column(2,
-                       conditionalPanel(
-                         " input.Median!= 'None' ",
+                       conditionalPanel(" input.Median!= 'None' ",
                        checkboxInput('medianvalues', 'Label Values?') ,
                        checkboxInput('medianN', 'Label N?') ),
                        conditionalPanel(
@@ -1643,33 +1648,29 @@ fluidPage(
                        
                 ), # fourth column
                 
-                  column (2,
-                    conditionalPanel( " input.Median!= 'None' ",
-                                      checkboxInput('medianignorecol', 'Ignore Mapped Color'),
-                                      conditionalPanel(" input.medianignorecol ",
-                                                       conditionalPanel( " input.Median!= 'None' ",
-                                                                         colourpicker::colourInput("colmedianl",
-                                                                                                   "Median(s) Line(s) Color",
-                                                                                                   value="black",
-                                                                                                   showColour = "both",
-                                                                                                   allowTransparent=FALSE,returnName=TRUE)
-                                                                         
-                                                                         
+                column (2,
+                       conditionalPanel(" input.Median!= 'None' ",
+                       checkboxInput('medianignorecol', 'Ignore Mapped Color'),
+                       conditionalPanel(" input.medianignorecol ",
+                       conditionalPanel( " input.Median!= 'None' ",
+                                        colourpicker::colourInput("colmedianl",
+                                                                  "Median(s) Line(s) Color",
+                                                                  value="black",
+                                                                  showColour = "both",
+                                                                  allowTransparent=FALSE,
+                                                                  returnName=TRUE)              
                                                        ),
-                                                       conditionalPanel( " input.medianpoints ",
-                                                                         colourpicker::colourInput("colmedianp",
-                                                                                                   "Median(s) Point(s) Color",
-                                                                                                   value="black",
-                                                                                                   showColour = "both",
-                                                                                                   allowTransparent=FALSE,returnName=TRUE)
-                                                                         
-                                                                         
+                       conditionalPanel( " input.medianpoints ",
+                                         colourpicker::colourInput("colmedianp",
+                                                                   "Median(s) Point(s) Color",
+                                                                   value="black",
+                                                                   showColour = "both",
+                                                                   allowTransparent=FALSE,
+                                                                   returnName=TRUE)
                                                        )
                                       )
-                                      
-                                      
-                    )
-                  )# column
+                    )#main condition
+                  )# column #5
                   
                 )#fluidrow
               ),

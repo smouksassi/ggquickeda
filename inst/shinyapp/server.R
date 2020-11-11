@@ -4398,7 +4398,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            size=input$medianlinesize, alpha=input$PItransparency,
+                            size=input$PIerrorbarsize, alpha=input$PItransparency,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
@@ -4437,7 +4437,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            alpha=input$PItransparency,
+                            size=input$PIerrorbarsize, alpha=input$PItransparency,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
@@ -4540,7 +4540,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
                             col=mediancoll,
-                            size=input$medianlinesize,
+                            size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4579,7 +4579,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
-                            col=mediancoll,
+                            col=mediancoll,size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4684,7 +4684,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            size=input$medianlinesize,
+                            size=input$PIerrorbarsize,
                             alpha=input$PItransparency,
                             position = eval(parse(text=positionmedian)))
             }
@@ -4720,7 +4720,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            alpha=input$PItransparency,
+                            size=input$PIerrorbarsize, alpha=input$PItransparency,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4825,8 +4825,8 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            alpha=input$PItransparency,
-                            size=input$medianlinesize,col=mediancoll,
+                            size=input$PIerrorbarsize, alpha=input$PItransparency,
+                            col=mediancoll,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4864,7 +4864,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            alpha=input$PItransparency,
+                            size=input$PIerrorbarsize, alpha=input$PItransparency,
                             col=mediancoll,
                             position = eval(parse(text=positionmedian)))
             }
