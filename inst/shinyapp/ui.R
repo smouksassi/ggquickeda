@@ -1351,6 +1351,17 @@ fluidPage(
                                                  "Side By Side"="position_dodge"
                                                ),selected = "position_identity")
                                    
+                                 ),
+                                 conditionalPanel(
+                                   " input.Mean== 'Mean/CI' && (
+                      input.geommeanCI == 'errorbar' | input.positionmean =='position_dodge')  ",
+                                   numericInput(
+                                     inputId = "errbar",
+                                     label = "CI errorbar/dodge width:",
+                                     value = 0.75,
+                                     min = 0.1,
+                                     max = NA
+                                   )
                                  )
                                  
                          ),#first column
@@ -1362,27 +1373,15 @@ fluidPage(
                                                   "ribbon"= "ribbon"),
                                                 selected = "errorbar",
                                                 inline = TRUE),
-                                   sliderInput(
-                                     "CI",
-                                     "CI %:",
-                                     min = 0,
-                                     max = 1,
-                                     value = c(0.95),
-                                     step = 0.01
-                                   ),
+                                   sliderInput("CI","CI %:",
+                                     min = 0, max = 1, value = c(0.95), step = 0.01),
                                    sliderInput("meancitransparency", "CI Transparency:",
-                                               min=0, max=1, value=c(0.2),step=0.01)
-                                ),
-                                conditionalPanel(
-                                  " input.Mean== 'Mean/CI' | input.positionmean =='position_dodge'  ",
-                                     numericInput(
-                                       inputId = "errbar",
-                                       label = "CI bar/dodge width:",
-                                       value = 0.75,
-                                       min = 0.1,
-                                       max = NA
-                                     )
-                                 )       
+                                               min=0, max=1, value=c(0.2),step=0.01),
+                                   conditionalPanel(" input.geommeanCI == 'errorbar' ",
+                                    sliderInput("meancierrorbarsize","Errorbar(s) Line(s) Size:",
+                                                min=0, max=4, value=c(1),step=0.1)
+                                   )
+                                )       
                                  
                          ),# ci column options
                          column (2,
@@ -1538,7 +1537,18 @@ fluidPage(
                                 choices = c(
                                   "Default"="position_identity",
                                   "Side By Side"="position_dodge"
-                                ),selected = "position_identity")
+                                ),selected = "position_identity"),
+                    conditionalPanel(
+                      " input.Median== 'Median/PI' && (
+                      input.geommedianPI == 'errorbar' | input.positionmedian =='position_dodge')  ",
+                      numericInput(
+                        inputId = "medianerrbar",
+                        label = "PI errorbar/dodge width:",
+                        value = 0.75,
+                        min = 0.1,
+                        max = NA
+                      )
+                    )
                     
                     )
                   ),#first column
@@ -1557,16 +1567,6 @@ fluidPage(
                                                 min=0, max=4, value=c(1),step=0.1)
                                     )
                                     
-                  ),
-                  conditionalPanel(
-                    " input.Median== 'Median/PI' | input.positionmedian =='position_dodge'  ",
-                    numericInput(
-                      inputId = "medianerrbar",
-                      label = "PI bar/dodge width:",
-                      value = 0.75,
-                      min = 0.1,
-                      max = NA
-                    )
                   ) 
                   
                 ), # Pi color options

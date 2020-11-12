@@ -1,3 +1,6 @@
+# ggquickeda 0.1.8.9999
+* Made errorbars for Median/PI and Mean/CI ignore mapped size
+
 # ggquickeda 0.1.8
 * Added possibility to use more than one x variable(s) and or no y variable(s)
 * Added option for an explicit Missing Category with custom cuts

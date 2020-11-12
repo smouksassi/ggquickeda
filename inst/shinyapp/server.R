@@ -1427,7 +1427,8 @@ function(input, output, session) {
       return(df)
     }
     if(length(input$reordervarin ) >=1 &&
-       length(input$varreorderin ) >=1 && input$reordervarin!=""  ) {
+       length(input$varreorderin ) >=1 && input$reordervarin!="" &&
+       is.numeric(df[,input$varreorderin])  ) {
       varname<- input$reordervarin[1]
       if(input$functionordervariable=="Median" )  {
         df[,varname]   <- reorder( df[,varname],df[,input$varreorderin], FUN=function(x) median(x[!is.na(x)]))
@@ -3406,7 +3407,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
-                            size=input$meanlinesize,
+                            size=input$meancierrorbarsize,
                             alpha=input$meancitransparency,
                             position = eval(parse(text=positionmean)))
             }
@@ -3435,6 +3436,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
+                              size=input$meancierrorbarsize,
                               position = eval(parse(text=positionmean)))
               }
             if (input$meanlines){
@@ -3535,7 +3537,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
-                              col=meancoll,
+                              col=meancoll,size=input$meancierrorbarsize,
                               position = eval(parse(text=positionmean)))
               }
               if(input$meanlines) {
@@ -3565,7 +3567,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               col=meancoll,
-                              size=input$meanlinesize,
+                              size=input$meancierrorbarsize,
                               alpha=input$meancitransparency,
                               position = eval(parse(text=positionmean)))
               }
@@ -3672,7 +3674,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
                               fun.args=list(conf.int=input$CI),aes(group=NULL), 
                               alpha=input$meancitransparency,
-                              size=input$meanlinesize, width = input$errbar,
+                              size=input$meancierrorbarsize, width = input$errbar,
                               position = eval(parse(text=positionmean)))
               }
             if(input$meanlines){
@@ -3701,7 +3703,7 @@ function(input, output, session) {
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
                             fun.args=list(conf.int=input$CI),aes(group=NULL), 
                             alpha=input$meancitransparency,
-                            width = input$errbar,
+                            width = input$errbar,size=input$meancierrorbarsize,
                             position = eval(parse(text=positionmean)))
             }
             if(input$meanlines){
@@ -3801,7 +3803,7 @@ function(input, output, session) {
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             alpha=input$meancitransparency,
-                            col=meancoll,aes(group=NULL),
+                            col=meancoll,aes(group=NULL),size=input$meancierrorbarsize,
                             position = eval(parse(text=positionmean)))
             }
             if(input$meanlines) {
@@ -3831,7 +3833,7 @@ function(input, output, session) {
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             col=meancoll,aes(group=NULL),
-                            size=input$meanlinesize,
+                            size=input$meancierrorbarsize,
                             alpha=input$meancitransparency,
                             position = eval(parse(text=positionmean)))
             }
@@ -5175,34 +5177,51 @@ function(input, output, session) {
       if(input$addcustomlabel&&input$labeltextin != 'None') {
         
         if ( is.numeric(plotdata[,input$labeltextin]) && input$roundlabeldigits) {
-            p <- p + aes_string(label = paste("round(",input$labeltextin,",",input$nroundlabeldigits,")"))
+           label_aes <- aes_string(label = paste("round(",input$labeltextin,",",input$nroundlabeldigits,")"))
         }
         if ( is.numeric(plotdata[,input$labeltextin]) && !input$roundlabeldigits) {
-          p <- p + aes_string(label = input$labeltextin)
+          label_aes <- aes_string(label = input$labeltextin)
         }          
         if ( !is.numeric(plotdata[,input$labeltextin]) ) {
-          p <- p + aes_string(label = input$labeltextin)
+          label_aes <- aes_string(label = input$labeltextin)
         }
         
         if(!input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata, geom=input$geomlabel,show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
             }
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,geom=input$geomlabel, show.legend = input$customlabellegend, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     seed = 1234,
+                                     mapping = label_aes)
             } 
           }#do notignoregroup 
           
           if(input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     aes(group=NULL),
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
             }
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL),geom=input$geomlabel,
-                                     show.legend = input$customlabellegend, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     aes(group=NULL),
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     seed = 1234,
+                                     mapping = label_aes)
               
             }
             
@@ -5213,27 +5232,45 @@ function(input, output, session) {
         if(input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     color=input$customlabelcol,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
               
             }
             if(!input$labelignoresize){
-              p <- p  + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel,
-                                      show.legend = input$customlabellegend, seed = 1234)
+              p <- p  + stat_identity(data=plotdata,
+                                      color=input$customlabelcol,
+                                      geom=input$geomlabel, position = "identity",
+                                      show.legend = input$customlabellegend,
+                                      seed = 1234,
+                                      mapping = label_aes)
               
             }
           }#do notignoregroup 
           
           if(input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel,
+              p <- p + stat_identity(data=plotdata,
+                                     aes(group=NULL),
+                                     color=input$customlabelcol,
+                                     geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
             }
             
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel,
-                                     show.legend = input$customlabellegend, seed = 1234 )                
+              p <- p + stat_identity(data=plotdata,aes(group=NULL),
+                                     color=input$customlabelcol,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     seed = 1234,
+                                     mapping = label_aes)                
             }
             
           }#ignoregroup   
