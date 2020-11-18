@@ -1,5 +1,6 @@
 # ggquickeda 0.1.8.9999
 * Made errorbars for Median/PI and Mean/CI ignore mapped size
+* fixed a bug when labels from Median/PI and Mean/CI and data are used 
 
 # ggquickeda 0.1.8
 * Added possibility to use more than one x variable(s) and or no y variable(s)
