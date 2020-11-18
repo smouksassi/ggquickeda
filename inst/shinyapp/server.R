@@ -1493,6 +1493,45 @@ function(input, output, session) {
   outputOptions(output, "reordervar2", suspendWhenHidden=FALSE)
   outputOptions(output, "reordervar2values", suspendWhenHidden=FALSE)
   
+  output$reordervar3 <- renderUI({
+    df <- reorderdata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP<- names(df)  [ !MODEDF ]
+    if(!is.null(input$reordervarin)&&length(input$reordervarin ) >=1  ){
+      NAMESTOKEEP<- NAMESTOKEEP  [ NAMESTOKEEP!=input$reordervarin ]
+    }
+    if(!is.null(input$reordervar2in)&&length(input$reordervar2in ) >=1  ){
+      NAMESTOKEEP<- NAMESTOKEEP  [ NAMESTOKEEP!=input$reordervar2in ]
+    }
+    selectInput("reordervar3in" , "Custom Reorder this variable(2):",c('None',NAMESTOKEEP ) )
+  })
+  
+  output$reordervar3values <- renderUI({
+    df <- reorderdata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (is.null(input$reordervar3in)) return()
+    if(input$reordervar3in=="None") {
+      selectInput('reordervar3valuesnull',
+                  label ='No reorder variable specified',
+                  choices = list(""),multiple=TRUE, selectize=FALSE)
+    }
+    if(input$reordervar3in!="None"&&!is.null(input$reordervar3in) )  {
+     choices <- levels(as.factor(as.character(df[,input$reordervar3in])))
+      selectizeInput('reordervar3valuesnotnull',
+                     label = paste("Drag/Drop to reorder",
+                                   input$reordervar3in, "values (2)"),
+                     choices = c(choices),
+                     selected = choices,
+                     multiple=TRUE,  options = list(
+                       plugins = list('drag_drop')
+                     )
+      )
+    }
+  })
+   outputOptions(output, "reordervar3", suspendWhenHidden=FALSE)
+   outputOptions(output, "reordervar3values", suspendWhenHidden=FALSE)
+  # 
   reorderdata2 <- reactive({
     df <- reorderdata()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1507,6 +1546,19 @@ function(input, output, session) {
     df
   })
   
+  reorderdata3 <- reactive({
+    df <- reorderdata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (is.null(input$reordervar3in)) {
+      return(df)
+    }
+    if(input$reordervar3in!="None"  ) {
+      df [,input$reordervar3in] <- factor(df [,input$reordervar3in],
+                                          levels = input$reordervar3valuesnotnull)
+      
+    }
+    df
+  })
   
   
   # Populate the "Change levels of this variable:" list
@@ -1521,14 +1573,14 @@ function(input, output, session) {
   })
   
   output$change_labels_stat_old <- renderText({
-    df <- reorderdata2()
+    df <- reorderdata3()
     req(df, input$change_labels_stat_var != "")
     paste(levels(as.factor(df[, input$change_labels_stat_var])), collapse = " ")
   })   
   
   # Show the input of the labels the user wants to change for a stat variable
   observe({
-    df <- reorderdata2()
+    df <- reorderdata3()
     if (is.null(df) || is.null(input$change_labels_stat_var) || length(input$change_labels_stat_var) < 1 || input$change_labels_stat_var == "") {
       return()
     }
@@ -1540,7 +1592,7 @@ function(input, output, session) {
   })
   
   recodedata5  <- reactive({
-    df <- reorderdata2()
+    df <- reorderdata3()
     validate(       need(!is.null(df), "Please select a data set"))
     if (is.null(input$change_labels_stat_var)) {
       return(df)

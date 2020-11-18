@@ -125,6 +125,8 @@ fluidPage(
               
               uiOutput("reordervar2"),
               uiOutput("reordervar2values"),
+              uiOutput("reordervar3"),
+              uiOutput("reordervar3values"),
               selectizeInput("change_labels_stat_var", "Change levels of this variable:",
                              choices = list(), multiple = FALSE,
                              options = list(placeholder = 'Please select a variable')
