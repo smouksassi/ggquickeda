@@ -1399,27 +1399,23 @@ function(input, output, session) {
   
   
   output$variabletoorderby <- renderUI({
-    df <-stackdata()
+    df <- stackdata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (is.null(input$reordervarin)) return()
     if (length(input$reordervarin ) <1)  return(NULL)
     if ( input$reordervarin!=""){
-      #yinputs <- input$y
       items=names(df)
       names(items)=items
-      MODEDF <- sapply(df, function(x) is.numeric(x))
-      NAMESTOKEEP2<- names(df)  [ MODEDF ]
-      selectInput('varreorderin',label = 'Of this Variable:', choices=NAMESTOKEEP2,multiple=FALSE,selected="yvalues")
+      #MODEDF <- sapply(df, function(x) is.numeric(x))
+      NAMESTOKEEP2<- names(df)  #[ MODEDF ]
+      selectInput('varreorderin',label = 'Of this Variable: (categorical variables will be coerced to numeric)',
+                  choices=NAMESTOKEEP2,multiple=FALSE,selected="yvalues")
     }
   })
   
-  
-  
   outputOptions(output, "reordervar", suspendWhenHidden=FALSE)
   outputOptions(output, "variabletoorderby", suspendWhenHidden=FALSE)
-  
-  
-  
+ 
   reorderdata <- reactive({
     df <- stackdata()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1427,26 +1423,32 @@ function(input, output, session) {
       return(df)
     }
     if(length(input$reordervarin ) >=1 &&
-       length(input$varreorderin ) >=1 && input$reordervarin!="" &&
-       is.numeric(df[,input$varreorderin])  ) {
-      varname<- input$reordervarin[1]
+       length(input$varreorderin ) >=1 && input$reordervarin!="") {
+      
+      variabletoorderby <- df[,input$varreorderin]
+      if(!is.numeric(variabletoorderby)) variabletoorderby <- as.numeric(variabletoorderby)
+      varname <- input$reordervarin[1]
+      
       if(input$functionordervariable=="Median" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin], FUN=function(x) median(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby, FUN=function(x) median(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Mean" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) mean(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) mean(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Minimum" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) min(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) min(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Maximum" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) max(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) max(x[!is.na(x)]))
       }
       if(input$functionordervariable=="N" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) length(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) length(x[!is.na(x)]))
+      }
+      if(input$functionordervariable=="N Unique" )  {
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) length(unique(x[!is.na(x)])))
       }
       if(input$functionordervariable=="SD" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) sd(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) sd(x[!is.na(x)]))
       }
       
       if(input$reverseorder )  {
@@ -1478,8 +1480,12 @@ function(input, output, session) {
                   choices = list(""),multiple=TRUE, selectize=FALSE)   
     }
     if(input$reordervar2in!="None"&&!is.null(input$reordervar2in) )  {
-      
-      choices <- levels(as.factor(as.character(df[,input$reordervar2in])))
+       if(is.factor(df[,input$reordervar2in])){
+        choices <- levels(df[,input$reordervar2in])
+      }
+      if(!is.factor(df[,input$reordervar2in])){
+        choices <- levels(as.factor(as.character(df[,input$reordervar2in])))
+      }
       selectizeInput('reordervar2valuesnotnull',
                      label = paste("Drag/Drop to reorder",input$reordervar2in, "values"),
                      choices = c(choices),
@@ -1517,7 +1523,12 @@ function(input, output, session) {
                   choices = list(""),multiple=TRUE, selectize=FALSE)
     }
     if(input$reordervar3in!="None"&&!is.null(input$reordervar3in) )  {
-     choices <- levels(as.factor(as.character(df[,input$reordervar3in])))
+     if(is.factor(df[,input$reordervar3in])){
+       choices <- levels(df[,input$reordervar3in])
+     }
+      if(!is.factor(df[,input$reordervar3in])){
+       choices <- levels(as.factor(as.character(df[,input$reordervar3in])))
+      }
       selectizeInput('reordervar3valuesnotnull',
                      label = paste("Drag/Drop to reorder",
                                    input$reordervar3in, "values (2)"),

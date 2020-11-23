@@ -115,7 +115,7 @@ fluidPage(
                 condition = "input.reordervarin!='' " ,
                 selectizeInput(
                   "functionordervariable", 'By the:',
-                  choices =c("Median","Mean","Minimum","Maximum","N", "SD") ,multiple=FALSE)
+                  choices =c("Median","Mean","Minimum","Maximum","N","N Unique","SD") ,multiple=FALSE)
               ),
               uiOutput("variabletoorderby"),
               conditionalPanel(
