@@ -170,9 +170,11 @@ which0 <- function(x) {
 
 # All stats that can be displayed for continuous variables
 allstats <- c("N",
+              "N Missing",
               "Mean",
               "SD",
               "CV%",
+              "Sum",
               "Median",
               "q01",
               "q02.5",
@@ -284,4 +286,3 @@ translate_shape_string <- function(shape_string) {
   
   unname(pch_table[shape_match])
 }
-translate_shape_string("circle")

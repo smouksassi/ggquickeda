@@ -135,6 +135,15 @@ fluidPage(
                 "input.change_labels_stat_var != ''",
                 "Old labels", textOutput("change_labels_stat_old", inline = TRUE),
                 textInput("change_labels_stat_levels", label = "")
+              ),
+              selectizeInput("change_labels_stat_var_2", "Change levels of this variable:",
+                             choices = list(), multiple = FALSE,
+                             options = list(placeholder = 'Please select a variable')
+              ),
+              conditionalPanel(
+                "input.change_labels_stat_var_2 != ''",
+                "Old labels", textOutput("change_labels_stat_old_2", inline = TRUE),
+                textInput("change_labels_stat_levels_2", label = "")
               )
             )
           ),

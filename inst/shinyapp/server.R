@@ -1581,6 +1581,8 @@ function(input, output, session) {
     NAMESTOKEEP2 <- names(df)[!MODEDF]
     updateSelectizeInput(session, "change_labels_stat_var", selected = "",
                          choices = NAMESTOKEEP2)
+    updateSelectizeInput(session, "change_labels_stat_var_2", selected = "",
+                         choices = NAMESTOKEEP2)
   })
   
   output$change_labels_stat_old <- renderText({
@@ -1588,7 +1590,11 @@ function(input, output, session) {
     req(df, input$change_labels_stat_var != "")
     paste(levels(as.factor(df[, input$change_labels_stat_var])), collapse = " ")
   })   
-  
+  output$change_labels_stat_old_2 <- renderText({
+    df <- reorderdata3()
+    req(df, input$change_labels_stat_var_2 != "")
+    paste(levels(as.factor(df[, input$change_labels_stat_var_2])), collapse = " ")
+  })  
   # Show the input of the labels the user wants to change for a stat variable
   observe({
     df <- reorderdata3()
@@ -1599,9 +1605,21 @@ function(input, output, session) {
     levelsvalues <- levels(as.factor( df[,input$change_labels_stat_var] ))
     label <- paste(input$change_labels_stat_var, "requires", nlevels, "new labels, type in a comma separated list below")
     value <- paste(as.character(levelsvalues), collapse=", ", sep="")
-    updateTextInput(session, "change_labels_stat_levels", label = label, value = value) 
+    updateTextInput(session, "change_labels_stat_levels", label = label, value = value)
   })
   
+  observe({
+    df <- reorderdata3()
+    if (is.null(df) || is.null(input$change_labels_stat_var_2) || length(input$change_labels_stat_var_2) < 1 || input$change_labels_stat_var_2 == "") {
+      return()
+    }
+    nlevels2 <- length( unique( levels(as.factor( df[,input$change_labels_stat_var_2] ))))
+    levelsvalues2 <- levels(as.factor( df[,input$change_labels_stat_var_2] ))
+    label2 <- paste(input$change_labels_stat_var, "requires", nlevels2, "new labels, type in a comma separated list below")
+    value2 <- paste(as.character(levelsvalues2), collapse=", ", sep="")
+    updateTextInput(session, "change_labels_stat_levels_2", label = label2, value = value2)
+  })
+
   recodedata5  <- reactive({
     df <- reorderdata3()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1611,6 +1629,22 @@ function(input, output, session) {
     if(input$change_labels_stat_var!="" && input$change_labels_stat_levels != "") {
       varname <- input$change_labels_stat_var
       xlabels <- input$change_labels_stat_levels 
+      xlabels <- gsub("\\\\n", "\\\n", xlabels)
+      df[,varname] <- as.factor(df[,varname])
+      levels(df[,varname])  <-  unlist (strsplit(xlabels, ",") )
+    }
+    df
+  })
+  
+  recodedata6  <- reactive({
+    df <- recodedata5()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (is.null(input$change_labels_stat_var_2)) {
+      return(df)
+    }
+    if(input$change_labels_stat_var_2!="" && input$change_labels_stat_levels_2 != "") {
+      varname <- input$change_labels_stat_var_2
+      xlabels <- input$change_labels_stat_levels_2
       xlabels <- gsub("\\\\n", "\\\n", xlabels)
       df[,varname] <- as.factor(df[,varname])
       levels(df[,varname])  <-  unlist (strsplit(xlabels, ",") )
@@ -1764,7 +1798,7 @@ function(input, output, session) {
   # --- End: Merge Factor Levels feature
   
   finalplotdata <- reactive({
-    df <- recodedata5()
+    df <- recodedata6()
     as.data.frame(df)
   })
   
@@ -2083,7 +2117,7 @@ function(input, output, session) {
   })
   
   output$weight <- renderUI({
-    df <- recodedata5()
+    df <- finalplotdata()
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     MODEDF <- sapply(df, function(x) is.numeric(x))
@@ -6865,9 +6899,11 @@ function(input, output, session) {
     stats.fun <- list(
       "None"                 = function(x) "",
       "N"                    = function(x) x$N,
+      "N Missing"            = function(x) x$NMISS,
       "Mean"                 = function(x) x$MEAN,
       "SD"                   = function(x) x$SD,
       "CV%"                  = function(x) x$CV,
+      "Sum"                  = function(x) x$SUM,
       "Median"               = function(x) x$MEDIAN,
       "q01"                  = function(x) sprintf("%s", x$q01),
       "q02.5"                = function(x) sprintf("%s", x$q02.5),
