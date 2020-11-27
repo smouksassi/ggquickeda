@@ -2099,7 +2099,10 @@ fluidPage(
                                        value=3, min=1, max=10, step=1),
                           checkboxInput("round_median_min_max",
                                         label="Also round median, min, max?",
-                                        value=TRUE)
+                                        value=TRUE),
+                          checkboxInput("table_na_is_category",
+                                        label="Missing is a Category?",
+                                        value=FALSE)
                    )
                  )
                ))

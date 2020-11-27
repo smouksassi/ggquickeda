@@ -468,6 +468,18 @@ function(input, output, session) {
     }
   })
   
+  observe({
+    
+    if (length(input$x)>1) {
+      updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom"),inline=TRUE)
+    }
+    if (length(input$x)<2) {
+      updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
+                                                           "Automatic" = "automaticxzoom",
+                                                           "User" = "userxzoom"),inline=TRUE)
+    }
+  })
+  
   # observe({
   #   if (input$Median== 'Median/PI' ) {
   #     updateCheckboxInput(session, "medianpoints", value = FALSE)
@@ -1291,6 +1303,8 @@ function(input, output, session) {
   })
   
   stackdata <- reactive({
+    req(input$x)
+    req(input$y)
     df <- rounddata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (!is.null(df)){
@@ -6847,7 +6861,7 @@ function(input, output, session) {
   })  
   
   dstatsTableData <- reactive({
-    df <-tabledata()
+    df <- tabledata()
     validate(
       need(!is.null(df), "Please select a data set") 
     )
@@ -6855,6 +6869,11 @@ function(input, output, session) {
                   "No y variable(s) selected"))
     validate(need(!is.null(input$x), 
                   "No x variable(s) selected"))
+    if (!is.null(df) && !is.null(input$x) && !is.null(input$y) ){
+      validate(  need(!is.element(input$x,input$y) ,
+                      "Please select a different x variable or remove the x variable from the list of y variable(s)"))
+    }
+    
     req(input$dstatscolextrain)
     
     tabledata <- df
@@ -6985,7 +7004,8 @@ function(input, output, session) {
       overall <- if (input$table_incl_overall) "Overall" else FALSE
       t <- table1(formula, data=df, overall=overall,
                   topclass=paste("Rtable1", input$table_style),
-                  render.continuous=dstatsRenderCont())
+                  render.continuous=dstatsRenderCont(),
+                  render.categorical=function(x)my.render.cat(x,na.is.category=input$table_na_is_category))
       values$prevTable <- t
       t
     }

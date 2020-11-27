@@ -286,3 +286,11 @@ translate_shape_string <- function(shape_string) {
   
   unname(pch_table[shape_match])
 }
+
+my.render.cat <- function (x, ..., na.is.category = FALSE) 
+{
+  c("", sapply(stats.apply.rounding(stats.default(x, ...), 
+                                    ...), function(y) with(y, sprintf("%s (%s%%)", FREQ, 
+                                   if (na.is.category) PCT else PCTnoNA))))
+}
+
