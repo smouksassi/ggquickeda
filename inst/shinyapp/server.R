@@ -519,6 +519,18 @@ function(input, output, session) {
     }
   })
   
+  observe({
+    
+    if (length(input$x)>1) {
+      updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom"),inline=TRUE)
+    }
+    if (length(input$x)<2) {
+      updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
+                                                           "Automatic" = "automaticxzoom",
+                                                           "User" = "userxzoom"),inline=TRUE)
+    }
+  })
+  
   # observe({
   #   if (input$Median== 'Median/PI' ) {
   #     updateCheckboxInput(session, "medianpoints", value = FALSE)
@@ -1448,28 +1460,23 @@ function(input, output, session) {
   })
   
   
-  
   output$variabletoorderby <- renderUI({
-    df <-stackdata()
+    df <- stackdata()
     validate(       need(!is.null(df), "Please select a data set"))
     if (is.null(input$reordervarin)) return()
     if (length(input$reordervarin ) <1)  return(NULL)
     if ( input$reordervarin!=""){
-      #yinputs <- input$y
       items=names(df)
       names(items)=items
-      MODEDF <- sapply(df, function(x) is.numeric(x))
-      NAMESTOKEEP2<- names(df)  [ MODEDF ]
-      selectInput('varreorderin',label = 'Of this Variable:', choices=NAMESTOKEEP2,multiple=FALSE,selected="yvalues")
+      #MODEDF <- sapply(df, function(x) is.numeric(x))
+      NAMESTOKEEP2<- names(df)  #[ MODEDF ]
+      selectInput('varreorderin',label = 'Of this Variable: (categorical variables will be coerced to numeric)',
+                  choices=NAMESTOKEEP2,multiple=FALSE,selected="yvalues")
     }
   })
   
-  
-  
   outputOptions(output, "reordervar", suspendWhenHidden=FALSE)
   outputOptions(output, "variabletoorderby", suspendWhenHidden=FALSE)
-  
-  
   
   reorderdata <- reactive({
     df <- stackdata()
@@ -1478,25 +1485,32 @@ function(input, output, session) {
       return(df)
     }
     if(length(input$reordervarin ) >=1 &&
-       length(input$varreorderin ) >=1 && input$reordervarin!=""  ) {
-      varname<- input$reordervarin[1]
+       length(input$varreorderin ) >=1 && input$reordervarin!="") {
+      
+      variabletoorderby <- df[,input$varreorderin]
+      if(!is.numeric(variabletoorderby)) variabletoorderby <- as.numeric(variabletoorderby)
+      varname <- input$reordervarin[1]
+      
       if(input$functionordervariable=="Median" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin], FUN=function(x) median(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby, FUN=function(x) median(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Mean" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) mean(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) mean(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Minimum" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) min(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) min(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Maximum" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) max(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) max(x[!is.na(x)]))
       }
       if(input$functionordervariable=="N" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) length(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) length(x[!is.na(x)]))
+      }
+      if(input$functionordervariable=="N Unique" )  {
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) length(unique(x[!is.na(x)])))
       }
       if(input$functionordervariable=="SD" )  {
-        df[,varname]   <- reorder( df[,varname],df[,input$varreorderin],  FUN=function(x) sd(x[!is.na(x)]))
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) sd(x[!is.na(x)]))
       }
       
       if(input$reverseorder )  {
@@ -1528,8 +1542,12 @@ function(input, output, session) {
                   choices = list(""),multiple=TRUE, selectize=FALSE)   
     }
     if(input$reordervar2in!="None"&&!is.null(input$reordervar2in) )  {
-      
-      choices <- levels(as.factor(as.character(df[,input$reordervar2in])))
+      if(is.factor(df[,input$reordervar2in])){
+        choices <- levels(df[,input$reordervar2in])
+      }
+      if(!is.factor(df[,input$reordervar2in])){
+        choices <- levels(as.factor(as.character(df[,input$reordervar2in])))
+      }
       selectizeInput('reordervar2valuesnotnull',
                      label = paste("Drag/Drop to reorder",input$reordervar2in, "values"),
                      choices = c(choices),
@@ -1543,6 +1561,50 @@ function(input, output, session) {
   outputOptions(output, "reordervar2", suspendWhenHidden=FALSE)
   outputOptions(output, "reordervar2values", suspendWhenHidden=FALSE)
   
+  output$reordervar3 <- renderUI({
+    df <- reorderdata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP<- names(df)  [ !MODEDF ]
+    if(!is.null(input$reordervarin)&&length(input$reordervarin ) >=1  ){
+      NAMESTOKEEP<- NAMESTOKEEP  [ NAMESTOKEEP!=input$reordervarin ]
+    }
+    if(!is.null(input$reordervar2in)&&length(input$reordervar2in ) >=1  ){
+      NAMESTOKEEP<- NAMESTOKEEP  [ NAMESTOKEEP!=input$reordervar2in ]
+    }
+    selectInput("reordervar3in" , "Custom Reorder this variable(2):",c('None',NAMESTOKEEP ) )
+  })
+  
+  output$reordervar3values <- renderUI({
+    df <- reorderdata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (is.null(input$reordervar3in)) return()
+    if(input$reordervar3in=="None") {
+      selectInput('reordervar3valuesnull',
+                  label ='No reorder variable specified',
+                  choices = list(""),multiple=TRUE, selectize=FALSE)
+    }
+    if(input$reordervar3in!="None"&&!is.null(input$reordervar3in) )  {
+      if(is.factor(df[,input$reordervar3in])){
+        choices <- levels(df[,input$reordervar3in])
+      }
+      if(!is.factor(df[,input$reordervar3in])){
+        choices <- levels(as.factor(as.character(df[,input$reordervar3in])))
+      }
+      selectizeInput('reordervar3valuesnotnull',
+                     label = paste("Drag/Drop to reorder",
+                                   input$reordervar3in, "values (2)"),
+                     choices = c(choices),
+                     selected = choices,
+                     multiple=TRUE,  options = list(
+                       plugins = list('drag_drop')
+                     )
+      )
+    }
+  })
+  outputOptions(output, "reordervar3", suspendWhenHidden=FALSE)
+  outputOptions(output, "reordervar3values", suspendWhenHidden=FALSE)
+  # 
   reorderdata2 <- reactive({
     df <- reorderdata()
     validate(       need(!is.null(df), "Please select a data set"))
@@ -1557,6 +1619,19 @@ function(input, output, session) {
     df
   })
   
+  reorderdata3 <- reactive({
+    df <- reorderdata2()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (is.null(input$reordervar3in)) {
+      return(df)
+    }
+    if(input$reordervar3in!="None"  ) {
+      df [,input$reordervar3in] <- factor(df [,input$reordervar3in],
+                                          levels = input$reordervar3valuesnotnull)
+      
+    }
+    df
+  })
   
   
   # Populate the "Change levels of this variable:" list
@@ -1568,17 +1643,23 @@ function(input, output, session) {
     NAMESTOKEEP2 <- names(df)[!MODEDF]
     updateSelectizeInput(session, "change_labels_stat_var", selected = "",
                          choices = NAMESTOKEEP2)
+    updateSelectizeInput(session, "change_labels_stat_var_2", selected = "",
+                         choices = NAMESTOKEEP2)
   })
   
   output$change_labels_stat_old <- renderText({
-    df <- reorderdata2()
+    df <- reorderdata3()
     req(df, input$change_labels_stat_var != "")
     paste(levels(as.factor(df[, input$change_labels_stat_var])), collapse = " ")
   })   
-  
+  output$change_labels_stat_old_2 <- renderText({
+    df <- reorderdata3()
+    req(df, input$change_labels_stat_var_2 != "")
+    paste(levels(as.factor(df[, input$change_labels_stat_var_2])), collapse = " ")
+  })  
   # Show the input of the labels the user wants to change for a stat variable
   observe({
-    df <- reorderdata2()
+    df <- reorderdata3()
     if (is.null(df) || is.null(input$change_labels_stat_var) || length(input$change_labels_stat_var) < 1 || input$change_labels_stat_var == "") {
       return()
     }
@@ -1586,11 +1667,23 @@ function(input, output, session) {
     levelsvalues <- levels(as.factor( df[,input$change_labels_stat_var] ))
     label <- paste(input$change_labels_stat_var, "requires", nlevels, "new labels, type in a comma separated list below")
     value <- paste(as.character(levelsvalues), collapse=", ", sep="")
-    updateTextInput(session, "change_labels_stat_levels", label = label, value = value) 
+    updateTextInput(session, "change_labels_stat_levels", label = label, value = value)
+  })
+  
+  observe({
+    df <- reorderdata3()
+    if (is.null(df) || is.null(input$change_labels_stat_var_2) || length(input$change_labels_stat_var_2) < 1 || input$change_labels_stat_var_2 == "") {
+      return()
+    }
+    nlevels2 <- length( unique( levels(as.factor( df[,input$change_labels_stat_var_2] ))))
+    levelsvalues2 <- levels(as.factor( df[,input$change_labels_stat_var_2] ))
+    label2 <- paste(input$change_labels_stat_var, "requires", nlevels2, "new labels, type in a comma separated list below")
+    value2 <- paste(as.character(levelsvalues2), collapse=", ", sep="")
+    updateTextInput(session, "change_labels_stat_levels_2", label = label2, value = value2)
   })
   
   recodedata5  <- reactive({
-    df <- reorderdata2()
+    df <- reorderdata3()
     validate(       need(!is.null(df), "Please select a data set"))
     if (is.null(input$change_labels_stat_var)) {
       return(df)
@@ -1598,6 +1691,22 @@ function(input, output, session) {
     if(input$change_labels_stat_var!="" && input$change_labels_stat_levels != "") {
       varname <- input$change_labels_stat_var
       xlabels <- input$change_labels_stat_levels 
+      xlabels <- gsub("\\\\n", "\\\n", xlabels)
+      df[,varname] <- as.factor(df[,varname])
+      levels(df[,varname])  <-  unlist (strsplit(xlabels, ",") )
+    }
+    df
+  })
+  
+  recodedata6  <- reactive({
+    df <- recodedata5()
+    validate(       need(!is.null(df), "Please select a data set"))
+    if (is.null(input$change_labels_stat_var_2)) {
+      return(df)
+    }
+    if(input$change_labels_stat_var_2!="" && input$change_labels_stat_levels_2 != "") {
+      varname <- input$change_labels_stat_var_2
+      xlabels <- input$change_labels_stat_levels_2
       xlabels <- gsub("\\\\n", "\\\n", xlabels)
       df[,varname] <- as.factor(df[,varname])
       levels(df[,varname])  <-  unlist (strsplit(xlabels, ",") )
@@ -1751,7 +1860,7 @@ function(input, output, session) {
   # --- End: Merge Factor Levels feature
   
   finalplotdata <- reactive({
-    df <- recodedata5()
+    df <- recodedata6()
     as.data.frame(df)
   })
   
@@ -2070,7 +2179,7 @@ function(input, output, session) {
   })
   
   output$weight <- renderUI({
-    df <- recodedata5()
+    df <- finalplotdata()
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     MODEDF <- sapply(df, function(x) is.numeric(x))
@@ -3462,7 +3571,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
-                            size=input$meanlinesize,
+                            size=input$meancierrorbarsize,
                             alpha=input$meancitransparency,
                             position = eval(parse(text=positionmean)))
             }
@@ -3491,6 +3600,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
+                              size=input$meancierrorbarsize,
                               position = eval(parse(text=positionmean)))
               }
             if (input$meanlines){
@@ -3591,6 +3701,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
+                              size=input$meancierrorbarsize,
                               col=meancoll,
                               position = eval(parse(text=positionmean)))
               }
@@ -3621,7 +3732,7 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               col=meancoll,
-                              size=input$meanlinesize,
+                              size=input$meancierrorbarsize,
                               alpha=input$meancitransparency,
                               position = eval(parse(text=positionmean)))
               }
@@ -3728,7 +3839,8 @@ function(input, output, session) {
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
                               fun.args=list(conf.int=input$CI),aes(group=NULL), 
                               alpha=input$meancitransparency,
-                              size=input$meanlinesize, width = input$errbar,
+                              size=input$meancierrorbarsize,
+                              width = input$errbar,
                               position = eval(parse(text=positionmean)))
               }
             if(input$meanlines){
@@ -3758,6 +3870,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$CI),aes(group=NULL), 
                             alpha=input$meancitransparency,
                             width = input$errbar,
+                            size=input$meancierrorbarsize,
                             position = eval(parse(text=positionmean)))
             }
             if(input$meanlines){
@@ -3857,6 +3970,7 @@ function(input, output, session) {
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             alpha=input$meancitransparency,
+                            size=input$meancierrorbarsize,
                             col=meancoll,aes(group=NULL),
                             position = eval(parse(text=positionmean)))
             }
@@ -3887,7 +4001,7 @@ function(input, output, session) {
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             col=meancoll,aes(group=NULL),
-                            size=input$meanlinesize,
+                            size=input$meancierrorbarsize,,
                             alpha=input$meancitransparency,
                             position = eval(parse(text=positionmean)))
             }
@@ -4454,7 +4568,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            size=input$medianlinesize, alpha=input$PItransparency,
+                            size=input$PIerrorbarsize, alpha=input$PItransparency,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
@@ -4494,6 +4608,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
+                            size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
@@ -4596,7 +4711,7 @@ function(input, output, session) {
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
                             col=mediancoll,
-                            size=input$medianlinesize,
+                            size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4635,7 +4750,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
-                            col=mediancoll,
+                            col=mediancoll,size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4740,7 +4855,7 @@ function(input, output, session) {
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
-                            size=input$medianlinesize,
+                            size=input$PIerrorbarsize,
                             alpha=input$PItransparency,
                             position = eval(parse(text=positionmedian)))
             }
@@ -4777,6 +4892,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
+                            size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4882,7 +4998,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
-                            size=input$medianlinesize,col=mediancoll,
+                            size=input$PIerrorbarsize,col=mediancoll,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -4921,7 +5037,7 @@ function(input, output, session) {
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
                             alpha=input$PItransparency,
-                            col=mediancoll,
+                            col=mediancoll,size=input$PIerrorbarsize,
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
@@ -5231,34 +5347,51 @@ function(input, output, session) {
       if(input$addcustomlabel&&input$labeltextin != 'None') {
         
         if ( is.numeric(plotdata[,input$labeltextin]) && input$roundlabeldigits) {
-            p <- p + aes_string(label = paste("round(",input$labeltextin,",",input$nroundlabeldigits,")"))
+          label_aes <- aes_string(label = paste("round(",input$labeltextin,",",input$nroundlabeldigits,")"))
         }
         if ( is.numeric(plotdata[,input$labeltextin]) && !input$roundlabeldigits) {
-          p <- p + aes_string(label = input$labeltextin)
+          label_aes <- aes_string(label = input$labeltextin)
         }          
         if ( !is.numeric(plotdata[,input$labeltextin]) ) {
-          p <- p + aes_string(label = input$labeltextin)
+          label_aes <- aes_string(label = input$labeltextin)
         }
         
         if(!input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata, geom=input$geomlabel,show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
             }
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,geom=input$geomlabel, show.legend = input$customlabellegend, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     seed = 1234,
+                                     mapping = label_aes)
             } 
           }#do notignoregroup 
           
           if(input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     aes(group=NULL),
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
             }
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL),geom=input$geomlabel,
-                                     show.legend = input$customlabellegend, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     aes(group=NULL),
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     seed = 1234,
+                                     mapping = label_aes)
               
             }
             
@@ -5269,27 +5402,45 @@ function(input, output, session) {
         if(input$customlabelignorecol ) {
           if(!input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel, show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+              p <- p + stat_identity(data=plotdata,
+                                     color=input$customlabelcol,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
               
             }
             if(!input$labelignoresize){
-              p <- p  + stat_identity(data=plotdata, color=input$customlabelcol ,geom=input$geomlabel,
-                                      show.legend = input$customlabellegend, seed = 1234)
+              p <- p  + stat_identity(data=plotdata,
+                                      color=input$customlabelcol,
+                                      geom=input$geomlabel, position = "identity",
+                                      show.legend = input$customlabellegend,
+                                      seed = 1234,
+                                      mapping = label_aes)
               
             }
           }#do notignoregroup 
           
           if(input$addcustomlabelignoregroup) {
             if(input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel,
+              p <- p + stat_identity(data=plotdata,
+                                     aes(group=NULL),
+                                     color=input$customlabelcol,
+                                     geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
-                                     size=input$labelsize, seed = 1234)
+                                     size=input$labelsize,
+                                     seed = 1234,
+                                     mapping = label_aes)
             }
             
             if(!input$labelignoresize){
-              p <- p + stat_identity(data=plotdata,aes(group=NULL), color=input$customlabelcol ,geom=input$geomlabel,
-                                     show.legend = input$customlabellegend, seed = 1234 )                
+              p <- p + stat_identity(data=plotdata,aes(group=NULL),
+                                     color=input$customlabelcol,
+                                     geom=input$geomlabel, position = "identity",
+                                     show.legend = input$customlabellegend,
+                                     seed = 1234,
+                                     mapping = label_aes)                
             }
             
           }#ignoregroup   

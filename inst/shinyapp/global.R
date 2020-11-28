@@ -189,9 +189,11 @@ which0 <- function(x) {
 
 # All stats that can be displayed for continuous variables
 allstats <- c("N",
+              "N Missing",
               "Mean",
               "SD",
               "CV%",
+              "Sum",
               "Median",
               "q01",
               "q02.5",
@@ -303,3 +305,11 @@ translate_shape_string <- function(shape_string) {
   
   unname(pch_table[shape_match])
 }
+
+my.render.cat <- function (x, ..., na.is.category = FALSE) 
+{
+  c("", sapply(stats.apply.rounding(stats.default(x, ...), 
+                                    ...), function(y) with(y, sprintf("%s (%s%%)", FREQ, 
+                                                                      if (na.is.category) PCT else PCTnoNA))))
+}
+

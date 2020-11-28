@@ -126,7 +126,7 @@ fluidPage(
                 condition = "input.reordervarin!='' " ,
                 selectizeInput(
                   "functionordervariable", 'By the:',
-                  choices =c("Median","Mean","Minimum","Maximum","N", "SD") ,multiple=FALSE)
+                  choices =c("Median","Mean","Minimum","Maximum","N","N Unique","SD") ,multiple=FALSE)
               ),
               uiOutput("variabletoorderby"),
               conditionalPanel(
@@ -136,6 +136,8 @@ fluidPage(
               
               uiOutput("reordervar2"),
               uiOutput("reordervar2values"),
+              uiOutput("reordervar3"),
+              uiOutput("reordervar3values"),
               selectizeInput("change_labels_stat_var", "Change levels of this variable:",
                              choices = list(), multiple = FALSE,
                              options = list(placeholder = 'Please select a variable')
@@ -144,6 +146,15 @@ fluidPage(
                 "input.change_labels_stat_var != ''",
                 "Old labels", textOutput("change_labels_stat_old", inline = TRUE),
                 textInput("change_labels_stat_levels", label = "")
+              ),
+              selectizeInput("change_labels_stat_var_2", "Change levels of this variable:",
+                             choices = list(), multiple = FALSE,
+                             options = list(placeholder = 'Please select a variable')
+              ),
+              conditionalPanel(
+                "input.change_labels_stat_var_2 != ''",
+                "Old labels", textOutput("change_labels_stat_old_2", inline = TRUE),
+                textInput("change_labels_stat_levels_2", label = "")
               )
             )
           ),
@@ -1341,30 +1352,41 @@ fluidPage(
               ### Mean CI section
               tabPanel("Mean (CI)",
                        fluidRow(
-                         column (2,
-                                 radioButtons(
-                                   "Mean",
-                                   "Mean:",
-                                   c(
-                                     "Mean" = "Mean",
-                                     "Mean/CI" = "Mean/CI",
-                                     "None" = "None"
-                                   ) ,
-                                   selected = "None",
-                                   inline = TRUE
-                                 ),
-                                 conditionalPanel(
-                                   " input.Mean!= 'None' ",
-                                   checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE),
-                                   selectInput("positionmean", label = "Mean positioning for overlap:",
-                                               choices = c(
-                                                 "Default"="position_identity",
-                                                 "Side By Side"="position_dodge"
-                                               ),selected = "position_identity")
-                                   
-                                 )
-                                 
-                         ),#first column
+                                 column (2,
+                                         radioButtons(
+                                           "Mean",
+                                           "Mean:",
+                                           c(
+                                             "Mean" = "Mean",
+                                             "Mean/CI" = "Mean/CI",
+                                             "None" = "None"
+                                           ) ,
+                                           selected = "None",
+                                           inline = TRUE
+                                         ),
+                                         conditionalPanel(
+                                           " input.Mean!= 'None' ",
+                                           checkboxInput('meanignoregroup', 'Ignore Mapped Group', value = TRUE),
+                                           selectInput("positionmean", label = "Mean positioning for overlap:",
+                                                       choices = c(
+                                                         "Default"="position_identity",
+                                                         "Side By Side"="position_dodge"
+                                                       ),selected = "position_identity")
+                                           
+                                         ),
+                                         conditionalPanel(
+                                           " input.Mean== 'Mean/CI' && (
+                      input.geommeanCI == 'errorbar' | input.positionmean =='position_dodge')  ",
+                                           numericInput(
+                                             inputId = "errbar",
+                                             label = "CI errorbar/dodge width:",
+                                             value = 0.75,
+                                             min = 0.1,
+                                             max = NA
+                                           )
+                                         )
+                                         
+                                 ),#first column
                          column (2,
                                 conditionalPanel(
                                    " input.Mean== 'Mean/CI' ",
@@ -1382,18 +1404,12 @@ fluidPage(
                                      step = 0.01
                                    ),
                                    sliderInput("meancitransparency", "CI Transparency:",
-                                               min=0, max=1, value=c(0.2),step=0.01)
-                                ),
-                                conditionalPanel(
-                                  " input.Mean== 'Mean/CI' | input.positionmean =='position_dodge'  ",
-                                     numericInput(
-                                       inputId = "errbar",
-                                       label = "CI bar/dodge width:",
-                                       value = 0.75,
-                                       min = 0.1,
-                                       max = NA
-                                     )
-                                 )       
+                                               min=0, max=1, value=c(0.2),step=0.01),
+                                   conditionalPanel(" input.geommeanCI == 'errorbar' ",
+                                                    sliderInput("meancierrorbarsize","Errorbar(s) Line(s) Size:",
+                                                                min=0, max=4, value=c(1),step=0.1)
+                                   )
+                                )      
                                  
                          ),# ci column options
                          column (2,
@@ -1549,7 +1565,18 @@ fluidPage(
                                 choices = c(
                                   "Default"="position_identity",
                                   "Side By Side"="position_dodge"
-                                ),selected = "position_identity")
+                                ),selected = "position_identity"),
+                    conditionalPanel(
+                      " input.Median== 'Median/PI' && (
+                      input.geommedianPI == 'errorbar' | input.positionmedian =='position_dodge')  ",
+                      numericInput(
+                        inputId = "medianerrbar",
+                        label = "PI errorbar/dodge width:",
+                        value = 0.75,
+                        min = 0.1,
+                        max = NA
+                      )
+                    )
                     
                     )
                   ),#first column
@@ -1562,85 +1589,80 @@ fluidPage(
                                                  inline = TRUE),
                                     sliderInput("PI", "PI %:", min=0, max=1, value=c(0.95),step=0.01),
                                     sliderInput("PItransparency", "PI Transparency:",
-                                                min=0, max=1, value=c(0.2),step=0.01)
+                                                min=0, max=1, value=c(0.2),step=0.01),
+                                    conditionalPanel(" input.geommedianPI == 'errorbar' ",
+                                                     sliderInput("PIerrorbarsize","Errorbar(s) Line(s) Size:",
+                                                                 min=0, max=4, value=c(1),step=0.1)
+                                    )
                                     
-                  ),
-                  
-                  conditionalPanel(
-                    " input.Median== 'Median/PI' | input.positionmedian =='position_dodge'  ",
-                    numericInput(
-                      inputId = "medianerrbar",
-                      label = "PI bar/dodge width:",
-                      value = 0.75,
-                      min = 0.1,
-                      max = NA
-                    )
                   ) 
                   
                 ), # Pi color options
                 
-                  column (2,
-                    conditionalPanel( " input.Median!= 'None' ",
-                                      checkboxInput('medianlines', 'Show lines',value=TRUE)
-                                      ),
-                    conditionalPanel(
-                      " input.Median!= 'None'&& input.medianlines ",
-                                      sliderInput("medianlinesize", "Median(s) Line(s) Size:",
-                                                  min=0, max=4, value=c(1.5),step=0.1),
-                                      sliderInput("alphamedianl", "Median(s) Line(s) Transparency:",
-                                                  min=0, max=1, value=c(0.5),step=0.01)
-                      )
-                  ), # lines options
-                  column (2,
-                    conditionalPanel( " input.Median!= 'None' ",
-                                      checkboxInput('medianpoints', 'Show points')
-                    ),
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints ",
-                                      sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1),
-                                      sliderInput("alphamedianp", "Median(s) Point(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
-                                      checkboxInput('forcemedianshape', 'Force Median(s) Shape',value = FALSE)
-                    ),
-                    
-                    conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
-                                      selectInput('medianshapes','Median(s) Point(s) Shape:',c(
-                                        "square open"           ,
-                                        "circle open"           ,
-                                        "triangle open"         ,
-                                        "plus"                  ,
-                                        "cross"                 ,
-                                        "asterisk"              ,
-                                        "diamond open"          ,
-                                        "triangle down open"    ,
-                                        "square cross"          ,
-                                        "diamond plus"          ,
-                                        "circle plus"           ,
-                                        "star"                  ,
-                                        "square plus"           ,
-                                        "circle cross"          ,
-                                        "square triangle"       ,
-                                        "square"                ,
-                                        "circle small"          ,
-                                        "triangle"              ,
-                                        "diamond"               ,
-                                        "circle"                ,
-                                        "bullet"                ,
-                                        "circle filled"         ,
-                                        "square filled"         ,
-                                        "diamond filled"        ,
-                                        "triangle filled"       ,
-                                        "triangle down filled"  ,
-                                        "blank"
-                                      ),selected="square")  
-                                      
-                    )
-                    
-                  ), # points options
-
+                column (2,
+                        conditionalPanel( " input.Median!= 'None' ",
+                                          checkboxInput('medianlines', 'Show lines',value=TRUE)
+                        ),
+                        conditionalPanel(
+                          " input.Median!= 'None' && input.medianlines && (input.pointsizein == 'None' ) ",
+                          sliderInput("medianlinesize", "Median(s) Line(s) Size:",
+                                      min=0, max=4, value=c(1.5),step=0.1)
+                        ),
+                        conditionalPanel(
+                          " input.Median!= 'None'&& input.medianlines",
+                          sliderInput("alphamedianl", "Median(s) Line(s) Transparency:",
+                                      min=0, max=1, value=c(0.5),step=0.01)
+                        )
+                ), # lines options
+                column (2,
+                        conditionalPanel( " input.Median!= 'None' ",
+                                          checkboxInput('medianpoints', 'Show points')
+                        ),
+                        conditionalPanel( " input.Median!= 'None' & input.medianpoints ",
+                                          sliderInput("medianpointsize", "Median(s) Point(s) Size:", min=0, max=6, value=c(1),step=0.1),
+                                          sliderInput("alphamedianp", "Median(s) Point(s) Transparency:", min=0, max=1, value=c(0.5),step=0.01),
+                                          checkboxInput('forcemedianshape', 'Force Median(s) Shape',value = FALSE)
+                        ),
+                        
+                        conditionalPanel( " input.Median!= 'None'&input.medianpoints & input.forcemedianshape ",
+                                          selectInput('medianshapes','Median(s) Point(s) Shape:',c(
+                                            "square open"           ,
+                                            "circle open"           ,
+                                            "triangle open"         ,
+                                            "plus"                  ,
+                                            "cross"                 ,
+                                            "asterisk"              ,
+                                            "diamond open"          ,
+                                            "triangle down open"    ,
+                                            "square cross"          ,
+                                            "diamond plus"          ,
+                                            "circle plus"           ,
+                                            "star"                  ,
+                                            "square plus"           ,
+                                            "circle cross"          ,
+                                            "square triangle"       ,
+                                            "square"                ,
+                                            "circle small"          ,
+                                            "triangle"              ,
+                                            "diamond"               ,
+                                            "circle"                ,
+                                            "bullet"                ,
+                                            "circle filled"         ,
+                                            "square filled"         ,
+                                            "diamond filled"        ,
+                                            "triangle filled"       ,
+                                            "triangle down filled"  ,
+                                            "blank"
+                                          ),selected="square")  
+                                          
+                        )
+                        
+                ), # points options
+                
                 column(2,
-                       conditionalPanel(
-                         " input.Median!= 'None' ",
-                       checkboxInput('medianvalues', 'Label Values?') ,
-                       checkboxInput('medianN', 'Label N?') ),
+                       conditionalPanel(" input.Median!= 'None' ",
+                                        checkboxInput('medianvalues', 'Label Values?') ,
+                                        checkboxInput('medianN', 'Label N?') ),
                        conditionalPanel(
                          "input.medianvalues | input.medianN ",
                          sliderInput("alphamedianlabel", "Labels(s) Transparency:",
@@ -1654,38 +1676,34 @@ fluidPage(
                        
                 ), # fourth column
                 
-                  column (2,
-                    conditionalPanel( " input.Median!= 'None' ",
-                                      checkboxInput('medianignorecol', 'Ignore Mapped Color'),
-                                      conditionalPanel(" input.medianignorecol ",
-                                                       conditionalPanel( " input.Median!= 'None' ",
-                                                                         colourpicker::colourInput("colmedianl",
-                                                                                                   "Median(s) Line(s) Color",
-                                                                                                   value="black",
-                                                                                                   showColour = "both",
-                                                                                                   allowTransparent=FALSE,returnName=TRUE)
-                                                                         
-                                                                         
-                                                       ),
-                                                       conditionalPanel( " input.medianpoints ",
-                                                                         colourpicker::colourInput("colmedianp",
-                                                                                                   "Median(s) Point(s) Color",
-                                                                                                   value="black",
-                                                                                                   showColour = "both",
-                                                                                                   allowTransparent=FALSE,returnName=TRUE)
-                                                                         
-                                                                         
-                                                       )
-                                      )
-                                      
-                                      
-                    )
-                  )# column
-                  
-                )#fluidrow
+                column (2,
+                        conditionalPanel(" input.Median!= 'None' ",
+                                         checkboxInput('medianignorecol', 'Ignore Mapped Color'),
+                                         conditionalPanel(" input.medianignorecol ",
+                                                          conditionalPanel( " input.Median!= 'None' ",
+                                                                            colourpicker::colourInput("colmedianl",
+                                                                                                      "Median(s) Line(s) Color",
+                                                                                                      value="black",
+                                                                                                      showColour = "both",
+                                                                                                      allowTransparent=FALSE,
+                                                                                                      returnName=TRUE)              
+                                                          ),
+                                                          conditionalPanel( " input.medianpoints ",
+                                                                            colourpicker::colourInput("colmedianp",
+                                                                                                      "Median(s) Point(s) Color",
+                                                                                                      value="black",
+                                                                                                      showColour = "both",
+                                                                                                      allowTransparent=FALSE,
+                                                                                                      returnName=TRUE)
+                                                          )
+                                         )
+                        )#main condition
+                )# column #5
+                
+               )#fluidrow
               ),
               ### median PI section
-              
+
               ### KM section
               
               
@@ -2098,7 +2116,10 @@ fluidPage(
                                        value=3, min=1, max=10, step=1),
                           checkboxInput("round_median_min_max",
                                         label="Also round median, min, max?",
-                                        value=TRUE)
+                                        value=TRUE),
+                          checkboxInput("table_na_is_category",
+                                        label="Missing is a Category?",
+                                        value=FALSE)
                    )
                  )
                ))
