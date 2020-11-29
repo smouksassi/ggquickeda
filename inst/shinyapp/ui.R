@@ -253,7 +253,7 @@ fluidPage(
             tabPanel(
               "Graph Size/Zoom",
               sliderInput("height", "Plot Height", min=1080/4, max=1080, value=480, animate = FALSE),
-              h6("X Axis Zoom only works if facet x scales are not set to be free. The automatic setting generate a slider has limits between your x variable min/max otherwise select User Defined to input your own."),
+              h6("X Axis Zoom is available if you have exactly one x variable and facet x scales are not set to be free. The automatic setting generates a slider has limits between your x variable min/max otherwise select User Defined to input your own."),
               fluidRow(
                 column(12,
                        radioButtons("xaxiszoom", "X Axis Zoom:",
