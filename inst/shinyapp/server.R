@@ -1451,7 +1451,9 @@ function(input, output, session) {
       if(input$functionordervariable=="SD" )  {
         df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) sd(x[!is.na(x)]))
       }
-      
+      if(input$functionordervariable=="Sum" )  {
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) sum(x[!is.na(x)]))
+      }
       if(input$reverseorder )  {
         df[,varname] <- factor( df[,varname], levels=rev(levels( df[,varname])))
         
@@ -6494,6 +6496,7 @@ function(input, output, session) {
     titlelinebreak <- gsub("\\\\n", "\\\n", input$title)
     subtitlelinebreak <- gsub("\\\\n", "\\\n", input$subtitle)
     captionlinebreak <- gsub("\\\\n", "\\\n", input$caption)
+    plottaglinebreak <- gsub("\\\\n", "\\\n", input$plottag)
     
     if (input$xlab!="") {
       p <- p + xlab(xlablinebreak)
@@ -6706,6 +6709,10 @@ function(input, output, session) {
     if (input$caption!="") {
       p <- p + labs(caption=captionlinebreak)
       p <- attach_source_dep(p, "captionlinebreak")
+    }
+    if (input$plottag!="") {
+      p <- p + labs(tag=plottaglinebreak)    
+      p <- attach_source_dep(p, "plottaglinebreak")
     }
     p
     
@@ -7008,9 +7015,13 @@ function(input, output, session) {
       formula <- as.formula(paste("~", paste(c(LHS, RHS), collapse=" | ")))
       overall <- if (input$table_incl_overall) "Overall" else FALSE
       t <- table1(formula, data=df, overall=overall,
+                  caption =input$tablecaption,
+                  footnote = input$tablefootnote,
                   topclass=paste("Rtable1", input$table_style),
+                  render.missing = if(input$table_suppress_missing) NULL else render.missing.default,
                   render.continuous=dstatsRenderCont(),
-                  render.categorical=function(x)my.render.cat(x,na.is.category=input$table_na_is_category))
+                  render.categorical=function(x)
+                    my.render.cat(x,na.is.category=input$table_na_is_category))
       values$prevTable <- t
       t
     }

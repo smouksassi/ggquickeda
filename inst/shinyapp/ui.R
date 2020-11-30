@@ -115,7 +115,7 @@ fluidPage(
                 condition = "input.reordervarin!='' " ,
                 selectizeInput(
                   "functionordervariable", 'By the:',
-                  choices =c("Median","Mean","Minimum","Maximum","N","N Unique","SD") ,multiple=FALSE)
+                  choices =c("Median","Mean","Minimum","Maximum","N","N Unique","SD","Sum") ,multiple=FALSE)
               ),
               uiOutput("variabletoorderby"),
               conditionalPanel(
@@ -166,6 +166,7 @@ fluidPage(
                            c("Panel" = "panel",
                              "Plot" = "plot"), inline = TRUE),
               textInput('caption', 'Plot Caption', value = "") ,
+              textInput('plottag', 'Plot Tag', value = "") ,
               radioButtons("captionposition", "Caption Positioning:",
                            c("Panel" = "panel",
                              "Plot" = "plot"), inline = TRUE),
@@ -923,7 +924,8 @@ fluidPage(
                       conditionalPanel(
                         " input.pointignorecol ",
                         colourpicker::colourInput("colpoint", "Points Color", value="black",
-                                                  showColour = "both",allowTransparent=FALSE,returnName=TRUE),
+                                                  showColour = "both",allowTransparent=FALSE,
+                                                  returnName=TRUE),
                         div( actionButton("colpointreset", "Reset Points Color"),
                              style="text-align: right")
                         
@@ -1032,10 +1034,11 @@ fluidPage(
                     checkboxInput('boxplotignorecol', 'Ignore Mapped Color'),
                     conditionalPanel(
                       " input.boxplotignorecol " ,
-                      selectInput('boxcolline', label ='Box Outlines Color',
-                                  choices=colors(),multiple=FALSE, selectize=TRUE,selected="black")
+                      colourpicker::colourInput('boxcolline','Box Outlines Color',value="black",
+                                                showColour = "both",allowTransparent=TRUE,
+                                                returnName=TRUE)
                     ),
-                    sliderInput("boxplotalpha", "Boxplot Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                    sliderInput("boxplotalpha", "Boxplot Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
                     sliderInput("boxplotoutlieralpha", "Outlier Transparency:", min=0, max=1, value=c(0.5),step=0.01),
                     sliderInput("boxplotoutliersize", "Outliers Size:", min=0, max=6, value=c(1),step=0.1)
                   )
@@ -2077,7 +2080,10 @@ fluidPage(
                           uiOutput("flipthelevels")
                    ),
                    column(3,
-                          div(id="quick_reorder_placeholder")
+                          div(id="quick_reorder_placeholder"),
+                          textInput('tablecaption', 'Table title', value = "") ,
+                          textInput('tablefootnote', 'Table caption', value = "") ,
+                          
                    ),
                    column(6,
                           checkboxInput("table_incl_overall",
@@ -2094,6 +2100,9 @@ fluidPage(
                                          selected=c("Mean (SD)", "Median [Min, Max]"),
                                          multiple=TRUE,
                                          options=list(plugins=list('drag_drop','remove_button'))),
+                          checkboxInput("table_suppress_missing",
+                                        label="Suppress Missing Stats?",
+                                        value=FALSE),
                           numericInput("dstats_sigfig",
                                        label="Number of significant figures (for Mean, SD, ...)",
                                        value=3, min=1, max=10, step=1),
@@ -2101,7 +2110,7 @@ fluidPage(
                                         label="Also round median, min, max?",
                                         value=TRUE),
                           checkboxInput("table_na_is_category",
-                                        label="Missing is a Category?",
+                                        label="Missing as a Category?",
                                         value=FALSE)
                    )
                  )
