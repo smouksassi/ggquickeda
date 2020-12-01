@@ -3156,7 +3156,7 @@ function(input, output, session) {
               geom_bar(alpha=0.2,aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
                        position = eval(parse(text=input$positionbar)))
             
-            if ( input$barplotlabel){
+            if (input$barplotlabel){
               if(input$positionbar!="position_fill(vjust = 0.5)")
               {
                 p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
@@ -3164,7 +3164,7 @@ function(input, output, session) {
                                           ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
                                     stat = "count", vjust = 0.5,size=5,
                                     position = eval(parse(text=input$positionbar)))+
-                  ylab("Percentage")    
+                  xlab("Percentage")    
               }
               
             }
@@ -3175,7 +3175,7 @@ function(input, output, session) {
                                                                       input$xexpansion_r_mult),
                                                              add  = c(input$xexpansion_l_add,
                                                                       input$xexpansion_r_add))) +
-              ylab("Percentage")
+              xlab("Percentage")
             if ( input$barplotflip){
               p <- p +
                 coord_flip()

@@ -1,6 +1,6 @@
 ggquickeda
 ========
-<img src="./ggquickedahex.png" width="160px" align="right" />
+<img src="./ggquickedahex.png" width="300px" align="right" />
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version-last-release/ggquickeda)](https://cran.r-project.org/package=ggquickeda)
 [![Travis-CI Build Status](https://travis-ci.org/smouksassi/ggquickeda.svg?branch=master)](https://travis-ci.org/smouksassi/ggquickeda)

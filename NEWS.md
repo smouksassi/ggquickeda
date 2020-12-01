@@ -1,6 +1,14 @@
 # ggquickeda 0.1.8.9999
 * Made errorbars for Median/PI and Mean/CI ignore mapped size
-* fixed a bug when labels from Median/PI and Mean/CI and data are used 
+* fixed a bug when labels from Median/PI and Mean/CI and data are used
+* table1 enhancements: na.is.category, render.missing, footnote and caption.
+* table1 enhancements: added N missing and Sum to stats.
+* added second field to order and recode variables after stacking e.g. for xvars and yvars
+* added two new by variable factor sorting methods: 'N Unique' and 'Sum'
+* fixed a bug when custom reorder ignored the current order as starting point
+* added ggplot tag field
+* fixed a bug when user was selecting the same variables for x and y now stacking x and y is separate.
+* fixed a bug in x axis label and barplots in some special cases
 
 # ggquickeda 0.1.8
 * Added possibility to use more than one x variable(s) and or no y variable(s)
