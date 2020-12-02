@@ -414,6 +414,7 @@ function(input, output, session) {
   observeEvent(input$hlinecol2reset, {
     shinyjs::reset("hlinecol2")
   })
+
   output$ycol <- renderUI({
     df <- values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -445,12 +446,49 @@ function(input, output, session) {
                    multiple=TRUE,
                    options = list(plugins = list('remove_button', 'drag_drop')))  })
   
-  # If an X is selected but no Y is selected, switch to the Histograms tab
+  # If an X or Y are null, switch to the Histograms tab
   observe({
     if (!is.null(input$x) && is.null(input$y)) {
       updateTabsetPanel(session, "graphicaltypes", "histograms_density")
     }
   })
+  observe({
+    if (is.null(input$x) && !is.null(input$y)) {
+      updateTabsetPanel(session, "graphicaltypes", "histograms_density")
+    }
+  })
+  # observe({
+  #   if (!is.null(input$x) && !is.null(input$y)) {
+  #     updateTabsetPanel(session, "graphicaltypes", "points_lines")
+  #   }
+  # })
+  
+  observe({
+    if( (is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"] )) ||
+        (is.null(input$x) && !is.numeric(finalplotdata()[,"yvalues"] ))
+         ) {
+      updateRadioButtons(session, "histogramaddition",selected="None")
+      updateRadioButtons(session, "densityaddition"  ,selected="None")
+      shinyjs::disable(id="histogramaddition")
+      shinyjs::disable(id="densityaddition")
+      shinyjs::enable(id="barplotaddition")
+      updateCheckboxInput(session, "barplotaddition", value = TRUE)
+    }
+  })
+  observe({
+    if( (is.null(input$y) &&  is.numeric(finalplotdata()[,"xvalues"] )) ||
+        (is.null(input$x) &&  is.numeric(finalplotdata()[,"yvalues"] ))
+    ) {
+      shinyjs::enable(id="histogramaddition")
+      shinyjs::enable(id="densityaddition")
+      updateRadioButtons(session, "densityaddition"  ,selected="Density")
+      updateCheckboxInput(session, "barplotaddition", value = FALSE)
+      shinyjs::disable(id="barplotaddition")
+      
+    }
+  })
+#xxx
+  
   observe({
     if (input$KM!="None") {
       updateRadioButtons(session, "yaxisscale", choices = c(
@@ -3116,10 +3154,11 @@ function(input, output, session) {
             ylab("Count")
           
           if ( input$barplotlabel){
-            p <- p+   geom_text(aes(y = ((..count..)),
+            p <- p +   geom_text(aes(y = ((..count..)),
                                     label = ((..count..))),
                                 stat = "count", vjust = 0.5,size=5,
-                                position = eval(parse(text=input$positionbar)))
+                                position = eval(parse(text=input$positionbar)),
+                                show.legend = input$barplotlabellegend)
           }
           
           
@@ -3134,18 +3173,24 @@ function(input, output, session) {
                      position = eval(parse(text=input$positionbar)))
           
           if ( input$barplotlabel){
-            if(input$positionbar!="position_fill(vjust = 0.5)")
-            {
-              p <- p+   geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+            if(input$positionbar!="position_fill(vjust = 0.5)"){
+              p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
                                       label = scales::percent(
                                         ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
-                                  stat = "count", vjust = 0.5,size=5,
-                                  position = eval(parse(text=input$positionbar)))+
+                                  stat = "count", vjust = 0.5, size=5,
+                                  position = eval(parse(text=input$positionbar)),
+                                  show.legend = input$barplotlabellegend)+
+                ylab("Percentage")    
+            }
+            if(input$positionbar=="position_fill(vjust = 0.5)"){
+              p <- p + geom_text(aes(by=xvalues),
+                                  stat = "prop", vjust = 0.5, size=5,
+                                  position = eval(parse(text=input$positionbar)),
+                                  show.legend = input$barplotlabellegend)+
                 ylab("Percentage")    
             }
             
           }
-          
           
           p <- p +   scale_y_continuous(labels = percent,
                                        expand = expansion(mult = c(input$yexpansion_l_mult,
@@ -3198,7 +3243,8 @@ function(input, output, session) {
               p <- p+   geom_text(aes(x = ((..count..)),
                                       label = ((..count..))),
                                   stat = "count", vjust = 0.5,size=5,
-                                  position = eval(parse(text=input$positionbar)))
+                                  position = eval(parse(text=input$positionbar)),
+                                  show.legend = input$barplotlabellegend)
             }
             
             
@@ -3212,17 +3258,16 @@ function(input, output, session) {
               geom_bar(alpha=0.2,aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
                        position = eval(parse(text=input$positionbar)))
             
-            if ( input$barplotlabel){
+            if (input$barplotlabel){
               if(input$positionbar!="position_fill(vjust = 0.5)")
-              {
-                p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+              {p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
                                         label = scales::percent(
                                           ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
                                     stat = "count", vjust = 0.5,size=5,
-                                    position = eval(parse(text=input$positionbar)))+
-                  ylab("Percentage")    
+                                    position = eval(parse(text=input$positionbar)),
+                                    show.legend = input$barplotlabellegend)+
+                  xlab("Percentage")    
               }
-              
             }
             
             
@@ -3231,7 +3276,7 @@ function(input, output, session) {
                                                                       input$xexpansion_r_mult),
                                                              add  = c(input$xexpansion_l_add,
                                                                       input$xexpansion_r_add))) +
-              ylab("Percentage")
+              xlab("Percentage")
             if ( input$barplotflip){
               p <- p +
                 coord_flip()

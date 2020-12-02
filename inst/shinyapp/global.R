@@ -310,6 +310,6 @@ my.render.cat <- function (x, ..., na.is.category = FALSE)
 {
   c("", sapply(stats.apply.rounding(stats.default(x, ...), 
                                     ...), function(y) with(y, sprintf("%s (%s%%)", FREQ, 
-                                                                      if (na.is.category) PCT else PCTnoNA))))
+                                   if (na.is.category) PCT else PCTnoNA))))
 }
 

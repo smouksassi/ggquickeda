@@ -883,7 +883,7 @@ fluidPage(
               id = "graphicaltypes",selected = "Color/Group/Split/Size/Fill Mappings",
               tabPanel(
                 "Points, Lines",
-                
+                value = "points_lines",
                 fluidRow(
                   column (
                     3,
@@ -1061,83 +1061,67 @@ fluidPage(
                 "Histograms/Density/Bar",
                 value = "histograms_density",
                 fluidRow(
-                  
-                  column (
-                    3,
+                  column (3,
                     radioButtons("histogramaddition", "Add a Histogram ?",
                                  c("Density" = "Density",
                                    "Counts" = "Counts",
                                    "Scaled Counts" = "ncounts",
                                    "None" = "None") ,
-                                 selected="None") ,
+                                 selected="None", inline = TRUE) ,
+                    conditionalPanel("input.histogramaddition!='None' ",
                     radioButtons("histogrambinwidth", "Binwidth ?",
                                  c("User Specified" = "userbinwidth",
                                    "Automatic Binwidth" = "autobinwidth",
                                    "None" = "None") ,
-                                 selected="None") ,
+                                 selected="None", inline = TRUE) ,
                     conditionalPanel(
                       " input.histogrambinwidth== 'userbinwidth' ", 
                       numericInput("histobinwidth",
                                    "Bin Width",
-                                   value = 1,
-                                   min = 0, step = 0.5)
+                                   value = 1,min = 0, step = 0.5)
                       
                     ),
                     conditionalPanel(" input.histogrambinwidth== 'None' ",
                                      numericInput("histonbins",
-                                                  "N Bins",
-                                                  value = 30,
-                                                  min = 0, step = 0.5)
+                                                  "N Bins", value = 30,min = 0, step = 0.5)
                     ),
                     sliderInput(
-                      "histogramalpha",
-                      "Histogram Transparency:",
-                      min = 0,
-                      max = 1,
-                      value = c(0.2),
-                      step = 0.01
+                      "histogramalpha","Histogram Fill Transparency:",
+                      min = 0, max = 1, value = c(0.2), step = 0.01
                     ),
                     selectInput("positionhistogram", label = "Histogram positioning for overlap:",
-                                choices = c(
-                                  "Default"="identity",
+                                choices = c("Default"="identity",
                                   "Side By Side"="dodge",
-                                  "Stacked"="stack"
-                                ),selected = "stack")
+                                  "Stacked"="stack"),selected = "stack")
                     
-                    
+                    )  
                   ),
-                  column (
-                    3,
+                  column (3,
                     radioButtons("densityaddition", "Add a Density Curve ?",
                                  c("Density" = "Density",
                                    "Counts" = "Counts",
                                    "Match Histo Count"="histocount",
                                    "Scaled Density" = "Scaled Density",
                                    "None" = "None") ,
-                                 selected="Density"),
+                                 selected="Density", inline = TRUE),
+                    conditionalPanel("input.densityaddition!='None' ",
                     sliderInput(
                       "densityalpha",
-                      "Density Transparency:",
-                      min = 0,
-                      max = 1,
-                      value = c(0.2),
-                      step = 0.01
+                      "Density Fill Transparency:",
+                      min = 0 ,max = 1, value = c(0.2), step = 0.01
                     ),
                     sliderInput(
                       "densityadjust",
                       "Density Binwidth Adjustment:",
-                      min = 0.01,
-                      max = 10,
-                      value = c(1),
-                      step = 0.01
+                      min = 0.01, max = 10, value = c(1), step = 0.01
                     )
-                    
+                    )
                     
                   ),
                   
-                  column (
-                    3,
+                  column (3,
                     checkboxInput('barplotaddition', 'Add a Barplot ?',value = TRUE),
+                    conditionalPanel("input.barplotaddition",
                     selectInput("positionbar", label = "Bar positioning:",
                                 choices = c("Stacked"="position_stack(vjust = 0.5)",
                                             "Side By Side"="position_dodge(width = 0.9)",
@@ -1145,23 +1129,28 @@ fluidPage(
                                 selected = "position_stack(vjust = 0.5)"),
                     checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
                                   value = FALSE),
-                      checkboxInput('barplotlabel', 'Show Labels ?',value = FALSE)
+                    checkboxInput('barplotlabel', 'Show Counts/Percentages ?',value = FALSE),
+                    conditionalPanel("input.barplotlabel",
+                                     checkboxInput('barplotlabellegend', "Show Legend ?", value=TRUE)
+                                     )
+                    )
                   ),
                   column (3,
+                          conditionalPanel("input.barplotaddition",
                           radioButtons("barplotorder", "Bar Ordering:",
                                        c("Default" = "default",
                                          "By Frequency" = "frequency",
                                          "By Reverse Frequency" = "revfrequency"),inline=TRUE ) ,
                           checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
+                          )
                   ),
-                  
                   column (6,
                   h6("A barplot for non-numeric x or y variable(s), or a density/histogram for numeric x or y variabl(s)
-                                 will be produced,only when the x or y variable(s) are empty.
+                                 will be produced, only when the x or y variable(s) are empty.
                                  Options are to be added as per users requests.")
                   ),
                   column (6,
-                  h6("Currently it is not possible to label the barplot when position Sum to 100% is used.")
+                  h6("Currently there is some limitations when position 'Sum to 100%' is used.")
                   )
                   )#fluidrow
               ),
