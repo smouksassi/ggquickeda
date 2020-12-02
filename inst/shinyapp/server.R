@@ -406,11 +406,11 @@ function(input, output, session) {
       updateTabsetPanel(session, "graphicaltypes", "histograms_density")
     }
   })
-  observe({
-    if (!is.null(input$x) && !is.null(input$y)) {
-      updateTabsetPanel(session, "graphicaltypes", "points_lines")
-    }
-  })
+  # observe({
+  #   if (!is.null(input$x) && !is.null(input$y)) {
+  #     updateTabsetPanel(session, "graphicaltypes", "points_lines")
+  #   }
+  # })
   
   observe({
     if( (is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"] )) ||
