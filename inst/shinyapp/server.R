@@ -399,11 +399,45 @@ function(input, output, session) {
   observe({
     if (!is.null(input$x) && is.null(input$y)) {
       updateTabsetPanel(session, "graphicaltypes", "histograms_density")
-    }
+    } 
   })
+  
   observe({
     if (is.null(input$x) && !is.null(input$y)) {
       updateTabsetPanel(session, "graphicaltypes", "histograms_density")
+    }
+  })
+  #if showpairs hide irrelevant tabs color_aes_mappings 
+
+  observe({
+    if (input$show_pairs) {
+      hideTab("graphicaltypes", target = "color_aes_mappings")
+      hideTab("graphicaltypes", target = "points_lines")
+      hideTab("graphicaltypes", target = "box_plots")
+      hideTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "quantile_regression")
+      hideTab("graphicaltypes", target = "smooth_regression")
+      hideTab("graphicaltypes", target = "mean_ci")
+      hideTab("graphicaltypes", target = "median_pi")
+      hideTab("graphicaltypes", target = "kaplan_meier")
+      hideTab("graphicaltypes", target = "corr_coeff")
+      hideTab("graphicaltypes", target = "text_labels")
+      hideTab("graphicaltypes", target = "rug_marks")
+      showTab("graphicaltypes", target = "pairs_plot")
+    } else {
+      hideTab("graphicaltypes", target = "pairs_plot")
+      showTab("graphicaltypes", target = "color_aes_mappings")
+      showTab("graphicaltypes", target = "points_lines")
+      showTab("graphicaltypes", target = "box_plots")
+      showTab("graphicaltypes", target = "histograms_density")
+      showTab("graphicaltypes", target = "quantile_regression")
+      showTab("graphicaltypes", target = "smooth_regression")
+      showTab("graphicaltypes", target = "mean_ci")
+      showTab("graphicaltypes", target = "median_pi")
+      showTab("graphicaltypes", target = "kaplan_meier")
+      showTab("graphicaltypes", target = "corr_coeff")
+      showTab("graphicaltypes", target = "text_labels")
+      showTab("graphicaltypes", target = "rug_marks")
     }
   })
   # observe({
@@ -1961,10 +1995,91 @@ function(input, output, session) {
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
     }
+    if (input$show_pairs){
+      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
+    }
     selectInput("colorin", "Colour By:",items) 
     
   })
+  observe({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    if (input$show_pairs){
+      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
+    }
+    current_color_value <- input$colorin
+    if (!is.null(current_color_value) && current_color_value %in% items) {
+      new_value <- current_color_value
+    } else {
+      new_value <- items[1]
+    }
+    updateSelectInput(session, "colorin",
+                      choices = items, selected = new_value)
+  })
   
+  output$colourpairs <- renderUI({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    if (input$show_pairs){
+      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
+    }
+    selectInput("colorpairsin", "Colour By:",items) 
+    
+  })
+  observe({
+    df <-values$maindata
+    validate(       need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    if (input$show_pairs){
+      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
+    }
+    current_color_value <- input$colorin
+    if (!is.null(current_color_value) && current_color_value %in% items) {
+      new_value <- current_color_value
+    } else {
+      new_value <- items[1]
+    }
+    updateSelectInput(session, "colorpairsin",
+                      choices = items, selected = new_value)
+  })
   
   output$group <- renderUI({
     df <-values$maindata
@@ -2535,7 +2650,7 @@ function(input, output, session) {
     # Determine what type of plot to show based on what variables were chosen
     if (input$show_pairs) {
       # Matrix of pairs of plots of all the Y variables
-      if (input$colorin == 'None'){
+      if (input$colorpairsin == 'None'){
         p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
                                         diag = list(continuous = GGally::wrap("densityDiag", alpha=0.2),
                                                     discrete = GGally::wrap("barDiag",  alpha=0.2,position="dodge2")),
@@ -2551,14 +2666,13 @@ function(input, output, session) {
                                         progress = FALSE)
                         )
       }
-      if (input$colorin != 'None'){
-        
-        if( !is.numeric(plotdata[,input$colorin]) ){
+      if (input$colorpairsin != 'None'){
+        if( !is.numeric(plotdata[,input$colorpairsin]) ){
         p <- sourceable(
           GGally::ggpairs(
             plotdata,
             columns = input$y,
-            mapping = ggplot2::aes_string(color = input$colorin),
+            mapping = ggplot2::aes_string(color = input$colorpairsin),
             diag = list(
               continuous = function(data, mapping, ...) {
                 GGally::ggally_densityDiag(

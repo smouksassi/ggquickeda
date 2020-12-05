@@ -1,4 +1,4 @@
-# ggquickeda 0.1.8.9999
+# ggquickeda 0.1.9
 * Made errorbars for Median/PI and Mean/CI ignore mapped size
 * fixed a bug when labels from Median/PI and Mean/CI and data are used
 * table1 enhancements: na.is.category, render.missing, footnote and caption.

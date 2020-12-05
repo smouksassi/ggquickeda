@@ -869,7 +869,13 @@ fluidPage(
           tabPanel(
             "Types of Graphs",
             tabsetPanel(
-              id = "graphicaltypes",selected = "Color/Group/Split/Size/Fill Mappings",
+              id = "graphicaltypes",selected = "color_aes_mappings",
+              tabPanel("Pairs Plot Options",
+                       value = "pairs_plot",
+                       fluidRow(
+                         column (3, uiOutput("colourpairs"))
+                       )
+              ),
               tabPanel(
                 "Points, Lines",
                 value = "points_lines",
@@ -1003,6 +1009,7 @@ fluidPage(
               ), # tabpanel
               tabPanel(
                 "Color/Group/Split/Size/Fill Mappings",
+                value = "color_aes_mappings",
                 fluidRow(
                   column (3, uiOutput("colour"),uiOutput("group"),uiOutput("facet_col_extra")),
                   column (3, uiOutput("facet_col"),uiOutput("facet_row"),uiOutput("facet_row_extra")),
@@ -1014,6 +1021,7 @@ fluidPage(
               ),#tabpanel
               tabPanel(
                 "Boxplots",
+                value = "box_plots",
                 fluidRow(
                   column (
                     4,
@@ -1146,6 +1154,7 @@ fluidPage(
               
               #rqss quantile regression
               tabPanel("Quantile Regression",
+                       value = "quantile_regression",
                        fluidRow(
                          column(
                            3,
@@ -1227,6 +1236,7 @@ fluidPage(
               
               tabPanel(
                 "Smooth/Linear/Logistic Regressions",
+                value = "smooth_regression",
                 fluidRow(
                   column (2, 
                     radioButtons("Smooth", "Smooth:",
@@ -1332,6 +1342,7 @@ fluidPage(
               ,
               ### Mean CI section
               tabPanel("Mean (CI)",
+                       value = "mean_ci",
                        fluidRow(
                          column (2,
                                  radioButtons(
@@ -1527,6 +1538,7 @@ fluidPage(
               
               ### median PI section
               tabPanel("Median (PIs)",
+                       value = "median_pi",
                fluidRow(
                   column (2,
                     radioButtons("Median", "Median:",
@@ -1683,6 +1695,7 @@ fluidPage(
               
               
               tabPanel("Kaplan-Meier (CI)",
+                       value = "kaplan_meier",
                        fluidRow(
                          column (2,
                                  radioButtons("KM", "KM:",
@@ -1788,6 +1801,7 @@ fluidPage(
               ### KM section
               tabPanel(
                 "Correlation Coefficient",
+                value = "corr_coeff",
                 fluidRow(
                   column(3,
                          checkboxInput('addcorrcoeff',
@@ -1854,8 +1868,8 @@ fluidPage(
                 )#fluidrow
               ),##tabpanel corr
               
-              tabPanel(
-                "Text Labels",
+              tabPanel("Text Labels",
+                       value ="text_labels",
                 fluidRow(
                   column (3,
                     checkboxInput('addcustomlabel',
@@ -1927,6 +1941,7 @@ fluidPage(
                 )
               ),
               tabPanel("Rug Marks",
+                       value ="rug_marks",
                        fluidRow(
                          column(3,
                                  checkboxInput('addrugmarks', 'Add X/Y rug marks?',
