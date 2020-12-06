@@ -388,29 +388,42 @@ function(input, output, session) {
   output$xcolrug <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
-    items = names(df)
-    items = c("None",items, "yvars","yvalues","xvars","xvalues") 
-    names(items) = items
+    items=names(df)
+    names(items)=items
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
     selectizeInput("xrug", "rug variable(s):",choices = items,
                    multiple=TRUE,
                    options = list(plugins = list('remove_button', 'drag_drop')))  })
   
   # If an X or Y are null, switch to the Histograms tab
   observe({
-    if (!is.null(input$x) && is.null(input$y)) {
+    if ((!is.null(input$x) &&  is.null(input$y)) ||
+        ( is.null(input$x) && !is.null(input$y)) ){
+      showTab("graphicaltypes", target = "color_aes_mappings")
+      hideTab("graphicaltypes", target = "points_lines")
+      hideTab("graphicaltypes", target = "box_plots")
+      showTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "quantile_regression")
+      hideTab("graphicaltypes", target = "smooth_regression")
+      hideTab("graphicaltypes", target = "mean_ci")
+      hideTab("graphicaltypes", target = "median_pi")
+      hideTab("graphicaltypes", target = "kaplan_meier")
+      hideTab("graphicaltypes", target = "corr_coeff")
+      hideTab("graphicaltypes", target = "text_labels")
+      showTab("graphicaltypes", target = "rug_marks")
+      hideTab("graphicaltypes", target = "pairs_plot")
       updateTabsetPanel(session, "graphicaltypes", "histograms_density")
-    } 
-  })
-  
-  observe({
-    if (is.null(input$x) && !is.null(input$y)) {
-      updateTabsetPanel(session, "graphicaltypes", "histograms_density")
-    }
-  })
-  #if showpairs hide irrelevant tabs color_aes_mappings 
-
-  observe({
-    if (input$show_pairs) {
+    }  else if (input$show_pairs) {
       hideTab("graphicaltypes", target = "color_aes_mappings")
       hideTab("graphicaltypes", target = "points_lines")
       hideTab("graphicaltypes", target = "box_plots")
@@ -424,6 +437,7 @@ function(input, output, session) {
       hideTab("graphicaltypes", target = "text_labels")
       hideTab("graphicaltypes", target = "rug_marks")
       showTab("graphicaltypes", target = "pairs_plot")
+      updateTabsetPanel(session, "graphicaltypes", "pairs_plot")
     } else {
       hideTab("graphicaltypes", target = "pairs_plot")
       showTab("graphicaltypes", target = "color_aes_mappings")
@@ -440,11 +454,7 @@ function(input, output, session) {
       showTab("graphicaltypes", target = "rug_marks")
     }
   })
-  # observe({
-  #   if (!is.null(input$x) && !is.null(input$y)) {
-  #     updateTabsetPanel(session, "graphicaltypes", "points_lines")
-  #   }
-  # })
+
   
   observe({
     if( (is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"] )) ||
@@ -1995,11 +2005,7 @@ function(input, output, session) {
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
     }
-    if (input$show_pairs){
-      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
-    }
     selectInput("colorin", "Colour By:",items) 
-    
   })
   observe({
     df <-values$maindata
@@ -2016,9 +2022,6 @@ function(input, output, session) {
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
-    }
-    if (input$show_pairs){
-      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
     }
     current_color_value <- input$colorin
     if (!is.null(current_color_value) && current_color_value %in% items) {
@@ -2031,47 +2034,32 @@ function(input, output, session) {
   })
   
   output$colourpairs <- renderUI({
-    df <-values$maindata
+    df <- rounddata()
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
+    items=NAMESTOKEEP2
     names(items)=items
     items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
-    }
-    if (input$show_pairs){
-      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
     }
     selectInput("colorpairsin", "Colour By:",items) 
-    
   })
   observe({
-    df <-values$maindata
+    df <- rounddata()
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
+    items=NAMESTOKEEP2
     names(items)=items
     items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
     }
-    if (input$show_pairs){
-      items <- items[!items%in% c("yvars","yvalues", "xvars","xvalues")]
-    }
-    current_color_value <- input$colorin
+    current_color_value <- input$colorpairsin
     if (!is.null(current_color_value) && current_color_value %in% items) {
       new_value <- current_color_value
     } else {
@@ -2218,7 +2206,13 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -2233,8 +2227,13 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    items= items 
-    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -2250,8 +2249,13 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    items= items 
-    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    } 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -2266,7 +2270,13 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items 
-    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    } 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -2280,7 +2290,13 @@ function(input, output, session) {
     items=names(df)
     names(items)=items
     items= items
-    items= c("None",items, "yvars","yvalues","xvars","xvalues") 
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    } 
     if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
@@ -2648,7 +2664,7 @@ function(input, output, session) {
     }
     
     # Determine what type of plot to show based on what variables were chosen
-    if (input$show_pairs) {
+    if (input$show_pairs && !is.null(input$colorpairsin)) {
       # Matrix of pairs of plots of all the Y variables
       if (input$colorpairsin == 'None'){
         p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
@@ -2659,7 +2675,7 @@ function(input, output, session) {
                                                      discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")
                                         ),
                                         upper = list(continuous = function(data, mapping, ...) {
-                                          GGally::ggally_cor(data = data, mapping = mapping, size=4, alignPercent=0.8)
+                                          GGally::ggally_cor(data = data, mapping = mapping, size=4, align_percent=0.8)
                                             },
                                                      combo = GGally::wrap("box_no_facet", alpha=0.2),
                                                      discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")),
@@ -2667,7 +2683,6 @@ function(input, output, session) {
                         )
       }
       if (input$colorpairsin != 'None'){
-        if( !is.numeric(plotdata[,input$colorpairsin]) ){
         p <- sourceable(
           GGally::ggpairs(
             plotdata,
@@ -2733,7 +2748,7 @@ function(input, output, session) {
                   data = data,
                   mapping = mapping,
                   size = 4,
-                  alignPercent = 0.8
+                  align_percent = 0.8
                 ) +
                   scale_colour_discrete()+
                   scale_fill_discrete()
@@ -2760,12 +2775,7 @@ function(input, output, session) {
             progress = FALSE
           )
         )
-        }
-
       }
-       
-
-      
     } else if (is.null(input$y) || is.null(input$x)) {
       # Univariate plot
       if(is.null(input$y)){
@@ -3398,12 +3408,12 @@ function(input, output, session) {
       # if (input$groupin != 'None' & !is.factor(plotdata[,"xvalues"]))
       if (input$groupin != 'None')
         p <- p + aes_string(group=input$groupin)
-      if (input$groupin == 'None' & !is.numeric(plotdata[,"xvalues"]) 
-          & input$colorin == 'None')
-        p <- p + aes(group=1)
-      
-      
-      
+      if(!is.null(plotdata[,"xvalues"])){
+      if (input$groupin == 'None' && !is.numeric(plotdata[,"xvalues"]) 
+          && input$colorin == 'None'){
+        p <- p + aes(group=1L)
+      }
+      }
       if (input$Points=="Points"){
         if (input$jitterdirection =="None"){
           positionpoints <- "position_identity()"
