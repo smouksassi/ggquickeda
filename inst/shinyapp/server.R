@@ -474,13 +474,12 @@ function(input, output, session) {
     ) {
       shinyjs::enable(id="histogramaddition")
       shinyjs::enable(id="densityaddition")
-      updateRadioButtons(session, "densityaddition"  ,selected="Density")
+      updateRadioButtons(session, "densityaddition" , selected = "Density")
       updateCheckboxInput(session, "barplotaddition", value = FALSE)
       shinyjs::disable(id="barplotaddition")
       
     }
   })
-#xxx
   
   observe({
     if (input$KM!="None") {
@@ -500,7 +499,7 @@ function(input, output, session) {
   })
 
   observe({
-    if (input$yaxisscale=="lineary"&& input$KM=="None") {
+    if (input$yaxisscale=="lineary" && input$KM=="None") {
       updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
                                                              "Comma separated" = "scientificy",
                                                              "Percent" = "percenty"))
@@ -539,7 +538,6 @@ function(input, output, session) {
   })
   
   observe({
-    
     if (length(input$y)>1) {
       updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom"),inline=TRUE)
     }
@@ -551,7 +549,6 @@ function(input, output, session) {
   })
   
   observe({
-    
     if (length(input$x)>1) {
       updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom"),inline=TRUE)
     }
@@ -561,38 +558,18 @@ function(input, output, session) {
                                                            "User" = "userxzoom"),inline=TRUE)
     }
   })
-  
-  # observe({
-  #   if (input$Median== 'Median/PI' ) {
-  #     updateCheckboxInput(session, "medianpoints", value = FALSE)
-  #     shinyjs::disable("medianpoints")
-  #   }
-  # })
-  # observe({
-  #   if (input$Median== 'Median/PI' ) {
-  #     updateCheckboxInput(session, "medianlines", value = TRUE)
-  #     shinyjs::disable("medianlines")
-  #   }
-  # })
-  # observe({
-  #   if (input$Median== 'Median' ) {
-  #     shinyjs::enable("medianlines")
-  #     shinyjs::enable("medianpoints")
-  #   }
-  # })
-  
-  
+
   outputOptions(output, "ycol", suspendWhenHidden=FALSE)
   outputOptions(output, "xcol", suspendWhenHidden=FALSE)
   
   output$catvar <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
+
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
-    selectInput('catvarin',label = 'Recode into Binned Categories:',choices=NAMESTOKEEP2,multiple=TRUE)
+    selectInput('catvarin',label = 'Recode into Binned Categories:',
+                choices = NAMESTOKEEP2, multiple=TRUE)
   })
   
   # Show/hide the "N of cut breaks" input
@@ -603,18 +580,16 @@ function(input, output, session) {
   output$catvarquant <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     if (!is.null(input$catvarin)) {
       if (length(input$catvarin ) >=1) {
-        NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
+        NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
       }  
     }
     selectInput('catvarquantin',
                 label = 'Recode into Quantile Categories:',
-                choices=NAMESTOKEEP2,multiple=TRUE)
+                choices = NAMESTOKEEP2, multiple=TRUE)
   })
   
   # Show/hide the "N of cut quantiles" input
@@ -634,8 +609,6 @@ function(input, output, session) {
   output$catvar2 <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
     MODEDF <- sapply(df, function(x) !is.factor(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     if (!is.null(input$catvarquantin)) {
@@ -649,16 +622,11 @@ function(input, output, session) {
       }  
     }
     selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE)
-    
   })
-  
-
   
   output$catvar3 <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     if (!is.null(input$catvarin) && length(input$catvarin ) >=1) {
@@ -706,8 +674,7 @@ function(input, output, session) {
       )
     }
   })
-  
-  
+
   outputOptions(output, "catvar", suspendWhenHidden=FALSE)
   outputOptions(output, "catvar2", suspendWhenHidden=FALSE)
   outputOptions(output, "catvar3", suspendWhenHidden=FALSE)
@@ -738,41 +705,39 @@ function(input, output, session) {
       for (i in 1:length(input$catvarquantin ) ) {
         varname<- input$catvarquantin[i]
         x2<- unlist(df[,varname])
-        if(zeroplacebo&&missingcategory){
+        if( zeroplacebo &&  missingcategory){
           df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
                                           varlabel=varname,
                                           withhold=list(
                                             Placebo=(x2==0),
                                             Missing=(is.na(x2))))
         }
-        if(zeroplacebo&&!missingcategory){
+        if( zeroplacebo && !missingcategory){
           df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
                                           varlabel=varname,
                                           withhold=list(
                                             Placebo=(x2==0)))
         }
-        if(!zeroplacebo&&missingcategory){
+        if(!zeroplacebo &&  missingcategory){
           df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
                                           varlabel=varname,
                                           withhold=list(
                                             Missing=(is.na(x2))))
         }
-        if(!zeroplacebo&&!missingcategory){
+        if(!zeroplacebo && !missingcategory){
           withhold<- NULL
           df[,varname]   <- table1::eqcut(x2, ngroups=ngroups,
                                           varlabel=varname,
                                           withhold=NULL)
         }
-        
       }
     }
     df
   })
   
-  
   recodedata2  <- reactive({
     df <- recodedataquant()
-    validate(       need(!is.null(df), "Please select a data set"))
+    validate(need(!is.null(df), "Please select a data set"))
     if(!is.null(input$catvar2in) ){
       if(length(input$catvar2in ) >=1) {
         for (i in 1:length(input$catvar2in ) ) {
@@ -786,9 +751,7 @@ function(input, output, session) {
   
   output$contvar <- renderUI({
     df <-values$maindata
-    validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
+    validate(need(!is.null(df), "Please select a data set"))
     MODEDF <- sapply(df, function(x) !is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     selectInput('contvarin',label = 'Treat as Numeric:',choices=NAMESTOKEEP2,multiple=TRUE)
@@ -797,7 +760,7 @@ function(input, output, session) {
   
   makedatacont  <- reactive({
     df <- recodedata2()
-    validate(       need(!is.null(df), "Please select a data set"))
+    validate(need(!is.null(df), "Please select a data set"))
     if(!is.null(input$contvarin) ){
       if(length(input$contvarin ) >=1) {
         for (i in 1:length(input$contvarin ) ) {
@@ -811,7 +774,7 @@ function(input, output, session) {
 
   recodedata3  <- reactive({
     df <- makedatacont()
-    validate(       need(!is.null(df), "Please select a data set"))
+    validate(need(!is.null(df), "Please select a data set"))
     if (is.null(input$catvar3in)) return(NULL)
     if(input$catvar3in!="" && !is.null(input$xcutoffs)) {
       varname<- input$catvar3in
@@ -833,7 +796,7 @@ function(input, output, session) {
   })
   output$bintext <- renderText({
     df <- recodedata3()
-    validate(       need(!is.null(df), "Please select a data set"))
+    validate(need(!is.null(df), "Please select a data set"))
     bintextout <- ""
     if(input$catvar3in!="" && !is.null(input$asnumericin)) {
       varname<- input$catvar3in
@@ -878,14 +841,13 @@ function(input, output, session) {
   output$pastevar <- renderUI({
     df <- recodedata4()
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    df <- df[!names(df)%in%"custombins"]
+    df <- df[!names(df) %in% "custombins"]
     MODEDF <- sapply(df, function(x) is.numeric(x))
     yvariables <- input$y
     NAMESTOKEEP2<- names(df)  [! MODEDF ]
     NAMESTOKEEP2<- NAMESTOKEEP2[!NAMESTOKEEP2 %in% yvariables]
-    selectizeInput("pastevarin", "Combine the categories of these two variables:", choices = NAMESTOKEEP2,multiple=TRUE,
+    selectizeInput("pastevarin", "Combine the categories of these two variables:",
+                   choices = NAMESTOKEEP2, multiple=TRUE,
                    options = list(
                      maxItems = 2 ,
                      placeholder = 'Please select two variables',
@@ -1087,9 +1049,10 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     if (is.null(input$infiltervarcont1)) return()
     if(input$infiltervarcont1!="None" ){
-      if(is.numeric( input$infSlider1[1]) & is.numeric(df[,input$infiltervarcont1])) {
+      if(is.numeric( input$infSlider1[1]) && is.numeric(df[,input$infiltervarcont1])) {
         df <- df [!is.na(df[,input$infiltervarcont1]),]
-        df <-  df [df[,input$infiltervarcont1] >= input$infSlider1[1]&df[,input$infiltervarcont1] <= input$infSlider1[2],]
+        df <- df [df[,input$infiltervarcont1] >= input$infSlider1[1] &
+                     df[,input$infiltervarcont1] <= input$infSlider1[2],]
       }
     }
     
@@ -1104,7 +1067,7 @@ function(input, output, session) {
     }
     if (!is.numeric(df[,xvariable]) ) return(NULL)
     if(input$infiltervarcont2!="None" ){
-      sliderInput("infSlider2", paste("Select",xvariable,"Range"),
+      sliderInput("infSlider2", paste("Select", xvariable,"Range"),
                   min=min(df[,xvariable],na.rm=T),
                   max=max(df[,xvariable],na.rm=T),
                   value=c(min(df[,xvariable],na.rm=T),max(df[,xvariable],na.rm=T)) 
@@ -1112,17 +1075,17 @@ function(input, output, session) {
     }             
   })
   
-  
   filterdata5  <- reactive({
     df <- filterdata4()
-    validate(       need(!is.null(df), "Please select a data set"))
+    validate(need(!is.null(df), "Please select a data set"))
     if(input$infiltervarcont2!="None" ){
-      if(is.numeric( input$infSlider2[1]) & is.numeric(df[,input$infiltervarcont2])) {
-        df<- df [!is.na(df[,input$infiltervarcont2]),]
-        df<-df [df[,input$infiltervarcont2] >= input$infSlider2[1]&df[,input$infiltervarcont2] <= input$infSlider2[2],]
+      if(is.numeric( input$infSlider2[1]) &&
+         is.numeric(df[,input$infiltervarcont2])) {
+        df <- df [!is.na(df[,input$infiltervarcont2]),]
+        df <- df [df[,input$infiltervarcont2] >= input$infSlider2[1] &
+                  df[,input$infiltervarcont2] <= input$infSlider2[2],]
       }
     }
-    
     df
   })
   
@@ -1135,10 +1098,11 @@ function(input, output, session) {
     }
     if (!is.numeric(df[,xvariable]) ) return(NULL)
     if(input$infiltervarcont3!="None" ){
-      sliderInput("infSlider3", paste("Select",xvariable,"Range"),
+      sliderInput("infSlider3", paste("Select", xvariable,"Range"),
                   min=min(df[,xvariable],na.rm=T),
                   max=max(df[,xvariable],na.rm=T),
-                  value=c(min(df[,xvariable],na.rm=T),max(df[,xvariable],na.rm=T)) 
+                  value=c(min(df[,xvariable],na.rm=T),
+                          max(df[,xvariable],na.rm=T)) 
       )
     }             
   })
@@ -1148,12 +1112,13 @@ function(input, output, session) {
     df <- filterdata5()
     validate(       need(!is.null(df), "Please select a data set"))
     if(input$infiltervarcont3!="None" ){
-      if(is.numeric( input$infSlider3[1]) & is.numeric(df[,input$infiltervarcont3])) {
-        df<- df [!is.na(df[,input$infiltervarcont3]),]
-        df<-df [df[,input$infiltervarcont3] >= input$infSlider3[1]&df[,input$infiltervarcont3] <= input$infSlider3[2],]
+      if(is.numeric( input$infSlider3[1]) &&
+         is.numeric(df[,input$infiltervarcont3])) {
+        df<- df[!is.na(df[,input$infiltervarcont3]),]
+        df<- df[df[,input$infiltervarcont3] >= input$infSlider3[1] &
+                  df[,input$infiltervarcont3] <= input$infSlider3[2],]
       }
     }
-    
     df
   })
   
