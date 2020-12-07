@@ -407,8 +407,8 @@ function(input, output, session) {
   
   # If an X or Y are null, switch to the Histograms tab
   observe({
-    if ((!is.null(input$x) &&  is.null(input$y)) ||
-        ( is.null(input$x) && !is.null(input$y)) ){
+    if ((!input$show_pairs && !is.null(input$x) &&  is.null(input$y)) ||
+        (!input$show_pairs &&  is.null(input$x) && !is.null(input$y)) ){
       showTab("graphicaltypes", target = "color_aes_mappings")
       hideTab("graphicaltypes", target = "points_lines")
       hideTab("graphicaltypes", target = "box_plots")
@@ -1987,8 +1987,7 @@ function(input, output, session) {
   }) 
   outputOptions(output, "lowery", suspendWhenHidden=FALSE)
   outputOptions(output, "uppery", suspendWhenHidden=FALSE)
-  
-  
+
   output$colour <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -2088,9 +2087,9 @@ function(input, output, session) {
     selectInput("groupin", "Group By:",items)
   })
   outputOptions(output, "colour", suspendWhenHidden=FALSE)
+  outputOptions(output, "colourpairs", suspendWhenHidden=FALSE)
   outputOptions(output, "group", suspendWhenHidden=FALSE)
-  
-  
+
   output$facet_col <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -2109,6 +2108,7 @@ function(input, output, session) {
     }
     selectInput("facetcolin", "Column Split:",items)
   })
+  
   output$facet_row <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -2176,9 +2176,7 @@ function(input, output, session) {
     }
     selectInput("facetrowextrain", "Extra Row Split:",items)
   })
-  
-  
-  
+
   output$facetscales <- renderUI({
     items= c("fixed","free_x","free_y","free")   
     if (is.null(input$x) && !is.null(input$y) && length(input$y) > 1 ){
@@ -2205,7 +2203,6 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    items= items 
     items= c("None",items)
     if ( !is.null(input$y) ){
       items = c(items, "yvars","yvalues") 
@@ -2218,10 +2215,8 @@ function(input, output, session) {
       items= c(items,nameofcombinedvariables)
     }
     selectInput("pointsizein", "Size By:",items )
-    
   })
-  
-  
+
   output$labeltext <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -2239,11 +2234,8 @@ function(input, output, session) {
       items= c(items,nameofcombinedvariables)
     }
     selectInput("labeltextin", "Label By:",items )
-    
   })
-  
-  
-  
+
   output$pointshape <- renderUI({
     df <-values$maindata
     validate(       need(!is.null(df), "Please select a data set"))
@@ -2261,7 +2253,6 @@ function(input, output, session) {
       items= c(items,nameofcombinedvariables)
     }
     selectInput("pointshapein", "Shape By:",items )
-    
   })
   
   output$linetype <- renderUI({
@@ -2269,7 +2260,6 @@ function(input, output, session) {
     validate(       need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    items= items 
     items= c("None",items)
     if ( !is.null(input$y) ){
       items = c(items, "yvars","yvalues") 
@@ -2307,7 +2297,6 @@ function(input, output, session) {
   output$weight <- renderUI({
     df <- finalplotdata()
     validate(       need(!is.null(df), "Please select a data set"))
-    items=names(df)
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     items= c("None",NAMESTOKEEP2, "yvalues") 
@@ -2319,13 +2308,10 @@ function(input, output, session) {
   outputOptions(output, "linetype", suspendWhenHidden=FALSE)
   outputOptions(output, "labeltext", suspendWhenHidden=FALSE)
   outputOptions(output, "pointshape", suspendWhenHidden=FALSE)
-  
-  
-  
+
   output$mytablex = renderDataTable({
     df <- finalplotdata() 
     validate(       need(!is.null(df), "Please select a data set"))
-    
     datatable(df ,
               extensions = c('ColReorder','Buttons','FixedColumns'),
               options = list(dom = 'Bfrtip',
@@ -2683,8 +2669,7 @@ function(input, output, session) {
                         )
       }
       if (input$colorpairsin != 'None'){
-        p <- sourceable(
-          GGally::ggpairs(
+        p <- GGally::ggpairs(
             plotdata,
             columns = input$y,
             mapping = ggplot2::aes_string(color = input$colorpairsin),
@@ -2774,7 +2759,18 @@ function(input, output, session) {
             ),
             progress = FALSE
           )
-        )
+          if (input$themecolorswitcher=="themeggplot" &&
+              !is.numeric(plotdata[,input$colorpairsin])){
+            p <-  p +
+              scale_colour_hue(drop=!input$themecolordrop)+
+              scale_fill_hue(drop=!input$themecolordrop)
+          }
+          if (input$themecolorswitcher=="themeviridis"){
+            p <-  p +
+              scale_colour_viridis_d(drop=!input$themecolordrop)+
+              scale_fill_viridis_d(drop=!input$themecolordrop)
+          }
+        p <- sourceable(p)
       }
     } else if (is.null(input$y) || is.null(input$x)) {
       # Univariate plot
@@ -6493,44 +6489,38 @@ function(input, output, session) {
         
       }
       
-      if(input$colorin!="None"){
-        
-        if (input$themecolorswitcher=="themeggplot"&&!is.numeric(plotdata[,input$colorin])){
+      if(!input$show_pairs && input$colorin!="None"){
+        if (input$themecolorswitcher=="themeggplot" &&
+            !is.numeric(plotdata[,input$colorin])){
           p <-  p + scale_colour_hue(drop=!input$themecolordrop)
         }
-        
-
-        if (input$themecolorswitcher=="themeviridis" && !is.numeric(plotdata[,input$colorin])){
+        if (input$themecolorswitcher=="themeviridis" &&
+            !is.numeric(plotdata[,input$colorin])){
           p <-  p + scale_colour_viridis_d(drop=!input$themecolordrop)
         }
-        
-        if (input$themecontcolorswitcher=="themeviridis" && is.numeric(plotdata[,input$colorin])){
+        if (input$themecontcolorswitcher=="themeviridis" &&
+            is.numeric(plotdata[,input$colorin])){
           p <-  p + scale_colour_viridis_c()
         }
-        
       }
-      
-      
-      if(input$fillin!="None"){
-        if (input$themecolorswitcher=="themeggplot"&&!is.numeric(plotdata[,input$fillin])){
-          p <-  p + scale_fill_hue(drop=!input$themecolordrop)
-          
-        }
-        
 
-        if (input$themecolorswitcher=="themeviridis"&&!is.numeric(plotdata[,input$fillin])){
+      if(!input$show_pairs && input$fillin!="None"){
+        if (input$themecolorswitcher=="themeggplot" &&
+            !is.numeric(plotdata[,input$fillin])){
+          p <-  p + scale_fill_hue(drop=!input$themecolordrop)
+        }
+        if (input$themecolorswitcher=="themeviridis" &&
+            !is.numeric(plotdata[,input$fillin])){
           p <-  p + scale_fill_viridis_d(drop=!input$themecolordrop)
         }
-        
-        if (input$themecontcolorswitcher=="themeviridis"&&is.numeric(plotdata[,input$fillin])){
+        if (input$themecontcolorswitcher=="themeviridis"&&
+            is.numeric(plotdata[,input$fillin])){
           p <-  p + scale_fill_viridis_c()
         }
         
       }
       
-      
       if(input$pointsizein!="None"){
-        
         if(!input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
           p <- p +  scale_size(range = c(input$scalesizearearange1[1], input$scalesizearearange1[2]))   }   
         if(input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
