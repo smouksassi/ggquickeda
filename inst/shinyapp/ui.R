@@ -758,7 +758,8 @@ fluidPage(
                  Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
                  Contact me if you want to add your own set of colors."),
                          conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
-                                          sliderInput("nusercol", "N of User Colors:", min=2, max=20, value=c(10),step=1)
+                                          sliderInput("nusercol", "N of User Colors:",
+                                                      min=2, max=30, value=c(10),step=1)
                          ),
                          uiOutput('userdefinedcolor'),
                          conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
