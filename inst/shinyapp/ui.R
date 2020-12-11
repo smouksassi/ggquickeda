@@ -5,9 +5,8 @@ fluidPage(
   titlePanel(paste("Welcome to ggquickeda!",utils::packageVersion("ggquickeda"))),
   sidebarLayout(
     sidebarPanel(
-      tabsetPanel(
-        tabPanel(
-          "Inputs", 
+      tabsetPanel(id = "sidebar_upper_menus", selected="sidebar_inputs",
+        tabPanel("Inputs", value = "sidebar_inputs", 
           tags$style(".shiny-file-input-progress {margin-bottom: 0px;margin-top: 0px}"),
           tags$style(".form-group {margin-bottom: 0px;margin-top: 0px}"),
           tags$div(
@@ -107,8 +106,7 @@ fluidPage(
               numericInput("rounddigits",label = "N Digits",value = 0,min=0,max=10)
             ),
             
-            tabPanel(
-              "Reorder Facets or axis Levels",
+            tabPanel("Reorder Facets or axis Levels", value = "reorder_facet_axis",
               h6("Operations in this tab will only take effect on the plot and not the table."),
               uiOutput("reordervar"),
               conditionalPanel(
@@ -149,14 +147,9 @@ fluidPage(
           ),
           hr()
         ), # tabsetPanel
-        
-        
-        tabPanel(
-          "Graph Options",
-          tabsetPanel(
-            id = "graphicaloptions",
-            tabPanel(
-              "X/Y Axes Log/Labels",
+        tabPanel("Graph Options",
+          tabsetPanel(id = "graphicaloptions", selected = "x_y_loglabels",
+            tabPanel("X/Y Axes Log/Labels", value = "x_y_loglabels",
               hr(),
               textInput('ylab', 'Y axis label', value = "") ,
               textInput('xlab', 'X axis label', value = "") ,
@@ -171,7 +164,7 @@ fluidPage(
                            c("Panel" = "panel",
                              "Plot" = "plot"), inline = TRUE),
               hr(),
-              
+              conditionalPanel(condition = "!input.show_pairs",
               fluidRow(
                 column(6,
                        radioButtons("yaxisscale", "Y Axis scale:",
@@ -250,10 +243,11 @@ fluidPage(
                                                      "Bottom"="b"),
                                            multiple=TRUE, selectize=TRUE,selected="l")
               )
+              )# conditional on pairs is off
             ),
-            tabPanel(
-              "Graph Size/Zoom",
+            tabPanel("Graph Size/Zoom", value = "graph_size_zoom",
               sliderInput("height", "Plot Height", min=1080/4, max=1080, value=480, animate = FALSE),
+              conditionalPanel(condition = "!input.show_pairs",
               h6("X Axis Zoom is available if you have exactly one x variable and facet x scales are not set to be free. The automatic setting generates a slider has limits between your x variable min/max otherwise select User Defined to input your own."),
               fluidRow(
                 column(12,
@@ -318,11 +312,10 @@ fluidPage(
                        )
                 )
               ) # fluidrow
-              
+              ) # conditional on not show pairs
             ),#tabpanel zoom
             
-            tabPanel(
-              "Customization of Legend(s)",
+            tabPanel("Customization of Legend(s)", value = "custom_legends",
               selectInput('legendposition', label ='Legend Position',
                           choices=c("left", "right", "bottom", "top","none","custom"),
                           multiple=FALSE, selectize=TRUE,selected="bottom"),
@@ -435,9 +428,7 @@ fluidPage(
                 )
   
             ),
-            tabPanel(
-              "Facets Options",
-              
+            tabPanel("Facets Options", value = "facet_options",
               tabsetPanel(
                 tabPanel("Facet Scales, Spaces, Positioning, Ordering",
                          uiOutput("facetscales"),
@@ -578,8 +569,7 @@ fluidPage(
               )
               ),
             
-            tabPanel(
-              "Reference Lines/Target",
+            tabPanel("Reference Lines/Target", value ="ref_line_target_options",
               checkboxInput('identityline', 'Identity Line')    ,   
               checkboxInput('horizontalzero', 'Horizontal Zero Line'),
               checkboxInput('customvline1', 'Vertical Line 1'),

@@ -437,7 +437,11 @@ function(input, output, session) {
       hideTab("graphicaltypes", target = "text_labels")
       hideTab("graphicaltypes", target = "rug_marks")
       showTab("graphicaltypes", target = "pairs_plot")
+      hideTab("graphicaloptions", target = "custom_legends")
+      hideTab("graphicaloptions", target = "facet_options")
+      hideTab("graphicaloptions", target = "ref_line_target_options")
       updateTabsetPanel(session, "graphicaltypes", "pairs_plot")
+      hideTab("filtercategorize", target = "reorder_facet_axis")
     } else {
       hideTab("graphicaltypes", target = "pairs_plot")
       showTab("graphicaltypes", target = "color_aes_mappings")
@@ -452,6 +456,11 @@ function(input, output, session) {
       showTab("graphicaltypes", target = "corr_coeff")
       showTab("graphicaltypes", target = "text_labels")
       showTab("graphicaltypes", target = "rug_marks")
+      showTab("graphicaloptions", target = "custom_legends")
+      showTab("graphicaloptions", target = "facet_options")
+      showTab("graphicaloptions", target = "ref_line_target_options")
+      showTab("filtercategorize", target = "reorder_facet_axis")
+      
     }
   })
 
