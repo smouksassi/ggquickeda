@@ -1,8 +1,8 @@
 ^CRAN-RELEASE$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
 ^data-raw$
 .git
 ^cran-comments\.md$
 ^revdep$
+^\.github$
