@@ -470,12 +470,16 @@ function(input, output, session) {
        !is.numeric(finalplotdata()[,input$colorin]) && 
        length(unique(finalplotdata()[,input$colorin])) > 20 ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themeggplot")
+     updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
+     updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
   } else if (input$colorin!="None" &&
              input$colorin %in% names(finalplotdata()) &&
              !is.numeric(finalplotdata()[,input$colorin]) &&
              (length(unique(finalplotdata()[,input$colorin])) > 10 &&
              length(unique(finalplotdata()[,input$colorin])) <= 20) ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau20")
+    updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
+    updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
   } else if (input$colorin!="None" &&
              input$colorin %in% names(finalplotdata()) &&
              !is.numeric(finalplotdata()[,input$colorin]) &&
@@ -484,7 +488,7 @@ function(input, output, session) {
   } else {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau10")
   }
-  })#zzz
+  })#zzz still need to fix when fill is mapped
 
   
   observe({

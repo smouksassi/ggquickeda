@@ -147,7 +147,7 @@ fluidPage(
           ),
           hr()
         ), # tabsetPanel
-        tabPanel("Graph Options",
+        tabPanel("Graph Options", value= "sidebar_Graph_Options",
           tabsetPanel(id = "graphicaloptions", selected = "x_y_loglabels",
             tabPanel("X/Y Axes Log/Labels", value = "x_y_loglabels",
               hr(),
@@ -642,7 +642,7 @@ fluidPage(
               
             ),
             tabPanel(
-              "Themes and Manual Scales Options",
+              "Themes and Color/other Scales Options", value = "themes_color_other",
               sliderInput("themebasesize", "Theme Size (affects all text except facet strip):",
                           min=1, max=100, value=c(16),step=1),
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
@@ -650,6 +650,85 @@ fluidPage(
                 "backgroundcol","Background Color",value =  "white",
                 showColour = "both",allowTransparent = TRUE,returnName=TRUE),
               checkboxInput('panelontop', 'Place the Panel gridlines and background over the data ?',value=FALSE),
+              checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE),
+              tabsetPanel(
+                tabPanel("Discrete Color and Fill Scale",
+                         radioButtons("themecolorswitcher", "Discrete Color and Fill Scale:",
+                                      c("Tableau 10"  = "themetableau10",
+                                        "Tableau 20"  = "themetableau20",
+                                        "Color Blind" = "themecolorblind",
+                                        "Color Blind 2" = "themecolorblind2",
+                                        "ggplot default" = "themeggplot",
+                                        "viridis"        = "themeviridis",
+                                        "User defined" = "themeuser")
+                                      ,inline=TRUE),
+                         h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
+                 Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
+                 Contact me if you want to add your own set of colors."),
+                         conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
+                                          sliderInput("nusercol", "N of User Colors:",
+                                                      min=2, max=30, value=c(10),step=1)
+                         ),
+                         uiOutput('userdefinedcolor'),
+                         conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
+                                          actionButton("userdefinedcolorreset", "Back to starting tableau colours", icon = icon("undo") ),
+                                          actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
+                                          
+                         )
+                ),
+                tabPanel("Discrete Shape Scale",
+                         radioButtons("scaleshapeswitcher", "Discrete Shape Scale:",
+                                      c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
+                         conditionalPanel(condition = " input.scaleshapeswitcher=='themeuser' " ,
+                                          sliderInput("nusershape", "N of User Shapes:", min=1, max=20, value=c(6),step=1)
+                         ),
+                         uiOutput('userdefinedshape')
+                ),
+                tabPanel("Discrete Linetype Scale",
+                         radioButtons("scalelinetypeswitcher", "Discrete Linetype Scale:",
+                                      c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
+                         conditionalPanel(condition = " input.scalelinetypeswitcher=='themeuser' " ,
+                                          sliderInput("nuserlinetype", "N of User Linetypes:", min=1, max=10, value=c(6),step=1)
+                         ),
+                         uiOutput('userdefinedlinetype')
+                ),
+                tabPanel("Continuous Color and Fill Scale",
+                         radioButtons("themecontcolorswitcher", "Continuous Color and Fill Themes:",
+                                      c("Red White Blue"  = "RedWhiteBlue",
+                                        "Red White Green"  = "RedWhiteGreen",
+                                        "ggplot default" = "themeggplot",
+                                        "viridis" = "themeviridis",
+                                        "User defined" = "themeuser")
+                                      ,inline=TRUE),
+                         conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
+                                             input.themecontcolorswitcher=='RedWhiteGreen'" ,
+                                          colourpicker::colourInput(
+                                            "midcolor",
+                                            "Midpoint Color",
+                                            value ="white",
+                                            showColour = "both",
+                                            allowTransparent = FALSE,returnName = TRUE)
+                         ),
+                         conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
+                                             input.themecontcolorswitcher=='RedWhiteGreen'|
+                                             input.themecontcolorswitcher=='themeuser'" ,
+                                          numericInput("colormidpoint", "Continuous Color/Fill Midpoint Value",
+                                                       value = 0)
+                         ),
+                         # conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
+                         #                  gradientInputUI("gradientcol", "100%", "www"),
+                         #                  actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
+                         #                  ),
+                         
+                         
+                         conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
+                                          uiOutput('userdefinedcontcolor'),
+                                          actionButton("userdefinedcontcolorreset", "Back to starting continuous colours", icon = icon("undo") )
+                                          
+                         )    
+                         
+                )
+              ),
               tabsetPanel(
                 tabPanel("Grid Lines",
                          div(
@@ -726,98 +805,18 @@ fluidPage(
                                         value = 0,min=0,max=NA,width='120px'))
                 )
               ),
-              hr(),
               checkboxInput('themeaspect', 'Use custom aspect ratio ?'),
               h6("Setting aspect ratio does not work when facets spacing x or y is free."),
               conditionalPanel(condition = "input.themeaspect" , 
                                numericInput("aspectratio",label = "Y/X ratio",
-                                            value = 1,min=0.1,max=10,step=0.01)),
-              checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
-              tabsetPanel(
-                tabPanel("Discrete Color and Fill Scale",
-                            radioButtons("themecolorswitcher", "Discrete Color and Fill Scale:",
-                           c("Tableau 10"  = "themetableau10",
-                             "Tableau 20"  = "themetableau20",
-                             "Color Blind" = "themecolorblind",
-                             "Color Blind 2" = "themecolorblind2",
-                             "ggplot default" = "themeggplot",
-                             "viridis"        = "themeviridis",
-                             "User defined" = "themeuser")
-                           ,inline=TRUE),
-                         h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
-                 Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
-                 Contact me if you want to add your own set of colors."),
-                         conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
-                                          sliderInput("nusercol", "N of User Colors:",
-                                                      min=2, max=30, value=c(10),step=1)
-                         ),
-                         uiOutput('userdefinedcolor'),
-                         conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
-                                          actionButton("userdefinedcolorreset", "Back to starting tableau colours", icon = icon("undo") ),
-                                          actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
-                                          
-                         )
-                         ),
-                tabPanel("Discrete Shape Scale",
-                         radioButtons("scaleshapeswitcher", "Discrete Shape Scale:",
-                                      c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
-                         conditionalPanel(condition = " input.scaleshapeswitcher=='themeuser' " ,
-                                          sliderInput("nusershape", "N of User Shapes:", min=1, max=20, value=c(6),step=1)
-                         ),
-                         uiOutput('userdefinedshape')
-                ),
-                tabPanel("Discrete Linetype Scale",
-                         radioButtons("scalelinetypeswitcher", "Discrete Linetype Scale:",
-                                      c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
-                         conditionalPanel(condition = " input.scalelinetypeswitcher=='themeuser' " ,
-                                          sliderInput("nuserlinetype", "N of User Linetypes:", min=1, max=10, value=c(6),step=1)
-                         ),
-                         uiOutput('userdefinedlinetype')
-                ),
-                tabPanel("Continuous Color and Fill Scale",
-                         radioButtons("themecontcolorswitcher", "Continuous Color and Fill Themes:",
-                                      c("Red White Blue"  = "RedWhiteBlue",
-                                        "Red White Green"  = "RedWhiteGreen",
-                                        "ggplot default" = "themeggplot",
-                                        "viridis" = "themeviridis",
-                                        "User defined" = "themeuser")
-                                      ,inline=TRUE),
-                         conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
-                                             input.themecontcolorswitcher=='RedWhiteGreen'" ,
-                                          colourpicker::colourInput(
-                                            "midcolor",
-                                            "Midpoint Color",
-                                            value ="white",
-                                            showColour = "both",
-                                            allowTransparent = FALSE,returnName = TRUE)
-                         ),
-                         conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
-                                             input.themecontcolorswitcher=='RedWhiteGreen'|
-                                             input.themecontcolorswitcher=='themeuser'" ,
-                                          numericInput("colormidpoint", "Continuous Color/Fill Midpoint Value",
-                                                       value = 0)
-                         ),
-                         # conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
-                         #                  gradientInputUI("gradientcol", "100%", "www"),
-                         #                  actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
-                         #                  ),
-                         
-                         
-                         conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
-                                          uiOutput('userdefinedcontcolor'),
-                                          actionButton("userdefinedcontcolorreset", "Back to starting continuous colours", icon = icon("undo") )
-                                          
-                         )    
-                         
-                )
-              )
+                                            value = 1,min=0.1,max=10,step=0.01)) 
+
               ) #tabpanel
             )#tabsetpanel
       ), # tabpanel
       #) ,#tabsetPanel(),
       
-      tabPanel(
-        "How To",
+      tabPanel("How To",value = "sidebar_How_To", 
         includeMarkdown(file.path("text", "howto.md"))
       )# tabpanel 
       )
