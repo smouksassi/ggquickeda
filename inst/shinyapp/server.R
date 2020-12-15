@@ -465,25 +465,41 @@ function(input, output, session) {
   })
 
   observe({
-  if ( input$colorin!="None" &&
+  if ( (input$colorin!="None" &&
        input$colorin %in% names(finalplotdata()) &&
        !is.numeric(finalplotdata()[,input$colorin]) && 
-       length(unique(finalplotdata()[,input$colorin])) > 20 ) {
+       length(unique(finalplotdata()[,input$colorin])) > 20) ||
+       (input$fillin!="None" &&
+        input$fillin %in% names(finalplotdata()) &&
+        !is.numeric(finalplotdata()[,input$fillin]) && 
+        length(unique(finalplotdata()[,input$fillin])) > 20)
+       ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themeggplot")
      updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
      updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
-  } else if (input$colorin!="None" &&
+  } else if ((input$colorin!="None" &&
              input$colorin %in% names(finalplotdata()) &&
              !is.numeric(finalplotdata()[,input$colorin]) &&
              (length(unique(finalplotdata()[,input$colorin])) > 10 &&
-             length(unique(finalplotdata()[,input$colorin])) <= 20) ) {
+             length(unique(finalplotdata()[,input$colorin])) <= 20) ) ||
+             (input$fillin!="None" &&
+              input$fillin %in% names(finalplotdata()) &&
+              !is.numeric(finalplotdata()[,input$fillin]) &&
+              (length(unique(finalplotdata()[,input$fillin])) > 10 &&
+               length(unique(finalplotdata()[,input$fillin])) <= 20) )
+             ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau20")
     updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
     updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
-  } else if (input$colorin!="None" &&
+  } else if ( (input$colorin!="None" &&
              input$colorin %in% names(finalplotdata()) &&
              !is.numeric(finalplotdata()[,input$colorin]) &&
-             length(unique(finalplotdata()[,input$colorin])) <= 10) {
+             length(unique(finalplotdata()[,input$colorin])) <= 10) ||
+             (input$fillin!="None" &&
+              input$fillin %in% names(finalplotdata()) &&
+              !is.numeric(finalplotdata()[,input$fillin]) &&
+              length(unique(finalplotdata()[,input$fillin])) <= 10)
+             ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau10")
   } else {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau10")
@@ -2268,7 +2284,6 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     items=names(df)
     names(items)=items
-    items= items
     items= c("None",items)
     if ( !is.null(input$y) ){
       items = c(items, "yvars","yvalues") 
@@ -2276,11 +2291,37 @@ function(input, output, session) {
     if ( !is.null(input$x) ){
       items = c(items, "xvars","xvalues") 
     } 
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
     }
     selectInput("fillin", "Fill By:"    ,items )
+  })
+
+  observe({
+    df <-values$maindata
+    validate(need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    current_fill_value <- input$fillin
+    if (!is.null(current_fill_value) && current_fill_value %in% items) {
+      new_value <- current_fill_value
+    } else {
+      new_value <- items[1]
+    }
+    updateSelectInput(session, "fillin",
+                      choices = items, selected = new_value)
   })
   
   output$weight <- renderUI({
