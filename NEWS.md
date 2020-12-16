@@ -10,6 +10,8 @@
 * fixed a bug when user was selecting the same variables for x and y now stacking x and y is separate.
 * fixed a bug in x axis label and barplots in some special cases
 * updated UI or barplot and Density and ability to suppress label legend
+* UI updates to only show the relevant options for pairs plot and histogram/barplot
+* Automatic color theme switching to avoid not enough color or fill errors
 
 # ggquickeda 0.1.8
 * Added possibility to use more than one x variable(s) and or no y variable(s)
