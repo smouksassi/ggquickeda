@@ -48,17 +48,13 @@ The package has also two vignettes:
 3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
 
 ### Example 1
-![Example use case 1 with the included sample_df.csv.](./inst/shinyapp/img/snapshot1.gif)
+![Example use case 1 with the included sample_df](./inst/shinyapp/img/snapshot1.gif)
 
 ### Example 2
-![Example use case 2 with the included sample_df.csv.](./inst/shinyapp/img/snapshot2.gif)
+![Example Descriptive Stats](./inst/shinyapp/img/snapshot3.1.png)
 
 ### Example 3
-![Example use case 3 with the included sample_df.csv.](./inst/shinyapp/img/snapshot3.gif)
-
-### Example 4
-![Example use case 4 with the included sample_df.csv.](./inst/shinyapp/img/snapshot4.1.png)
-
+![Example Illustrating a Pairs Plot](./inst/shinyapp/img/snapshot4.1.png)
 
 The **Export Plots** and **Plot Code** tabs were contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
 The **Plot Code** tab will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
@@ -110,13 +106,13 @@ Up to six sequential filters, three for any type of variable **Filter variable (
 Filter the data down to distinct values (one row) of the selected variable(s) which are usually identifiers for subjects, occasions, arms etc. In long data format several variable that are time invariant are repeated this helps in removing the repetitions. User might want the first row of each subject or the first row of each subject/occasion combination etc.
     + **Keep Last Row by ID(s)**
 Same as the One Row by ID(s) but keeping the last row instead.
-* **Rounding/Division**
+* **Division/Inverse/Rounding**
     + **Round the Values to the Specified N Digits:** Rounding a numerical variable to a specified number of digits **N Digits**. It can help to come up with a crude binning.
     + **Divide the Values by the specified column:** Divide a column e.g. concentration by another like dose.
     + **Divide the Values by a constant:** Divide by specified constant for quick unit conversions.
 * **Reorder Facets or axis Levels**
-Enables the user to reorder the yvalues/xvalues using a statistical function (Median, Mean, Minimum, Maximum, length or standard deviation of another variable) with a checkbox to quickly reverse the order, if desired.
-The user can also manually drag and drop an order and change the name of the levels where \n is recognized as a line break.
+Enables the user to reorder the yvalues/xvalues using a statistical function (Median, Mean, Minimum, Maximum, length, length of unique values, standard deviation and sum of another variable) with a checkbox to quickly reverse the order, if desired.
+The user can also manually drag and drop the levels order and change the name of the levels where \n is recognized as a line break.
 
 ### Graph Options
 Various options to tweak the plot:
@@ -139,11 +135,12 @@ Selecting scatter plots points and or lines with control over transparency and m
 * **Histograms/Density/Bar**
 * **Quantile Regression**
 * **Smooth/Linear/Logistic Regressions**
-* **Mean CI**  Mean Confidence Intervals
-* **Median PIs** Median Prediction Intervals
-* **Kaplan-Meier** Survival K-M curves
+* **Mean (CI)**  Mean Confidence Intervals
+* **Median (PIs)** Median Prediction Intervals
+* **Kaplan-Meier (CI)** Survival K-M curves
 * **Correlation Coefficient** add a text label with the correlation coefficient
 * **Text Labels** add a text label from a column existent in the data
+* **Rug Marks** add rug marks to the side of the plot
 
 ### Additional Information
 
