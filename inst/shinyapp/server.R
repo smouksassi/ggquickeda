@@ -3244,12 +3244,19 @@ function(input, output, session) {
                                                            input$yexpansion_r_mult),
                                                   add  = c(input$yexpansion_l_add,
                                                            input$yexpansion_r_add))) +
+            scale_x_discrete(expand = expansion(  mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add)))
             ylab("Count")
           
           if ( input$barplotlabel){
             p <- p +   geom_text(aes(y = ((..count..)),
                                     label = ((..count..))),
-                                stat = "count", vjust = 0.5,size=5,
+                                stat = "count",
+                                vjust = input$barplotlabelvjust,
+                                hjust = input$barplotlabelhjust,
+                                size = input$barplotlabelsize,
                                 position = eval(parse(text=input$positionbar)),
                                 show.legend = input$barplotlabellegend)
           }
@@ -3270,14 +3277,20 @@ function(input, output, session) {
               p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
                                       label = scales::percent(
                                         ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
-                                  stat = "count", vjust = 0.5, size=5,
+                                  stat = "count",
+                                  vjust = input$barplotlabelvjust,
+                                  hjust = input$barplotlabelhjust,
+                                  size = input$barplotlabelsize,
                                   position = eval(parse(text=input$positionbar)),
                                   show.legend = input$barplotlabellegend)+
                 ylab("Percentage")    
             }
             if(input$positionbar=="position_fill(vjust = 0.5)"){
               p <- p + geom_text(aes(by=xvalues),
-                                  stat = "prop", vjust = 0.5, size=5,
+                                  stat = "prop",
+                                  vjust = input$barplotlabelvjust,
+                                  hjust = input$barplotlabelhjust,
+                                  size = input$barplotlabelsize,
                                   position = eval(parse(text=input$positionbar)),
                                   show.legend = input$barplotlabellegend)+
                 ylab("Percentage")    
@@ -3285,11 +3298,16 @@ function(input, output, session) {
             
           }
           
-          p <- p +   scale_y_continuous(labels = percent,
-                                       expand = expansion(mult = c(input$yexpansion_l_mult,
-                                                                   input$yexpansion_r_mult),
-                                                          add  = c(input$yexpansion_l_add,
-                                                                   input$yexpansion_r_add))) +
+          p <- p +
+            scale_y_continuous(expand = expansion(mult = c(input$yexpansion_l_mult,
+                                                           input$yexpansion_r_mult),
+                                                  add  = c(input$yexpansion_l_add,
+                                                           input$yexpansion_r_add))) +
+            scale_x_discrete(expand = expansion(  mult = c(input$xexpansion_l_mult,
+                                                           input$xexpansion_r_mult),
+                                                  add  = c(input$xexpansion_l_add,
+                                                           input$xexpansion_r_add)))
+            
             ylab("Percentage")
           if ( input$barplotflip){
             p <- p +
@@ -3330,12 +3348,19 @@ function(input, output, session) {
                                                              input$xexpansion_r_mult),
                                                     add  = c(input$xexpansion_l_add,
                                                              input$xexpansion_r_add))) +
+              scale_y_discrete(expand = expansion(  mult = c(input$yexpansion_l_mult,
+                                                             input$yexpansion_r_mult),
+                                                    add  = c(input$yexpansion_l_add,
+                                                             input$yexpansion_r_add))) +
               xlab("Count")
             
             if ( input$barplotlabel){
               p <- p+   geom_text(aes(x = ((..count..)),
                                       label = ((..count..))),
-                                  stat = "count", vjust = 0.5,size=5,
+                                  stat = "count",
+                                  vjust = input$barplotlabelvjust,
+                                  hjust = input$barplotlabelhjust,
+                                  size = input$barplotlabelsize,
                                   position = eval(parse(text=input$positionbar)),
                                   show.legend = input$barplotlabellegend)
             }
@@ -3356,7 +3381,10 @@ function(input, output, session) {
               {p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
                                         label = scales::percent(
                                           ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
-                                    stat = "count", vjust = 0.5,size=5,
+                                    stat = "count",
+                                    vjust = input$barplotlabelvjust,
+                                    hjust = input$barplotlabelhjust,
+                                    size = input$barplotlabelsize,
                                     position = eval(parse(text=input$positionbar)),
                                     show.legend = input$barplotlabellegend)+
                   xlab("Percentage")    
@@ -3364,11 +3392,15 @@ function(input, output, session) {
             }
             
             
-            p <- p +   scale_x_continuous(labels = percent,
-                                          expand = expansion(mult = c(input$xexpansion_l_mult,
-                                                                      input$xexpansion_r_mult),
-                                                             add  = c(input$xexpansion_l_add,
-                                                                      input$xexpansion_r_add))) +
+            p <- p +
+              scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                             input$xexpansion_r_mult),
+                                                    add  = c(input$xexpansion_l_add,
+                                                             input$xexpansion_r_add))) +
+              scale_y_discrete(expand = expansion(  mult = c(input$yexpansion_l_mult,
+                                                             input$yexpansion_r_mult),
+                                                    add  = c(input$yexpansion_l_add,
+                                                             input$yexpansion_r_add)))+
               xlab("Percentage")
             if ( input$barplotflip){
               p <- p +

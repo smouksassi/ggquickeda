@@ -1117,9 +1117,12 @@ fluidPage(
                     checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
                                   value = FALSE),
                     checkboxInput('barplotlabel', 'Show Counts/Percentages ?',value = FALSE),
-                    conditionalPanel("input.barplotlabel",
+                    conditionalPanel('input.barplotlabel',
+                                     inline_ui(sliderInput("barplotlabelsize", "Text Size:",
+                                                           min=0, max=12, value=c(5), step=0.01,
+                                                           width='120px')),
                                      checkboxInput('barplotlabellegend', "Show Legend ?", value=TRUE)
-                                     )
+                    )
                     )
                   ),
                   column (3,
@@ -1129,6 +1132,14 @@ fluidPage(
                                          "By Frequency" = "frequency",
                                          "By Reverse Frequency" = "revfrequency"),inline=TRUE ) ,
                           checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
+                          ),
+                          conditionalPanel('input.barplotlabel',
+                                           inline_ui(sliderInput("barplotlabelhjust", "Text horizontal justification:",
+                                                                 min=-0.2, max=1.2, value=c(0.5),step=0.1,
+                                                                 width='120px')),
+                                           inline_ui(sliderInput("barplotlabelvjust", "Text vertical justification:",
+                                                                 min=-0.2, max=1.2, value=c(0.5),step=0.1,
+                                                                 width='120px'))
                           )
                   ),
                   column (6,
