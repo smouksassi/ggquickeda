@@ -1,3 +1,7 @@
+# ggquickeda 0.2.0.9999
+* prepare for next release
+
+
 # ggquickeda 0.1.9
 * Made errorbars for Median/PI and Mean/CI ignore mapped size
 * fixed a bug when labels from Median/PI and Mean/CI and data are used

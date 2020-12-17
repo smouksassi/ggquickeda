@@ -7,5 +7,4 @@
 ^revdep$
 ^docker$
 ^Dockerfile$
-^ggquickedahex.png$
 ^\.github$
