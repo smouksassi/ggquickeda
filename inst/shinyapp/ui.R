@@ -281,16 +281,16 @@ fluidPage(
                 column(12,
                        inline_ui(
                          numericInput("xexpansion_l_add",label = "x expansion left additive",
-                                      value = 0,min=0,max=NA,width='120px')),
+                                      value = 0, min = 0, max = NA, step = 0.1, width='120px')),
                        inline_ui(
                          numericInput("xexpansion_r_add",label = "x expansion right additive",
-                                      value = 0,min=0,max=NA,width='120px')),
+                                      value = 0, min = 0, max = NA, step = 0.1, width='120px')),
                        inline_ui(
                          numericInput("xexpansion_l_mult",label = "x expansion left multiplicative",
-                                      value = 0.05,min=0,max=NA,width='120px')),
+                                      value = 0.05, min = 0, max = NA, step = 0.1, width='120px')),
                        inline_ui(
                          numericInput("xexpansion_r_mult",label = "x expansion right multiplicative",
-                                      value = 0.05, min=0,max=NA,width='120px'))
+                                      value = 0.05, min = 0, max = NA, step = 0.1 , width='120px'))
                        ),
                 column(12,
                        inline_ui(
@@ -1045,7 +1045,7 @@ fluidPage(
                 
                   ),
               tabPanel(
-                "Histograms/Density/Bar",
+                "Histograms/Density",
                 value = "histograms_density",
                 fluidRow(
                   column (3,
@@ -1105,8 +1105,11 @@ fluidPage(
                     )
                     
                   ),
-                  
-                  column (3,
+                )),
+              tabPanel("Barplots",
+                value = "barplots",
+                fluidRow(
+                  column (4,
                     checkboxInput('barplotaddition', 'Add a Barplot ?',value = TRUE),
                     conditionalPanel("input.barplotaddition",
                     selectInput("positionbar", label = "Bar positioning:",
@@ -1114,18 +1117,19 @@ fluidPage(
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
                                 selected = "position_stack(vjust = 0.5)"),
-                    checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
-                                  value = FALSE),
                     checkboxInput('barplotlabel', 'Show Counts/Percentages ?',value = FALSE),
-                    conditionalPanel('input.barplotlabel',
-                                     inline_ui(sliderInput("barplotlabelsize", "Text Size:",
-                                                           min=0, max=12, value=c(5), step=0.01,
-                                                           width='120px')),
-                                     checkboxInput('barplotlabellegend', "Show Legend ?", value=TRUE)
+                    conditionalPanel(" input.barplotlabel",
+                    checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
+                                  value = FALSE)
+                    ),
+                    conditionalPanel(" input.barplotlabel && input.barplotpercent ",
+                                     numericInput("nroundbarplotpercentdigits",
+                                                  label = "N Digits",
+                                                  value = 1,min=0,max=10) 
                     )
                     )
                   ),
-                  column (3,
+                  column (4,
                           conditionalPanel("input.barplotaddition",
                           radioButtons("barplotorder", "Bar Ordering:",
                                        c("Default" = "default",
@@ -1139,16 +1143,24 @@ fluidPage(
                                                                  width='120px')),
                                            inline_ui(sliderInput("barplotlabelvjust", "Text vertical justification:",
                                                                  min=-0.2, max=1.2, value=c(0.5),step=0.1,
-                                                                 width='120px'))
+                                                                 width='120px')),
+                                           inline_ui(sliderInput("barplotlabelsize", "Text Size:",
+                                                                 min=0, max=12, value=c(5), step=0.01,
+                                                                 width='120px')),
+                                           checkboxInput('barplotlabellegend', "Show Legend ?", value=TRUE)
                           )
                   ),
-                  column (6,
-                  h6("A barplot for non-numeric x or y variable(s), or a density/histogram for numeric x or y variabl(s)
-                                 will be produced, only when the x or y variable(s) are empty.
-                                 Options are to be added as per users requests.")
-                  ),
-                  column (6,
-                  h6("Currently there is some limitations when position 'Sum to 100%' is used.")
+                  column(4,
+                         conditionalPanel('input.barplotlabel',
+                         checkboxInput('ignorebarplotlabelcolor', 'Ignore Mapped Color for labels?'),
+                         conditionalPanel(
+                           " input.ignorebarplotlabelcolor ",
+                           colourpicker::colourInput("barplotlabelcolor", "Text Color", value="black",
+                                                     showColour = "both",allowTransparent=FALSE,returnName=TRUE))
+                         )
+                         ),
+                  column (12,
+                  h6("Currently there is some text label limitations when position 'Sum to 100%' is used.")
                   )
                   )#fluidrow
               ),
@@ -1906,11 +1918,11 @@ fluidPage(
                            " input.addcustomlabel && input.labelignoresize  ",
                            sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1)
                          ),
-                         conditionalPanel(
-                           " input.addcustomlabel ",
-                           checkboxInput('roundlabeldigits', 'Round the numeric labels digits?'),
-                           numericInput("nroundlabeldigits",label = "N Digits",value = 0,min=0,max=10)
-                           )
+                         conditionalPanel(" input.addcustomlabel ",
+                                            checkboxInput('roundlabeldigits', 'Round the numeric labels digits?')),
+                         conditionalPanel(" input.roundlabeldigits && input.roundlabeldigits",
+                                          numericInput("nroundlabeldigits",label = "N Digits",
+                                                       value = 0,min=0,max=10) )
                   ),
                   
                   column(3,

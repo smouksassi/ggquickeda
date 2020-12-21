@@ -407,12 +407,13 @@ function(input, output, session) {
   
   # If an X or Y are null, switch to the Histograms tab
   observe({
-    if ((!input$show_pairs && !is.null(input$x) &&  is.null(input$y)) ||
-        (!input$show_pairs &&  is.null(input$x) && !is.null(input$y)) ){
+    if ( (!input$show_pairs && !is.null(input$x) &&  is.null(input$y) && is.numeric(finalplotdata()[,"xvalues"])) ||
+         (!input$show_pairs &&  is.null(input$x) && !is.null(input$y) && is.numeric(finalplotdata()[,"yvalues"])) ) {
       showTab("graphicaltypes", target = "color_aes_mappings")
       hideTab("graphicaltypes", target = "points_lines")
       hideTab("graphicaltypes", target = "box_plots")
       showTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "barplots")
       hideTab("graphicaltypes", target = "quantile_regression")
       hideTab("graphicaltypes", target = "smooth_regression")
       hideTab("graphicaltypes", target = "mean_ci")
@@ -423,11 +424,31 @@ function(input, output, session) {
       showTab("graphicaltypes", target = "rug_marks")
       hideTab("graphicaltypes", target = "pairs_plot")
       updateTabsetPanel(session, "graphicaltypes", "histograms_density")
-    }  else if (input$show_pairs) {
+    } 
+    else if ( (!input$show_pairs && !is.null(input$x) &&  is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"])) ||
+              (!input$show_pairs &&  is.null(input$x) && !is.null(input$y) && !is.numeric(finalplotdata()[,"yvalues"])) ) {
+      showTab("graphicaltypes", target = "color_aes_mappings")
+      hideTab("graphicaltypes", target = "points_lines")
+      hideTab("graphicaltypes", target = "box_plots")
+      hideTab("graphicaltypes", target = "histograms_density")
+      showTab("graphicaltypes", target = "barplots")
+      hideTab("graphicaltypes", target = "quantile_regression")
+      hideTab("graphicaltypes", target = "smooth_regression")
+      hideTab("graphicaltypes", target = "mean_ci")
+      hideTab("graphicaltypes", target = "median_pi")
+      hideTab("graphicaltypes", target = "kaplan_meier")
+      hideTab("graphicaltypes", target = "corr_coeff")
+      hideTab("graphicaltypes", target = "text_labels")
+      showTab("graphicaltypes", target = "rug_marks")
+      hideTab("graphicaltypes", target = "pairs_plot")
+      updateTabsetPanel(session, "graphicaltypes", "barplots")
+    }
+    else if (input$show_pairs) {
       hideTab("graphicaltypes", target = "color_aes_mappings")
       hideTab("graphicaltypes", target = "points_lines")
       hideTab("graphicaltypes", target = "box_plots")
       hideTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "barplots")
       hideTab("graphicaltypes", target = "quantile_regression")
       hideTab("graphicaltypes", target = "smooth_regression")
       hideTab("graphicaltypes", target = "mean_ci")
@@ -447,7 +468,8 @@ function(input, output, session) {
       showTab("graphicaltypes", target = "color_aes_mappings")
       showTab("graphicaltypes", target = "points_lines")
       showTab("graphicaltypes", target = "box_plots")
-      showTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "barplots")
       showTab("graphicaltypes", target = "quantile_regression")
       showTab("graphicaltypes", target = "smooth_regression")
       showTab("graphicaltypes", target = "mean_ci")
@@ -460,10 +482,41 @@ function(input, output, session) {
       showTab("graphicaloptions", target = "facet_options")
       showTab("graphicaloptions", target = "ref_line_target_options")
       showTab("filtercategorize", target = "reorder_facet_axis")
-      
     }
   })
 
+  observe({
+    if(!input$show_pairs &&
+       !is.null(input$x) &&  
+        is.null(input$y) && 
+        !is.numeric(finalplotdata()[,"xvalues"]) ) {
+     updateNumericInput(session, "xexpansion_l_add", value = 0.6)
+     updateNumericInput(session, "xexpansion_r_add", value = 0.6) 
+    } else if(!input$show_pairs &&
+              is.null(input$x) &&  
+              !is.null(input$y) && 
+              !is.numeric(finalplotdata()[,"yvalues"]) ){
+      updateNumericInput(session, "yexpansion_l_add", value = 0.6)
+      updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
+    }  else if(!input$show_pairs &&
+               !is.null(input$x) &&  
+               is.null(input$y) && 
+               is.numeric(finalplotdata()[,"xvalues"]) ){
+      updateNumericInput(session, "xexpansion_l_add", value = 0)
+      updateNumericInput(session, "xexpansion_r_add", value = 0)
+      updateNumericInput(session, "yexpansion_l_add", value = 0)
+      updateNumericInput(session, "yexpansion_r_add", value = 0) 
+    } else if(!input$show_pairs &&
+             is.null(input$x) &&  
+             !is.null(input$y) && 
+             is.numeric(finalplotdata()[,"yvalues"]) ){
+      updateNumericInput(session, "xexpansion_l_add", value = 0)
+      updateNumericInput(session, "xexpansion_r_add", value = 0)
+      updateNumericInput(session, "yexpansion_l_add", value = 0)
+      updateNumericInput(session, "yexpansion_r_add", value = 0) 
+    }
+    })
+  
   observe({
   if ( (input$colorin!="None" &&
        input$colorin %in% names(finalplotdata()) &&
@@ -3250,7 +3303,7 @@ function(input, output, session) {
                                                            input$xexpansion_r_add)))
             ylab("Count")
           
-          if ( input$barplotlabel){
+          if ( input$barplotlabel && !input$ignorebarplotlabelcolor){
             p <- p +   geom_text(aes(y = ((..count..)),
                                     label = ((..count..))),
                                 stat = "count",
@@ -3260,7 +3313,17 @@ function(input, output, session) {
                                 position = eval(parse(text=input$positionbar)),
                                 show.legend = input$barplotlabellegend)
           }
-          
+            if ( input$barplotlabel && input$ignorebarplotlabelcolor){
+              p <- p +   geom_text(aes(y = ((..count..)),
+                                       label = ((..count..))),
+                                   stat = "count",
+                                   vjust = input$barplotlabelvjust,
+                                   hjust = input$barplotlabelhjust,
+                                   size = input$barplotlabelsize,
+                                   position = eval(parse(text=input$positionbar)),
+                                   show.legend = input$barplotlabellegend,
+                                   colour = input$barplotlabelcolor)
+            } 
           
           if ( input$barplotflip){
             p <- p +
@@ -3272,11 +3335,12 @@ function(input, output, session) {
             geom_bar(alpha=0.2,aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
                      position = eval(parse(text=input$positionbar)))
           
-          if ( input$barplotlabel){
+          if ( input$barplotlabel && !input$ignorebarplotlabelcolor){
             if(input$positionbar!="position_fill(vjust = 0.5)"){
               p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
                                       label = scales::percent(
-                                        ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
+                                        ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                     accuracy = 10^-(input$nroundbarplotpercentdigits))),
                                   stat = "count",
                                   vjust = input$barplotlabelvjust,
                                   hjust = input$barplotlabelhjust,
@@ -3296,6 +3360,33 @@ function(input, output, session) {
                 ylab("Percentage")    
             }
             
+          }
+          if ( input$barplotlabel && input$ignorebarplotlabelcolor){
+            if(input$positionbar!="position_fill(vjust = 0.5)"){
+              p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                     label = scales::percent(
+                                       ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                       accuracy = 10^-(input$nroundbarplotpercentdigits))),
+                                 stat = "count",
+                                 vjust = input$barplotlabelvjust,
+                                 hjust = input$barplotlabelhjust,
+                                 size = input$barplotlabelsize,
+                                 position = eval(parse(text=input$positionbar)),
+                                 show.legend = input$barplotlabellegend,
+                                 colour = input$barplotlabelcolor)+
+                ylab("Percentage")    
+            }
+            if(input$positionbar=="position_fill(vjust = 0.5)"){
+              p <- p + geom_text(aes(by=xvalues),
+                                 stat = "prop",
+                                 vjust = input$barplotlabelvjust,
+                                 hjust = input$barplotlabelhjust,
+                                 size = input$barplotlabelsize,
+                                 position = eval(parse(text=input$positionbar)),
+                                 show.legend = input$barplotlabellegend,
+                                 colour = input$barplotlabelcolor)+
+                ylab("Percentage")    
+            }
           }
           
           p <- p +
@@ -3354,7 +3445,7 @@ function(input, output, session) {
                                                              input$yexpansion_r_add))) +
               xlab("Count")
             
-            if ( input$barplotlabel){
+            if ( input$barplotlabel && !input$ignorebarplotlabelcolor ){
               p <- p+   geom_text(aes(x = ((..count..)),
                                       label = ((..count..))),
                                   stat = "count",
@@ -3364,7 +3455,18 @@ function(input, output, session) {
                                   position = eval(parse(text=input$positionbar)),
                                   show.legend = input$barplotlabellegend)
             }
-            
+            if ( input$barplotlabel && input$ignorebarplotlabelcolor ){
+              p <- p+   geom_text(aes(x = ((..count..)),
+                                      label = ((..count..))),
+                                  stat = "count",
+                                  vjust = input$barplotlabelvjust,
+                                  hjust = input$barplotlabelhjust,
+                                  size = input$barplotlabelsize,
+                                  position = eval(parse(text=input$positionbar)),
+                                  show.legend = input$barplotlabellegend,
+                                  colour = input$barplotlabelcolor)
+            }
+                         
             
             if ( input$barplotflip){
               p <- p +
@@ -3376,11 +3478,13 @@ function(input, output, session) {
               geom_bar(alpha=0.2,aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
                        position = eval(parse(text=input$positionbar)))
             
-            if (input$barplotlabel){
-              if(input$positionbar!="position_fill(vjust = 0.5)")
-              {p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+            if (input$barplotlabel  && !input$ignorebarplotlabelcolor){
+              if(input$positionbar!="position_fill(vjust = 0.5)"){
+                p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
                                         label = scales::percent(
-                                          ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]))),
+                                          ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                          accuracy = 10^-(input$nroundbarplotpercentdigits))
+                                       ),
                                     stat = "count",
                                     vjust = input$barplotlabelvjust,
                                     hjust = input$barplotlabelhjust,
@@ -3390,7 +3494,23 @@ function(input, output, session) {
                   xlab("Percentage")    
               }
             }
-            
+            if (input$barplotlabel  && input$ignorebarplotlabelcolor){
+              if(input$positionbar!="position_fill(vjust = 0.5)"){
+                p <- p+   geom_text(aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                       label = scales::percent(
+                                         ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                         accuracy = 10^-(input$nroundbarplotpercentdigits))
+              ),
+              stat = "count",
+              vjust = input$barplotlabelvjust,
+              hjust = input$barplotlabelhjust,
+              size = input$barplotlabelsize,
+              position = eval(parse(text=input$positionbar)),
+              show.legend = input$barplotlabellegend,
+              colour = input$barplotlabelcolor)+
+              xlab("Percentage")    
+              }
+            }
             
             p <- p +
               scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
