@@ -1048,7 +1048,7 @@ fluidPage(
                 "Histograms/Density",
                 value = "histograms_density",
                 fluidRow(
-                  column (3,
+                  column (6,
                     radioButtons("histogramaddition", "Add a Histogram ?",
                                  c("Density" = "Density",
                                    "Counts" = "Counts",
@@ -1083,7 +1083,7 @@ fluidPage(
                     
                     )  
                   ),
-                  column (3,
+                  column (6,
                     radioButtons("densityaddition", "Add a Density Curve ?",
                                  c("Density" = "Density",
                                    "Counts" = "Counts",
@@ -1117,6 +1117,8 @@ fluidPage(
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
                                 selected = "position_stack(vjust = 0.5)"),
+                    sliderInput("barplotfillalpha", "Fill Transparency:",
+                                min=0, max=1, value=c(0.2),step=0.01),
                     checkboxInput('barplotlabel', 'Show Counts/Percentages ?',value = FALSE),
                     conditionalPanel(" input.barplotlabel",
                     checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
