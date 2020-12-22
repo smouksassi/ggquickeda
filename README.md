@@ -1,6 +1,6 @@
 ggquickeda
 ========
-<img src="./ggquickedahex.png" width="300px" align="right" />
+<img src="./man/figures/ggquickedahex.png" width="300px" align="right" />
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/ggquickeda)](https://cran.r-project.org/package=ggquickeda)
 [![R-CMD-check](https://github.com/smouksassi/ggquickeda/workflows/R-CMD-check/badge.svg)](https://github.com/smouksassi/ggquickeda/actions)
