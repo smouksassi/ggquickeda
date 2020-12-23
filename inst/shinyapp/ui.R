@@ -1048,7 +1048,7 @@ fluidPage(
                 "Histograms/Density",
                 value = "histograms_density",
                 fluidRow(
-                  column (6,
+                  column (3,
                     radioButtons("histogramaddition", "Add a Histogram ?",
                                  c("Density" = "Density",
                                    "Counts" = "Counts",
@@ -1056,34 +1056,38 @@ fluidPage(
                                    "None" = "None") ,
                                  selected="None", inline = TRUE) ,
                     conditionalPanel("input.histogramaddition!='None' ",
-                    radioButtons("histogrambinwidth", "Binwidth ?",
+                    radioButtons("histogrambinwidth", "Bin Width: ",
                                  c("User Specified" = "userbinwidth",
                                    "Automatic Binwidth" = "autobinwidth",
-                                   "None" = "None") ,
-                                 selected="None", inline = TRUE) ,
+                                   "N of Bins" = "None") ,
+                                   selected = "None", inline = TRUE) ,
                     conditionalPanel(
                       " input.histogrambinwidth== 'userbinwidth' ", 
-                      numericInput("histobinwidth",
-                                   "Bin Width",
-                                   value = 1,min = 0, step = 0.5)
+                      numericInput("histobinwidth","Bin Width Value",
+                                   value = 1, min = 0, step = 0.1)
                       
                     ),
                     conditionalPanel(" input.histogrambinwidth== 'None' ",
-                                     numericInput("histonbins",
-                                                  "N Bins", value = 30,min = 0, step = 0.5)
-                    ),
-                    sliderInput(
-                      "histogramalpha","Histogram Fill Transparency:",
-                      min = 0, max = 1, value = c(0.2), step = 0.01
-                    ),
-                    selectInput("positionhistogram", label = "Histogram positioning for overlap:",
-                                choices = c("Default"="identity",
-                                  "Side By Side"="dodge",
-                                  "Stacked"="stack"),selected = "stack")
-                    
+                       numericInput("histonbins","Number of Bins",
+                                    value = 30,min = 0, step = 0.1)
+                    )
                     )  
                   ),
-                  column (6,
+                  column (3,
+                          conditionalPanel("input.histogramaddition!='None' ",
+                                           sliderInput(
+                                             "histogramalpha","Histogram Fill Transparency:",
+                                             min = 0, max = 1, value = c(0.2), step = 0.01
+                                           ),
+                          inline_ui(selectInput("positionhistogram",
+                                      label = "Histogram positioning for overlap:",
+                                      choices = c("Default"="identity",
+                                                  "Side By Side"="dodge",
+                                                  "Stacked"="stack"),selected = "stack")
+                          )
+                          )
+                  ),
+                  column (3,
                     radioButtons("densityaddition", "Add a Density Curve ?",
                                  c("Density" = "Density",
                                    "Counts" = "Counts",
@@ -1093,11 +1097,6 @@ fluidPage(
                                  selected="Density", inline = TRUE),
                     conditionalPanel("input.densityaddition!='None' ",
                     sliderInput(
-                      "densityalpha",
-                      "Density Fill Transparency:",
-                      min = 0 ,max = 1, value = c(0.2), step = 0.01
-                    ),
-                    sliderInput(
                       "densityadjust",
                       "Density Binwidth Adjustment:",
                       min = 0.01, max = 10, value = c(1), step = 0.01
@@ -1105,64 +1104,91 @@ fluidPage(
                     )
                     
                   ),
+                  column (3,
+                          conditionalPanel("input.densityaddition!='None' ",
+                                           sliderInput(
+                                             "densityalpha",
+                                             "Density Fill Transparency:",
+                                             min = 0 ,max = 1, value = c(0.2), step = 0.01
+                                           )
+                          )
+                  )
                 )),
               tabPanel("Barplots",
                 value = "barplots",
                 fluidRow(
-                  column (4,
-                    checkboxInput('barplotaddition', 'Add a Barplot ?',value = TRUE),
+                  column (3,
+                    checkboxInput('barplotaddition', 'Add a Barplot ?', value = TRUE),
                     conditionalPanel("input.barplotaddition",
-                    selectInput("positionbar", label = "Bar positioning:",
+                                     inline_ui(selectInput("positionbar", label = "Bar positioning:",
                                 choices = c("Stacked"="position_stack(vjust = 0.5)",
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
-                                selected = "position_stack(vjust = 0.5)"),
-                    sliderInput("barplotfillalpha", "Fill Transparency:",
-                                min=0, max=1, value=c(0.2),step=0.01),
-                    checkboxInput('barplotlabel', 'Show Counts/Percentages ?',value = FALSE),
-                    conditionalPanel(" input.barplotlabel",
-                    checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
-                                  value = FALSE)
-                    ),
-                    conditionalPanel(" input.barplotlabel && input.barplotpercent ",
-                                     numericInput("nroundbarplotpercentdigits",
-                                                  label = "N Digits",
-                                                  value = 1,min=0,max=10) 
-                    )
+                                selected = "position_stack(vjust = 0.5)") ),
+                    checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
                     )
                   ),
-                  column (4,
+                  column(3,
+                         conditionalPanel("input.barplotaddition",
+                                          sliderInput("barplotfillalpha",
+                                                      "Barplot Fill Transparency:",
+                                                      min=0, max=1, value=c(0.2),step=0.01),
+                                          radioButtons("barplotorder", "Bar Ordering:",
+                                                       c("Default" = "default",
+                                                         "By Frequency" = "frequency",
+                                                         "By Reverse Frequency" = "revfrequency"),
+                                                       inline=TRUE )
+                         )
+                         ),
+                  column (3,
                           conditionalPanel("input.barplotaddition",
-                          radioButtons("barplotorder", "Bar Ordering:",
-                                       c("Default" = "default",
-                                         "By Frequency" = "frequency",
-                                         "By Reverse Frequency" = "revfrequency"),inline=TRUE ) ,
-                          checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
+                          checkboxInput('barplotlabel', 'Show Counts/Percentages ?', value = FALSE),
+                          conditionalPanel(" input.barplotaddition && input.barplotlabel",
+                                           checkboxInput('barplotpercent',
+                                                         'Compute Percentages instead of Counts ?',
+                                                         value = FALSE)
                           ),
-                          conditionalPanel('input.barplotlabel',
-                                           inline_ui(sliderInput("barplotlabelhjust", "Text horizontal justification:",
+                          conditionalPanel(" input.barplotaddition &&
+                                           input.barplotlabel && input.barplotpercent ",
+                                           numericInput("nroundbarplotpercentdigits",
+                                                        label = "Accuracy of Percent Digits",
+                                                        value = 1, min=0,max=10) 
+                          ),
+                          conditionalPanel('input.barplotaddition && input.barplotlabel',
+                                           inline_ui(sliderInput("barplotlabelhjust",
+                                                                 "Text horizontal justification:",
                                                                  min=-0.2, max=1.2, value=c(0.5),step=0.1,
                                                                  width='120px')),
-                                           inline_ui(sliderInput("barplotlabelvjust", "Text vertical justification:",
+                                           inline_ui(sliderInput("barplotlabelvjust",
+                                                                 "Text vertical justification:",
                                                                  min=-0.2, max=1.2, value=c(0.5),step=0.1,
-                                                                 width='120px')),
-                                           inline_ui(sliderInput("barplotlabelsize", "Text Size:",
-                                                                 min=0, max=12, value=c(5), step=0.01,
-                                                                 width='120px')),
-                                           checkboxInput('barplotlabellegend', "Show Legend ?", value=TRUE)
+                                                                 width='120px'))
                           )
+                  )
                   ),
-                  column(4,
-                         conditionalPanel('input.barplotlabel',
+                  column(3,
+                         conditionalPanel('input.barplotaddition && input.barplotlabel',
                          checkboxInput('ignorebarplotlabelcolor', 'Ignore Mapped Color for labels?'),
                          conditionalPanel(
                            " input.ignorebarplotlabelcolor ",
                            colourpicker::colourInput("barplotlabelcolor", "Text Color", value="black",
-                                                     showColour = "both",allowTransparent=FALSE,returnName=TRUE))
+                                                     showColour = "both",
+                                                     allowTransparent=FALSE,
+                                                     returnName=TRUE)
+                           ),
+                         conditionalPanel('input.barplotaddition && input.barplotlabel',
+                                          inline_ui(sliderInput("barplotlabelsize", "Text Size:",
+                                                                min=0, max=12, value=c(5), step=0.01)),
+                         checkboxInput('barplotlabellegend', "Show Text Legend ?",
+                                       value = TRUE)
+                         )
                          )
                          ),
                   column (12,
-                  h6("Currently there is some text label limitations when position 'Sum to 100%' is used.")
+                          conditionalPanel('input.barplotaddition &&
+                          input.barplotlabel && input.barplotpercent && input.positionbar == "position_fill(vjust = 0.5)" ',
+                  h6("Currently there is ggplot2 text label limitations when Percentages and position 'Sum to 100%' are selected as such `ggally` `stat_prop` computed by the x or y axis values is used.")
+                          )
                   )
                   )#fluidrow
               ),
