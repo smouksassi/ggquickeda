@@ -1,4 +1,4 @@
-# ggquickeda 0.2.0.9999
+# ggquickeda 0.1.9.9999
 * prepare for next release
 
 

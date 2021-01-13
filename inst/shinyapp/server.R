@@ -2876,8 +2876,9 @@ function(input, output, session) {
         p <- sourceable(p)
       }
     } else if (is.null(input$y) || is.null(input$x)) {
-      # Univariate plot
-      if(is.null(input$y)){
+      # Univariate plot X or Y plots
+      
+      if(is.null(input$y)){ #univariate when y is null only x it can be numeric (density) or not barplot
       if(is.numeric(plotdata[,"xvalues"]) ){
         p <- sourceable(ggplot(plotdata, aes_string(x="xvalues")))
         if (input$colorin != 'None')
@@ -2986,12 +2987,7 @@ function(input, output, session) {
         if(input$densityaddition!="None"){
         ylabeltext <-  paste(ylabeltext,"Density:",input$densityaddition)
         }
-        p <- p +
-            ylab(ylabeltext) +
-            scale_y_continuous(expand = expansion(mult = c(input$yexpansion_l_mult,
-                                                           input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add,
-                                                           input$yexpansion_r_add)))
+        p <- p + ylab(ylabeltext)
         p <- attach_source_dep(p, "ylabeltext")
         
         ###### rug geom start
@@ -3012,7 +3008,7 @@ function(input, output, session) {
               ) 
           }
         }
-        if(input$addextrarugmarks &&
+        if(input$addextrarugmarks && 
            !is.null(input$xrug) &&
            length(as.vector(input$xrug)) > 0) {
           for(i in input$xrug) {
@@ -3036,10 +3032,10 @@ function(input, output, session) {
                 )
             }
           }
-        }
-        #### rug geom end  
-      }
-      }
+        } #### rug geom end
+
+      } #numeric x ends
+      } # null y ends
       if(is.null(input$x)){
       if(is.numeric(plotdata[,"yvalues"]) ){
         p <- sourceable(ggplot(plotdata, aes_string(y="yvalues")))
@@ -3150,14 +3146,9 @@ function(input, output, session) {
         }
         
         p <- p +
-          xlab(xlabeltext) +
-          scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
-                                                         input$xexpansion_r_mult),
-                                                add  = c(input$xexpansion_l_add,
-                                                         input$xexpansion_r_add))) 
+          xlab(xlabeltext)
         p <- attach_source_dep(p, "xlabeltext")
-        #numeric xxx
-        
+        #numeric x
         
         ###### rug geom start
         if(input$addrugmarks) {
@@ -3205,10 +3196,10 @@ function(input, output, session) {
                 )
             }
           }
-        }
-        #### rug geom end  
+        }#### rug geom end
+ 
       }#numericyvalues
-      }
+      }#nullx ends
       if(is.null(input$y)){
       if(!is.numeric(plotdata[,"xvalues"]) ){
         if(input$barplotorder=="frequency"){
@@ -3235,17 +3226,7 @@ function(input, output, session) {
         if ( input$barplotaddition && !input$barplotpercent){
           p <- p + 
             geom_bar(alpha=input$barplotfillalpha,
-                     position = eval(parse(text=input$positionbar)))
-          
-          p <- p +
-            scale_y_continuous(expand = expansion(mult = c(input$yexpansion_l_mult,
-                                                           input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add,
-                                                           input$yexpansion_r_add))) +
-            scale_x_discrete(expand = expansion(  mult = c(input$xexpansion_l_mult,
-                                                           input$xexpansion_r_mult),
-                                                  add  = c(input$xexpansion_l_add,
-                                                           input$xexpansion_r_add)))
+                     position = eval(parse(text=input$positionbar)))+
             ylab("Count")
           
           if ( input$barplotlabel && !input$ignorebarplotlabelcolor){
@@ -3257,7 +3238,7 @@ function(input, output, session) {
                                 size = input$barplotlabelsize,
                                 position = eval(parse(text=input$positionbar)),
                                 show.legend = input$barplotlabellegend)
-          }
+          } #input$barplotlabel && !input$ignorebarplotlabelcolor
             if ( input$barplotlabel && input$ignorebarplotlabelcolor){
               p <- p +   geom_text(aes(y = ((..count..)),
                                        label = ((..count..))),
@@ -3268,18 +3249,18 @@ function(input, output, session) {
                                    position = eval(parse(text=input$positionbar)),
                                    show.legend = input$barplotlabellegend,
                                    colour = input$barplotlabelcolor)
-            } 
+            } #input$barplotlabel && input$ignorebarplotlabelcolor 
           
           if ( input$barplotflip){
-            p <- p +
-              coord_flip()
+            p <- p + coord_flip()
           }
         }
         if ( input$barplotaddition && input$barplotpercent){
           p <- p +  
             geom_bar(alpha=input$barplotfillalpha,
                      aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
-                     position = eval(parse(text=input$positionbar)))
+                     position = eval(parse(text=input$positionbar)))+
+            ylab("Percentage")    
           
           if ( input$barplotlabel && !input$ignorebarplotlabelcolor){
             if(input$positionbar!="position_fill(vjust = 0.5)"){
@@ -3292,8 +3273,7 @@ function(input, output, session) {
                                   hjust = input$barplotlabelhjust,
                                   size = input$barplotlabelsize,
                                   position = eval(parse(text=input$positionbar)),
-                                  show.legend = input$barplotlabellegend)+
-                ylab("Percentage")    
+                                  show.legend = input$barplotlabellegend)
             }
             if(input$positionbar=="position_fill(vjust = 0.5)"){
               p <- p + geom_text(aes(by=yvalues,
@@ -3305,8 +3285,7 @@ function(input, output, session) {
                                   hjust = input$barplotlabelhjust,
                                   size = input$barplotlabelsize,
                                   position = eval(parse(text=input$positionbar)),
-                                  show.legend = input$barplotlabellegend)+
-                ylab("Percentage")    
+                                  show.legend = input$barplotlabellegend)
             }
             
           }
@@ -3322,8 +3301,7 @@ function(input, output, session) {
                                  size = input$barplotlabelsize,
                                  position = eval(parse(text=input$positionbar)),
                                  show.legend = input$barplotlabellegend,
-                                 colour = input$barplotlabelcolor)+
-                ylab("Percentage")    
+                                 colour = input$barplotlabelcolor)
             }
             if(input$positionbar=="position_fill(vjust = 0.5)"){
               p <- p + geom_text(aes(by=xvalues,
@@ -3336,22 +3314,10 @@ function(input, output, session) {
                                  size = input$barplotlabelsize,
                                  position = eval(parse(text=input$positionbar)),
                                  show.legend = input$barplotlabellegend,
-                                 colour = input$barplotlabelcolor)+
-                ylab("Percentage")    
+                                 colour = input$barplotlabelcolor)
             }
           }
-          
-          p <- p +
-            scale_y_continuous(expand = expansion(mult = c(input$yexpansion_l_mult,
-                                                           input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add,
-                                                           input$yexpansion_r_add))) +
-            scale_x_discrete(expand = expansion(  mult = c(input$xexpansion_l_mult,
-                                                           input$xexpansion_r_mult),
-                                                  add  = c(input$xexpansion_l_add,
-                                                           input$xexpansion_r_add)))
-            
-            ylab("Percentage")
+
           if ( input$barplotflip){
             p <- p +
               coord_flip()
@@ -3385,17 +3351,7 @@ function(input, output, session) {
           if ( input$barplotaddition && !input$barplotpercent){
             p <- p + 
               geom_bar(alpha=input$barplotfillalpha,
-                       position = eval(parse(text=input$positionbar)))
-            
-            p <- p +
-              scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
-                                                             input$xexpansion_r_mult),
-                                                    add  = c(input$xexpansion_l_add,
-                                                             input$xexpansion_r_add))) +
-              scale_y_discrete(expand = expansion(  mult = c(input$yexpansion_l_mult,
-                                                             input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add,
-                                                             input$yexpansion_r_add))) +
+                       position = eval(parse(text=input$positionbar))) +
               xlab("Count")
             
             if ( input$barplotlabel && !input$ignorebarplotlabelcolor ){
@@ -3430,7 +3386,8 @@ function(input, output, session) {
             p <- p+  
               geom_bar(alpha=input$barplotfillalpha,
                        aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
-                       position = eval(parse(text=input$positionbar)))
+                       position = eval(parse(text=input$positionbar)))+
+              xlab("Percentage")
             
             if (input$barplotlabel  && !input$ignorebarplotlabelcolor){
               if(input$positionbar!="position_fill(vjust = 0.5)"){
@@ -3444,8 +3401,7 @@ function(input, output, session) {
                                     hjust = input$barplotlabelhjust,
                                     size = input$barplotlabelsize,
                                     position = eval(parse(text=input$positionbar)),
-                                    show.legend = input$barplotlabellegend)+
-                  xlab("Percentage")    
+                                    show.legend = input$barplotlabellegend)
               }
             }
             if (input$barplotlabel  && input$ignorebarplotlabelcolor){
@@ -3461,8 +3417,7 @@ function(input, output, session) {
               size = input$barplotlabelsize,
               position = eval(parse(text=input$positionbar)),
               show.legend = input$barplotlabellegend,
-              colour = input$barplotlabelcolor)+
-              xlab("Percentage")    
+              colour = input$barplotlabelcolor)
               }
               if(input$positionbar=="position_fill(vjust = 0.5)"){
                 p <- p + geom_text(aes(by=yvalues,
@@ -3475,33 +3430,22 @@ function(input, output, session) {
                                    size = input$barplotlabelsize,
                                    position = eval(parse(text=input$positionbar)),
                                    show.legend = input$barplotlabellegend,
-                                   colour = input$barplotlabelcolor)+
-                xlab("Percentage")    
+                                   colour = input$barplotlabelcolor)
               }
             }
-            
-            p <- p +
-              scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,
-                                                             input$xexpansion_r_mult),
-                                                    add  = c(input$xexpansion_l_add,
-                                                             input$xexpansion_r_add))) +
-              scale_y_discrete(expand = expansion(  mult = c(input$yexpansion_l_mult,
-                                                             input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add,
-                                                             input$yexpansion_r_add)))+
-              xlab("Percentage")
+
             if ( input$barplotflip){
               p <- p +
                 coord_flip()
             }
           }
         }# not numeric yvalues no x
-      } # is null x   
-    } else { # end of univariate
-      # X-Y plot
+      } # is null x univariate y plots ends  
+    }# Univariate plot X or Y plots
+    # X-Y plot starts
+    else { 
       
       p <- sourceable(ggplot(plotdata, aes_string(x="xvalues", y="yvalues")))
-      
       p <- p # helps in initializing the scales
       
       if (input$showtarget)  {
@@ -5910,7 +5854,9 @@ function(input, output, session) {
         if (input$addrisktable){
           if (!input$kmignorecol){
             p  <- p +
-              geom_text(data=risktabledatag,aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),show.legend = FALSE,
+              geom_text(data=risktabledatag,
+                        aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),
+                        show.legend = FALSE,
                         position =   position_dodgev(height =input$nriskpositiondodge)
               )
             
@@ -6029,7 +5975,7 @@ function(input, output, session) {
       } ###### KM SECTION END still need to fix y scale labels
       
       p <- p + xlab("xvalues")
-    }
+    } # end of bivariate the code below will apply to all uni and bivariate facet will not apply to paris plot 
     
     if (!input$show_pairs) {
       allfacetsvariables<- c(input$facetrowin,input$facetrowextrain,input$facetcolin,input$facetcolextrain)
@@ -6086,7 +6032,7 @@ function(input, output, session) {
               as.table = ASTABLE
             ) 
         }
-      }
+      } # end facet_grid
       
       
       if (facets != '. + . ~ . + .' && input$facetwrap) {
@@ -6144,32 +6090,60 @@ function(input, output, session) {
           as.table = ASTABLE
         )
         }
-        
-        
+  
+      }#endfacetwrap
+      
+      expansionobjy <- expansion(mult = c(input$yexpansion_l_mult,
+                                          input$yexpansion_r_mult),
+                                 add  = c(input$yexpansion_l_add,
+                                          input$yexpansion_r_add))
+      expansionobjx <- expansion(mult = c(input$xyexpansion_l_mult,
+                                          input$xexpansion_r_mult),
+                                 add  = c(input$xexpansion_l_add,
+                                          input$xexpansion_r_add)) 
+      #need logic for univariate plots also to apply formatting not just expansion
+      if (is.null(input$y) || is.null(input$x)) {
+
+        #null y numeric x
+        if(is.null(input$y) && is.numeric(plotdata[,"xvalues"]) ){
+          p <- p + 
+            scale_y_continuous(expand = expansionobjy)
+        }
+        #null x numeric y
+        if(is.null(input$x) && is.numeric(plotdata[,"yvalues"]) ){
+          p <- p +
+            scale_x_continuous(expand =expansionobjx)
+        }
+        #null y not numeric x
+        if(is.null(input$y) && !is.numeric(plotdata[,"xvalues"]) ){
+          p <- p +
+            scale_y_continuous(expand = expansionobjy ) +
+            scale_x_discrete(expand = expansionobjx) 
+        }
+        #null x not numeric y
+        if(is.null(input$x) && !is.numeric(plotdata[,"yvalues"]) ){
+          p <- p +
+            scale_x_continuous(expand = expansionobjx) +
+            scale_y_discrete(expand = expansionobjy)
+        }
       }
-      
-      
+
+      #logic works fine for bivariate
       if (input$yaxisscale=="logy" &&
           !is.null(plotdata$yvalues) &&
           is.numeric(plotdata[,"yvalues"])){
         if(!input$customyticks){
         if (input$yaxisformat=="default"){
-          p <- p + scale_y_log10(expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                                 )
+          p <- p + scale_y_log10(expand = expansionobjy )
         }
         if (input$yaxisformat=="logyformat"){
         p <- p + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                labels = trans_format("log10", math_format(10^.x)),
-                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                               )
+                               expand = expansionobjy)
         }
         if (input$yaxisformat=="logyformat2"){
         p <- p + scale_y_log10(labels=prettyNum,
-                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                               )
+                               expand = expansionobjy)
         }
         }#nocustomticks
        if(input$customyticks){
@@ -6179,9 +6153,7 @@ function(input, output, session) {
            p <- p  + 
              scale_y_log10(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                            minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
-                           expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                              add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                           )
+                           expand = expansionobjy)
            }
            if (input$customytickslabel) {
              yaxislabels <- gsub("\\\\n", "\\\n", input$yaxislabels)
@@ -6190,9 +6162,7 @@ function(input, output, session) {
                              labels= rep_len(unlist(strsplit(yaxislabels, ",")) ,
                                              length(as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ",")))))),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
-                             expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                             )
+                             expand = expansionobjy)
            }
          }#default
          if (input$yaxisformat=="logyformat"){
@@ -6200,18 +6170,14 @@ function(input, output, session) {
              scale_y_log10(labels = trans_format("log10", math_format(10^.x)),
                            breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                            minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
-                           expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                              add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                           ) 
+                           expand = expansionobjy) 
          }
          if (input$yaxisformat=="logyformat2"){
            p <- p  + 
              scale_y_log10(labels = prettyNum,
                            breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                            minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
-                           expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                              add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-                           ) 
+                           expand = expansionobjy) 
          }
          
        }#customyticks
@@ -6224,32 +6190,15 @@ function(input, output, session) {
           input$yaxisformat=="default"){
         if (!input$addrisktable){
         p <- p  + 
-          scale_y_continuous(
-            expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                               add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+          scale_y_continuous(expand = expansionobjy)
         }#norisktable no km
         if(input$KM!="None" &&  input$addrisktable){
-        if(!is.null(input$risktablevariables)){
           p  <- p +
             scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
                                          c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                               labels= c(as.vector(input$risktablevariables),
+                               labels= c(as.vector(unique(risktabledatag$key)),
                                          c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
-                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-            )
-        }
-        if(is.null(input$risktablevariables)){
-          p  <- p +
-            scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
-                                         c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                               labels= c("n.risk",
-                                         c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
-                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-            )
-          
-        } #defaultrisktablevariable is n.risk
+                               expand = expansionobjy)
       }#addrisktable
       } #yaxisscale=="lineary" yaxisformat=="default"
       
@@ -6259,11 +6208,7 @@ function(input, output, session) {
           !input$customyticks &&
           input$yaxisformat=="scientificy"){
         p <- p  + 
-          scale_y_continuous(labels=comma ,
-                             expand = expansion(mult = c(input$yexpansion_l_mult,
-                                                         input$yexpansion_r_mult),
-                                                add  = c(input$yexpansion_l_add,
-                                                         input$yexpansion_r_add)))
+          scale_y_continuous(labels=comma, expand = expansionobjy)
         
       }# input$yaxisscale=="lineary" input$yaxisformat=="scientificy"
       if (input$yaxisscale=="lineary" &&
@@ -6273,36 +6218,18 @@ function(input, output, session) {
           input$yaxisformat=="percenty"){ 
         if (!input$addrisktable){
           p <- p  + 
-            scale_y_continuous(labels=percent,
-              expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                 add  = c(input$yexpansion_l_add, input$yexpansion_r_add)))
+            scale_y_continuous(labels=percent, expand = expansionobjy)
         }#norisktable
         if (input$KM!="None" && input$addrisktable){
-          if(!is.null(input$risktablevariables)){
             p  <- p +
               scale_y_continuous(
                 breaks =c(unique(risktabledatag$keynumeric),
                                            c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                 labels= c(as.vector(input$risktablevariables),
+                                 labels= c(as.vector(unique(risktabledatag$key)),
                                            c("0%","10%","20%","30%","40%","50%","60%","70%","80%","90%","100%") ),
-                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-              )
-          }
-          if(is.null(input$risktablevariables)){
-            p  <- p +
-              scale_y_continuous(breaks =c(unique(risktabledatag$keynumeric),
-                                           c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                 labels= c("n.risk",
-                                           c("0%","10%","20%","30%","40%","50%","60%","70%","80%","90%","100%") ),
-                                 expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                    add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-              )
-            
-          } #defaultrisktablevariable is n.risk
+                                 expand = expansionobjy)
         }#addrisktable        
-        
-        
+     
       } # input$yaxisscale=="lineary" input$yaxisformat=="percenty"
               
       
@@ -6315,17 +6242,14 @@ function(input, output, session) {
         p <- p  + 
           scale_y_continuous(breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ,
-                             expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                add  = c(input$yexpansion_l_add, input$yexpansion_r_add))) 
+                             expand = expansionobjy) 
         if (input$KM!="None" && input$addrisktable){
           p  <- p +
             scale_y_continuous(
               breaks =c(unique(risktabledatag$keynumeric),
                         as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ) ),
               minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ,
-              expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                 add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-            )
+              expand = expansionobjy)
         }#addrisktable 
         }
         if ( input$customytickslabel) {
@@ -6335,8 +6259,7 @@ function(input, output, session) {
                                labels= rep_len(unlist(strsplit(yaxislabels, ",")) ,
                                                length(as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ",")))))),
                                minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ,
-                               expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                  add  = c(input$yexpansion_l_add, input$yexpansion_r_add))) 
+                               expand = expansionobjy) 
         
           if (input$KM!="None" && input$addrisktable){
             p  <- p +
@@ -6348,11 +6271,9 @@ function(input, output, session) {
                                          as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ) ))
                                 ),
                 minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ,
-                expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                   add  = c(input$yexpansion_l_add, input$yexpansion_r_add))
-              )
+                expand = expansionobjy)
           }#addrisktable   
-          }
+          }#custom label
       }
       if (input$yaxisscale=="lineary" &&
           !is.null(plotdata$yvalues) &&
@@ -6364,8 +6285,7 @@ function(input, output, session) {
           scale_y_continuous(labels=comma,
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
-                             expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                add  = c(input$yexpansion_l_add, input$yexpansion_r_add)) ) 
+                             expand = expansionobjy ) 
       }
       
       if (input$yaxisscale=="lineary" &&
@@ -6378,31 +6298,25 @@ function(input, output, session) {
           scale_y_continuous(labels=percent,
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ,
-                             expand = expansion(mult = c(input$yexpansion_l_mult,input$yexpansion_r_mult),
-                                                add  = c(input$yexpansion_l_add, input$yexpansion_r_add))) 
+                             expand = expansionobjy) 
       }
       
       if (input$xaxisscale=="logx" &&
+          !is.null(plotdata$xvalues) &&
           is.numeric(plotdata[,"xvalues"])) {
         
         if (!input$customxticks){
           if (input$xaxisformat=="default") {
-            p <- p + scale_x_log10(expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                      add  = c(input$xexpansion_l_add, input$xexpansion_r_add))
-            )
+            p <- p + scale_x_log10(expand = expansionobjx)
           }
           if (input$xaxisformat=="logxformat") {
             p <- p + scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
                                    labels = trans_format("log10", math_format(10^.x)),
-                                   expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                      add  = c(input$xexpansion_l_add, input$xexpansion_r_add))
-            )
+                                   expand = expansionobjx)
           }
           if (input$xaxisformat=="logxformat2") {
             p <- p + scale_x_log10(labels = prettyNum,
-                                   expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                      add  = c(input$xexpansion_l_add, input$xexpansion_r_add))
-            )
+                                   expand = expansionobjx)
           }  
         }#nocustomticks
         if (input$customxticks){
@@ -6411,9 +6325,7 @@ function(input, output, session) {
               p <- p  + 
                 scale_x_log10(breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                               minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                              expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                 add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                              )) 
+                              expand = expansionobjx) 
               
             }
             if ( input$customxtickslabel) {
@@ -6423,10 +6335,7 @@ function(input, output, session) {
                               labels= rep_len(unlist(strsplit(xaxislabels, ",")) ,
                                               length(as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ",")))))),
                               minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                              expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                 add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                              )
-                ) 
+                              expand = expansionobjx) 
             }
             
           }#xaxisformat default
@@ -6435,96 +6344,82 @@ function(input, output, session) {
               scale_x_log10(labels = trans_format("log10", math_format(10^.x)),
                             breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                             minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                            expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                               add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                            )) 
+                            expand = expansionobjx) 
           }
           if (input$xaxisformat=="logxformat2") {
             p <- p  + 
               scale_x_log10(labels = prettyNum,
                             breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                             minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                            expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                               add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                            )) 
+                            expand = expansionobjx) 
           }  
         }#custom x ticks
       }#logx      
 
-      if (input$xaxisscale=="linearx" &&
-          is.numeric(plotdata[,"xvalues"])) {
-        if (!input$customxticks){
-        if (input$xaxisformat=="default") {
-          p <- p  + 
-            scale_x_continuous(expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                  add  = c(input$xexpansion_l_add, input$xexpansion_r_add))
-            )
+      if (input$xaxisscale=="linearx" && 
+          !is.null(plotdata$xvalues) &&
+          is.numeric(plotdata[,"xvalues"]) &&
+          input$xaxisformat=="default"){
+        if(!input$customxticks){
+          p <- p  + scale_x_continuous(expand = expansionobjx) 
         }
-        if (input$xaxisformat=="scientificx") {
+        if(input$customxticks){
+          if (!input$customxtickslabel) {
+            p <- p  + scale_x_continuous(
+              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ,
+              expand = expansionobjx) 
+          }
+          if ( input$customxtickslabel) {
+            xaxislabels <- gsub("\\\\n", "\\\n", input$xaxislabels)
+            p <- p  + scale_x_continuous(
+              breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+              labels= rep_len(unlist(strsplit(xaxislabels, ",")) ,
+                              length(as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ",")))))),
+              minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ) ,
+              expand = expansionobjx) 
+            
+          }
+        }
+      }
+      if (input$xaxisscale=="linearx" &&
+          !is.null(plotdata$xvalues) &&
+          is.numeric(plotdata[,"xvalues"])&&
+          input$xaxisformat=="scientificx"){
+        if(!input$customyticks){
+          p <- p  + 
+            scale_x_continuous(labels=comma ,
+                               expand = expansionobjx) 
+        }
+        if(!input$customxticks){
           p <- p  + 
             scale_x_continuous(labels=comma,
-                               expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                  add  = c(input$xexpansion_l_add, input$xexpansion_r_add))
-            )  
+                               breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                               minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
+                               expand = expansionobjx)   
         }
-        if (input$xaxisformat=="percentx") {
-          p <- p  + 
-            scale_x_continuous(labels=percent,
-                               expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                  add  = c(input$xexpansion_l_add, input$xexpansion_r_add))
-            )
-      }  
-      }#nocustomticks
-        if (input$customxticks){
-          if (input$xaxisformat=="default") {
-            if ( !input$customxtickslabel) {
-              p <- p  + 
-                scale_x_continuous(
-                  breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
-                  minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                  expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                     add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                  )
-                ) 
-              
-            }
-            if ( input$customxtickslabel) {
-              xaxislabels <- gsub("\\\\n", "\\\n", input$xaxislabels)
-              p <- p  + 
-                scale_x_continuous(
-                  breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
-                  labels= rep_len(unlist(strsplit(xaxislabels, ",")) ,
-                                  length(as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ",")))))),
-                  minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                  expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                     add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                  )) 
-            }
-            
-          }#xaxisformat default
-          if (input$xaxisformat=="scientificx") {
-            p <- p  + 
-              scale_x_continuous(labels=comma,
-                                 breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
-                                 minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                                 expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                    add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                                 )
-              ) 
-          }
-          if (input$xaxisformat=="percentx") {
-            p <- p  + 
-              scale_x_continuous(labels=percent,
-                                 breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
-                                 minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
-                                 expand = expansion(mult = c(input$xexpansion_l_mult,input$xexpansion_r_mult),
-                                                    add  = c(input$xexpansion_l_add, input$xexpansion_r_add)
-                                 )) 
-          }  
-        }#custom x ticks
       }
       
-     
+      if (input$xaxisscale=="linearx" &&
+          !is.null(plotdata$xvalues) &&
+          is.numeric(plotdata[,"xvalues"])&&
+          input$xaxisformat=="percentx"){
+        if(!input$customxticks){
+          p <- p  + 
+            scale_x_continuous(labels=percent ,
+                               expand = expansionobjx) 
+        }
+        if(!input$customxticks){
+          p <- p  + 
+            scale_x_continuous(labels=percent,
+                               breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+                               minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
+                               expand = expansionobjx) 
+        }
+      }#percent x format
+      p <- attach_source_dep(p, "expansionobjy")
+      p <- attach_source_dep(p, "expansionobjx")
+      
       if (!is.null(input$y) && length(input$y) >= 2 && input$ylab=="" ){
         p <- p + ylab("Y variable(s)")
       }
@@ -6539,28 +6434,27 @@ function(input, output, session) {
       }
       
       if (input$horizontalzero)
-        p <-    p+
+        p <-    p +
         geom_hline(aes(yintercept=0))
       
       if (input$customvline1)
-        p <-    p+
+        p <-    p +
         geom_vline(xintercept=input$vline1,color=input$vlinecol1,linetype=input$vlinetype1,size=input$vlinesize1)
       if (input$customvline2)
-        p <-    p+
+        p <-    p +
         geom_vline(xintercept=input$vline2,color=input$vlinecol2,linetype=input$vlinetype2,size=input$vlinesize2)      
       
       if (input$customhline1)
-        p <-    p+
+        p <-    p +
         geom_hline(yintercept=input$hline1,color=input$hlinecol1,linetype=input$hlinetype1,size=input$hlinesize1)
       
       if (input$customhline2)
-        p <-    p+
+        p <-    p +
         geom_hline(yintercept=input$hline2,color=input$hlinecol2,linetype=input$hlinetype2,size=input$hlinesize2)     
       
       if (input$identityline)
-        p <-    p+ geom_abline(intercept = 0, slope = 1)
-      
-      
+        p <-    p + geom_abline(intercept = 0, slope = 1)
+
       
       if (input$customlegendtitle){
         
@@ -6670,7 +6564,7 @@ function(input, output, session) {
       }
       
       if(input$pointsizein!="None"){
-        if(!input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
+        if(!input$scalesizearea && is.numeric(plotdata[,input$pointsizein])){
           p <- p +  scale_size(range = c(input$scalesizearearange1[1], input$scalesizearearange1[2]))   }   
         if(input$scalesizearea&&is.numeric(plotdata[,input$pointsizein])){
           p <- p +  scale_size_area(max_size =  input$scalesizearearange2[1])   }
@@ -6679,7 +6573,7 @@ function(input, output, session) {
       
       if(input$annotatelogticks){
         p <-  p+
-          annotation_logticks(sides=paste(input$logsides,collapse="",sep="") )   
+          annotation_logticks(sides=paste(input$logsides,collapse="",sep=""), outside = FALSE )   
       }
       
       if (all(
@@ -6790,7 +6684,7 @@ function(input, output, session) {
                    hjust=input$targettexthjust,
                    vjust=input$targettextvjust,size=input$targettextsize)
       }
-    }
+    } # end of things that do not apply to pairs plot
     
     p <- add_plot_theme(p)
     values$prevPlot <- p
