@@ -33,6 +33,10 @@ function(input, output, session) {
                       value = cols[3]
     )
   })
+  observeEvent(input$outsidelogticks, {
+    updateCheckboxInput(session = session,inputId = "clip",value = FALSE
+    )
+  })
   
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
@@ -6573,7 +6577,19 @@ function(input, output, session) {
       
       if(input$annotatelogticks){
         p <-  p+
-          annotation_logticks(sides=paste(input$logsides,collapse="",sep=""), outside = FALSE )   
+          annotation_logticks(sides=paste(input$logsides,collapse="",sep=""),
+                              outside = input$outsidelogticks )   
+      }
+      
+      if (all(
+        input$yaxiszoom=='noyzoom'&&
+        input$xaxiszoom=='noxzoom')
+      ){
+        p <- p +
+          coord_cartesian(xlim= c(NA,NA),
+                          ylim= c(NA,NA),
+                          expand=input$expand,
+                          clip=ifelse(input$clip,"on","off"))
       }
       
       if (all(
@@ -6586,12 +6602,14 @@ function(input, output, session) {
         if(input$xaxiszoom=="userxzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
-                            expand=input$expand)
+                            expand=input$expand,
+                            clip=ifelse(input$clip,"on","off"))
         }
         if(input$xaxiszoom=="automaticxzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                            expand=input$expand)
+                            expand=input$expand,
+                            clip=ifelse(input$clip,"on","off"))
         }
         
       }
@@ -6606,7 +6624,8 @@ function(input, output, session) {
         if(input$yaxiszoom=="useryzoom" ){
           p <- p +
             coord_cartesian(ylim= c(input$loweryin,input$upperyin),
-                            expand=input$expand)
+                            expand=input$expand,
+                            clip=ifelse(input$clip,"on","off"))
         }
         if(input$yaxiszoom=="automaticyzoom"){
           
@@ -6614,12 +6633,14 @@ function(input, output, session) {
             p <- p +
               coord_cartesian(
                 ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
-                expand=input$expand) 
+                expand=input$expand,
+                clip=ifelse(input$clip,"on","off")) 
           } 
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(ylim= c(NA,NA),
-                              expand=input$expand) 
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off")) 
           } 
         }
         
@@ -6637,20 +6658,23 @@ function(input, output, session) {
           p <- p +
             coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
                             ylim= c(input$loweryin,input$upperyin),
-                            expand=input$expand)
+                            expand=input$expand,
+                            clip=ifelse(input$clip,"on","off"))
         }
         if (input$xaxiszoom=="userxzoom"&&input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
                               ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
-                              expand=input$expand)
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
           }
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
                               ylim= c(NA,NA),
-                              expand=input$expand)
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
           }
           
         }
@@ -6658,20 +6682,23 @@ function(input, output, session) {
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                             ylim= c(input$loweryin,input$upperyin),
-                            expand=input$expand)
+                            expand=input$expand,
+                            clip=ifelse(input$clip,"on","off"))
         }
         if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                               ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
-                              expand=input$expand)
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
           }
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                               ylim= c(NA,NA),
-                              expand=input$expand)
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
           }
         }
       }

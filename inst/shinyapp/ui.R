@@ -241,7 +241,8 @@ fluidPage(
                                                      "Top" ="t ",
                                                      "Right"="r",
                                                      "Bottom"="b"),
-                                           multiple=TRUE, selectize=TRUE,selected="l")
+                                           multiple=TRUE, selectize=TRUE,selected="l"),
+                               checkboxInput('outsidelogticks', 'Log Ticks on the Outside?', value = FALSE)
               )
               )# conditional on pairs is off
             ),
@@ -309,7 +310,8 @@ fluidPage(
                 column(12,
                        conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
                                         checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE)
-                       )
+                       ),
+                       checkboxInput('clip', 'Clip Plot Area?', value = TRUE)
                 )
               ) # fluidrow
               ) # conditional on not show pairs
