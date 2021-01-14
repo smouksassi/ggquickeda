@@ -6107,7 +6107,6 @@ function(input, output, session) {
                                           input$xexpansion_r_add)) 
       #need logic for univariate plots also to apply formatting not just expansion
       if (is.null(input$y) || is.null(input$x)) {
-
         #null y numeric x
         if(is.null(input$y) && is.numeric(plotdata[,"xvalues"]) ){
           p <- p + 
@@ -6120,19 +6119,41 @@ function(input, output, session) {
         }
         #null y not numeric x
         if(is.null(input$y) && !is.numeric(plotdata[,"xvalues"]) ){
-          p <- p +
-            scale_y_continuous(expand = expansionobjy ) +
-            scale_x_discrete(expand = expansionobjx) 
+          if(input$yaxisformat=="default"){
+            p <- p +
+              scale_y_continuous(expand = expansionobjy,
+                                 breaks = waiver(),
+                                 labels = waiver()) +
+              scale_x_discrete(expand = expansionobjx)
+          }
+          if(input$yaxisformat=="percenty"){
+            p <- p +
+              scale_y_continuous(expand = expansionobjy,
+                                 breaks = waiver(),
+                                 labels = scales::percent_format()) +
+              scale_x_discrete(expand = expansionobjx)
+          }
         }
         #null x not numeric y
-        if(is.null(input$x) && !is.numeric(plotdata[,"yvalues"]) ){
-          p <- p +
-            scale_x_continuous(expand = expansionobjx) +
-            scale_y_discrete(expand = expansionobjy)
+        if(is.null(input$x) && !is.numeric(plotdata[,"yvalues"])  ){
+          if(input$xaxisformat=="default"){
+            p <- p +
+              scale_x_continuous(expand = expansionobjx,
+                                 breaks = waiver(),
+                                 labels = waiver()) +
+              scale_y_discrete(expand = expansionobjy)
+          }
+          if(input$xaxisformat=="percentx"){
+            p <- p +
+              scale_x_continuous(expand = expansionobjx,
+                                 breaks = waiver(),
+                                 labels = scales::percent_format()) +
+              scale_y_discrete(expand = expansionobjy)
+          }
         }
-      }
+      }#logic for univariate plots ends
 
-      #logic works fine for bivariate
+      #bivariate logic starts 
       if (input$yaxisscale=="logy" &&
           !is.null(plotdata$yvalues) &&
           is.numeric(plotdata[,"yvalues"])){
