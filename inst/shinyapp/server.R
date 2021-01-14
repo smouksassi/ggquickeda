@@ -2759,21 +2759,30 @@ function(input, output, session) {
     # Determine what type of plot to show based on what variables were chosen
     if (input$show_pairs && !is.null(input$colorpairsin)) {
       # Matrix of pairs of plots of all the Y variables
-      if (input$colorpairsin == 'None'){
-        p <- sourceable(GGally::ggpairs(plotdata, columns = input$y,
-                                        diag = list(continuous = GGally::wrap("densityDiag", alpha=0.2),
-                                                    discrete = GGally::wrap("barDiag",  alpha=0.2,position="dodge2")),
-                                        lower = list(continuous = GGally::wrap("smooth", alpha = 0.2, size=0.1),
-                                                     combo = GGally::wrap("facethist", alpha=0.2,position="dodge2"),
-                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")
-                                        ),
-                                        upper = list(continuous = function(data, mapping, ...) {
-                                          GGally::ggally_cor(data = data, mapping = mapping, size=4, align_percent=0.8)
-                                            },
-                                                     combo = GGally::wrap("box_no_facet", alpha=0.2),
-                                                     discrete = GGally::wrap("facetbar",  alpha=0.2,position="dodge2")),
-                                        progress = FALSE)
-                        )
+      if (input$colorpairsin == 'None') {
+        p <- sourceable(
+          GGally::ggpairs(
+            plotdata,
+            columns = input$y,
+            diag = list(
+              continuous = GGally::wrap("densityDiag", alpha = 0.2),
+              discrete = GGally::wrap("barDiag", alpha = 0.2, position = "dodge2")
+            ),
+            lower = list(
+              continuous = GGally::wrap("smooth", alpha = 0.2, size = 0.1),
+              combo = GGally::wrap("facethist", alpha = 0.2, position = "dodge2"),
+              discrete = GGally::wrap("facetbar",  alpha = 0.2, position = "dodge2")
+            ),
+            upper = list(
+              continuous = function(data, mapping, ...) {
+                GGally::ggally_cor(data = data, mapping = mapping, size = 4, align_percent = 0.8)
+              },
+              combo = GGally::wrap("box_no_facet", alpha = 0.2),
+              discrete = GGally::wrap("facetbar",  alpha = 0.2, position = "dodge2")
+            ),
+            progress = FALSE
+          )
+        )
       }
       if (input$colorpairsin != 'None'){
         p <- GGally::ggpairs(

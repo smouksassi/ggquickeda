@@ -24,7 +24,7 @@ Imports:
     dplyr,
     DT,
     Formula,
-    GGally,
+    GGally (>= 2.1.0),
     ggplot2 (>= 3.3.2),
     ggpmisc,
     ggrepel (>= 0.7.0),

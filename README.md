@@ -7,6 +7,15 @@ ggquickeda
 ![MonthlyDOWNLOADS](https://cranlogs.r-pkg.org/badges/ggquickeda)
 ![DOWNLOADS](https://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)
 
+### Description 
+
+`ggquickeda` is an R `Shiny` app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`. 
+
+It enables you to quickly explore your data and to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall column.  
+
+It also has the `km`, `kmband` and `kmticks` geoms/stats to facilitate the plotting of **Kaplan-Meier** Survival curves. 
+
+For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
 
 ### Installation and Running information
 ```
@@ -31,29 +40,21 @@ To use your **data that is already in R** launch the shiny app with the dataset 
 run_ggquickeda(myRdataset)
 ```
 
-`ggquickeda` is an R `Shiny` app/package providing a graphical user interface (GUI) to `ggplot2` and `table1`. 
-
-It enables you to quickly explore your data and to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall column.  
-
-It also has the `km`, `kmband` and `kmticks` geoms/stats to facilitate the plotting of **Kaplan-Meier** Survival curves 
-
-For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
-
 The best way to learn how to use ggquickeda is to load a data your are familiar with and start experimenting.
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.  
 
-The package has also two vignettes:  
+The package has also the following vignettes:  
 1. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
 2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
 3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
 
-### Example 1
+### Plot Example
 ![Example use case 1 with the included sample_df](./inst/shinyapp/img/snapshot1.gif)
 
-### Example 2
+### Table Example
 ![Example Descriptive Stats](./inst/shinyapp/img/snapshot3.1.png)
 
-### Example 3
+### Pairs Plot Example
 ![Example Illustrating a Pairs Plot](./inst/shinyapp/img/snapshot4.1.png)
 
 The **Export Plots** and **Plot Code** tabs were contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
