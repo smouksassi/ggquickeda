@@ -308,9 +308,7 @@ fluidPage(
                                       value = 0.05, min=0,max=NA,width='120px'))
                 ),
                 column(12,
-                       conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
-                                        checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE)
-                       ),
+                       checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE),
                        checkboxInput('clip', 'Clip Plot Area?', value = TRUE)
                 )
               ) # fluidrow

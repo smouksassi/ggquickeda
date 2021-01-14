@@ -6101,7 +6101,7 @@ function(input, output, session) {
                                           input$yexpansion_r_mult),
                                  add  = c(input$yexpansion_l_add,
                                           input$yexpansion_r_add))
-      expansionobjx <- expansion(mult = c(input$xyexpansion_l_mult,
+      expansionobjx <- expansion(mult = c(input$xexpansion_l_mult,
                                           input$xexpansion_r_mult),
                                  add  = c(input$xexpansion_l_add,
                                           input$xexpansion_r_add)) 
