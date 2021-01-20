@@ -37,7 +37,11 @@ function(input, output, session) {
     updateCheckboxInput(session = session,inputId = "clip",value = FALSE
     )
   })
-  
+  observeEvent(input$show_pairs, {
+    updateSelectInput(session = session, inputId = "facetlabeller",
+                      selected = "label_value"
+    )
+  })
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
     shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')
@@ -463,7 +467,7 @@ function(input, output, session) {
       hideTab("graphicaltypes", target = "rug_marks")
       showTab("graphicaltypes", target = "pairs_plot")
       hideTab("graphicaloptions", target = "custom_legends")
-      hideTab("graphicaloptions", target = "facet_options")
+      showTab("graphicaloptions", target = "facet_options")
       hideTab("graphicaloptions", target = "ref_line_target_options")
       updateTabsetPanel(session, "graphicaltypes", "pairs_plot")
       hideTab("filtercategorize", target = "reorder_facet_axis")
@@ -2758,6 +2762,23 @@ function(input, output, session) {
     
     # Determine what type of plot to show based on what variables were chosen
     if (input$show_pairs && !is.null(input$colorpairsin)) {
+      facetswitch <-
+        if (input$facetswitch == "none")
+          NULL
+      else {
+        input$facetswitch
+      }
+      if (input$facetlabeller != "label_wrap_gen"){
+        labellervalue = eval(parse(
+          text=paste0("function(labs){",input$facetlabeller,
+                      "(labs, multi_line = ",input$facetwrapmultiline,")}")))
+          
+      }
+      if (input$facetlabeller == "label_wrap_gen"){
+        labellervalue = label_wrap_gen(width = input$labelwrapwidth,
+                                  multi_line = input$facetwrapmultiline)
+        
+      }
       # Matrix of pairs of plots of all the Y variables
       if (input$colorpairsin == 'None') {
         p <- sourceable(
@@ -2779,13 +2800,15 @@ function(input, output, session) {
               },
               combo = GGally::wrap("box_no_facet", alpha = 0.2),
               discrete = GGally::wrap("facetbar",  alpha = 0.2, position = "dodge2")
-            ),
+            ), switch= facetswitch, labeller = labellervalue ,
             progress = FALSE
           )
         )
+        
       }
       if (input$colorpairsin != 'None'){
-        p <- GGally::ggpairs(
+        p <- sourceable(
+          GGally::ggpairs(
             plotdata,
             columns = input$y,
             mapping = ggplot2::aes_string(color = input$colorpairsin),
@@ -2872,9 +2895,11 @@ function(input, output, session) {
                   scale_colour_discrete()+
                   scale_fill_discrete()
               }
-            ),
+            ), switch= facetswitch, labeller = labellervalue,
             progress = FALSE
           )
+        )
+
           if (input$themecolorswitcher=="themeggplot" &&
               !is.numeric(plotdata[,input$colorpairsin])){
             p <-  p +
@@ -2886,8 +2911,10 @@ function(input, output, session) {
               scale_colour_viridis_d(drop=!input$themecolordrop)+
               scale_fill_viridis_d(drop=!input$themecolordrop)
           }
-        p <- sourceable(p)
       }
+      p <- attach_source_dep(p, "facetswitch")
+      p <- attach_source_dep(p, "labellervalue")
+      
     } else if (is.null(input$y) || is.null(input$x)) {
       # Univariate plot X or Y plots
       
@@ -5835,11 +5862,11 @@ function(input, output, session) {
           risktabledata<- ggsurv$table$data
           if(!is.null(input$risktablevariables) && length(as.vector(input$risktablevariables)) > 0){
             risktabledatag<- gather(risktabledata,key,value, !!!input$risktablevariables , factor_key = TRUE)
-            risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
+            risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) + input$nriskoffset
           }
           if(is.null(input$risktablevariables) ){
             risktabledatag<- gather(risktabledata,key,value, n.risk, factor_key = TRUE)
-            risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) 
+            risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) + input$nriskoffset
           }
           if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {
             .table <- as.data.frame(summary(fitsurv)$table)
@@ -5886,8 +5913,10 @@ function(input, output, session) {
           
           if(input$addhorizontallines){
             p  <- p +
-              geom_hline(yintercept =- input$nriskpositionscaler *unique(c(1,(as.numeric(as.factor(risktabledatag$key))+1 )) )  +
-                           (abs(input$nriskpositiondodge)/2 ) )
+              geom_hline(yintercept = -input$nriskpositionscaler *unique(c(1,(as.numeric(as.factor(
+                risktabledatag$key))+1 )) )  + (abs(input$nriskpositiondodge)/2 ) + input$nriskoffset
+                
+                )
             
           }
 
@@ -6995,14 +7024,13 @@ function(input, output, session) {
   output$clickheader <-  renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    h4("Clicked points")
+    if(!input$show_pairs) h4("Clicked points")
   })
   
   output$brushheader <-  renderUI({
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    h4("Brushed points")
-    
+    if(!input$show_pairs) h4("Brushed points")
   })
   
   output$plot_clickedpoints <- renderTable({

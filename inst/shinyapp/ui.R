@@ -1806,7 +1806,8 @@ fluidPage(
                                                    numericInput(inputId = "breaktimeby",
                                                                 label = "Show Numbers Every x time unit:",value="", min = 0,max = NA),
                                                    sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
-                                                   sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01)
+                                                   sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01),
+                                                   sliderInput("nriskoffset", "Numbers offset:", min=-1, max=1, value=c(0),step=0.01)
                                  )#risktable
                          ),
                          
