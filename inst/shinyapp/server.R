@@ -451,6 +451,27 @@ function(input, output, session) {
       hideTab("graphicaltypes", target = "pairs_plot")
       updateTabsetPanel(session, "graphicaltypes", "barplots")
     }
+    else if (!input$show_pairs && input$KM != "None") {
+      hideTab("graphicaltypes", target = "color_aes_mappings")
+      hideTab("graphicaltypes", target = "points_lines")
+      hideTab("graphicaltypes", target = "box_plots")
+      hideTab("graphicaltypes", target = "histograms_density")
+      hideTab("graphicaltypes", target = "barplots")
+      hideTab("graphicaltypes", target = "quantile_regression")
+      hideTab("graphicaltypes", target = "smooth_regression")
+      hideTab("graphicaltypes", target = "mean_ci")
+      hideTab("graphicaltypes", target = "median_pi")
+      showTab("graphicaltypes", target = "kaplan_meier")
+      hideTab("graphicaltypes", target = "corr_coeff")
+      hideTab("graphicaltypes", target = "text_labels")
+      hideTab("graphicaltypes", target = "rug_marks")
+      hideTab("graphicaltypes", target = "pairs_plot")
+      hideTab("graphicaloptions", target = "custom_legends")
+      showTab("graphicaloptions", target = "facet_options")
+      hideTab("graphicaloptions", target = "ref_line_target_options")
+      updateTabsetPanel(session, "graphicaltypes", "kaplan_meier")
+      hideTab("filtercategorize", target = "reorder_facet_axis")
+    } 
     else if (input$show_pairs) {
       hideTab("graphicaltypes", target = "color_aes_mappings")
       hideTab("graphicaltypes", target = "points_lines")

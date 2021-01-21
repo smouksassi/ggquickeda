@@ -73,6 +73,7 @@ get_source_code <- function(x) {
   input_code <- ""
   if (exists("input", envir = parent.frame())) {
     input_vars <- stringr::str_extract_all(plot_code, "input\\$[[\\w]]*")[[1]]
+    #input_vars <- stringr::str_extract_all(plot_code, "input\\$[[:alnum:]]*")[[1]]
     input_vars <- sub("input\\$", "", input_vars)
     input_list <- shiny::reactiveValuesToList(get("input", envir = parent.frame()))
     if (length(input_vars) > 0) {
