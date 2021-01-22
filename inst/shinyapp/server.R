@@ -37,9 +37,15 @@ function(input, output, session) {
     updateCheckboxInput(session = session,inputId = "clip",value = FALSE
     )
   })
+  observeEvent(!input$outsidelogticks, {
+    updateCheckboxInput(session = session,inputId = "clip",value = TRUE
+    )
+  })
   observeEvent(input$show_pairs, {
     updateSelectInput(session = session, inputId = "facetlabeller",
                       selected = "label_value"
+    )
+    updateCheckboxInput(session = session,inputId = "facetwrap", value = FALSE
     )
   })
   mockFileUpload <- function(name) {
@@ -2152,7 +2158,7 @@ function(input, output, session) {
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
     }
-    selectInput("colorpairsin", "Colour By:",items) 
+    selectInput("colorpairsin", "Colour/Fill By:",items) 
   })
   observe({
     df <- rounddata()

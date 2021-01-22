@@ -431,8 +431,10 @@ fluidPage(
             tabPanel("Facets Options", value = "facet_options",
               tabsetPanel(
                 tabPanel("Facet Scales, Spaces, Positioning, Ordering",
+                         conditionalPanel(condition = "!input.show_pairs",
                          uiOutput("facetscales"),
-                         selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free")),
+                         selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free"))
+                         ),
                          conditionalPanel(
                            condition = "!input.facetwrap" ,
                            selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
@@ -449,27 +451,27 @@ fluidPage(
                                        min = 0, max = 2, value = 0.25, step = 0.05)
                            ),
                          conditionalPanel(
-                           condition = "input.facetwrap && input.stripplacement== 'outside'" ,
+                           condition = "!input.show_pairs && input.facetwrap && input.stripplacement== 'outside'" ,
                            sliderInput("stripswitchpadwrap", label = "Facets Axis Padding:",
                                        min = 0, max = 2, value = 0.25, step = 0.05)
                          ),
-                         
+                         conditionalPanel(condition = "!input.show_pairs",
                          selectInput('facetordering' ,'Facet Ordering:',c(
                            "Top to Bottom, Left to Right Ordering like a Table" ="table",
                            "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
                            selected="table")
+                         )
                          
-                         ),
+                         ), # end of tabpanel
                 tabPanel("Facet Grid Margins",
-                         h6("The 'Show facet margins?' options are available when 'Use facet_wrap?' is not checked"),    
-                         conditionalPanel(
-                           condition = "!input.facetwrap" ,
+                         h6("The 'Show facet margins?' options are available when not using ggpairs matrix plot nor `facet_wrap`"),    
+                         conditionalPanel(condition = "!input.show_pairs && !input.facetwrap" ,
                            selectInput('facetmargin', 'Show facet margins?', 
                                        choices = c("None" = "none",
                                                    "All" = "all",
                                                    "Specific variables" = "some")),
                            conditionalPanel(
-                             "input.facetmargin == 'some'",
+                             "!input.show_pairs && !input.facetwrap && input.facetmargin == 'some'",
                              selectInput('facetmargin_vars', NULL, choices = c(), multiple = TRUE,)
                            )
                          ), 
@@ -543,16 +545,18 @@ fluidPage(
                                        value = TRUE)
                 ),
                 tabPanel("Facet Wrap",
-                         checkboxInput('facetwrap', 'Use facet_wrap?'),
-                         conditionalPanel(
-                           condition = "input.facetwrap" ,
+                         h6("The `facet_wrap` options are available when not using ggpairs matrix plot."),    
+                         conditionalPanel(condition = "!input.show_pairs",
+                         checkboxInput('facetwrap', 'Use facet_wrap?')
+                         ),
+                         conditionalPanel(condition = "!input.show_pairs && input.facetwrap" ,
                            selectInput('stripposition', label ='Strip Position',
                                        choices=c("left", "right", "bottom", "top"),
                                        multiple=FALSE, selectize=TRUE,selected="top"),
                            checkboxInput('customncolnrow', 'Control N columns an N rows?')
                          ),
                          conditionalPanel(
-                           condition = "input.customncolnrow" ,
+                           condition = "!input.show_pairs && input.facetwrap && input.customncolnrow" ,
                            h6("An error (nrow*ncol >= n is not TRUE) will show up if the total number of facets/panels
                    is greater than the product of the specified  N columns x N rows. Increase the N columns and/or N rows to avoid the error.
                    The default empty values will use ggplot automatic algorithm."),        
