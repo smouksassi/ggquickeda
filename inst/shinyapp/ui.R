@@ -863,7 +863,16 @@ fluidPage(
               tabPanel("Pairs Plot Options",
                        value = "pairs_plot",
                        fluidRow(
-                         column (3, uiOutput("colourpairs"))
+                         column (3, uiOutput("colourpairs")),
+                         column (3,
+                         sliderInput("densityalphapairs", "Density Fill Transparency:",
+                           min = 0 ,max = 1, value = c(0.2), step = 0.01
+                         )
+                         ),
+                         column (3,
+                         sliderInput("corrlabelsizepairs", "Correlation text Size:",
+                                     min=0, max=6, value=c(3.88), step=0.01),
+                         )
                        )
               ),
               tabPanel(

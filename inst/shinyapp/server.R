@@ -2812,7 +2812,7 @@ function(input, output, session) {
             plotdata,
             columns = input$y,
             diag = list(
-              continuous = GGally::wrap("densityDiag", alpha = 0.2),
+              continuous = GGally::wrap("densityDiag", alpha = input$densityalphapairs),
               discrete = GGally::wrap("barDiag", alpha = 0.2, position = "dodge2")
             ),
             lower = list(
@@ -2822,7 +2822,8 @@ function(input, output, session) {
             ),
             upper = list(
               continuous = function(data, mapping, ...) {
-                GGally::ggally_cor(data = data, mapping = mapping, size = 4, align_percent = 0.8)
+                GGally::ggally_cor(data = data, mapping = mapping, size = input$corrlabelsizepairs,
+                                   align_percent = 0.8)
               },
               combo = GGally::wrap("box_no_facet", alpha = 0.2),
               discrete = GGally::wrap("facetbar",  alpha = 0.2, position = "dodge2")
@@ -2843,7 +2844,7 @@ function(input, output, session) {
                 GGally::ggally_densityDiag(
                   data = data,
                   mapping = mapping,
-                  alpha = 0.2,
+                  alpha = input$densityalphapairs,
                   linetype = 0
                 ) +
                   scale_colour_discrete()+
@@ -2897,7 +2898,7 @@ function(input, output, session) {
                 GGally::ggally_cor(
                   data = data,
                   mapping = mapping,
-                  size = 4,
+                  size =  input$corrlabelsizepairs,
                   align_percent = 0.8
                 ) +
                   scale_colour_discrete()+
