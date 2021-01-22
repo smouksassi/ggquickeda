@@ -23,6 +23,7 @@ sourceable <- function(x) {
     res <- base::`+`(e1, e2)
     new_code <- trimws(deparse(substitute(+e2)))
     new_code <- paste(new_code, collapse = "")
+    attr(res, "source_code") <- paste0(attr(res, "source_code"), collapse = "")
     attr(res, "source_code") <- paste(attr(res, "source_code"), new_code)
     res
   }

@@ -2443,7 +2443,12 @@ function(input, output, session) {
   outputOptions(output, "pointshape", suspendWhenHidden=FALSE)
 
   output$mytablex = renderDataTable({
-    df <- finalplotdata() 
+    if(!input$show_pairs){
+      df <- finalplotdata() 
+    }
+    if(input$show_pairs){
+      df <- rounddata()
+    }
     validate(need(!is.null(df), "Please select a data set"))
     datatable(df ,
               extensions = c('ColReorder','Buttons','FixedColumns'),
