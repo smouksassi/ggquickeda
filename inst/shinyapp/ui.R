@@ -869,8 +869,14 @@ fluidPage(
                        fluidRow(
                          column (3, uiOutput("colourpairs")),
                          column (3,
-                         sliderInput("densityalphapairs", "Density Fill Transparency:",
+                         sliderInput("densityalphapairs", "Density/Histogram Fill Transparency:",
                            min = 0 ,max = 1, value = c(0.2), step = 0.01
+                         ),
+                         sliderInput("barplotalphapairs", "Barplot Fill Transparency:",
+                                     min = 0 ,max = 1, value = c(0.2), step = 0.01
+                         ),
+                         sliderInput("boxplotalphapairs", "Boxplot Fill Transparency:",
+                                     min = 0 ,max = 1, value = c(0.2), step = 0.01
                          )
                          ),
                          column (3,

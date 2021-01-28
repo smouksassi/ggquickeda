@@ -2819,20 +2819,22 @@ function(input, output, session) {
             columns = input$y,
             diag = list(
               continuous = GGally::wrap("densityDiag", alpha = input$densityalphapairs),
-              discrete = GGally::wrap("barDiag", alpha = 0.2, position = "dodge2")
+              discrete = GGally::wrap("barDiag", alpha = input$barplotalphapairs,
+                                      position = "dodge2")
             ),
             lower = list(
               continuous = GGally::wrap("smooth", alpha = 0.2, size = 0.1),
-              combo = GGally::wrap("facethist", alpha = 0.2, position = "dodge2"),
-              discrete = GGally::wrap("facetbar",  alpha = 0.2, position = "dodge2")
+              combo = GGally::wrap("facethist", alpha = input$densityalphapairs,
+                                   position = "dodge2"),
+              discrete = GGally::wrap("facetbar",  alpha = input$barplotalphapairs, position = "dodge2")
             ),
             upper = list(
               continuous = function(data, mapping, ...) {
                 GGally::ggally_cor(data = data, mapping = mapping, size = input$corrlabelsizepairs,
                                    align_percent = 0.8)
               },
-              combo = GGally::wrap("box_no_facet", alpha = 0.2),
-              discrete = GGally::wrap("facetbar",  alpha = 0.2, position = "dodge2")
+              combo = GGally::wrap("box_no_facet", alpha = input$boxplotalphapairs),
+              discrete = GGally::wrap("facetbar",  alpha = input$barplotalphapairs, position = "dodge2")
             ), switch= facetswitch, labeller = labellervalue ,
             progress = FALSE
           )
@@ -2860,7 +2862,7 @@ function(input, output, session) {
                 GGally::ggally_barDiag(
                   data = data,
                   mapping = mapping,
-                  alpha = 0.2,
+                  alpha = input$barplotalphapairs,
                   position = "dodge2"
                 ) +
                   scale_colour_discrete()+
@@ -2882,7 +2884,7 @@ function(input, output, session) {
                 GGally::ggally_facethist(
                   data = data,
                   mapping = mapping,
-                  alpha = 0.2,
+                  alpha = input$densityalphapairs,
                   position = "dodge2"
                 ) +
                   scale_colour_discrete()+
@@ -2892,7 +2894,7 @@ function(input, output, session) {
                 GGally::ggally_facetbar(
                   data = data,
                   mapping = mapping,
-                  alpha = 0.2,
+                  alpha = input$barplotalphapairs,
                   position = "dodge2"
                 ) +
                   scale_colour_discrete()+
@@ -2914,7 +2916,7 @@ function(input, output, session) {
                 GGally::ggally_box_no_facet(
                   data = data,
                   mapping = mapping,
-                  alpha = 0.2) +
+                  alpha = input$boxplotalphapairs) +
                   scale_colour_discrete()+
                   scale_fill_discrete()
               },
@@ -2922,7 +2924,7 @@ function(input, output, session) {
                 GGally::ggally_facetbar(
                   data = data,
                   mapping = mapping,
-                  alpha = 0.2,
+                  alpha = input$barplotalphapairs,
                   position = "dodge2"
                 ) +
                   scale_colour_discrete()+
