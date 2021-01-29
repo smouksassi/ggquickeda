@@ -2746,35 +2746,45 @@ function(input, output, session) {
     #discrete
     if (input$themecolorswitcher=="themetableau10"){
       scale_colour_discrete <- function(...) 
-        scale_colour_manual(..., values = tableau10,drop=!input$themecolordrop)
+        scale_colour_manual(..., values = tableau10,drop=!input$themecolordrop,
+                            na.value = "grey50")
       scale_fill_discrete <- function(...) 
-        scale_fill_manual(..., values = tableau10,drop=!input$themecolordrop)
+        scale_fill_manual(..., values = tableau10,drop=!input$themecolordrop,
+                          na.value = "grey50")
     }
     if (input$themecolorswitcher=="themeuser"){
       cols <- paste0("c(", paste0("input$col", 1:input$nusercol, collapse = ", "), ")")
       cols <- eval(parse(text = cols))
       scale_colour_discrete <- function(...) 
-        scale_colour_manual(..., values = cols,drop=!input$themecolordrop)
+        scale_colour_manual(..., values = cols,drop=!input$themecolordrop,
+                            na.value = "grey50")
       scale_fill_discrete <- function(...) 
-        scale_fill_manual(..., values = cols,drop=!input$themecolordrop)
+        scale_fill_manual(..., values = cols,drop=!input$themecolordrop,
+                          na.value = "grey50")
     }
     if (input$themecolorswitcher=="themetableau20"){
       scale_colour_discrete <- function(...) 
-        scale_colour_manual(..., values = tableau20,drop=!input$themecolordrop)
+        scale_colour_manual(..., values = tableau20,drop=!input$themecolordrop,
+                            na.value = "grey50")
       scale_fill_discrete <- function(...) 
-        scale_fill_manual(..., values = tableau20,drop=!input$themecolordrop)
+        scale_fill_manual(..., values = tableau20,drop=!input$themecolordrop,
+                          na.value = "grey50")
     }
     if (input$themecolorswitcher=="themecolorblind"){
       scale_colour_discrete <- function(...) 
-        scale_colour_manual(..., values = cbPalette,drop=!input$themecolordrop)
+        scale_colour_manual(..., values = cbPalette,drop=!input$themecolordrop,
+                            na.value = "grey50")
       scale_fill_discrete <- function(...) 
-        scale_fill_manual(..., values = cbPalette,drop=!input$themecolordrop)
+        scale_fill_manual(..., values = cbPalette,drop=!input$themecolordrop,
+                          na.value = "grey50")
     }
     if (input$themecolorswitcher=="themecolorblind2"){
       scale_colour_discrete <- function(...) 
-        scale_colour_manual(..., values = cbbPalette,drop=!input$themecolordrop)
+        scale_colour_manual(..., values = cbbPalette,drop=!input$themecolordrop,
+                            na.value = "grey50")
       scale_fill_discrete <- function(...) 
-        scale_fill_manual(..., values = cbbPalette,drop=!input$themecolordrop)
+        scale_fill_manual(..., values = cbbPalette,drop=!input$themecolordrop,
+                          na.value = "grey50")
     }
     
     if (input$scaleshapeswitcher=="themeuser"){
@@ -2812,143 +2822,66 @@ function(input, output, session) {
         
       }
       # Matrix of pairs of plots of all the Y variables
+      if (input$colorpairsin != 'None') {
+        ggpairsmapping = ggplot2::aes_string(color = input$colorpairsin)
+      }
       if (input$colorpairsin == 'None') {
+        ggpairsmapping = NULL
+      }
         p <- sourceable(
           GGally::ggpairs(
             plotdata,
             columns = input$y,
+            mapping = ggpairsmapping,
             diag = list(
-              continuous = GGally::wrap("densityDiag", alpha = input$densityalphapairs),
-              discrete = GGally::wrap("barDiag", alpha = input$barplotalphapairs,
-                                      position = "dodge2")
+              continuous = GGally::wrap(input$pairsdiagcontinuous,
+                                        alpha = input$alphadiagpairs),
+              discrete = GGally::wrap(input$pairsdiagdiscrete,
+                                      alpha = input$alphadiagpairs)
             ),
             lower = list(
-              continuous = GGally::wrap("smooth", alpha = 0.2, size = 0.1),
-              combo = GGally::wrap("facethist", alpha = input$densityalphapairs,
+              continuous = GGally::wrap(input$pairslowercont,
+                                        alpha = input$alphalowerpairs),
+              combo = GGally::wrap(input$pairslowercombo,
+                                   alpha = input$alphalowerpairs,
                                    position = "dodge2"),
-              discrete = GGally::wrap("facetbar",  alpha = input$barplotalphapairs, position = "dodge2")
+              discrete = GGally::wrap(input$pairslowerdisc,
+                                      alpha = input$alphalowerpairs)
             ),
             upper = list(
-              continuous = function(data, mapping, ...) {
-                GGally::ggally_cor(data = data, mapping = mapping, size = input$corrlabelsizepairs,
-                                   align_percent = 0.8)
-              },
-              combo = GGally::wrap("box_no_facet", alpha = input$boxplotalphapairs),
-              discrete = GGally::wrap("facetbar",  alpha = input$barplotalphapairs, position = "dodge2")
+              continuous = GGally::wrap(input$pairsuppercont,
+                                        size = input$corrlabelsizepairs,
+                                        align_percent = 0.8),
+              combo = GGally::wrap(input$pairsuppercombo,
+                                   alpha = input$alphaupperpairs,
+                                   position = "dodge2"),
+              discrete = GGally::wrap(input$pairsupperdisc,
+                                      alpha = input$alphaupperpairs)
             ), switch= facetswitch, labeller = labellervalue ,
             progress = FALSE
           )
         )
-        
-      }
-      if (input$colorpairsin != 'None'){
-        p <- sourceable(
-          GGally::ggpairs(
-            plotdata,
-            columns = input$y,
-            mapping = ggplot2::aes_string(color = input$colorpairsin),
-            diag = list(
-              continuous = function(data, mapping, ...) {
-                GGally::ggally_densityDiag(
-                  data = data,
-                  mapping = mapping,
-                  alpha = input$densityalphapairs,
-                  linetype = 0
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              },
-              discrete = function(data, mapping, ...) {
-                GGally::ggally_barDiag(
-                  data = data,
-                  mapping = mapping,
-                  alpha = input$barplotalphapairs,
-                  position = "dodge2"
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              }
-            ),
-            lower = list(
-              continuous = function(data, mapping, ...) {
-                GGally::ggally_smooth(
-                  data = data,
-                  mapping = mapping,
-                  alpha = 0.2,
-                  size = 0.1
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              },
-              combo = function(data, mapping, ...) {
-                GGally::ggally_facethist(
-                  data = data,
-                  mapping = mapping,
-                  alpha = input$densityalphapairs,
-                  position = "dodge2"
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              },
-              discrete = function(data, mapping, ...) {
-                GGally::ggally_facetbar(
-                  data = data,
-                  mapping = mapping,
-                  alpha = input$barplotalphapairs,
-                  position = "dodge2"
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              }
-            ),
-            upper = list(
-              continuous = function(data, mapping, ...) {
-                GGally::ggally_cor(
-                  data = data,
-                  mapping = mapping,
-                  size =  input$corrlabelsizepairs,
-                  align_percent = 0.8
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              },
-              combo = function(data, mapping, ...) {
-                GGally::ggally_box_no_facet(
-                  data = data,
-                  mapping = mapping,
-                  alpha = input$boxplotalphapairs) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              },
-              discrete = function(data, mapping, ...) {
-                GGally::ggally_facetbar(
-                  data = data,
-                  mapping = mapping,
-                  alpha = input$barplotalphapairs,
-                  position = "dodge2"
-                ) +
-                  scale_colour_discrete()+
-                  scale_fill_discrete()
-              }
-            ), switch= facetswitch, labeller = labellervalue,
-            progress = FALSE
-          )
-        )
 
-          if (input$themecolorswitcher=="themeggplot" &&
-              !is.numeric(plotdata[,input$colorpairsin])){
+      if (input$colorpairsin != 'None' &&
+          !is.numeric(plotdata[,input$colorpairsin])){
+         p <-  p +
+          scale_colour_discrete() +
+          scale_fill_discrete()
+
+          if (input$themecolorswitcher=="themeggplot"){
             p <-  p +
-              scale_colour_hue(drop=!input$themecolordrop)+
+              scale_colour_hue(drop=!input$themecolordrop) +
               scale_fill_hue(drop=!input$themecolordrop)
           }
           if (input$themecolorswitcher=="themeviridis"){
             p <-  p +
-              scale_colour_viridis_d(drop=!input$themecolordrop)+
+              scale_colour_viridis_d(drop=!input$themecolordrop) + 
               scale_fill_viridis_d(drop=!input$themecolordrop)
           }
       }
       p <- attach_source_dep(p, "facetswitch")
       p <- attach_source_dep(p, "labellervalue")
+      p <- attach_source_dep(p, "ggpairsmapping")
       
     } else if (is.null(input$y) || is.null(input$x)) {
       # Univariate plot X or Y plots

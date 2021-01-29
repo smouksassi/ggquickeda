@@ -867,23 +867,77 @@ fluidPage(
               tabPanel("Pairs Plot Options",
                        value = "pairs_plot",
                        fluidRow(
-                         column (3, uiOutput("colourpairs")),
                          column (3,
-                         sliderInput("densityalphapairs", "Density/Histogram Fill Transparency:",
+                                 uiOutput("colourpairs"),
+                                 sliderInput("corrlabelsizepairs", "Correlation Text Size:",
+                                             min=0, max=6, value=c(3.88), step=0.01)),
+                         column (3,
+                                 radioButtons("pairslowercont", "Lower Panel Continuous:",
+                                              c("Smooth"  = "smooth",
+                                                "Density"  = "density",
+                                                "Points"  = "points",
+                                                "Correlation"  = "cor"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairslowerdisc", "Lower Panel Discrete:",
+                                              c("Facet Bars"  = "facetbar",
+                                                "Count" = "count",
+                                                "Table" = "table"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairslowercombo", "Lower Panel Combo:",
+                                              c("Facet Histogram"  = "facethist",
+                                                "Box No Facet"  = "box_no_facet",
+                                                "Dot No Facet"  = "dot_no_facet"
+                                              )
+                                              ,inline=TRUE),
+                         sliderInput("alphalowerpairs", "Lower Panel Transparency:",
                            min = 0 ,max = 1, value = c(0.2), step = 0.01
-                         ),
-                         sliderInput("barplotalphapairs", "Barplot Fill Transparency:",
-                                     min = 0 ,max = 1, value = c(0.2), step = 0.01
-                         ),
-                         sliderInput("boxplotalphapairs", "Boxplot Fill Transparency:",
-                                     min = 0 ,max = 1, value = c(0.2), step = 0.01
                          )
                          ),
                          column (3,
-                         sliderInput("corrlabelsizepairs", "Correlation text Size:",
-                                     min=0, max=6, value=c(3.88), step=0.01),
+                                 radioButtons("pairsdiagcontinuous", "Diagonal Panel Continuous:",
+                                              c("Density"  = "densityDiag",
+                                                "Blank"  = "blankDiag"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairsdiagdiscrete", "Diagonal Panel Discrete:",
+                                              c("Bars"  = "barDiag",
+                                                "Count" = "countDiag",
+                                                "Table" = "tableDiag",
+                                                "Blank"  = "blankDiag"
+                                              )
+                                              ,inline=TRUE),
+                                 sliderInput("alphadiagpairs", "Diagonal Panel Transparency:",
+                                             min = 0 ,max = 1, value = c(0.2), step = 0.01
+                                 )
+                         ),
+                         column (3,
+                                 radioButtons("pairsuppercont", "Upper Panel Continuous:",
+                                              c("Correlation"  = "cor",
+                                                "Density"  = "density",
+                                                "Points"  = "points",
+                                                "Smooth"  = "smooth"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairsupperdisc", "Upper Panel Discrete:",
+                                              c("Facet Bars"  = "facetbar",
+                                                "Count" = "count",
+                                                "Table" = "table"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairsuppercombo", "Upper Panel Combo:",
+                                              c("Box No Facet"  = "box_no_facet",
+                                                "Dot No Facet"  = "dot_no_facet",
+                                                "Facet Histogram"  = "facethist"
+                                              )
+                                              ,inline=TRUE),
+                                 sliderInput("alphaupperpairs", "Upper Panel Transparency:",
+                                             min = 0 ,max = 1, value = c(0.2), step = 0.01
+                                 )
                          )
-                       )
+                       
+              )#fluidrow
               ),
               tabPanel(
                 "Points, Lines",

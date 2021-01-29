@@ -60,7 +60,6 @@ attach_source_dep <- function(x, deps) {
 
 #' Retrieve the source code of a "sourceable" 'ggplot2'
 #' 
-#' Retrieve the source code of a "sourceable" 'ggplot2'
 #' @export
 #' @keywords internal
 get_source_code <- function(x) {
