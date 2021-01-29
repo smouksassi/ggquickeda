@@ -1,8 +1,9 @@
-# ggquickeda 0.1.9.9999
+# ggquickeda 0.2.9.9999
 * Added options and fixes for histograms, barplots and densities
-* When percent xory axis labels is selected it will be shown in univariate plots
-* UI updates/autohiding when univariate plots are in effect
+* When percent x/y axis labels option is selected it now works for univariate plots
+* UI updates and auto hiding for univariate plots, pairs, km
 * Allowed outside logticks and coordinates clipping on/off
+* Added multiple enhancement and options for ggpairs
 * Readme updated
 
 
