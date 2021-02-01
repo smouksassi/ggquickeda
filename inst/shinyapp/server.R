@@ -36,20 +36,18 @@ function(input, output, session) {
   observeEvent(input$outsidelogticks, {
     updateCheckboxInput(session = session,inputId = "clip",value = FALSE
     )
-  })
+  },ignoreNULL = TRUE, ignoreInit = TRUE)
   observeEvent(!input$outsidelogticks, {
     updateCheckboxInput(session = session,inputId = "clip",value = TRUE
     )
-  })
+  },ignoreNULL = TRUE, ignoreInit = TRUE)
   observeEvent(input$pairslowercont == 'cor', {
     updateSliderInput(session = session,inputId = "sizelowerpairs",value = 6)
-  },
-  ignoreNULL = TRUE, ignoreInit = TRUE)
+  },ignoreNULL = TRUE, ignoreInit = TRUE)
   
   observeEvent(input$pairsuppercont == 'cor', {
     updateSliderInput(session = session,inputId = "sizeupperpairs",value = 6)
-  },
-  ignoreNULL = TRUE, ignoreInit = TRUE)
+  },ignoreNULL = TRUE, ignoreInit = TRUE)
 
   observeEvent(input$show_pairs, {
     updateSelectInput(session = session, inputId = "facetlabeller",
