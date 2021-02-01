@@ -41,6 +41,16 @@ function(input, output, session) {
     updateCheckboxInput(session = session,inputId = "clip",value = TRUE
     )
   })
+  observeEvent(input$pairslowercont == 'cor', {
+    updateSliderInput(session = session,inputId = "sizelowerpairs",value = 6)
+  },
+  ignoreNULL = TRUE, ignoreInit = TRUE)
+  
+  observeEvent(input$pairsuppercont == 'cor', {
+    updateSliderInput(session = session,inputId = "sizeupperpairs",value = 6)
+  },
+  ignoreNULL = TRUE, ignoreInit = TRUE)
+
   observeEvent(input$show_pairs, {
     updateSelectInput(session = session, inputId = "facetlabeller",
                       selected = "label_value"
@@ -2828,6 +2838,12 @@ function(input, output, session) {
       if (input$colorpairsin == 'None') {
         ggpairsmapping = NULL
       }
+# 
+#       GGally::wrap("cor",
+#                    size = 5,
+#                    align_percent = 0.8,
+#                    alpha = 1)
+      
         p <- sourceable(
           GGally::ggpairs(
             plotdata,
@@ -2835,13 +2851,17 @@ function(input, output, session) {
             mapping = ggpairsmapping,
             diag = list(
               continuous = GGally::wrap(input$pairsdiagcontinuous,
-                                        alpha = input$alphadiagpairs),
+                                        alpha = input$alphadiagpairs,
+                                        linetype = ifelse(input$colorpairsin == 'None',1,0)),
               discrete = GGally::wrap(input$pairsdiagdiscrete,
-                                      alpha = input$alphadiagpairs)
+                                      alpha = input$alphadiagpairs,
+                                      linetype = ifelse(input$colorpairsin == 'None',1,0))
             ),
             lower = list(
               continuous = GGally::wrap(input$pairslowercont,
-                                        alpha = input$alphalowerpairs),
+                                        alpha = ifelse(input$pairslowercont == 'cor',1,
+                                                       input$alphalowerpairs),
+                                        size = input$sizelowerpairs),
               combo = GGally::wrap(input$pairslowercombo,
                                    alpha = input$alphalowerpairs,
                                    position = "dodge2"),
@@ -2850,8 +2870,9 @@ function(input, output, session) {
             ),
             upper = list(
               continuous = GGally::wrap(input$pairsuppercont,
-                                        size = input$corrlabelsizepairs,
-                                        align_percent = 0.8),
+                                        alpha = ifelse(input$pairsuppercont == 'cor',1,
+                                                       input$alphaupperpairs),
+                                        size = input$sizeupperpairs),
               combo = GGally::wrap(input$pairsuppercombo,
                                    alpha = input$alphaupperpairs,
                                    position = "dodge2"),
@@ -6990,13 +7011,15 @@ function(input, output, session) {
   
   
   output$clickheader <-  renderUI({
-    df <-finalplotdata()
+    df <- finalplotdata()
+    req(df)
     validate(need(!is.null(df), "Please select a data set"))
     if(!input$show_pairs) h4("Clicked points")
   })
   
   output$brushheader <-  renderUI({
     df <- finalplotdata()
+    req(df)
     validate(need(!is.null(df), "Please select a data set"))
     if(!input$show_pairs) h4("Brushed points")
   })

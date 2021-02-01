@@ -868,9 +868,7 @@ fluidPage(
                        value = "pairs_plot",
                        fluidRow(
                          column (3,
-                                 uiOutput("colourpairs"),
-                                 sliderInput("corrlabelsizepairs", "Correlation Text Size:",
-                                             min=0, max=6, value=c(3.88), step=0.01)),
+                                 uiOutput("colourpairs")),
                          column (3,
                                  radioButtons("pairslowercont", "Lower Panel Continuous:",
                                               c("Smooth"  = "smooth",
@@ -879,6 +877,8 @@ fluidPage(
                                                 "Correlation"  = "cor"
                                               )
                                               ,inline=TRUE),
+                                   sliderInput("sizelowerpairs", "Cont (point/line/text) Size:",
+                                               min=0, max=6, value=c(1), step=0.01),
                                  radioButtons("pairslowerdisc", "Lower Panel Discrete:",
                                               c("Facet Bars"  = "facetbar",
                                                 "Count" = "count",
@@ -891,10 +891,9 @@ fluidPage(
                                                 "Dot No Facet"  = "dot_no_facet"
                                               )
                                               ,inline=TRUE),
-                         sliderInput("alphalowerpairs", "Lower Panel Transparency:",
-                           min = 0 ,max = 1, value = c(0.2), step = 0.01
-                         )
-                         ),
+                                   sliderInput("alphalowerpairs", "Lower Panel Transparency:",
+                                                       min = 0 ,max = 1, value = c(0.2), step = 0.01)
+                                 ),
                          column (3,
                                  radioButtons("pairsdiagcontinuous", "Diagonal Panel Continuous:",
                                               c("Density"  = "densityDiag",
@@ -920,6 +919,8 @@ fluidPage(
                                                 "Smooth"  = "smooth"
                                               )
                                               ,inline=TRUE),
+                                   sliderInput("sizeupperpairs", "Cont (point/line/text) Size:",
+                                               min=0, max=6, value=c(6), step=0.01),
                                  radioButtons("pairsupperdisc", "Upper Panel Discrete:",
                                               c("Facet Bars"  = "facetbar",
                                                 "Count" = "count",
@@ -932,11 +933,9 @@ fluidPage(
                                                 "Facet Histogram"  = "facethist"
                                               )
                                               ,inline=TRUE),
-                                 sliderInput("alphaupperpairs", "Upper Panel Transparency:",
-                                             min = 0 ,max = 1, value = c(0.2), step = 0.01
-                                 )
+                                   sliderInput("alphaupperpairs", "Upper Panel Transparency:",
+                                               min = 0 ,max = 1, value = c(0.2), step = 0.01)
                          )
-                       
               )#fluidrow
               ),
               tabPanel(
