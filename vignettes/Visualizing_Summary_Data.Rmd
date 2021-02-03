@@ -125,6 +125,6 @@ And now you should get the below plot !:
 
 ### Example of what is Possible with `ggquickeda`
 
-As an example of even more advanced features consider the screenshot below where the N of patients as well as the Intervals Values are shown.
+As an example of even more advanced features consider the screenshot below where  the Intervals Values are shown while the point Size is proportional to the N of patients. Some theme adjustments to customize the plot and legend were also done.
 
 ![more options](./sumdata8.png){width=100%}

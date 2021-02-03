@@ -6870,7 +6870,8 @@ function(input, output, session) {
     )
     p <-    p + theme(
       plot.title.position =input$titleposition ,
-      plot.caption.position =input$captionposition 	)
+      plot.caption.position =input$captionposition,
+      plot.tag.position = input$tagposition)
     
     if (input$labelguides)
       p <-    p +
