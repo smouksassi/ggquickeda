@@ -1,22 +1,22 @@
 Subgroup,Subgroupvalue,Subgroupvalueorder,N of patients,Recovery Rate Ratio,RRLCI,RRUCI
 All Patients,All Patients,1,1062,1.29,1.12,1.49
-Geographic Region,North America,2,847,1.3,1.1,1.53
-Geographic Region,Europe,3,163,1.3,0.91,1.87
+Geographic Region,North America,2,847,1.30,1.10,1.53
+Geographic Region,Europe,3,163,1.30,0.91,1.87
 Geographic Region,Asia,4,52,1.36,0.74,2.47
 Race,White,5,566,1.29,1.06,1.57
 Race,Black,6,226,1.25,0.91,1.72
 Race,Asian,7,135,1.07,0.73,1.58
-Race,Other,8,125,1.68,1.1,2.58
-Ethnin group,Hispanic or Latino,9,250,1.28,0.94,1.73
-Ethnin group,Not Hispanic or Latino,10,755,1.31,1.1,1.55
+Race,Other,8,135,1.68,1.10,2.58
+Ethnic group,Hispanic or Latino,9,250,1.28,0.94,1.73
+Ethnic group,Not Hispanic or Latino,10,755,1.31,1.10,1.55
 Age,18 to < 40 yr,11,119,1.95,1.28,2.97
 Age,40 to < 65 yr,12,559,1.19,0.98,1.44
-Age,>= 65 yr,13,384,1.29,1,1.67
-Sex,Male,14,684,1.3,1.09,1.56
+Age,>= 65 yr,13,384,1.29,1.00,1.67
+Sex,Male,14,684,1.30,1.09,1.56
 Sex,Female,15,278,1.31,1.03,1.66
-Sympoms duration,<= 10 days,16,676,1.37,1.14,1.64
-Sympoms duration,> 10 days,17,383,1.2,0.94,1.52
+Symptoms duration,<= 10 days,16,676,1.37,1.14,1.64
+Symptoms duration,> 10 days,17,383,1.20,0.94,1.52
 Baseline Ordinal Score,4 (not receiving oxygen),18,138,1.29,0.91,1.83
 Baseline Ordinal Score,5 (receiving oxygen),19,435,1.45,1.18,1.79
 Baseline Ordinal Score,6 (receiving high-flow oxygen),20,193,1.09,0.76,1.57
-Baseline Ordinal Score,7 (receicing mv or ECMO),21,285,0.98,0.7,1.36
+Baseline Ordinal Score,7 (receicing mv or ECMO),21,285,0.98,0.70,1.36

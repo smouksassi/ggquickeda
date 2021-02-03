@@ -109,6 +109,7 @@ While you can add another variable and manually drag and drop we will demo next 
     + Set **Median(s) Point(s) Size:** to 6
     
 ![Median/PI options](./sumdata6.png){width=75%}
+
 ### Setting Titles, Captions and Logging the X axis
 
 * Select the **Graph Options** subtab next to the **Inputs** and in the first default subtab **X/Y Axes Log/Labels**:   
