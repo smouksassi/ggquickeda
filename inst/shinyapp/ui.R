@@ -232,8 +232,15 @@ fluidPage(
                                          value = as.character(paste("A","B","C" ,sep=",") )
                                )
               ),
-              checkboxInput('rmxaxistickslabels', 'Remove X axis ticks and labels ?',value=FALSE),
-              checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FALSE),
+              inline_ui(
+                checkboxInput('rmxaxisticks', 'Remove X axis ticks ?',value=FALSE,width='120px')),
+              inline_ui(
+                checkboxInput('rmxaxislabels', 'Remove X axis labels ?',value=FALSE,width='120px')),
+              inline_ui(
+                checkboxInput('rmyaxisticks', 'Remove Y axis ticks ?',value=FALSE,width='120px')),
+              inline_ui(
+                checkboxInput('rmyaxislabels', 'Remove Y axis labels ?',value=FALSE,width='120px')),
+              
               checkboxInput('annotatelogticks', 'Add Log Tick Annotations ?', value = FALSE),
               conditionalPanel(condition = "input.annotatelogticks",
                                selectInput('logsides', label ='Log Tick Sides',
@@ -766,13 +773,17 @@ fluidPage(
                          div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"),
                               style="display: inline-block;text-align: right"),
                          inline_ui(checkboxInput('rmmajorgridlinesx',
-                                                 'Remove X axis Major Grid Lines?',value=FALSE)),
+                                                 'Remove X axis Major Grid Lines?',value=FALSE,
+                                                 width='120px')),
                          inline_ui(checkboxInput('rmmajorgridlinesy',
-                                                 'Remove Y axis Major Grid Lines?',value=FALSE)),
+                                                 'Remove Y axis Major Grid Lines?',value=FALSE,
+                                                 width='120px')),
                          inline_ui(checkboxInput('rmminorgridlinesx',
-                                                 'Remove X axis Minor Grid Lines?',value=FALSE)),
+                                                 'Remove X axis Minor Grid Lines?',value=FALSE,
+                                                 width='120px')),
                          inline_ui(checkboxInput('rmminorgridlinesy',
-                                                 'Remove Y axis Minor Grid Lines?',value=FALSE))
+                                                 'Remove Y axis Minor Grid Lines?',value=FALSE,
+                                                 width='120px'))
                 ),
                 tabPanel("Margins",
                          inline_ui(
@@ -2092,13 +2103,14 @@ fluidPage(
                                  uiOutput("xcolrug"))
                          ),
                          column(3,
-                                conditionalPanel(condition = "input.addrugmarks | input.addextrarugmarks",
+                                conditionalPanel(condition = "input.addrugmarks || input.addextrarugmarks",
                                 sliderInput("ruglinelength", "rug line length (percentage of the plot area):", min=0, max=1,value=c(0.03),step=0.005),
                                 sliderInput("ruglinealpha", "rug line transparency:", min=0, max=1, value=c(0.5),step=0.01)
                                 )
                                 ),
                          column(3,
-                         conditionalPanel(condition = "input.addrugmarks | input.addextrarugmarks",
+                         conditionalPanel(condition = "input.addrugmarks || input.addextrarugmarks",
+                           checkboxInput('rugoutside', 'rug marks on the Outside', value = FALSE),
                            checkboxInput('rugignorecol', 'Ignore Mapped Color'),
                            conditionalPanel(condition = " input.rugignorecol ",
                              colourpicker::colourInput("colrug", "rug Color", value="black",

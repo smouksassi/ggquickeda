@@ -37,10 +37,11 @@ function(input, output, session) {
     updateCheckboxInput(session = session,inputId = "clip",value = FALSE
     )
   },ignoreNULL = TRUE, ignoreInit = TRUE)
-  observeEvent(!input$outsidelogticks, {
-    updateCheckboxInput(session = session,inputId = "clip",value = TRUE
+  observeEvent(input$rugoutside, {
+    updateCheckboxInput(session = session,inputId = "clip",value = FALSE
     )
   },ignoreNULL = TRUE, ignoreInit = TRUE)
+  
   observeEvent(input$pairslowercont == 'cor', {
     updateSliderInput(session = session,inputId = "sizelowerpairs",value = 6)
   },ignoreNULL = TRUE, ignoreInit = TRUE)
@@ -3027,14 +3028,14 @@ function(input, output, session) {
         if(input$addrugmarks) {
           if(! input$rugignorecol){
             p <- p + geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
-                       show.legend = FALSE,
+                       show.legend = FALSE, outside = input$rugoutside, 
                        alpha = input$ruglinealpha,
                        length = ggplot2::unit(input$ruglinelength ,"npc") 
               ) 
           }
           if(input$rugignorecol){
             p <- p + geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
-                       show.legend = FALSE,
+                       show.legend = FALSE, outside = input$rugoutside,
                        alpha = input$ruglinealpha,
                        length = ggplot2::unit(input$ruglinelength ,"npc"),
                        col = input$colrug
@@ -3049,7 +3050,7 @@ function(input, output, session) {
               p <- p +
                 geom_rug(aes_string(x=i),
                          sides = paste(input$extrarugsides, collapse="",sep=""),
-                         show.legend = FALSE, inherit.aes = FALSE,
+                         show.legend = FALSE, inherit.aes = FALSE, outside = input$rugoutside,
                          alpha = input$ruglinealpha,
                          length = ggplot2::unit(input$ruglinelength ,"npc")
                 )
@@ -3058,7 +3059,7 @@ function(input, output, session) {
               p <- p +
                 geom_rug(aes_string(x=i),
                          sides = paste(input$extrarugsides, collapse="",sep=""),
-                         show.legend = FALSE, inherit.aes = FALSE,
+                         show.legend = FALSE, inherit.aes = FALSE, outside = input$rugoutside,
                          alpha = input$ruglinealpha,
                          length = ggplot2::unit(input$ruglinelength ,"npc"),
                          col = input$colrug 
@@ -3189,7 +3190,7 @@ function(input, output, session) {
           if(! input$rugignorecol){
             p <- p +
               geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
-                       show.legend = FALSE,
+                       show.legend = FALSE, outside = input$rugoutside,
                        alpha = input$ruglinealpha,
                        length = ggplot2::unit(input$ruglinelength ,"npc") 
               ) 
@@ -3197,7 +3198,7 @@ function(input, output, session) {
           if(input$rugignorecol){
             p <- p +
               geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
-                       show.legend = FALSE,
+                       show.legend = FALSE, outside = input$rugoutside,
                        alpha = input$ruglinealpha,
                        length = ggplot2::unit(input$ruglinelength ,"npc"),
                        col = input$colrug
@@ -3213,7 +3214,7 @@ function(input, output, session) {
               p <- p +
                 geom_rug(aes_string(y=i),
                          sides = paste(input$extrarugsides, collapse="",sep=""),
-                         show.legend = FALSE, inherit.aes = FALSE,
+                         show.legend = FALSE, inherit.aes = FALSE, outside = input$rugoutside,
                          alpha = input$ruglinealpha,
                          length = ggplot2::unit(input$ruglinelength ,"npc")
                 )
@@ -3222,7 +3223,7 @@ function(input, output, session) {
               p <- p +
                 geom_rug(aes_string(y=i),
                          sides = paste(input$extrarugsides, collapse="",sep=""),
-                         show.legend = FALSE, inherit.aes = FALSE,
+                         show.legend = FALSE, inherit.aes = FALSE, outside = input$rugoutside,
                          alpha = input$ruglinealpha,
                          length = ggplot2::unit(input$ruglinelength ,"npc"),
                          col = input$colrug 
@@ -5695,7 +5696,7 @@ function(input, output, session) {
         if(! input$rugignorecol){
           p <- p +
             geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
-                     show.legend = FALSE,
+                     show.legend = FALSE, outside = input$rugoutside,
                      alpha = input$ruglinealpha,
                      length = ggplot2::unit(input$ruglinelength ,"npc") 
             ) 
@@ -5703,7 +5704,7 @@ function(input, output, session) {
         if(input$rugignorecol){
           p <- p +
             geom_rug(sides = paste(input$rugsides,collapse="",sep=""),
-                     show.legend = FALSE,
+                     show.legend = FALSE, outside = input$rugoutside,
                      alpha = input$ruglinealpha,
                      length = ggplot2::unit(input$ruglinelength ,"npc"),
                      col = input$colrug
@@ -5719,7 +5720,7 @@ function(input, output, session) {
           p <- p +
           geom_rug(aes_string(x=i),
                    sides = paste(input$extrarugsides, collapse="",sep=""),
-                   show.legend = FALSE, inherit.aes = FALSE,
+                   show.legend = FALSE, inherit.aes = FALSE, outside = input$rugoutside,
                    alpha = input$ruglinealpha,
                    length = ggplot2::unit(input$ruglinelength ,"npc")
           )
@@ -5728,7 +5729,7 @@ function(input, output, session) {
             p <- p +
               geom_rug(aes_string(x=i),
                        sides = paste(input$extrarugsides, collapse="",sep=""),
-                       show.legend = FALSE, inherit.aes = FALSE,
+                       show.legend = FALSE, inherit.aes = FALSE, outside = input$rugoutside,
                        alpha = input$ruglinealpha,
                        length = ggplot2::unit(input$ruglinelength ,"npc"),
                        col = input$colrug 
@@ -6164,6 +6165,13 @@ function(input, output, session) {
                                  labels = scales::percent_format()) +
               scale_x_discrete(expand = expansionobjx)
           }
+          if(input$yaxisformat=="scientificy"){
+            p <- p +
+              scale_y_continuous(expand = expansionobjy,
+                                 breaks = waiver(),
+                                 labels = comma) +
+              scale_x_discrete(expand = expansionobjx)
+          }
         }
         #null x not numeric y
         if(is.null(input$x) && !is.numeric(plotdata[,"yvalues"])  ){
@@ -6179,6 +6187,13 @@ function(input, output, session) {
               scale_x_continuous(expand = expansionobjx,
                                  breaks = waiver(),
                                  labels = scales::percent_format()) +
+              scale_y_discrete(expand = expansionobjy)
+          }
+          if(input$xaxisformat=="scientificx"){
+            p <- p +
+              scale_x_continuous(expand = expansionobjx,
+                                 breaks = waiver(),
+                                 labels = comma) +
               scale_y_discrete(expand = expansionobjy)
           }
         }
@@ -6447,7 +6462,7 @@ function(input, output, session) {
             scale_x_continuous(labels=comma ,
                                expand = expansionobjx) 
         }
-        if(!input$customxticks){
+        if(input$customxticks){
           p <- p  + 
             scale_x_continuous(labels=comma,
                                breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
@@ -6465,7 +6480,7 @@ function(input, output, session) {
             scale_x_continuous(labels=percent ,
                                expand = expansionobjx) 
         }
-        if(!input$customxticks){
+        if(input$customxticks){
           p <- p  + 
             scale_x_continuous(labels=percent,
                                breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
@@ -6704,18 +6719,18 @@ function(input, output, session) {
       if (all(!is.null(input$xaxiszoomin[1])&&
               is.numeric(plotdata[,"xvalues"] ) && !is.null(plotdata$yvalues) &&
               is.numeric(plotdata[,"yvalues"]) &&
-              input$facetscalesin!="free_x"&&input$facetscalesin!="free_y"&&
+              input$facetscalesin!="free_x" && input$facetscalesin!="free_y" &&
               input$facetscalesin!="free")
       ){
         
-        if (input$xaxiszoom=="userxzoom"&& input$yaxiszoom=="useryzoom"){
+        if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="useryzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
                             ylim= c(input$loweryin,input$upperyin),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
         }
-        if (input$xaxiszoom=="userxzoom"&&input$yaxiszoom=="automaticyzoom"){
+        if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
@@ -6725,14 +6740,14 @@ function(input, output, session) {
           }
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
+              coord_cartesian(xlim= c(input$lowerxin, input$upperxin),
                               ylim= c(NA,NA),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
           
         }
-        if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="useryzoom"){
+        if (input$xaxiszoom=="automaticxzoom" && input$yaxiszoom=="useryzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                             ylim= c(input$loweryin,input$upperyin),
@@ -6873,7 +6888,7 @@ function(input, output, session) {
         axis.title.x=element_blank())
     }
     
-    if (!input$rmxaxistickslabels && input$rotatexticks  ){
+    if (!input$rmxaxislabels && input$rotatexticks  ){
       if (input$xlabelsize <= 0) {
         x.axis.text <- ggplot2::element_blank()
       } else {
@@ -6886,8 +6901,8 @@ function(input, output, session) {
         theme(axis.text.x = x.axis.text )
       
     }
-    if (!input$rmyaxistickslabels && input$rotateyticks){
-      if (input$xlabelsize <= 0) {
+    if (!input$rmyaxislabels && input$rotateyticks){
+      if (input$ylabelsize <= 0) {
         y.axis.text <- ggplot2::element_blank()
       } else {
         y.axis.text <- ggplot2::element_text(size = input$ylabelsize,
@@ -6970,17 +6985,23 @@ function(input, output, session) {
         theme(panel.grid.minor.y = element_blank())
     }
     
-    if(input$rmxaxistickslabels){
+    if(input$rmxaxisticks){
       p <-  p+
-        theme(axis.text.x=element_blank(),
-              axis.ticks.x=element_blank())
+        theme(axis.ticks.x=element_blank())
     }
-    if(input$rmyaxistickslabels){
+    if(input$rmxaxislabels){
       p <-  p+
-        theme(axis.text.y=element_blank(),axis.text.y.left=element_blank(),
-              axis.ticks.y=element_blank())
+        theme(axis.text.x=element_blank())
     }
-    
+    if(input$rmyaxisticks){
+      p <-  p+
+        theme(axis.ticks.y=element_blank())
+    }
+    if(input$rmyaxislabels){
+      p <-  p+
+        theme(axis.text.y=element_blank(),
+              axis.text.y.left=element_blank())
+    }
     if (input$title!="") {
       p <- p + labs(title=titlelinebreak)
       p <- attach_source_dep(p, "titlelinebreak")

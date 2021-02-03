@@ -60,6 +60,7 @@ knitr::kable(remdesivirdata)
     + Set **Facet Scales** to 'free_y' (this allows only Subgroupvalue specific to the Subgroup to appear on each graph panel)
     + Set **Facet Spaces** to 'free_y' (this allows for each panel to occupy space proportional to the number of unique Subgroupvalue)
     + Set **Facet Switch to Near Axis** to 'y' (this will move the y strips to the left)
+    + Set **Strip Placement** to 'outside' (this will put the y strips to the left of the axis)
 
 We still have to set text formatting options using the group of subtabs in the lower part of the page:  
 
@@ -87,7 +88,7 @@ At this point you should have this graph:
 
 ![reordering of subgroup](./sumdata4.png){width=50%}
 
-While you can add another variable and manually drag and drop we will demo next another possibility to reorder yvalues using a statistic of another variable e.g. median:
+While you can add another variable and manually drag and drop we will demo next another possibility to reorder yvalues using a statistic (e.g. median) of another variable (Subroupvalueorder):
 
 * Select the **Reorder Facets or axis Levels** subtab 
     + Set **Reorder This Variable** to  'yvalues'
@@ -104,7 +105,7 @@ While you can add another variable and manually drag and drop we will demo next 
 * Select the **Median (PIs)** subtab 
     + Set **Median** to  'Median/PI'
     + Set **PI Geom:** to  'errorbar'
-    + Set **PI %:** to 1 (this ensures to use the min and max for the errorbar)
+    + Set **PI %:** to 1 (this ensures that the errorbar goes from the min to max of values)
     + Check **Show points**
     + Set **Median(s) Point(s) Size:** to 6
     
