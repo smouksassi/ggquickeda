@@ -6968,7 +6968,10 @@ function(input, output, session) {
     p <-  p +
       theme(strip.background.y = element_blank())
     }
-    
+    if(input$removepanelborder){
+      p <-  p +
+        theme(panel.border = element_blank())
+    }
     if(input$rmmajorgridlinesx){
       p <-  p + theme(
           panel.grid.major.x = element_blank())

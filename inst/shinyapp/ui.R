@@ -675,6 +675,8 @@ fluidPage(
                 "backgroundcol","Background Color",value =  "white",
                 showColour = "both",allowTransparent = TRUE,returnName=TRUE),
               checkboxInput('panelontop', 'Place the Panel gridlines and background over the data ?',value=FALSE),
+              checkboxInput('removepanelborder', 'Remove Panels Background and Outline?',
+                            value=FALSE),
               checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE),
               tabsetPanel(
                 tabPanel("Discrete Color and Fill Scale",
