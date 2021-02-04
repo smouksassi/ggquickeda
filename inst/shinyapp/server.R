@@ -6880,6 +6880,40 @@ function(input, output, session) {
       p <-    p +
       theme(aspect.ratio=input$aspectratio)
     
+
+    if (input$customizeaxestitles  ){
+      if (input$x_axis_title_size <= 0) {
+        x.axis.title <- ggplot2::element_blank()
+      } else {
+        x.axis.title <- ggplot2::element_text(size  = input$x_axis_title_size,
+                                              angle = input$x_axis_title_angle,
+                                              hjust = input$x_axis_title_hjust,
+                                              vjust = input$x_axis_title_vjust,
+                                              face = ifelse(input$x_axis_title_bold,"bold","plain"),
+                                              colour=input$x_axis_title_color
+        )
+      }
+      p <-  p +
+        theme(axis.title.x = x.axis.title)
+      
+      if (input$y_axis_title_size <= 0) {
+        y.axis.title <- ggplot2::element_blank()
+      } else {
+        y.axis.title <- ggplot2::element_text(size  = input$y_axis_title_size,
+                                              angle = input$y_axis_title_angle,
+                                              hjust = input$y_axis_title_hjust,
+                                              vjust = input$y_axis_title_vjust,
+                                              face = ifelse(input$y_axis_title_bold,"bold","plain"),
+                                              colour=input$y_axis_title_color
+                                              )
+      }
+      p <- p + 
+        theme(axis.title.y = y.axis.title)
+      p <- attach_source_dep(p, "x.axis.title")
+      p <- attach_source_dep(p, "y.axis.title")
+    }
+
+    
     if (grepl("^\\s+$", input$ylab) ){
       p <- p + theme(
         axis.title.y=element_blank())
@@ -6902,6 +6936,7 @@ function(input, output, session) {
         theme(axis.text.x = x.axis.text )
       
     }
+    
     if (!input$rmyaxislabels && input$rotateyticks){
       if (input$ylabelsize <= 0) {
         y.axis.text <- ggplot2::element_blank()
