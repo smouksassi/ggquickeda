@@ -1,10 +1,14 @@
 # ggquickeda 0.2.0
 * Added options and fixes for histograms, barplots and densities
 * When percent x/y axis labels option is selected it now works for univariate plots
+* Allowed user specified zoom when more than one x and or y are active
 * UI updates and auto hiding for univariate plots, pairs, km
-* Allowed outside logticks and coordinates clipping on/off
+* Allowed logticks and rug marks to be on the outside
+* coordinates cartesian clip can now be set to off
+* Added multiple enhancements for theme control like removing panel border, plot.tag.position and controlling the X and Y Axes Titles formatting
 * Added multiple enhancements and options for ggpairs
 * Readme updated
+* summary level data vignette updated
 
 
 # ggquickeda 0.1.9
