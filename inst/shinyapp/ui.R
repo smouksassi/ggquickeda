@@ -151,8 +151,8 @@ fluidPage(
           tabsetPanel(id = "graphicaloptions", selected = "x_y_loglabels",
             tabPanel("X/Y Axes Log/Labels", value = "x_y_loglabels",
               hr(),
-              textInput('ylab', 'Y axis label', value = "") ,
-              textInput('xlab', 'X axis label', value = "") ,
+              textInput('ylab', 'Y axis Title', value = "") ,
+              textInput('xlab', 'X axis Title', value = "") ,
               textInput('title', 'Plot Title', value = "") ,
               textInput('subtitle', 'Plot Subtitle', value = "") ,
               radioButtons("titleposition", "Title Positioning:",
@@ -198,19 +198,33 @@ fluidPage(
       
               checkboxInput('rotateyticks', 'Rotate/Customize Y axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotateyticks" ,
-                               sliderInput("ylabelsize", "Y axis label size: (zero to hide)",
-                                           min=0, max=100, value=c(16),step=0.5),
-                               sliderInput("yticksrotateangle", "Y axis labels angle:", min=0, max=360, value=c(0),step=10),
-                               sliderInput("ytickshjust", "Y axis labels horizontal justification:", min=0, max=1, value=c(0.5),step=0.1),
-                               sliderInput("yticksvjust", "Y axis labels vertical justification:", min=0, max=1, value=c(0.5),step=0.1)
+                               inline_ui(
+                                 sliderInput("ylabelsize", "Y axis labels size: (zero to hide)",
+                                           min=0, max=100, value=c(16),step=0.5, width='120px')),
+                               inline_ui(
+                                 sliderInput("yticksrotateangle", "Y axis labels angle:",
+                                           min=0, max=360, value=c(0),step=10, width='120px')),
+                               inline_ui(
+                                 sliderInput("ytickshjust", "Y axis labels horizontal justification:",
+                                           min=0, max=1, value=c(0.5),step=0.1, width='120px')),
+                               inline_ui(
+                                 sliderInput("yticksvjust", "Y axis labels vertical justification:",
+                                             min=0, max=1, value=c(0.5),step=0.1, width='120px'))
               ),
               checkboxInput('rotatexticks', 'Rotate/Customize X axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotatexticks" ,
-                               sliderInput("xlabelsize", "X axis label size: (zero to hide)",
-                                           min=0, max=100, value=c(16),step=0.5),
-                               sliderInput("xticksrotateangle", "X axis labels angle:", min=0, max=360, value=c(20),step=10),
-                               sliderInput("xtickshjust", "X axis labels horizontal justification:", min=0, max=1, value=c(1),step=0.1),
-                               sliderInput("xticksvjust", "X axis labels vertical justification:", min=0, max=1, value=c(1),step=0.1)
+                               inline_ui(
+                                 sliderInput("xlabelsize", "X axis labels size: (zero to hide)",
+                                             min=0, max=100, value=c(16),step=0.5, width='120px')),
+                               inline_ui(
+                                 sliderInput("xticksrotateangle", "X axis labels angle:",
+                                             min=0, max=360, value=c(20),step=10, width='120px')),
+                               inline_ui(
+                                 sliderInput("xtickshjust", "X axis labels horizontal justification:",
+                                             min=0, max=1, value=c(1),step=0.1, width='120px')),
+                               inline_ui(
+                                 sliderInput("xticksvjust", "X axis labels vertical justification:",
+                                             min=0, max=1, value=c(1),step=0.1, width='120px'))
               ),
               checkboxInput('customxticks', 'Custom X axis Ticks ?', value = FALSE),
               conditionalPanel(condition = "input.customxticks" , 
