@@ -33,6 +33,7 @@ function(input, output, session) {
                       value = cols[3]
     )
   })
+  
   observeEvent(input$outsidelogticks, {
     updateCheckboxInput(session = session,inputId = "clip",value = FALSE
     )
@@ -54,9 +55,18 @@ function(input, output, session) {
     updateSelectInput(session = session, inputId = "facetlabeller",
                       selected = "label_value"
     )
-    updateCheckboxInput(session = session,inputId = "facetwrap", value = FALSE
+    updateCheckboxInput(session = session,inputId = "facetwrap",
+                        value = FALSE
     )
   })
+  
+  observeEvent(input$facetswitch %in% c("y","both"), {
+    updateSliderInput(session = session,
+                      inputId = "facettextyangle",
+                      value = 0
+    )
+  },ignoreNULL = TRUE, ignoreInit = TRUE)
+  
   mockFileUpload <- function(name) {
     shinyjs::runjs(paste0('$("#datafile").closest(".input-group").find("input[type=\'text\']").val(\'', name, '\')')) 
     shinyjs::runjs('$("#datafile_progress").removeClass("active").css("visibility", "visible"); $("#datafile_progress .progress-bar").width("100%").text("Upload complete")')
