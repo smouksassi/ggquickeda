@@ -1032,16 +1032,31 @@ fluidPage(
                                      "Jitter Both" = "Default",
                                      "Jitter Custom" = "Custom",
                                      "Side By Side"= "dodge",
-                                     "Top on Top"= "dodgev"
+                                     "Top on Top"= "dodgev",
+                                     "Quasirandom"= "quasirandom",
+                                     "Beeswarm"= "beeswarm"
                                    ),selected="None"
                                    ,inline=TRUE),
                       conditionalPanel(
+                        " input.jitterdirection== 'quasirandom' |
+                          input.jitterdirection== 'beeswarm'",
+                        inline_ui(checkboxInput('groupOnX', 'group on X', value = TRUE, width='120px' )),
+                        inline_ui(numericInput("dodge.width",label = "Dodge Width",
+                                               value = 0, min = 0, step = 0.1, width='120px'))
+                      ),
+                      conditionalPanel(
+                        " input.jitterdirection== 'quasirandom' ",
+                        inline_ui(checkboxInput('qr.varwidth', 'Vary width', value = FALSE, width='120px' )),
+                        inline_ui(numericInput("qr.width",label = "Width",
+                                               value = 0.4, min = 0, step = 0.1, width='120px'))
+                      ),
+                      conditionalPanel(
                         " input.jitterdirection== 'Custom' ",
-                        inline_ui(
-                        numericInput("jittervertical",label = "Vertical Jitter Height",
-                                     value =0.1,min=0,width='120px')) ,
+                        inline_ui(numericInput("jittervertical",label = "Vertical Jitter Height",
+                                               value = 0.1, min = 0, step = 0.1, width='120px')) ,
                         inline_ui(numericInput("jitterhorizontal",
-                                               label = "Horizontal Jitter Width",value =0.1,min=0,width='120px'))
+                                               label = "Horizontal Jitter Width",
+                                               value = 0.1, min = 0, step = 0.1,width='120px'))
                       ),
                       conditionalPanel(
                         " input.jitterdirection== 'dodge' ",

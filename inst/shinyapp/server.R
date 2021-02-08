@@ -3574,6 +3574,18 @@ function(input, output, session) {
         if (input$jitterdirection=="dodgev"){
           positionpoints <-  paste0("position_dodgev(height=",input$pointdodgeheight,")")
         }
+        if (input$jitterdirection=="quasirandom"){
+          positionpoints <-  paste0("position_quasirandom(groupOnX = ",input$groupOnX,
+                                    ", dodge.width = ",input$dodge.width,
+                                    ", width = ",input$qr.width,
+                                    ", varwidth = ",input$qr.varwidth,
+                                    ")")
+        }
+        if (input$jitterdirection=="beeswarm"){
+          positionpoints <-  paste0("position_beeswarm(groupOnX = ",input$groupOnX,
+                                    ", dodge.width = ",input$dodge.width,
+                                    ")")
+        }
         
         p <- attach_source_dep(p, "positionpoints")
         

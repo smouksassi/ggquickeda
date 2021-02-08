@@ -5,6 +5,9 @@
 #' @keywords internal
 #' @export
 #' @importFrom scales identity_trans
+#' @importFrom ggbeeswarm position_beeswarm
+#' @importFrom ggbeeswarm position_quasirandom
+
 GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
                            
                            draw_group = function(data, scales, coordinates, ...) {
