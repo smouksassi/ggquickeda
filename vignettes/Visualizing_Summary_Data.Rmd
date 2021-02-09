@@ -65,7 +65,7 @@ knitr::kable(remdesivirdata)
 We still have to set text formatting options using the group of subtabs in the lower part of the page:  
 
 * Default subtab: **Facet Text Size/Angle/Face**    
-    + Set **Facet Text Angle Y** to 0
+    + Set **Facet Text Angle Y** to 0 (if not automatically set)
     + Check the **Y strip Text Bold**
 
 * Second subtab: **Facet Text Justification**  
@@ -106,7 +106,7 @@ While you can add another variable and manually drag and drop we will demo next 
     + Set **Median** to  'Median/PI'
     + Set **PI Geom:** to  'errorbar'
     + Set **PI %:** to 1 (this ensures that the errorbar goes from the min to max of values)
-    + Check **Show points**
+    + Uncheck **Show lines**  and check **Show points**
     + Set **Median(s) Point(s) Size:** to 6
     
 ![Median/PI options](./sumdata6.png){width=75%}

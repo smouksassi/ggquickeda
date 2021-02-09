@@ -20,15 +20,15 @@ function(input, output, session) {
   # })  
   observeEvent(input$userdefinedcontcolorreset, {
     cols <- c(muted("red"),"white",muted("blue"))
-    updateColourInput(session = session,
+    colourpicker::updateColourInput(session = session,
                       inputId = paste0("colcont1"),
                       value = cols[1]
     )
-    updateColourInput(session = session,
+    colourpicker::updateColourInput(session = session,
                       inputId = paste0("colcont2"),
                       value = cols[2]
     )
-    updateColourInput(session = session,
+    colourpicker::updateColourInput(session = session,
                       inputId = paste0("colcont3"),
                       value = cols[3]
     )
