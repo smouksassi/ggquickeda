@@ -3735,6 +3735,10 @@ function(input, output, session) {
       #### Boxplot Section START
       
       if (input$boxplotaddition) {
+        positionboxplot <-  paste0("position_dodge2(preserve = '", input$bxp.preserve, "'",  
+                                                       ", width =  ", input$bxp.width, ")")
+        p <- attach_source_dep(p, "positionboxplot")
+        
         if (input$groupin != 'None') {
           if (!input$boxplotignoregroup) {
             if (!input$boxplotignorecol) {
@@ -3745,7 +3749,8 @@ function(input, output, session) {
                 show.legend = input$boxplotshowlegend,
                 alpha = input$boxplotalpha,
                 outlier.alpha = input$boxplotoutlieralpha,
-                outlier.size = input$boxplotoutliersize
+                outlier.size = input$boxplotoutliersize,
+                position = eval(parse(text=positionboxplot))
               )
             }
             if (input$boxplotignorecol) {
@@ -3758,7 +3763,8 @@ function(input, output, session) {
                 show.legend = input$boxplotshowlegend,
                 alpha = input$boxplotalpha,
                 outlier.alpha = input$boxplotoutlieralpha,
-                outlier.size = input$boxplotoutliersize
+                outlier.size = input$boxplotoutliersize,
+                position = eval(parse(text=positionboxplot))
               )
             }
           }
@@ -3772,7 +3778,8 @@ function(input, output, session) {
               show.legend = input$boxplotshowlegend,
               alpha = input$boxplotalpha,
               outlier.alpha = input$boxplotoutlieralpha,
-              outlier.size = input$boxplotoutliersize
+              outlier.size = input$boxplotoutliersize,
+              position = eval(parse(text=positionboxplot))
             )
           }
           if (input$boxplotignorecol) {
@@ -3784,13 +3791,71 @@ function(input, output, session) {
               col = input$boxcolline,
               alpha = input$boxplotalpha,
               outlier.alpha = input$boxplotoutlieralpha,
-              outlier.size = input$boxplotoutliersize
+              outlier.size = input$boxplotoutliersize,
+              position = eval(parse(text=positionboxplot))
             )
           }
         }
       }
       #### Boxplot Section END
       
+      #### Violin Section START
+      
+      if (input$violinaddition) {
+        positionviolin <-  paste0("position_dodge(preserve = '", input$viol.preserve, "'",  
+                                   ", width =  ", input$viol.width, ")")
+        p <- attach_source_dep(p, "positionviolin")
+        
+        if (input$groupin != 'None') {
+          if (!input$violinignoregroup) {
+            if (!input$violinignorecol) {
+              p <- p + geom_violin(
+                aes_string(group = input$groupin),
+                alpha = input$violinalpha,
+                show.legend = input$violinshowlegend,
+                position = eval(parse(text=positionviolin)),
+                scale = input$violinscale,
+                draw_quantiles =  if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+              )
+            }
+            if (input$violinignorecol) {
+              p <- p + geom_violin(
+                aes_string(group = input$groupin),
+                col = input$violincolline,
+                alpha = input$violinalpha,
+                show.legend = input$violinshowlegend,
+                position = eval(parse(text=positionviolin)),
+                scale = input$violinscale,
+                draw_quantiles =  if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+              )
+            }
+          }
+        }
+        if (input$groupin == 'None' || input$violinignoregroup) {
+          if (!input$violinignorecol) {
+            p <- p + geom_violin(
+              aes(group = NULL),
+              alpha = input$violinalpha,
+              show.legend = input$violinshowlegend,
+              position = eval(parse(text=positionviolin)),
+              scale = input$violinscale,
+              draw_quantiles =  if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+              )
+          }
+          if (input$violinignorecol) {
+            p <- p + geom_violin(
+              aes(group = NULL),
+              col = input$violincolline,
+              alpha = input$violinalpha,
+              show.legend = input$violinshowlegend,
+              position = eval(parse(text=positionviolin)),
+              scale = input$violinscale,
+              draw_quantiles = if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+            )
+          }
+        }
+      }
+      #### Violin Section END      
       
       ###### Mean section  START
       if (input$Mean!="None") {

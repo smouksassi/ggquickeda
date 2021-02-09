@@ -1170,39 +1170,67 @@ fluidPage(
                 )
               ),#tabpanel
               tabPanel(
-                "Boxplots",
+                "Boxplots/Violins",
                 value = "box_plots",
                 fluidRow(
-                  column (
-                    4,
-                    checkboxInput('boxplotaddition', 'Add a Boxplot ? (makes sense if x variable is categorical and
-                                  you Group By a sensible choice. By default the x variable is used for grouping)'),
-                    checkboxInput('boxplotignoregroup', 'Ignore Mapped Group ? (can be helpful to superpose a loess or median on top of the boxplot)',value = TRUE)
+                  column (3,
+                    checkboxInput('boxplotaddition', 'Add a Boxplot ?'),
+                    conditionalPanel("input.boxplotaddition ",
+                    checkboxInput('boxplotignoregroup', 'Auto Group ?',
+                                  value = TRUE),
+                    checkboxInput('boxplotvarwidh', "Variable Boxes width ?"),
+                    checkboxInput('boxplotnotch', "Median Notches ?" ),
+                    sliderInput("boxplotalpha", "Boxplot Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                    checkboxInput('boxplotshowlegend', "Show Boxplot Legend ?", value=TRUE)
+                  )
                   ),
-                  column (
-                    4,
-                    checkboxInput('boxplotvarwidh', "Boxes proportional to the square-roots of the number of observations ?" ),
-                    checkboxInput('boxplotnotch', "Notched Boxes ?.
-                                  Notches are used to compare groups; if the notches of two boxes do not overlap, this suggests that the medians are significantly different." ),
-                    checkboxInput('boxplotshowlegend', "Show Legend ?", value=TRUE)
-                    ),
-                  
-                  column(
-                    4,
+                  column(3,
+                         conditionalPanel("input.boxplotaddition ",
                     checkboxInput('boxplotignorecol', 'Ignore Mapped Color'),
-                    conditionalPanel(
-                      " input.boxplotignorecol " ,
+                    conditionalPanel(" input.boxplotignorecol " ,
                       colourpicker::colourInput('boxcolline','Box Outlines Color',value="black",
                                                 showColour = "both",allowTransparent=TRUE,
                                                 returnName=TRUE)
                     ),
-                    sliderInput("boxplotalpha", "Boxplot Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
                     sliderInput("boxplotoutlieralpha", "Outlier Transparency:", min=0, max=1, value=c(0.5),step=0.01),
-                    sliderInput("boxplotoutliersize", "Outliers Size:", min=0, max=6, value=c(1),step=0.1)
+                    sliderInput("boxplotoutliersize", "Outliers Size:", min=0, max=6, value=c(1),step=0.1),
+                    inline_ui(numericInput("bxp.width",label = "Dodge width",
+                                           value = 0.75, min = 0, step = 0.1, width='120px')),
+                    inline_ui(radioButtons("bxp.preserve", "Dodge preserve style",
+                                           choices = c("total"= "total", "single" = "single"),
+                                           selected = "total", inline = TRUE, width='120px'))
                   )
-                  
+                  ),
+                  column(3,
+                         checkboxInput('violinaddition', 'Add a Violin Density ?'),
+                         conditionalPanel("input.violinaddition ",
+                                          checkboxInput('violinignoregroup', 'Auto Group ?',
+                                                        value = TRUE),
+                                          sliderInput("violinalpha", "Violin Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                                          radioButtons("violinscale", "Violin scaling",
+                                                                 choices = c("area"= "area", "count" = "count", "width" = "width"),
+                                                                 selected = "area", inline = TRUE),
+                                          checkboxInput('violinshowquantile', "Show Violin quantiles?", value=FALSE),
+                                          checkboxInput('violinshowlegend', "Show Violin Legend ?", value=FALSE)
+                  )
+                  ),
+                  column(3,
+                         conditionalPanel("input.violinaddition ",
+                                          checkboxInput('violinignorecol', 'Ignore Mapped Color'),
+                                          conditionalPanel(" input.violinignorecol " ,
+                                                           colourpicker::colourInput('violincolline','Violin Outlines Color',
+                                                                                     value="black",
+                                                                                     showColour = "both",allowTransparent=TRUE,
+                                                                                     returnName=TRUE)
+                                          ),
+                                          inline_ui(numericInput("viol.width",label = "Dodge width",
+                                                                 value = 0.75, min = 0, step = 0.1, width='120px')),
+                                          inline_ui(radioButtons("viol.preserve", "Dodge preserve style",
+                                                                 choices = c("total"= "total", "single" = "single"),
+                                                                 selected = "total", inline = TRUE, width='120px'))
+                  )
+                  )
                 )#fluidrow 
-                
                   ),
               tabPanel(
                 "Histograms/Density",
