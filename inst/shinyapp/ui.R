@@ -227,7 +227,10 @@ fluidPage(
                                               c("default" = "default",
                                                 "Comma separated" = "scientificx",
                                                 "Percent" = "percentx"))),
-                       
+                       inline_ui(sliderInput("y_label_text_width", "N Characters to Wrap Y Labels:",
+                                   min=5, max=100, value=c(25),step=1,width = '120px')),
+                       inline_ui(sliderInput("x_label_text_width", "N Characters to Wrap X Labels:",
+                                   min=5, max=100, value=c(25),step=1,width = '120px')),
               checkboxInput('rotateyticks', 'Rotate/Customize Y axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotateyticks" ,
                                inline_ui(

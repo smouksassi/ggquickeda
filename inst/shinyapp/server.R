@@ -6578,6 +6578,13 @@ function(input, output, session) {
       p <- attach_source_dep(p, "expansionobjy")
       p <- attach_source_dep(p, "expansionobjx")
       
+      if (!is.null(plotdata$xvalues) && !is.numeric(plotdata[,"xvalues"])) {
+        p <- p  + scale_x_discrete(labels = label_wrap(input$x_label_text_width))
+      }
+      if (!is.null(plotdata$yvalues) && !is.numeric(plotdata[,"yvalues"])) {
+        p <- p  + scale_y_discrete(labels = label_wrap(input$y_label_text_width))
+      }
+      
       if (!is.null(input$y) && length(input$y) >= 2 && input$ylab=="" ){
         p <- p + ylab("Y variable(s)")
       }

@@ -4,8 +4,11 @@
 * Allowed user specified zoom when more than one x and or y are active
 * UI updates and auto hiding for univariate plots, pairs, km
 * Allowed logticks and rug marks to be on the outside
+* Boxplots UI rework
+* Added Violin plots
+* Added `position_quasirandom` and `position_beeswarm`
 * coordinates cartesian clip can now be set to off
-* Added multiple enhancements for theme control like removing panel border, plot.tag.position and controlling the X and Y Axes Titles formatting
+* Added multiple enhancements for `theme` control like `panel.border`, `plot.tag.position` and X and Y Axes Titles formatting
 * Added multiple enhancements and options for ggpairs
 * Readme updated
 * summary level data vignette updated

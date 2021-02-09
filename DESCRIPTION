@@ -25,6 +25,7 @@ Imports:
     DT,
     Formula,
     GGally (>= 2.1.0),
+    ggbeeswarm,
     ggplot2 (>= 3.3.2),
     ggpmisc,
     ggrepel (>= 0.7.0),
