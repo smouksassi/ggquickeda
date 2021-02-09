@@ -1,18 +1,18 @@
 # ggquickeda 0.2.0
 * Added options and fixes for histograms, barplots and densities
-* When percent x/y axis labels option is selected it now works for univariate plots
-* Allowed user specified zoom when more than one x and or y are active
-* UI updates and auto hiding for univariate plots, pairs, km
-* Allowed logticks and rug marks to be on the outside
-* Boxplots UI rework
 * Added Violin plots
-* Added `position_quasirandom` and `position_beeswarm`
-* coordinates cartesian clip can now be set to off
+* Added points `position_quasirandom` and `position_beeswarm`
 * Added multiple enhancements for `theme` control like `panel.border`, `plot.tag.position` and X and Y Axes Titles formatting
 * Added multiple enhancements and options for ggpairs
+* logticks and rug marks can now be on the outside of plot panel
+* coordinates cartesian clip can now be set to off
+* x/y axis percent and comma labels format now works for univariate plots
+* x/y zoom now works when more than one x and/or y are selected
+* long x/y discrete axes labels can now be wrapped to specified length
+* UI updates and auto hiding for univariate plots, pairs, km
+* Boxplots UI rework
 * Readme updated
 * summary level data vignette updated
-
 
 # ggquickeda 0.1.9
 * Made errorbars for Median/PI and Mean/CI ignore mapped size
