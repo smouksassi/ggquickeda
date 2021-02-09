@@ -7,6 +7,9 @@
 #' @importFrom scales identity_trans
 #' @importFrom ggbeeswarm position_beeswarm
 #' @importFrom ggbeeswarm position_quasirandom
+#' @importFrom ggstance position_dodgev
+#' @importFrom scales percent
+#' @importFrom scales percent_format
 
 GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
                            
