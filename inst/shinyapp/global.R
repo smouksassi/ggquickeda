@@ -4,6 +4,7 @@ suppressMessages({
   library(DT)
   library(GGally)
   library(ggplot2)
+  library(ggbeeswarm)
   library(ggpmisc)
   library(ggpubr)
   library(ggrepel)
