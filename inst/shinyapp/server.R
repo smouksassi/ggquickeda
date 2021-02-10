@@ -4353,12 +4353,15 @@ function(input, output, session) {
         smoothlinesize  <- input$smoothlinesize
         smoothlinealpha <- input$smoothlinealpha
         smoothCItransparency <- input$smoothCItransparency
+        p <- attach_source_dep(p, "smoothlinesize")
+        p <- attach_source_dep(p, "smoothlinealpha")
+        p <- attach_source_dep(p, "smoothCItransparency")
         
         if(input$smoothmethod=="loess") {
           familyargument <- input$loessfamily
           methodsargument<- list(family = familyargument,degree=input$loessdegree) 
         }
-        
+        if(input$smoothmethod!="emax" ) {
         if(input$smoothmethod=="lm") {
           familyargument<- "gaussian"
           methodsargument<- list(family = familyargument) 
@@ -4373,6 +4376,9 @@ function(input, output, session) {
           familyargument<- "poisson"
           methodsargument<- list(family = familyargument) 
         }
+        p <- attach_source_dep(p, "methodsargument")
+        p <- attach_source_dep(p, "familyargument")
+        }
         
         if(input$smoothmethod=="emax" ) {
           
@@ -4384,17 +4390,22 @@ function(input, output, session) {
                                                                                       K = input$ec50start,
                                                                                      bsl= input$e0start))
           if(!input$customemaxstart &&  input$e0fit)   methodsargument<- NULL
-          
+          p <- attach_source_dep(p, "methodsargument")
         }
-  
-
         smoothmethodargument<- ifelse(input$smoothmethod%in%c("glm1","glm2"),
                                       "glm",input$smoothmethod)
         spanplot <- input$loessens
         levelsmooth<- input$smoothselevel
         colsmooth <- input$colsmooth
+        p <- attach_source_dep(p, "spanplot")
+        p <- attach_source_dep(p, "levelsmooth")
+        p <- attach_source_dep(p, "colsmooth")
+        p <- attach_source_dep(p, "smoothmethodargument")
+        
         if (input$weightin == 'None') aesweight <- 1L
         if (input$weightin != 'None') aesweight <- as.symbol(input$weightin)
+        
+        p <- attach_source_dep(p, "aesweight")
         
         if ( input$ignoregroup) {
           if (!input$smoothignorecol && !input$smoothmethod=="emax") {
@@ -4810,32 +4821,19 @@ function(input, output, session) {
         positionmedian<-  paste0("position_dodge(width=",input$medianerrbar,")")
       }
       p <- attach_source_dep(p, "positionmedian")
+      if (input$medianignorecol) {
+        mediancoll <- input$colmedianl
+        mediancolp <- input$colmedianp
+        p <- attach_source_dep(p, "mediancoll")
+        p <- attach_source_dep(p, "mediancolp")
+        
+      }
       }
       if (!input$medianignoregroup) {
-        
-        if (!input$medianignorecol) {
-          
-          if (input$Median=="Median") {
+          if (!input$medianignorecol) {
             
-            if(input$medianlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",
-                                alpha=input$alphamedianl,
-                                position = eval(parse(text=positionmedian)))
-            
-            if(input$medianlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",
-                                size=input$medianlinesize,
-                                alpha=input$alphamedianl,
-                                position = eval(parse(text=positionmedian)))
-            
-            } #input$Median=="Median"
-            
-          
-          if (input$Median=="Median/PI" && input$pointsizein == 'None'){
-            
-            if (input$geommedianPI== "ribbon"){
+          if (input$Median!="None" && input$pointsizein == 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
                p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), 
@@ -4844,7 +4842,7 @@ function(input, output, session) {
                             col=NA,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -4852,38 +4850,23 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
-              p <- p + stat_sum_df("median_hilow", geom = "line", stat ="smooth",
-                                   fun.args=list(conf.int=input$PI),
-                                   size=input$medianlinesize,
-                                   alpha=input$alphamedianl,
-                                   position = eval(parse(text=positionmedian)))
-              
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                size=input$medianlinesize,
+                                alpha=input$alphamedianl,
+                                position = eval(parse(text=positionmedian)))
             }
-            
-            if ( input$sepguides ){
-              
-              p <-   p + 
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) )
-            }
-
-            
           }
           
-          if (input$Median=="Median/PI" && input$pointsizein != 'None'){
-
-            if (input$geommedianPI== "ribbon"){
+          if (input$Median!="None" && input$pointsizein != 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),
                             alpha=input$PItransparency,col=NA,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -4891,34 +4874,24 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines) {
-              
-            p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                        fun.args=list(conf.int=input$PI),alpha=input$alphamedianl,
-                        position = eval(parse(text=positionmedian)))
+            p <- p +
+              stat_sum_single(median, geom = "line",
+                              alpha=input$alphamedianl,
+                              position = eval(parse(text=positionmedian)))
             }
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) )
-            }
-
-            
           }
           
           if(input$Median!="None" && !input$forcemedianshape)    {
-            
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",alpha=input$alphamedianp,
+                stat_sum_single(median, geom = "point",
+                                alpha=input$alphamedianp,
                                 position = eval(parse(text=positionmedian)))
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",size=input$medianpointsize,
+                stat_sum_single(median, geom = "point",
+                                size=input$medianpointsize,
                                 alpha=input$alphamedianp,
                                 position = eval(parse(text=positionmedian)))
           }
@@ -4926,7 +4899,8 @@ function(input, output, session) {
           if(input$Median!="None" && input$forcemedianshape)    {
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",alpha=input$alphamedianp,
+                stat_sum_single(median, geom = "point",
+                                alpha=input$alphamedianp,
                                 shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
             
@@ -4959,32 +4933,11 @@ function(input, output, session) {
                            position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }  
-        } # do not ignore col
+        } # do not ignore col do not ignore group
  
         if (input$medianignorecol) {
-          mediancoll <- input$colmedianl
-          mediancolp <- input$colmedianp
-          
-          if (input$Median=="Median") {
-            if(input$medianlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",
-                                col=mediancoll,
-                                alpha=input$alphamedianl,
-                                position = eval(parse(text=positionmedian)))
-            
-            if(input$medianlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",col=mediancoll,
-                                alpha=input$alphamedianl,
-                                size=input$medianlinesize,
-                                position = eval(parse(text=positionmedian)))
-
-          }
-          
-          if (input$Median=="Median/PI" && input$pointsizein == 'None'){
-
-            if (input$geommedianPI== "ribbon"){
+          if (input$Median!="None" && input$pointsizein == 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),
@@ -4992,7 +4945,7 @@ function(input, output, session) {
                             size=input$medianlinesize,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -5002,37 +4955,25 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
-              p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                                      fun.args=list(conf.int=input$PI),
-                                      size=input$medianlinesize,
-                                      alpha=input$alphamedianl,
-                                      col=mediancoll,
-                                      position = eval(parse(text=positionmedian)))
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                col=mediancoll,
+                                alpha=input$alphamedianl,
+                                size=input$medianlinesize,
+                                position = eval(parse(text=positionmedian)))
               
             }
-              
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) ) 
-            }
-
             }
           
-          if (input$Median=="Median/PI" && input$pointsizein != 'None'){
-
-            if (input$geommedianPI== "ribbon"){
+          if (input$Median!="None" && input$pointsizein != 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),
                             alpha=input$PItransparency,col=NA,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -5041,23 +4982,12 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
-            p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                                    fun.args=list(conf.int=input$PI),
-                                    alpha=input$alphamedianl,
-                                    col=mediancoll,
-                                    position = eval(parse(text=positionmedian)))
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                col=mediancoll,
+                                alpha=input$alphamedianl,
+                                position = eval(parse(text=positionmedian)))
             }
-            
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) ) 
-            }
-
           }
           
           
@@ -5079,7 +5009,6 @@ function(input, output, session) {
           }
           
           if(input$Median!="None" && input$forcemedianshape)    {
-            
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",
@@ -5123,23 +5052,8 @@ function(input, output, session) {
       
       if (input$medianignoregroup) {
         if (!input$medianignorecol) {
-          if (input$Median=="Median") {
-            
-            if(input$medianlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",aes(group=NULL),alpha=input$alphamedianl,
-                                position = eval(parse(text=positionmedian)))
-            
-            if(input$medianlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",aes(group=NULL),size=input$medianlinesize,
-                                alpha=input$alphamedianl,
-                                position = eval(parse(text=positionmedian)))
-           }
-          
-          if (input$Median=="Median/PI" && input$pointsizein == 'None'){
-
-            if (input$geommedianPI== "ribbon"){
+          if (input$Median!="None" && input$pointsizein == 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
@@ -5147,7 +5061,7 @@ function(input, output, session) {
                             size=input$medianlinesize,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -5156,34 +5070,24 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
-              p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                                      fun.args=list(conf.int=input$PI),aes(group=NULL),
-                                      alpha=input$alphamedianl,
-                                      size=input$medianlinesize,
-                                      position = eval(parse(text=positionmedian))) 
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                aes(group=NULL),
+                                size=input$medianlinesize,
+                                alpha=input$alphamedianl,
+                                position = eval(parse(text=positionmedian)))
             }
-
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) )  
-            }
-
           }
-          
-          if (input$Median=="Median/PI" && input$pointsizein != 'None'){
-            if (input$geommedianPI== "ribbon"){
+
+          if (input$Median!="None" && input$pointsizein != 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -5191,19 +5095,11 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
-            p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                                    fun.args=list(conf.int=input$PI),aes(group=NULL),
-                                    alpha=input$alphamedianl,
-                                    position = eval(parse(text=positionmedian)))
-            }
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) )  
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                aes(group=NULL),
+                                alpha=input$alphamedianl,
+                                position = eval(parse(text=positionmedian)))
             }
           }
           
@@ -5211,30 +5107,34 @@ function(input, output, session) {
             
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,
+                stat_sum_single(median, geom = "point",
+                                aes(group=NULL),
+                                alpha=input$alphamedianp,
                                 position = eval(parse(text=positionmedian)))
             
             
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",aes(group=NULL),
+                stat_sum_single(median, geom = "point",
+                                aes(group=NULL),
                                 alpha=input$alphamedianp,
                                 size=input$medianpointsize,
                                 position = eval(parse(text=positionmedian)))
           }
           
           if(input$Median!="None" && input$forcemedianshape)    {
-            
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",aes(group=NULL),alpha=input$alphamedianp,
+                stat_sum_single(median, geom = "point",
+                                aes(group=NULL),
+                                alpha=input$alphamedianp,
                                 shape=translate_shape_string(input$medianshapes),
                                 position = eval(parse(text=positionmedian)))
-            
-            
+
             if(input$medianpoints && input$pointsizein == 'None')           
               p <- p + 
-                stat_sum_single(median, geom = "point",aes(group=NULL),
+                stat_sum_single(median, geom = "point",
+                                aes(group=NULL),
                                 alpha=input$alphamedianp,
                                 size=input$medianpointsize,
                                 shape=translate_shape_string(input$medianshapes),
@@ -5266,30 +5166,9 @@ function(input, output, session) {
           
           
         }#!input$medianignorecol
-        
-        
         if (input$medianignorecol) {
-          mediancoll <- input$colmedianl
-          mediancolp <- input$colmedianp
-          
-          if (input$Median=="Median") {
-            if(input$medianlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",col=mediancoll,
-                                alpha=input$alphamedianl,
-                                aes(group=NULL),
-                                position = eval(parse(text=positionmedian)))
-            if(input$medianlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(median, geom = "line",col=mediancoll,alpha=input$alphamedianl,
-                                aes(group=NULL),size=input$medianlinesize,
-                                position = eval(parse(text=positionmedian)))
-            
-          }
-          
-          if (input$Median=="Median/PI" && input$pointsizein == 'None'){
-
-            if (input$geommedianPI== "ribbon"){
+          if (input$Median!="None" && input$pointsizein == 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
@@ -5297,7 +5176,7 @@ function(input, output, session) {
                             size=input$medianlinesize,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -5306,37 +5185,25 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
-              p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                                      fun.args=list(conf.int=input$PI),aes(group=NULL),
-                                      alpha=input$alphamedianl,
-                                      size=input$medianlinesize,
-                                      col=mediancoll,
-                                      position = eval(parse(text=positionmedian))) 
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                col=mediancoll,
+                                alpha=input$alphamedianl,
+                                aes(group=NULL),
+                                size=input$medianlinesize,
+                                position = eval(parse(text=positionmedian)))
               
             }
-
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) )  
-            }
-
-          }
-          
-          if (input$Median=="Median/PI" && input$pointsizein != 'None'){
-            
-            if (input$geommedianPI== "ribbon"){
+          }   
+          if (input$Median!="None" && input$pointsizein != 'None'){
+            if (input$geommedianPI== "ribbon" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,
                             fun.args=list(conf.int=input$PI),aes(group=NULL),
                             alpha=input$PItransparency,col=NA,
                             position = eval(parse(text=positionmedian)))
             }
-            if (input$geommedianPI== "errorbar"){
+            if (input$geommedianPI== "errorbar" && input$Median=="Median/PI"){
               p <- p + 
                 stat_sum_df("median_hilow", geom = input$geommedianPI,aes(group=NULL), 
                             fun.args=list(conf.int=input$PI), width = input$medianerrbar,
@@ -5345,27 +5212,15 @@ function(input, output, session) {
                             position = eval(parse(text=positionmedian)))
             }
             if(input$medianlines){
-            p <- p +    stat_sum_df("median_hilow", geom = "line", stat ="smooth"  ,
-                                    fun.args=list(conf.int=input$PI),aes(group=NULL),
-                                    alpha=input$alphamedianl,
-                                    col=mediancoll,
-                                    position = eval(parse(text=positionmedian)))
-            
+              p <- p + 
+                stat_sum_single(median, geom = "line",
+                                col=mediancoll,
+                                alpha=input$alphamedianl,
+                                aes(group=NULL),
+                                position = eval(parse(text=positionmedian)))
             }
-            if ( input$sepguides ){
-              p <-   p +
-                guides(
-                  color = guide_legend(paste("Median"),
-                                       override.aes = list(shape =NA,fill=NA)),
-                  fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
-                                       override.aes = list(shape =NA ,linetype =0,alpha=0.5 )
-                  ) )
-            }
-          }
-
-                    
+          }       
           if(input$Median!="None" && !input$forcemedianshape)    {
-            
             if(input$medianpoints && input$pointsizein != 'None')           
               p <- p + 
                 stat_sum_single(median, geom = "point",col=mediancolp,
@@ -5426,8 +5281,30 @@ function(input, output, session) {
         }
       }
       
-      
-      
+      if ( input$sepguides &&
+           input$Median=="Median/PI" &&
+           input$geommedianPI== "ribbon" ){
+        p <-   p +
+          guides(
+            shape = guide_legend(paste("Median")),
+            color = guide_legend(paste("Median"),
+                                 override.aes = list(shape =NA,fill=NA)),
+            fill  = guide_legend(paste( 100*input$PI,"% prediction interval"),
+                                 override.aes = list(shape =NA ,linetype = 0 )
+            ) )
+      }
+      if ( input$sepguides &&
+           input$Median=="Median/PI" &&
+           input$geommedianPI== "errorbar" ){
+        p <-   p +
+          guides(
+            shape = guide_legend(paste("Median")),
+            color = guide_legend(paste("Median"),
+                                 override.aes = list(shape =NA,fill=NA)),
+            linetype  = guide_legend(paste( 100*input$PI,"% prediction interval"),
+                                 override.aes = list(shape =NA ,fill =NA )
+            ) )
+      }
       ###### Median PI section  END
       
       

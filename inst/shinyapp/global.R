@@ -6,6 +6,7 @@ suppressMessages({
   library(ggplot2)
   library(ggbeeswarm)
   library(ggpmisc)
+  library(ggstance)
   library(ggpubr)
   library(ggrepel)
   library(ggquickeda)
@@ -308,3 +309,10 @@ my.render.cat <- function (x, ..., na.is.category = FALSE)
                                    if (na.is.category) PCT else PCTnoNA))))
 }
 
+GeomErrorbar$draw_key  <-   function (data, params, size) {
+  data$linetype[is.na(data$linetype)] <- 0 
+  segmentsGrob(c(0.2, 0.2, 0.5), c(0.2, 0.8, 0.2),c(0.8, 0.8, 0.5),c(0.2, 0.8, 0.8),
+               gp = gpar(col = alpha(data$colour,
+                                     data$alpha), lwd = data$size * .pt,
+                         lty = data$linetype,          lineend = "butt"),
+               arrow = params$arrow) }
