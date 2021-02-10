@@ -3981,8 +3981,8 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
+                           fun.args = list(nroundlabel=input$nroundmeandigits),
                            alpha=input$alphameanlabel,
-                           fun = mean,
                            fontface = "bold",
                            position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
@@ -3990,8 +3990,11 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanN)  {
             p <-   p   +
               stat_summary(fun.data = give.n,  geom = input$geommeanlabel,
+                           fun.args = list(nposition=input$mean_N_position,
+                                           mult=input$mean_N_mult,
+                                           add=input$mean_N_add),
                            alpha=input$alphameanlabel,
-                           fun = mean, fontface = "bold",
+                           fontface = "bold",
                            position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
@@ -4122,15 +4125,23 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
+                           fun.args = list(nroundlabel=input$nroundmeandigits),
                            alpha=input$alphameanlabel,
-                           fun = mean, fontface = "bold",
-                           col=meancolp,position = eval(parse(text=positionmean)),
+                           fontface = "bold",
+                           col=meancolp,
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Mean!="None" && input$meanN)  {
             p <-   p   +
-              stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
-                           fun = mean, fontface = "bold", col=meancolp,position = eval(parse(text=positionmean)),
+              stat_summary(fun.data = give.n,  geom = input$geommeanlabel,
+                           fun.args = list(nposition=input$Nmean_N_position,
+                                           mult=input$mean_N_mult,
+                                           add=input$mean_N_add),
+                           alpha=input$alphameanlabel,
+                           fontface = "bold",
+                           col=meancolp,
+                           position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -4247,18 +4258,22 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
+                           fun.args = list(nroundlabel=input$nroundmeandigits),
                            alpha=input$alphameanlabel,
                            aes(group=NULL),
-                           fun = mean, fontface = "bold",
+                           fontface = "bold",
                            position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Mean!="None" && input$meanN)  {
             p <-   p   +
               stat_summary(fun.data = give.n,  geom = input$geommeanlabel,
+                           fun.args = list(nposition=input$mean_N_position,
+                                           mult=input$mean_N_mult,
+                                           add=input$mean_N_add),
                            alpha=input$alphameanlabel,
                            aes(group=NULL),
-                           fun = mean, fontface = "bold",
+                           fontface = "bold",
                            position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
@@ -4378,17 +4393,26 @@ function(input, output, session) {
 
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
-              stat_summary(fun.data = mean.n, geom = input$geommeanlabel,alpha=input$alphameanlabel,
-                           col=meancolp,aes(group=NULL),
-                           fun = mean, fontface = "bold",
+              stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
+                           fun.args = list(nroundlabel=input$nroundmeandigits),
+                           alpha=input$alphameanlabel,
+                           col=meancolp,
+                           aes(group=NULL),
+                           fontface = "bold",
                            position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)
+                           
           }
           if (input$Mean!="None" && input$meanN)  {
             p <-   p   +
-              stat_summary(fun.data = give.n,  geom = input$geommeanlabel,alpha=input$alphameanlabel,
-                           col=meancolp,aes(group=NULL),
-                           fun = mean, fontface = "bold",
+              stat_summary(fun.data = give.n,  geom = input$geommeanlabel,
+                           fun.args = list(nposition=input$mean_N_position,
+                                           mult=input$mean_N_mult,
+                                           add=input$mean_N_add),
+                           alpha=input$alphameanlabel,
+                           col=meancolp,
+                           aes(group=NULL),
+                           fontface = "bold",
                            position = eval(parse(text=positionmean)),
                            show.legend=FALSE,size=6, seed=1234)      
           }
@@ -4990,14 +5014,22 @@ function(input, output, session) {
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
-              stat_summary(fun.data = median.n,geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold",position = eval(parse(text=positionmedian)),
+              stat_summary(fun.data = median.n,geom = input$geommedianlabel,
+                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           alpha=input$alphamedianlabel,
+                           fontface = "bold",
+                           position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
-              stat_summary(fun.data = give.n, geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold", position = eval(parse(text=positionmedian)),
+              stat_summary(fun.data = give.n, geom = input$geommedianlabel,
+                           fun.args = list(nposition=input$median_N_position,
+                                           mult=input$median_N_mult,
+                                           add=input$median_N_add),
+                           alpha=input$alphamedianlabel,
+                           fontface = "bold",
+                           position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }  
         } # do not ignore col
@@ -5139,14 +5171,23 @@ function(input, output, session) {
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
-              stat_summary(fun.data = median.n,geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold",colour=mediancoll,position = eval(parse(text=positionmedian)),
+              stat_summary(fun.data = median.n, geom = input$geommedianlabel,
+                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           alpha=input$alphamedianlabel,
+                           fontface = "bold",
+                           colour=mediancoll,
+                           position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)
           }
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
-              stat_summary(fun.data = give.n, geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold", colour=mediancolp,position = eval(parse(text=positionmedian)),
+              stat_summary(fun.data = give.n, geom = input$geommedianlabel,
+                           fun.args = list(nposition=input$median_N_position,
+                                           mult=input$median_N_mult,
+                                           add=input$median_N_add),
+                           alpha=input$alphamedianlabel,
+                           fontface = "bold", colour=mediancolp,
+                           position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }       
           
@@ -5275,15 +5316,24 @@ function(input, output, session) {
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
-              stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold",position = eval(parse(text=positionmedian)), #fill="white",
+              stat_summary(fun.data = median.n, geom = input$geommedianlabel,
+                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           alpha=input$alphamedianlabel,
+                           aes(group=NULL),
+                           fontface = "bold",
+                           position = eval(parse(text=positionmedian)), #fill="white",
                            show.legend=FALSE,
                            size=6, seed=1234)
           }
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
-              stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold",position = eval(parse(text=positionmedian)), #fill="white",
+              stat_summary(fun.data = give.n, geom = input$geommedianlabel,
+                           fun.args = list(nposition=input$median_N_position,
+                                           mult=input$median_N_mult,
+                                           add=input$median_N_add),
+                           alpha=input$alphamedianlabel,
+                           aes(group=NULL),
+                           fontface = "bold",position = eval(parse(text=positionmedian)), #fill="white",
                            show.legend=FALSE,size=6, seed=1234)      
           }
           
@@ -5425,14 +5475,23 @@ function(input, output, session) {
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
-              stat_summary(fun.data = median.n, aes(group=NULL),geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold",colour=mediancoll,
+              stat_summary(fun.data = median.n,geom = input$geommedianlabel,
+                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           alpha=input$alphamedianlabel,
+                           aes(group=NULL),
+                           fontface = "bold",
+                           colour=mediancoll,
                            position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)}
           if (input$Median!="None" && input$medianN)  {
             p <-   p   +
-              stat_summary(fun.data = give.n, aes(group=NULL), geom = input$geommedianlabel,alpha=input$alphamedianlabel,
-                           fun = median, fontface = "bold", colour=mediancolp,
+              stat_summary(fun.data = give.n, geom = input$geommedianlabel,
+                           fun.args = list(nposition=input$median_N_position,
+                                           mult=input$median_N_mult,
+                                           add=input$median_N_add),
+                           alpha=input$alphamedianlabel,
+                           aes(group=NULL),
+                           fontface = "bold", colour=mediancolp,
                            position = eval(parse(text=positionmedian)),
                            show.legend=FALSE,size=6, seed=1234)      
           }

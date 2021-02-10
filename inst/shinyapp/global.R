@@ -64,17 +64,27 @@ stat_sum_single <- function(fun, geom="point", ...) {
   stat_summary(fun = fun,  geom=geom,  ...)
 }
 
-median.n <- function(x){
+median.n <- function(x, nroundlabel = 2){
   return(c(y = ifelse(median(x)<0,median(x),median(x)),
-           label = round(median(x),2))) 
+           label = round(median(x),nroundlabel))) 
 }
-give.n <- function(x){
-  return(c(y = min(x)*1,  label = length(x))) 
+mean.n <- function(x, nroundlabel = 2){
+  return(c(y = ifelse(mean(x)<0,mean(x),mean(x)),
+           label = round(mean(x),nroundlabel))) 
 }
 
-mean.n <- function(x){
-  return(c(y = ifelse(mean(x)<0,mean(x),mean(x)),
-           label = round(mean(x),2))) 
+give.n <- function(x, nposition = c("min","max","below","up"),
+                   mult = 1, add = 0
+){
+  if ( nposition == "below"){
+    yposition <- -Inf
+  } else if (nposition == "up")  {
+    yposition <- Inf
+  } else if (nposition == "min"){
+    yposition <- min(x)*mult + add 
+  } else 
+    yposition <- max(x)*mult + add 
+  return(c(y = yposition,  label = length(x))) 
 }
 
 label_wrap <- function(width) {

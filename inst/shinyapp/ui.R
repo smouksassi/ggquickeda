@@ -1599,8 +1599,7 @@ fluidPage(
                                    
                                  ),
                                  conditionalPanel(
-                                   " input.Mean== 'Mean/CI' && (
-                      input.geommeanCI == 'errorbar' | input.positionmean =='position_dodge')  ",
+                                   " (input.geommeanCI == 'errorbar' | input.positionmean =='position_dodge')  ",
                                    numericInput(
                                      inputId = "errbar",
                                      label = "CI errorbar/dodge width:",
@@ -1661,7 +1660,7 @@ fluidPage(
                                    checkboxInput('meanpoints', 'Show points')
                                  ),
                                  conditionalPanel(
-                                   " input.Mean!= 'None' & input.meanpoints ",
+                                   " input.Mean!= 'None' && input.meanpoints ",
                                    sliderInput(
                                      "meanpointsize",
                                      "Mean(s) Point(s) Size:",
@@ -1723,7 +1722,6 @@ fluidPage(
                                   " input.Mean!= 'None' ",
                                   checkboxInput('meanvalues', 'Label Values?') ,
                                   checkboxInput('meanN', 'Label N?') ),
-                                
                                 conditionalPanel(
                                   "input.meanvalues | input.meanN ",
                                   sliderInput("alphameanlabel", "Labels(s) Transparency:",
@@ -1733,6 +1731,11 @@ fluidPage(
                                                  "auto text repel" = "text_repel",
                                                  "auto label repel" = "label_repel"),selected = "text_repel",
                                                inline = TRUE)
+                                ),
+                                conditionalPanel("input.meanvalues",
+                                                 numericInput("nroundmeandigits",
+                                                              label = "Mean N Digits",
+                                                              value = 1,min=0,max=10)
                                 )
                                 
                                 ), # fourth column
@@ -1760,7 +1763,18 @@ fluidPage(
                                                                       allowTransparent = FALSE,
                                                                       returnName = TRUE)
                                                    )
-                                  )
+                                  ),
+                                  conditionalPanel("input.meanN",
+                                                   radioButtons("mean_N_position", "N Positioning:",
+                                                                c("min" = "min","max" = "max",
+                                                                  "lower/left edge" = "below",
+                                                                  "upper/right edge" = "up"
+                                                                ), inline = TRUE),
+                                                   numericInput("mean_N_add",label = "N Additive adjustment",
+                                                                value = 0, min = NA, max = NA, step = 0.1),
+                                                   numericInput("mean_N_mult",label = "N multiplicative adjustment",
+                                                                value = 1, min = NA, max = NA, step = 0.1)
+                                  ) 
 
                                 )
                          )#column 5
@@ -1786,8 +1800,7 @@ fluidPage(
                                   "Side By Side"="position_dodge"
                                 ),selected = "position_identity"),
                     conditionalPanel(
-                      " input.Median== 'Median/PI' && (
-                      input.geommedianPI == 'errorbar' | input.positionmedian =='position_dodge')  ",
+                      " (input.geommedianPI == 'errorbar' | input.positionmedian =='position_dodge')  ",
                       numericInput(
                         inputId = "medianerrbar",
                         label = "PI errorbar/dodge width:",
@@ -1891,7 +1904,12 @@ fluidPage(
                                         "auto text repel" = "text_repel",
                                         "auto label repel" = "label_repel"),selected = "text_repel",
                                       inline = TRUE)
-                       )
+                       ),
+                       conditionalPanel("input.medianvalues",
+                                        numericInput("nroundmediandigits",
+                                                     label = "Median N Digits",
+                                                     value = 1,min=0,max=10)
+                       ) 
                        
                 ), # fourth column
                 
@@ -1915,7 +1933,18 @@ fluidPage(
                                                                    allowTransparent=FALSE,
                                                                    returnName=TRUE)
                                                        )
-                                      )
+                                      ),
+                       conditionalPanel("input.medianN",
+                                        radioButtons("median_N_position", "N Positioning:",
+                                                     c("min" = "min","max" = "max",
+                                                       "lower/left edge" = "below",
+                                                       "upper/right edge" = "up"
+                                                     ), inline = TRUE),
+                                        numericInput("median_N_add",label = "N Additive adjustment",
+                                                     value = 0, min = NA, max = NA, step = 0.1),
+                                        numericInput("median_N_mult",label = "N multiplicative adjustment",
+                                                     value = 1, min = NA, max = NA, step = 0.1)
+                       )
                     )#main condition
                   )# column #5
                   
