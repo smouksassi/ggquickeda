@@ -3866,32 +3866,19 @@ function(input, output, session) {
         positionmean<-  paste0("position_dodge(width=",input$errbar,")")
       }
       p <- attach_source_dep(p, "positionmean")
+      
+      if (input$meanignorecol){
+      meancoll <- input$colmeanl
+      meancolp <- input$colmeanp
+      p <- attach_source_dep(p, "meancoll")
+      p <- attach_source_dep(p, "meancolp")
+      }
       }
       
       if (!input$meanignoregroup) {
-        
         if (!input$meanignorecol) {
-          
-          if (input$Mean=="Mean") {
-            
-            if(input$meanlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))
-            
-            if(input$meanlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",
-                                size=input$meanlinesize,
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))
-            
-
-          }# mean
-          if(input$Mean=="Mean/CI" && input$pointsizein == 'None')  {
-            
-            if (input$geommeanCI== "ribbon"){
+          if(input$Mean!="None" && input$pointsizein == 'None')  {
+            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
@@ -3900,7 +3887,7 @@ function(input, output, session) {
                             col=NA,
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar"){
+            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -3910,17 +3897,15 @@ function(input, output, session) {
             }
             if (input$meanlines){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
-                            fun.args=list(conf.int=input$CI),
+                stat_sum_single(mean, geom = "line",
                             size=input$meanlinesize,
                             alpha=input$alphameanl,
                             position = eval(parse(text=positionmean)))
             }
           }
           
-          if (input$Mean=="Mean/CI" && input$pointsizein != 'None'){
-              
-              if (input$geommeanCI== "ribbon"){
+          if (input$Mean!="None" && input$pointsizein != 'None'){
+              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
@@ -3928,7 +3913,7 @@ function(input, output, session) {
                               col=NA,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar"){
+              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -3936,25 +3921,26 @@ function(input, output, session) {
                               size=input$meancierrorbarsize,
                               position = eval(parse(text=positionmean)))
               }
+            
             if (input$meanlines){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
-                            fun.args=list(conf.int=input$CI),
-                            alpha=input$alphameanl,
-                            position = eval(parse(text=positionmean)))
+                stat_sum_single(mean, geom = "line",
+                                alpha=input$alphameanl,
+                                position = eval(parse(text=positionmean)))
             }
-              
-            }
+          }
 
           if(input$Mean!="None" &&  !input$forcemeanshape)    {
             if(input$meanpoints && input$pointsizein != 'None')           
               p <- p + 
-                stat_sum_single(mean, geom = "point", alpha=input$alphameanp,
+                stat_sum_single(mean, geom = "point",
+                                alpha=input$alphameanp,
                                 position = eval(parse(text=positionmean)))
             
             if(input$meanpoints && input$pointsizein == 'None')           
               p <- p + 
-                stat_sum_single(mean, geom = "point", size=input$meanpointsize,
+                stat_sum_single(mean, geom = "point",
+                                size=input$meanpointsize,
                                 alpha=input$alphameanp,
                                 position = eval(parse(text=positionmean)))               
           }
@@ -3962,22 +3948,20 @@ function(input, output, session) {
             if(input$Mean!="None" && input$forcemeanshape)    {
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",
+                  stat_sum_single(mean, geom = "point",
                               alpha=input$alphameanp,
                               shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",
+                  stat_sum_single(mean, geom = "point",
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
                               shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
             }
           
-
-            
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
@@ -4003,28 +3987,8 @@ function(input, output, session) {
         
         
         if (input$meanignorecol) {
-          meancoll <- input$colmeanl
-          meancolp <- input$colmeanp
-          
-          if (input$Mean=="Mean") {
-            if(input$meanlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",col=meancoll,
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))
-            
-            if(input$meanlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",col=meancoll,
-                                size=input$meanlinesize,
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))
-
-          }
-          
-          if(input$Mean=="Mean/CI" && input$pointsizein != 'None') {
-              
-              if (input$geommeanCI== "ribbon"){
+          if(input$Mean!="None" && input$pointsizein != 'None') {
+              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
@@ -4032,7 +3996,7 @@ function(input, output, session) {
                               col=NA,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar"){
+              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4042,18 +4006,17 @@ function(input, output, session) {
               }
               if(input$meanlines) {
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
-                              fun.args=list(conf.int=input$CI),
-                              alpha=input$alphameanl,
-                              col=meancoll,
-                              position = eval(parse(text=positionmean)))
+                  stat_sum_single(mean, geom = "line",
+                                  col=meancoll,
+                                  alpha=input$alphameanl,
+                                  position = eval(parse(text=positionmean)))
                 
               }
               
-            }
-            
-          if(input$Mean=="Mean/CI" && input$pointsizein == 'None') {
-              if (input$geommeanCI== "ribbon"){
+          }
+
+          if(input$Mean!="None" && input$pointsizein == 'None') {
+              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
@@ -4062,7 +4025,7 @@ function(input, output, session) {
                               col=NA,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar"){
+              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4071,31 +4034,27 @@ function(input, output, session) {
                               alpha=input$meancitransparency,
                               position = eval(parse(text=positionmean)))
               }
-              if(input$meanlines) {
-                p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
-                              fun.args=list(conf.int=input$CI),
-                              alpha=input$alphameanl,
-                              col=meancoll,
-                              size=input$meanlinesize,
-                              position = eval(parse(text=positionmean)))
-                
-              }
-              
+            if (input$meanlines)  {
+              p <- p + 
+                stat_sum_single(mean, geom = "line",
+                                col=meancoll,
+                                size=input$meanlinesize,
+                                alpha=input$alphameanl,
+                                position = eval(parse(text=positionmean))) 
+            } 
               }
 
             if(input$Mean!="None" && !input$forcemeanshape)    {
-              
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",
+                  stat_sum_single(mean, geom = "point",
                               col=meancolp,
                               alpha=input$alphameanp,
                               position = eval(parse(text=positionmean)))
               
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",
+                  stat_sum_single(mean, geom = "point",
                               col=meancolp,
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
@@ -4103,10 +4062,9 @@ function(input, output, session) {
               
             }
             if(input$Mean!="None" && input$forcemeanshape)    {
-              
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",
+                  stat_sum_single(mean, geom = "point",
                               col=meancolp,
                               alpha=input$alphameanp,
                               shape=translate_shape_string(input$meanshapes),
@@ -4114,7 +4072,7 @@ function(input, output, session) {
               
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",
+                  stat_sum_single(mean, geom = "point",
                               col=meancolp,
                               size=input$meanpointsize,
                               alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
@@ -4150,25 +4108,8 @@ function(input, output, session) {
       
       if (input$meanignoregroup) {
         if (!input$meanignorecol) {
-          
-          if (input$Mean=="Mean") {
-            if(input$meanlines && input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",aes(group=NULL),
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))     
-            if(input$meanlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",aes(group=NULL),size=input$meanlinesize,
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))     
-            
-  
-          } # input = mean
-          
-          if (input$Mean=="Mean/CI" && input$pointsizein == 'None'){
-
-              if (input$geommeanCI== "ribbon"){
+          if (input$Mean!="None" && input$pointsizein == 'None'){
+              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), aes(group=NULL),
@@ -4177,7 +4118,7 @@ function(input, output, session) {
                               size=input$meanlinesize,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar"){
+              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
                               fun.args=list(conf.int=input$CI),aes(group=NULL), 
@@ -4187,8 +4128,7 @@ function(input, output, session) {
               }
             if(input$meanlines){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line",stat="smooth",
-                            fun.args=list(conf.int=input$CI),
+                stat_sum_single(mean, geom = "line",
                             aes(group=NULL),
                             alpha=input$alphameanl,
                             size=input$meanlinesize,
@@ -4196,9 +4136,9 @@ function(input, output, session) {
               
             }
           }
-          if (input$Mean=="Mean/CI" && input$pointsizein != 'None'){
-            
-            if (input$geommeanCI== "ribbon"){
+          
+          if (input$Mean!="None" && input$pointsizein != 'None'){
+            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), aes(group=NULL),
@@ -4206,7 +4146,7 @@ function(input, output, session) {
                             col=NA,
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar"){
+            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
                             fun.args=list(conf.int=input$CI),aes(group=NULL), 
@@ -4215,13 +4155,11 @@ function(input, output, session) {
                             position = eval(parse(text=positionmean)))
             }
             if(input$meanlines){
-              p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line",stat="smooth",
-                            fun.args=list(conf.int=input$CI),
-                            aes(group=NULL),
-                            alpha=input$alphameanl,
-                            position = eval(parse(text=positionmean))) 
-              
+                p <- p + 
+                stat_sum_single(mean, geom = "line",
+                                aes(group=NULL),
+                                alpha=input$alphameanl,
+                                position = eval(parse(text=positionmean))) 
             }
           }
 
@@ -4229,12 +4167,14 @@ function(input, output, session) {
             if(input$Mean!="None" && !input$forcemeanshape)    {
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                  stat_sum_single(mean, geom = "point",
+                                  aes(group=NULL),
                               alpha=input$alphameanp,
                               position = eval(parse(text=positionmean)))
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                  stat_sum_single(mean, geom = "point",
+                                  aes(group=NULL),
                               size=input$meanpointsize,
                               alpha=input$alphameanp,
                               position = eval(parse(text=positionmean)))
@@ -4243,14 +4183,18 @@ function(input, output, session) {
             if(input$Mean!="None" && input$forcemeanshape)    {
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
-                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
+                  stat_sum_single(mean, geom = "point",
+                                  aes(group=NULL),
+                              alpha=input$alphameanp,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               if(input$meanpoints&input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",aes(group=NULL),
+                  stat_sum_single(mean, geom = "point",
+                                  aes(group=NULL),
                               size=input$meanpointsize,
-                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
+                              alpha=input$alphameanp,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               
             }
@@ -4279,30 +4223,9 @@ function(input, output, session) {
           }
           
         }# do not ignore color and ignore group
-        
-        
         if (input$meanignorecol) {
-          meancoll <- input$colmeanl
-          meancolp <- input$colmeanp
-          
-          if (input$Mean=="Mean") {
-            if(input$meanlines&input$pointsizein != 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),
-                                alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))
-            if(input$meanlines && input$pointsizein == 'None')           
-              p <- p + 
-                stat_sum_single(mean, geom = "line",col=meancoll,aes(group=NULL),
-                                size=input$meanlinesize,alpha=input$alphameanl,
-                                position = eval(parse(text=positionmean)))
-
-          } # selected input mean
-          
-
-          if(input$Mean=="Mean/CI" && input$pointsizein != 'None') {
-            
-            if (input$geommeanCI== "ribbon"){
+          if(input$Mean!="None" && input$pointsizein != 'None') {
+            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
@@ -4310,7 +4233,7 @@ function(input, output, session) {
                             col=NA,aes(group=NULL),
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar"){
+            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4320,18 +4243,16 @@ function(input, output, session) {
             }
             if(input$meanlines) {
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
-                            fun.args=list(conf.int=input$CI),
+                stat_sum_single(mean, geom = "line",
                             alpha=input$alphameanl,
-                            col=meancoll,aes(group=NULL),
+                            col=meancoll,
+                            aes(group=NULL),
                             position = eval(parse(text=positionmean)))
-              
             }
-            
           }
           
-          if(input$Mean=="Mean/CI" && input$pointsizein == 'None') {
-            if (input$geommeanCI== "ribbon"){
+          if(input$Mean!="None" && input$pointsizein == 'None') {
+            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
@@ -4340,7 +4261,7 @@ function(input, output, session) {
                             col=NA,aes(group=NULL),
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar"){
+            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4351,43 +4272,49 @@ function(input, output, session) {
             }
             if(input$meanlines) {
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = "line", stat ="smooth"  ,
-                            fun.args=list(conf.int=input$CI),
-                            alpha=input$alphameanl,
-                            col=meancoll,aes(group=NULL),
-                            size=input$meanlinesize,
-                            position = eval(parse(text=positionmean)))
+                stat_sum_single(mean, geom = "line",
+                                size=input$meanlinesize,
+                                alpha=input$alphameanl,
+                                col=meancoll,
+                                aes(group=NULL),
+                                position = eval(parse(text=positionmean)))
               
             }
-            
-          }
-
-            
+          }  
             if(input$Mean!="None" && !input$forcemeanshape)    {
-              
               if(input$meanpoints && input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
+                  stat_sum_single(mean, geom = "point",
+                              col=meancolp,
+                              aes(group=NULL),
                               alpha=input$alphameanp,
                               position = eval(parse(text=positionmean)))
               if(input$meanpoints & input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
+                  stat_sum_single(mean, geom = "point",
+                              col=meancolp,
+                              aes(group=NULL),
                               size=input$meanpointsize,alpha=input$alphameanp,
                               position = eval(parse(text=positionmean)))
             }
             
             if(input$Mean!="None" && input$forcemeanshape)    {
-              
               if(input$meanpoints &input$pointsizein != 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
-                              alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
+                  stat_sum_single(mean, geom = "point",
+                                  col=meancolp,
+                                  aes(group=NULL),
+                              alpha=input$alphameanp,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
               if(input$meanpoints && input$pointsizein == 'None')           
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = "point",col=meancolp,aes(group=NULL),
-                              size=input$meanpointsize,alpha=input$alphameanp,shape=translate_shape_string(input$meanshapes),
+                  stat_sum_single(mean, geom = "point",
+                                  col=meancolp,
+                                  aes(group=NULL),
+                              size=input$meanpointsize,
+                              alpha=input$alphameanp,
+                              shape=translate_shape_string(input$meanshapes),
                               position = eval(parse(text=positionmean)))
             }
 
