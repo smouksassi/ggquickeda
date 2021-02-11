@@ -158,60 +158,119 @@ fluidPage(
           ),
           hr()
         ), # tabsetPanel
-        tabPanel("Graph Options",
+        tabPanel("Graph Options", value= "sidebar_Graph_Options",
           tabsetPanel(id = "graphicaloptions", selected = "x_y_loglabels",
             tabPanel("X/Y Axes Log/Labels", value = "x_y_loglabels",
               hr(),
-              textInput('ylab', 'Y axis label', value = "") ,
-              textInput('xlab', 'X axis label', value = "") ,
+              textInput('ylab', 'Y axis Title', value = "") ,
+              textInput('xlab', 'X axis Title', value = "") ,
+              checkboxInput('customizeaxestitles', 'Customize Axes Titles ?', value = FALSE),
+              conditionalPanel(condition = "input.customizeaxestitles" ,
+                               tabsetPanel(
+                                 tabPanel("Axes Titles Size/Angle/Face",
+                                          sliderInput("x_axis_title_size", "X Axis Title Size: (zero to hide)",
+                                                      min = 0, max = 100, step = 0.5, value = 16),
+                                          sliderInput("x_axis_title_angle", "X Axis Title Angle",
+                                                      min = 0, max = 360, step = 90, value = 0),
+                                          checkboxInput('x_axis_title_bold', "X Axis Title Bold?", value = FALSE),
+                                          sliderInput("y_axis_title_size", "Y Axis Title Size: (zero to hide)",
+                                                      min = 0, max = 100, step = 0.5, value = 16),
+                                          sliderInput("y_axis_title_angle", "Y Axis Title Angle",
+                                                      min = 0, max = 360, step = 90, value = 90),
+                                          checkboxInput('y_axis_title_bold', "Y Axis Title Bold?", value = FALSE),
+                                 ),
+                                 tabPanel("Axes Titles Justification",
+                                          sliderInput("x_axis_title_vjust", "X Axis Title Vertical Justification",
+                                                      min = 0, max = 1, step = 0.1, value = 0.5),
+                                          sliderInput("x_axis_title_hjust", "X Axis Title Horizontal Justification",
+                                                      min = 0, max = 1, step = 0.1, value = 0.5),
+                                          sliderInput("y_axis_title_vjust", "Y Axis Title Vertical Justification",
+                                                      min = 0, max = 1, step = 0.1, value = 0.5),
+                                          sliderInput("y_axis_title_hjust", "Y Axis Title Horizontal Justification",
+                                                      min = 0, max = 1, step = 0.1, value = 0.5)
+                                 ),
+                                 tabPanel("Axes Titles Colour",
+                                          colourpicker::colourInput("x_axis_title_color",  "X Axis Title Colour:",
+                                                                    value="black",
+                                                                    showColour = "both",
+                                                                    allowTransparent=TRUE,returnName=TRUE),
+                                          colourpicker::colourInput("y_axis_title_color",  "Y Axis Title Colour:",
+                                                                    value="black",
+                                                                    showColour = "both",
+                                                                    allowTransparent=TRUE,returnName=TRUE)
+                                 )
+                               )
+              ),
               textInput('title', 'Plot Title', value = "") ,
               textInput('subtitle', 'Plot Subtitle', value = "") ,
               radioButtons("titleposition", "Title Positioning:",
                            c("Panel" = "panel",
                              "Plot" = "plot"), inline = TRUE),
               textInput('caption', 'Plot Caption', value = "") ,
-              textInput('plottag', 'Plot Tag', value = "") ,
               radioButtons("captionposition", "Caption Positioning:",
                            c("Panel" = "panel",
                              "Plot" = "plot"), inline = TRUE),
+              textInput('plottag', 'Plot Tag', value = "") ,
+              radioButtons("tagposition", "Tag Positioning:",
+                           c("Top Left" = "topleft",
+                             "Top" = "top",
+                             "Top Right" = "topright",
+                             "Left" = "left",
+                             "Right" = "right",
+                             "Bottom Left" = "bottomleft",
+                             "Bottom" = "bottom",
+                             "Bottom Right" = "bottomright"
+                             ), inline = TRUE),
               hr(),
               conditionalPanel(condition = "!input.show_pairs",
-              fluidRow(
-                column(6,
-                       radioButtons("yaxisscale", "Y Axis scale:",
-                                    c("Linear" = "lineary",
-                                      "Log10" = "logy"))),
-                column(6,
-                       radioButtons("yaxisformat", "Y Axis tick format:",
-                                    c("default" = "default",
-                                      "Comma separated" = "scientificy",
-                                      "Percent" = "percenty"))),
-                column(6,
-                       radioButtons("xaxisscale", "X Axis scale:",
-                                    c("Linear" = "linearx",
-                                      "Log10" = "logx"))),
-                column(6,
-                       radioButtons("xaxisformat", "X Axis tick format:",
-                                    c("default" = "default",
-                                      "Comma separated" = "scientificx",
-                                      "Percent" = "percentx")))
-              ),
-      
+                               
+                       inline_ui(radioButtons("yaxisscale", "Y Axis scale:",
+                                              c("Linear" = "lineary",
+                                                "Log10" = "logy"))),
+                       inline_ui(radioButtons("xaxisscale", "X Axis scale:",
+                                              c("Linear" = "linearx",
+                                                "Log10" = "logx"))),
+                       inline_ui(radioButtons("yaxisformat", "Y Axis tick format:",
+                                              c("default" = "default",
+                                                "Comma separated" = "scientificy",
+                                                "Percent" = "percenty"))),
+                       inline_ui(radioButtons("xaxisformat", "X Axis tick format:",
+                                              c("default" = "default",
+                                                "Comma separated" = "scientificx",
+                                                "Percent" = "percentx"))),
+                       inline_ui(sliderInput("y_label_text_width", "N Characters to Wrap Y Labels:",
+                                   min=5, max=100, value=c(25),step=1,width = '120px')),
+                       inline_ui(sliderInput("x_label_text_width", "N Characters to Wrap X Labels:",
+                                   min=5, max=100, value=c(25),step=1,width = '120px')),
               checkboxInput('rotateyticks', 'Rotate/Customize Y axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotateyticks" ,
-                               sliderInput("ylabelsize", "Y axis label size: (zero to hide)",
-                                           min=0, max=100, value=c(16),step=0.5),
-                               sliderInput("yticksrotateangle", "Y axis labels angle:", min=0, max=360, value=c(0),step=10),
-                               sliderInput("ytickshjust", "Y axis labels horizontal justification:", min=0, max=1, value=c(0.5),step=0.1),
-                               sliderInput("yticksvjust", "Y axis labels vertical justification:", min=0, max=1, value=c(0.5),step=0.1)
+                               inline_ui(
+                                 sliderInput("ylabelsize", "Y axis labels size: (zero to hide)",
+                                           min=0, max=100, value=c(16),step=0.5, width='120px')),
+                               inline_ui(
+                                 sliderInput("yticksrotateangle", "Y axis labels angle:",
+                                           min=0, max=360, value=c(0),step=10, width='120px')),
+                               inline_ui(
+                                 sliderInput("ytickshjust", "Y axis labels horizontal justification:",
+                                           min=0, max=1, value=c(0.5),step=0.1, width='120px')),
+                               inline_ui(
+                                 sliderInput("yticksvjust", "Y axis labels vertical justification:",
+                                             min=0, max=1, value=c(0.5),step=0.1, width='120px'))
               ),
               checkboxInput('rotatexticks', 'Rotate/Customize X axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotatexticks" ,
-                               sliderInput("xlabelsize", "X axis label size: (zero to hide)",
-                                           min=0, max=100, value=c(16),step=0.5),
-                               sliderInput("xticksrotateangle", "X axis labels angle:", min=0, max=360, value=c(20),step=10),
-                               sliderInput("xtickshjust", "X axis labels horizontal justification:", min=0, max=1, value=c(1),step=0.1),
-                               sliderInput("xticksvjust", "X axis labels vertical justification:", min=0, max=1, value=c(1),step=0.1)
+                               inline_ui(
+                                 sliderInput("xlabelsize", "X axis labels size: (zero to hide)",
+                                             min=0, max=100, value=c(16),step=0.5, width='120px')),
+                               inline_ui(
+                                 sliderInput("xticksrotateangle", "X axis labels angle:",
+                                             min=0, max=360, value=c(20),step=10, width='120px')),
+                               inline_ui(
+                                 sliderInput("xtickshjust", "X axis labels horizontal justification:",
+                                             min=0, max=1, value=c(1),step=0.1, width='120px')),
+                               inline_ui(
+                                 sliderInput("xticksvjust", "X axis labels vertical justification:",
+                                             min=0, max=1, value=c(1),step=0.1, width='120px'))
               ),
               checkboxInput('customxticks', 'Custom X axis Ticks ?', value = FALSE),
               conditionalPanel(condition = "input.customxticks" , 
@@ -243,8 +302,15 @@ fluidPage(
                                          value = as.character(paste("A","B","C" ,sep=",") )
                                )
               ),
-              checkboxInput('rmxaxistickslabels', 'Remove X axis ticks and labels ?',value=FALSE),
-              checkboxInput('rmyaxistickslabels', 'Remove Y axis ticks and labels ?',value=FALSE),
+              inline_ui(
+                checkboxInput('rmxaxisticks', 'Remove X axis ticks ?',value=FALSE,width='120px')),
+              inline_ui(
+                checkboxInput('rmxaxislabels', 'Remove X axis labels ?',value=FALSE,width='120px')),
+              inline_ui(
+                checkboxInput('rmyaxisticks', 'Remove Y axis ticks ?',value=FALSE,width='120px')),
+              inline_ui(
+                checkboxInput('rmyaxislabels', 'Remove Y axis labels ?',value=FALSE,width='120px')),
+              
               checkboxInput('annotatelogticks', 'Add Log Tick Annotations ?', value = FALSE),
               conditionalPanel(condition = "input.annotatelogticks",
                                selectInput('logsides', label ='Log Tick Sides',
@@ -252,14 +318,17 @@ fluidPage(
                                                      "Top" ="t ",
                                                      "Right"="r",
                                                      "Bottom"="b"),
-                                           multiple=TRUE, selectize=TRUE,selected="l")
+                                           multiple=TRUE, selectize=TRUE,selected="l"),
+                               checkboxInput('outsidelogticks', 'Log Ticks on the Outside?', value = FALSE)
               )
               )# conditional on pairs is off
             ),
             tabPanel("Graph Size/Zoom", value = "graph_size_zoom",
               sliderInput("height", "Plot Height", min=1080/4, max=1080, value=480, animate = FALSE),
               conditionalPanel(condition = "!input.show_pairs",
-              h6("X Axis Zoom is available if you have exactly one x variable and facet x scales are not set to be free. The automatic setting generates a slider has limits between your x variable min/max otherwise select User Defined to input your own."),
+              h6("X Axis Zoom Automatic is available if you have exactly one x variable and it generates a slider with limits between your x variable min/max.
+                 User let you input your own limits (works for more than one x and when left empty will use the default ggplot computed limit).
+                 If facet scales on the x position are free then no zooming is allowed. At the moment zoom does not work with univariate plots."),
               fluidRow(
                 column(12,
                        radioButtons("xaxiszoom", "X Axis Zoom:",
@@ -274,8 +343,10 @@ fluidPage(
                 column(6,
                        conditionalPanel(condition = "input.xaxiszoom=='userxzoom' ",uiOutput("upperx")) )
               ),# fluidrow
-              
-              h6("Y Axis Zoom is available if you have exactly one y variable and facet y scales are not set to be free. The automatic setting generates a slider has limits between your y variable min/max otherwise select User Defined to input your own."),
+            
+              h6("Y Axis Zoom Automatic is available if you have exactly one y variable and it generates a slider with limits between your y variable min/max.
+                 User let you input your own limits (works for more than one y and when left empty will use the default ggplot computed limit).
+                 If facet scales on the y position are free then no zooming is allowed. At the moment zoom does not work with univariate plots."),
               fluidRow(
                 column(12,
                        radioButtons("yaxiszoom", "Y Axis Zoom:",
@@ -292,16 +363,16 @@ fluidPage(
                 column(12,
                        inline_ui(
                          numericInput("xexpansion_l_add",label = "x expansion left additive",
-                                      value = 0,min=0,max=NA,width='120px')),
+                                      value = 0, min = 0, max = NA, step = 0.1, width='120px')),
                        inline_ui(
                          numericInput("xexpansion_r_add",label = "x expansion right additive",
-                                      value = 0,min=0,max=NA,width='120px')),
+                                      value = 0, min = 0, max = NA, step = 0.1, width='120px')),
                        inline_ui(
                          numericInput("xexpansion_l_mult",label = "x expansion left multiplicative",
-                                      value = 0.05,min=0,max=NA,width='120px')),
+                                      value = 0.05, min = 0, max = NA, step = 0.1, width='120px')),
                        inline_ui(
                          numericInput("xexpansion_r_mult",label = "x expansion right multiplicative",
-                                      value = 0.05, min=0,max=NA,width='120px'))
+                                      value = 0.05, min = 0, max = NA, step = 0.1 , width='120px'))
                        ),
                 column(12,
                        inline_ui(
@@ -318,9 +389,8 @@ fluidPage(
                                       value = 0.05, min=0,max=NA,width='120px'))
                 ),
                 column(12,
-                       conditionalPanel(condition = "input.yaxiszoom!='noyzoom' | input.xaxiszoom!='noxzoom' ",
-                                        checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE)
-                       )
+                       checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE),
+                       checkboxInput('clip', 'Clip Plot Area?', value = TRUE)
                 )
               ) # fluidrow
               ) # conditional on not show pairs
@@ -442,8 +512,10 @@ fluidPage(
             tabPanel("Facets Options", value = "facet_options",
               tabsetPanel(
                 tabPanel("Facet Scales, Spaces, Positioning, Ordering",
+                         conditionalPanel(condition = "!input.show_pairs",
                          uiOutput("facetscales"),
-                         selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free")),
+                         selectInput('facetspace' ,'Facet Spaces:',c("fixed","free_x","free_y","free"))
+                         ),
                          conditionalPanel(
                            condition = "!input.facetwrap" ,
                            selectizeInput(  "facetswitch", "Facet Switch to Near Axis:",
@@ -460,27 +532,27 @@ fluidPage(
                                        min = 0, max = 2, value = 0.25, step = 0.05)
                            ),
                          conditionalPanel(
-                           condition = "input.facetwrap && input.stripplacement== 'outside'" ,
+                           condition = "!input.show_pairs && input.facetwrap && input.stripplacement== 'outside'" ,
                            sliderInput("stripswitchpadwrap", label = "Facets Axis Padding:",
                                        min = 0, max = 2, value = 0.25, step = 0.05)
                          ),
-                         
+                         conditionalPanel(condition = "!input.show_pairs",
                          selectInput('facetordering' ,'Facet Ordering:',c(
                            "Top to Bottom, Left to Right Ordering like a Table" ="table",
                            "Bottom to Top, Left to Right Ordering like a Plot" ="plot"),
                            selected="table")
+                         )
                          
-                         ),
+                         ), # end of tabpanel
                 tabPanel("Facet Grid Margins",
-                         h6("The 'Show facet margins?' options are available when 'Use facet_wrap?' is not checked"),    
-                         conditionalPanel(
-                           condition = "!input.facetwrap" ,
+                         h6("The 'Show facet margins?' options are available when not using ggpairs matrix plot nor `facet_wrap`"),    
+                         conditionalPanel(condition = "!input.show_pairs && !input.facetwrap" ,
                            selectInput('facetmargin', 'Show facet margins?', 
                                        choices = c("None" = "none",
                                                    "All" = "all",
                                                    "Specific variables" = "some")),
                            conditionalPanel(
-                             "input.facetmargin == 'some'",
+                             "!input.show_pairs && !input.facetwrap && input.facetmargin == 'some'",
                              selectInput('facetmargin_vars', NULL, choices = c(), multiple = TRUE,)
                            )
                          ), 
@@ -554,16 +626,18 @@ fluidPage(
                                        value = TRUE)
                 ),
                 tabPanel("Facet Wrap",
-                         checkboxInput('facetwrap', 'Use facet_wrap?'),
-                         conditionalPanel(
-                           condition = "input.facetwrap" ,
+                         h6("The `facet_wrap` options are available when not using ggpairs matrix plot."),    
+                         conditionalPanel(condition = "!input.show_pairs",
+                         checkboxInput('facetwrap', 'Use facet_wrap?')
+                         ),
+                         conditionalPanel(condition = "!input.show_pairs && input.facetwrap" ,
                            selectInput('stripposition', label ='Strip Position',
                                        choices=c("left", "right", "bottom", "top"),
                                        multiple=FALSE, selectize=TRUE,selected="top"),
                            checkboxInput('customncolnrow', 'Control N columns an N rows?')
                          ),
                          conditionalPanel(
-                           condition = "input.customncolnrow" ,
+                           condition = "!input.show_pairs && input.facetwrap && input.customncolnrow" ,
                            h6("An error (nrow*ncol >= n is not TRUE) will show up if the total number of facets/panels
                    is greater than the product of the specified  N columns x N rows. Increase the N columns and/or N rows to avoid the error.
                    The default empty values will use ggplot automatic algorithm."),        
@@ -640,7 +714,7 @@ fluidPage(
               conditionalPanel(condition = "input.showtargettext" ,
                                textInput('targettext', 'Target Text', value = "Target: XX-XXX µg/mL"),
                                sliderInput("targettextsize", "Target Text Size:", min=1, max=10, value=c(5),step=0.1),
-                               colourInput("targettextcol", "Target Text Color:", "blue",showColour = "both"),
+                               colourpicker::colourInput("targettextcol", "Target Text Color:", "blue",showColour = "both"),
                                sliderInput("targettextvjust", "Target Text Vertical Justification:", min=0, max=1, value=c(1),step=0.1),
                                sliderInput("targettexthjust", "Target Text Horizontal Justification:", min=0, max=1, value=c(0),step=0.1),
                                numericInput("targettextxpos",label = "Target Text X Position",
@@ -653,7 +727,7 @@ fluidPage(
               
             ),
             tabPanel(
-              "Themes and Manual Scales Options",
+              "Themes and Color/other Scales Options", value = "themes_color_other",
               sliderInput("themebasesize", "Theme Size (affects all text except facet strip):",
                           min=1, max=100, value=c(16),step=1),
               checkboxInput('themebw', 'Use Black and White Theme ?',value=TRUE),
@@ -661,100 +735,20 @@ fluidPage(
                 "backgroundcol","Background Color",value =  "white",
                 showColour = "both",allowTransparent = TRUE,returnName=TRUE),
               checkboxInput('panelontop', 'Place the Panel gridlines and background over the data ?',value=FALSE),
-              tabsetPanel(
-                tabPanel("Grid Lines",
-                         div(
-                           colourpicker::colourInput("majorgridlinescolx", "Major X Axis Grid Lines:",
-                                                     value="#E5E5E5",
-                                                     showColour = "both",
-                                                     allowTransparent=TRUE,returnName=TRUE),
-                           style = "display: inline-block;") ,
-                         div(
-                           colourpicker::colourInput("majorgridlinescoly", "Major Y Axis Grid Lines:",
-                                                     value="#E5E5E5",
-                                                     showColour = "both",
-                                                     allowTransparent=TRUE,returnName=TRUE),
-                           style = "display: inline-block;") ,
-                         div( actionButton("majorgridlinescolreset", "Reset Major Grid Lines Color"),
-                              style="display: inline-block;text-align: right"),br(),
-                         div(colourpicker::colourInput("minorgridlinescolx", "Minor X Axis Grid Lines:",
-                                                       value="#E5E5E5",
-                                                       showColour = "both",
-                                                       allowTransparent=TRUE,returnName=TRUE),
-                             style = "display: inline-block;"),
-                         div(colourpicker::colourInput("minorgridlinescoly", "Minor Y Axis Grid Lines:",
-                                                       value="#E5E5E5",
-                                                       showColour = "both",
-                                                       allowTransparent=TRUE,returnName=TRUE),
-                             style = "display: inline-block;"),
-                         div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"),
-                              style="display: inline-block;text-align: right"),
-                         inline_ui(checkboxInput('rmmajorgridlinesx',
-                                                 'Remove X axis Major Grid Lines?',value=FALSE)),
-                         inline_ui(checkboxInput('rmmajorgridlinesy',
-                                                 'Remove Y axis Major Grid Lines?',value=FALSE)),
-                         inline_ui(checkboxInput('rmminorgridlinesx',
-                                                 'Remove X axis Minor Grid Lines?',value=FALSE)),
-                         inline_ui(checkboxInput('rmminorgridlinesy',
-                                                 'Remove Y axis Minor Grid Lines?',value=FALSE))
-                ),
-                tabPanel("Margins",
-                         inline_ui(
-                           numericInput("margintop",label = "Plot Top Margin",
-                                        value = 0,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("marginleft",label = "Plot Left Margin",
-                                        value = 5.5,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("marginright",label = "Plot Right Margin",
-                                        value = 5.5,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("marginbottom",label = "Plot Bottom Margin",
-                                        value = 0,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendtop",label = "Legend Top Margin",
-                                        value = 0,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendleft",label = "Legend Left Margin",
-                                        value = 5.5,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendright",label = "Legend Right Margin",
-                                        value = 5.5,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendbottom",label = "Legend Bottom Margin",
-                                        value = 0,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendboxtop",label = "Legend Box Top Margin",
-                                        value = 0,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendboxleft",label = "Legend Box Left Margin",
-                                        value = 5.5,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendboxright",label = "Legend Box Right Margin",
-                                        value = 5.5,min=0,max=NA,width='120px')),
-                         inline_ui(
-                           numericInput("legendboxbottom",label = "Legend Box Bottom Margin",
-                                        value = 0,min=0,max=NA,width='120px'))
-                )
-              ),
-              hr(),
-              checkboxInput('themeaspect', 'Use custom aspect ratio ?'),
-              h6("Setting aspect ratio does not work when facets spacing x or y is free."),
-              conditionalPanel(condition = "input.themeaspect" , 
-                               numericInput("aspectratio",label = "Y/X ratio",
-                                            value = 1,min=0.1,max=10,step=0.01)),
-              checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE) , 
+              checkboxInput('removepanelborder', 'Remove Panels Background and Outline?',
+                            value=FALSE),
+              checkboxInput('themecolordrop', 'Keep All levels of Colors and Fills ?',value=TRUE),
               tabsetPanel(
                 tabPanel("Discrete Color and Fill Scale",
-                            radioButtons("themecolorswitcher", "Discrete Color and Fill Scale:",
-                           c("Tableau 10"  = "themetableau10",
-                             "Tableau 20"  = "themetableau20",
-                             "Color Blind" = "themecolorblind",
-                             "Color Blind 2" = "themecolorblind2",
-                             "ggplot default" = "themeggplot",
-                             "viridis"        = "themeviridis",
-                             "User defined" = "themeuser")
-                           ,inline=TRUE),
+                         radioButtons("themecolorswitcher", "Discrete Color and Fill Scale:",
+                                      c("Tableau 10"  = "themetableau10",
+                                        "Tableau 20"  = "themetableau20",
+                                        "Color Blind" = "themecolorblind",
+                                        "Color Blind 2" = "themecolorblind2",
+                                        "ggplot default" = "themeggplot",
+                                        "viridis"        = "themeviridis",
+                                        "User defined" = "themeuser")
+                                      ,inline=TRUE),
                          h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
                  Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
                  Contact me if you want to add your own set of colors."),
@@ -768,7 +762,7 @@ fluidPage(
                                           actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
                                           
                          )
-                         ),
+                ),
                 tabPanel("Discrete Shape Scale",
                          radioButtons("scaleshapeswitcher", "Discrete Shape Scale:",
                                       c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
@@ -821,14 +815,99 @@ fluidPage(
                          )    
                          
                 )
-              )
+              ),
+              tabsetPanel(
+                tabPanel("Grid Lines",
+                         div(
+                           colourpicker::colourInput("majorgridlinescolx", "Major X Axis Grid Lines:",
+                                                     value="#E5E5E5",
+                                                     showColour = "both",
+                                                     allowTransparent=TRUE,returnName=TRUE),
+                           style = "display: inline-block;") ,
+                         div(
+                           colourpicker::colourInput("majorgridlinescoly", "Major Y Axis Grid Lines:",
+                                                     value="#E5E5E5",
+                                                     showColour = "both",
+                                                     allowTransparent=TRUE,returnName=TRUE),
+                           style = "display: inline-block;") ,
+                         div( actionButton("majorgridlinescolreset", "Reset Major Grid Lines Color"),
+                              style="display: inline-block;text-align: right"),br(),
+                         div(colourpicker::colourInput("minorgridlinescolx", "Minor X Axis Grid Lines:",
+                                                       value="#E5E5E5",
+                                                       showColour = "both",
+                                                       allowTransparent=TRUE,returnName=TRUE),
+                             style = "display: inline-block;"),
+                         div(colourpicker::colourInput("minorgridlinescoly", "Minor Y Axis Grid Lines:",
+                                                       value="#E5E5E5",
+                                                       showColour = "both",
+                                                       allowTransparent=TRUE,returnName=TRUE),
+                             style = "display: inline-block;"),
+                         div( actionButton("minorgridlinescolreset", "Reset Minor Grid Lines Color"),
+                              style="display: inline-block;text-align: right"),
+                         inline_ui(checkboxInput('rmmajorgridlinesx',
+                                                 'Remove X axis Major Grid Lines?',value=FALSE,
+                                                 width='120px')),
+                         inline_ui(checkboxInput('rmmajorgridlinesy',
+                                                 'Remove Y axis Major Grid Lines?',value=FALSE,
+                                                 width='120px')),
+                         inline_ui(checkboxInput('rmminorgridlinesx',
+                                                 'Remove X axis Minor Grid Lines?',value=FALSE,
+                                                 width='120px')),
+                         inline_ui(checkboxInput('rmminorgridlinesy',
+                                                 'Remove Y axis Minor Grid Lines?',value=FALSE,
+                                                 width='120px'))
+                ),
+                tabPanel("Margins",
+                         inline_ui(
+                           numericInput("margintop",label = "Plot Top Margin",
+                                        value = 0,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("marginleft",label = "Plot Left Margin",
+                                        value = 5.5,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("marginright",label = "Plot Right Margin",
+                                        value = 5.5,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("marginbottom",label = "Plot Bottom Margin",
+                                        value = 0,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendtop",label = "Legend Top Margin",
+                                        value = 0,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendleft",label = "Legend Left Margin",
+                                        value = 5.5,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendright",label = "Legend Right Margin",
+                                        value = 5.5,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendbottom",label = "Legend Bottom Margin",
+                                        value = 0,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendboxtop",label = "Legend Box Top Margin",
+                                        value = 0,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendboxleft",label = "Legend Box Left Margin",
+                                        value = 5.5,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendboxright",label = "Legend Box Right Margin",
+                                        value = 5.5,min=0,max=NA,width='120px')),
+                         inline_ui(
+                           numericInput("legendboxbottom",label = "Legend Box Bottom Margin",
+                                        value = 0,min=0,max=NA,width='120px'))
+                )
+              ),
+              checkboxInput('themeaspect', 'Use custom aspect ratio ?'),
+              h6("Setting aspect ratio does not work when facets spacing x or y is free."),
+              conditionalPanel(condition = "input.themeaspect" , 
+                               numericInput("aspectratio",label = "Y/X ratio",
+                                            value = 1,min=0.1,max=10,step=0.01)) 
+
               ) #tabpanel
             )#tabsetpanel
       ), # tabpanel
       #) ,#tabsetPanel(),
       
-      tabPanel(
-        "How To",
+      tabPanel("How To",value = "sidebar_How_To", 
         includeMarkdown(file.path("text", "howto.md"))
       )# tabpanel 
       )
@@ -875,8 +954,76 @@ fluidPage(
               tabPanel("Pairs Plot Options",
                        value = "pairs_plot",
                        fluidRow(
-                         column (3, uiOutput("colourpairs"))
-                       )
+                         column (3,
+                                 uiOutput("colourpairs")),
+                         column (3,
+                                 radioButtons("pairslowercont", "Lower Panel Continuous:",
+                                              c("Smooth"  = "smooth",
+                                                "Density"  = "density",
+                                                "Points"  = "points",
+                                                "Correlation"  = "cor"
+                                              )
+                                              ,inline=TRUE),
+                                   sliderInput("sizelowerpairs", "Cont (point/line/text) Size:",
+                                               min=0, max=6, value=c(1), step=0.01),
+                                 radioButtons("pairslowerdisc", "Lower Panel Discrete:",
+                                              c("Facet Bars"  = "facetbar",
+                                                "Count" = "count",
+                                                "Table" = "table"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairslowercombo", "Lower Panel Combo:",
+                                              c("Facet Histogram"  = "facethist",
+                                                "Box No Facet"  = "box_no_facet",
+                                                "Dot No Facet"  = "dot_no_facet"
+                                              )
+                                              ,inline=TRUE),
+                                   sliderInput("alphalowerpairs", "Lower Panel Transparency:",
+                                                       min = 0 ,max = 1, value = c(0.2), step = 0.01)
+                                 ),
+                         column (3,
+                                 radioButtons("pairsdiagcontinuous", "Diagonal Panel Continuous:",
+                                              c("Density"  = "densityDiag",
+                                                "Blank"  = "blankDiag"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairsdiagdiscrete", "Diagonal Panel Discrete:",
+                                              c("Bars"  = "barDiag",
+                                                "Count" = "countDiag",
+                                                "Table" = "tableDiag",
+                                                "Blank"  = "blankDiag"
+                                              )
+                                              ,inline=TRUE),
+                                 sliderInput("alphadiagpairs", "Diagonal Panel Transparency:",
+                                             min = 0 ,max = 1, value = c(0.2), step = 0.01
+                                 )
+                         ),
+                         column (3,
+                                 radioButtons("pairsuppercont", "Upper Panel Continuous:",
+                                              c("Correlation"  = "cor",
+                                                "Density"  = "density",
+                                                "Points"  = "points",
+                                                "Smooth"  = "smooth"
+                                              )
+                                              ,inline=TRUE),
+                                   sliderInput("sizeupperpairs", "Cont (point/line/text) Size:",
+                                               min=0, max=6, value=c(6), step=0.01),
+                                 radioButtons("pairsupperdisc", "Upper Panel Discrete:",
+                                              c("Facet Bars"  = "facetbar",
+                                                "Count" = "count",
+                                                "Table" = "table"
+                                              )
+                                              ,inline=TRUE),
+                                 radioButtons("pairsuppercombo", "Upper Panel Combo:",
+                                              c("Box No Facet"  = "box_no_facet",
+                                                "Dot No Facet"  = "dot_no_facet",
+                                                "Facet Histogram"  = "facethist"
+                                              )
+                                              ,inline=TRUE),
+                                   sliderInput("alphaupperpairs", "Upper Panel Transparency:",
+                                               min = 0 ,max = 1, value = c(0.2), step = 0.01)
+                         )
+              )#fluidrow
               ),
               tabPanel(
                 "Points, Lines",
@@ -899,16 +1046,31 @@ fluidPage(
                                      "Jitter Both" = "Default",
                                      "Jitter Custom" = "Custom",
                                      "Side By Side"= "dodge",
-                                     "Top on Top"= "dodgev"
+                                     "Top on Top"= "dodgev",
+                                     "Quasirandom"= "quasirandom",
+                                     "Beeswarm"= "beeswarm"
                                    ),selected="None"
                                    ,inline=TRUE),
                       conditionalPanel(
+                        " input.jitterdirection== 'quasirandom' |
+                          input.jitterdirection== 'beeswarm'",
+                        inline_ui(checkboxInput('groupOnX', 'group on X', value = TRUE, width='120px' )),
+                        inline_ui(numericInput("dodge.width",label = "Dodge Width",
+                                               value = 0, min = 0, step = 0.1, width='120px'))
+                      ),
+                      conditionalPanel(
+                        " input.jitterdirection== 'quasirandom' ",
+                        inline_ui(checkboxInput('qr.varwidth', 'Vary width', value = FALSE, width='120px' )),
+                        inline_ui(numericInput("qr.width",label = "Width",
+                                               value = 0.4, min = 0, step = 0.1, width='120px'))
+                      ),
+                      conditionalPanel(
                         " input.jitterdirection== 'Custom' ",
-                        inline_ui(
-                        numericInput("jittervertical",label = "Vertical Jitter Height",
-                                     value =0.1,min=0,width='120px')) ,
+                        inline_ui(numericInput("jittervertical",label = "Vertical Jitter Height",
+                                               value = 0.1, min = 0, step = 0.1, width='120px')) ,
                         inline_ui(numericInput("jitterhorizontal",
-                                               label = "Horizontal Jitter Width",value =0.1,min=0,width='120px'))
+                                               label = "Horizontal Jitter Width",
+                                               value = 0.1, min = 0, step = 0.1,width='120px'))
                       ),
                       conditionalPanel(
                         " input.jitterdirection== 'dodge' ",
@@ -1022,42 +1184,70 @@ fluidPage(
                 )
               ),#tabpanel
               tabPanel(
-                "Boxplots",
+                "Boxplots/Violins",
                 value = "box_plots",
                 fluidRow(
-                  column (
-                    4,
-                    checkboxInput('boxplotaddition', 'Add a Boxplot ? (makes sense if x variable is categorical and
-                                  you Group By a sensible choice. By default the x variable is used for grouping)'),
-                    checkboxInput('boxplotignoregroup', 'Ignore Mapped Group ? (can be helpful to superpose a loess or median on top of the boxplot)',value = TRUE)
+                  column (3,
+                    checkboxInput('boxplotaddition', 'Add a Boxplot ?'),
+                    conditionalPanel("input.boxplotaddition ",
+                    checkboxInput('boxplotignoregroup', 'Auto Group ?',
+                                  value = TRUE),
+                    checkboxInput('boxplotvarwidh', "Variable Boxes width ?"),
+                    checkboxInput('boxplotnotch', "Median Notches ?" ),
+                    sliderInput("boxplotalpha", "Boxplot Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                    checkboxInput('boxplotshowlegend', "Show Boxplot Legend ?", value=TRUE)
+                  )
                   ),
-                  column (
-                    4,
-                    checkboxInput('boxplotvarwidh', "Boxes proportional to the square-roots of the number of observations ?" ),
-                    checkboxInput('boxplotnotch', "Notched Boxes ?.
-                                  Notches are used to compare groups; if the notches of two boxes do not overlap, this suggests that the medians are significantly different." ),
-                    checkboxInput('boxplotshowlegend', "Show Legend ?", value=TRUE)
-                    ),
-                  
-                  column(
-                    4,
+                  column(3,
+                         conditionalPanel("input.boxplotaddition ",
                     checkboxInput('boxplotignorecol', 'Ignore Mapped Color'),
-                    conditionalPanel(
-                      " input.boxplotignorecol " ,
+                    conditionalPanel(" input.boxplotignorecol " ,
                       colourpicker::colourInput('boxcolline','Box Outlines Color',value="black",
                                                 showColour = "both",allowTransparent=TRUE,
                                                 returnName=TRUE)
                     ),
-                    sliderInput("boxplotalpha", "Boxplot Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
                     sliderInput("boxplotoutlieralpha", "Outlier Transparency:", min=0, max=1, value=c(0.5),step=0.01),
-                    sliderInput("boxplotoutliersize", "Outliers Size:", min=0, max=6, value=c(1),step=0.1)
+                    sliderInput("boxplotoutliersize", "Outliers Size:", min=0, max=6, value=c(1),step=0.1),
+                    inline_ui(numericInput("bxp.width",label = "Dodge width",
+                                           value = 0.75, min = 0, step = 0.1, width='120px')),
+                    inline_ui(radioButtons("bxp.preserve", "Dodge preserve style",
+                                           choices = c("total"= "total", "single" = "single"),
+                                           selected = "total", inline = TRUE, width='120px'))
                   )
-                  
+                  ),
+                  column(3,
+                         checkboxInput('violinaddition', 'Add a Violin Density ?'),
+                         conditionalPanel("input.violinaddition ",
+                                          checkboxInput('violinignoregroup', 'Auto Group ?',
+                                                        value = TRUE),
+                                          sliderInput("violinalpha", "Violin Fill Transparency:", min=0, max=1, value=c(0.2),step=0.01),
+                                          radioButtons("violinscale", "Violin scaling",
+                                                                 choices = c("area"= "area", "count" = "count", "width" = "width"),
+                                                                 selected = "area", inline = TRUE),
+                                          checkboxInput('violinshowquantile', "Show Violin quantiles?", value=FALSE),
+                                          checkboxInput('violinshowlegend', "Show Violin Legend ?", value=FALSE)
+                  )
+                  ),
+                  column(3,
+                         conditionalPanel("input.violinaddition ",
+                                          checkboxInput('violinignorecol', 'Ignore Mapped Color'),
+                                          conditionalPanel(" input.violinignorecol " ,
+                                                           colourpicker::colourInput('violincolline','Violin Outlines Color',
+                                                                                     value="black",
+                                                                                     showColour = "both",allowTransparent=TRUE,
+                                                                                     returnName=TRUE)
+                                          ),
+                                          inline_ui(numericInput("viol.width",label = "Dodge width",
+                                                                 value = 0.75, min = 0, step = 0.1, width='120px')),
+                                          inline_ui(radioButtons("viol.preserve", "Dodge preserve style",
+                                                                 choices = c("total"= "total", "single" = "single"),
+                                                                 selected = "total", inline = TRUE, width='120px'))
+                  )
+                  )
                 )#fluidrow 
-                
                   ),
               tabPanel(
-                "Histograms/Density/Bar",
+                "Histograms/Density",
                 value = "histograms_density",
                 fluidRow(
                   column (3,
@@ -1068,32 +1258,36 @@ fluidPage(
                                    "None" = "None") ,
                                  selected="None", inline = TRUE) ,
                     conditionalPanel("input.histogramaddition!='None' ",
-                    radioButtons("histogrambinwidth", "Binwidth ?",
+                    radioButtons("histogrambinwidth", "Bin Width: ",
                                  c("User Specified" = "userbinwidth",
                                    "Automatic Binwidth" = "autobinwidth",
-                                   "None" = "None") ,
-                                 selected="None", inline = TRUE) ,
+                                   "N of Bins" = "None") ,
+                                   selected = "None", inline = TRUE) ,
                     conditionalPanel(
                       " input.histogrambinwidth== 'userbinwidth' ", 
-                      numericInput("histobinwidth",
-                                   "Bin Width",
-                                   value = 1,min = 0, step = 0.5)
+                      numericInput("histobinwidth","Bin Width Value",
+                                   value = 1, min = 0, step = 0.1)
                       
                     ),
                     conditionalPanel(" input.histogrambinwidth== 'None' ",
-                                     numericInput("histonbins",
-                                                  "N Bins", value = 30,min = 0, step = 0.5)
-                    ),
-                    sliderInput(
-                      "histogramalpha","Histogram Fill Transparency:",
-                      min = 0, max = 1, value = c(0.2), step = 0.01
-                    ),
-                    selectInput("positionhistogram", label = "Histogram positioning for overlap:",
-                                choices = c("Default"="identity",
-                                  "Side By Side"="dodge",
-                                  "Stacked"="stack"),selected = "stack")
-                    
+                       numericInput("histonbins","Number of Bins",
+                                    value = 30,min = 0, step = 0.1)
+                    )
                     )  
+                  ),
+                  column (3,
+                          conditionalPanel("input.histogramaddition!='None' ",
+                                           sliderInput(
+                                             "histogramalpha","Histogram Fill Transparency:",
+                                             min = 0, max = 1, value = c(0.2), step = 0.01
+                                           ),
+                          inline_ui(selectInput("positionhistogram",
+                                      label = "Histogram positioning for overlap:",
+                                      choices = c("Default"="identity",
+                                                  "Side By Side"="dodge",
+                                                  "Stacked"="stack"),selected = "stack")
+                          )
+                          )
                   ),
                   column (3,
                     radioButtons("densityaddition", "Add a Density Curve ?",
@@ -1105,11 +1299,6 @@ fluidPage(
                                  selected="Density", inline = TRUE),
                     conditionalPanel("input.densityaddition!='None' ",
                     sliderInput(
-                      "densityalpha",
-                      "Density Fill Transparency:",
-                      min = 0 ,max = 1, value = c(0.2), step = 0.01
-                    ),
-                    sliderInput(
                       "densityadjust",
                       "Density Binwidth Adjustment:",
                       min = 0.01, max = 10, value = c(1), step = 0.01
@@ -1117,39 +1306,91 @@ fluidPage(
                     )
                     
                   ),
-                  
                   column (3,
-                    checkboxInput('barplotaddition', 'Add a Barplot ?',value = TRUE),
+                          conditionalPanel("input.densityaddition!='None' ",
+                                           sliderInput(
+                                             "densityalpha",
+                                             "Density Fill Transparency:",
+                                             min = 0 ,max = 1, value = c(0.2), step = 0.01
+                                           )
+                          )
+                  )
+                )),
+              tabPanel("Barplots",
+                value = "barplots",
+                fluidRow(
+                  column (3,
+                    checkboxInput('barplotaddition', 'Add a Barplot ?', value = TRUE),
                     conditionalPanel("input.barplotaddition",
-                    selectInput("positionbar", label = "Bar positioning:",
+                                     inline_ui(selectInput("positionbar", label = "Bar positioning:",
                                 choices = c("Stacked"="position_stack(vjust = 0.5)",
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
-                                selected = "position_stack(vjust = 0.5)"),
-                    checkboxInput('barplotpercent', 'Compute Percentages instead of Counts ?',
-                                  value = FALSE),
-                    checkboxInput('barplotlabel', 'Show Counts/Percentages ?',value = FALSE),
-                    conditionalPanel("input.barplotlabel",
-                                     checkboxInput('barplotlabellegend', "Show Legend ?", value=TRUE)
-                                     )
+                                selected = "position_stack(vjust = 0.5)") ),
+                    checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
                     )
                   ),
+                  column(3,
+                         conditionalPanel("input.barplotaddition",
+                                          sliderInput("barplotfillalpha",
+                                                      "Barplot Fill Transparency:",
+                                                      min=0, max=1, value=c(0.2),step=0.01),
+                                          radioButtons("barplotorder", "Bar Ordering:",
+                                                       c("Default" = "default",
+                                                         "By Frequency" = "frequency",
+                                                         "By Reverse Frequency" = "revfrequency"),
+                                                       inline=TRUE )
+                         )
+                         ),
                   column (3,
                           conditionalPanel("input.barplotaddition",
-                          radioButtons("barplotorder", "Bar Ordering:",
-                                       c("Default" = "default",
-                                         "By Frequency" = "frequency",
-                                         "By Reverse Frequency" = "revfrequency"),inline=TRUE ) ,
-                          checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
+                          checkboxInput('barplotlabel', 'Show Counts/Percentages ?', value = FALSE),
+                          conditionalPanel(" input.barplotaddition && input.barplotlabel",
+                                           checkboxInput('barplotpercent',
+                                                         'Compute Percentages instead of Counts ?',
+                                                         value = FALSE)
+                          ),
+                          conditionalPanel(" input.barplotaddition &&
+                                           input.barplotlabel && input.barplotpercent ",
+                                           numericInput("nroundbarplotpercentdigits",
+                                                        label = "Accuracy of Percent Digits",
+                                                        value = 1, min=0,max=10) 
+                          ),
+                          conditionalPanel('input.barplotaddition && input.barplotlabel',
+                                           inline_ui(sliderInput("barplotlabelhjust",
+                                                                 "Text horizontal justification:",
+                                                                 min=-0.2, max=1.2, value=c(0.5),step=0.1,
+                                                                 width='120px')),
+                                           inline_ui(sliderInput("barplotlabelvjust",
+                                                                 "Text vertical justification:",
+                                                                 min=-0.2, max=1.2, value=c(0.5),step=0.1,
+                                                                 width='120px'))
                           )
+                  )
                   ),
-                  column (6,
-                  h6("A barplot for non-numeric x or y variable(s), or a density/histogram for numeric x or y variabl(s)
-                                 will be produced, only when the x or y variable(s) are empty.
-                                 Options are to be added as per users requests.")
-                  ),
-                  column (6,
-                  h6("Currently there is some limitations when position 'Sum to 100%' is used.")
+                  column(3,
+                         conditionalPanel('input.barplotaddition && input.barplotlabel',
+                         checkboxInput('ignorebarplotlabelcolor', 'Ignore Mapped Color for labels?'),
+                         conditionalPanel(
+                           " input.ignorebarplotlabelcolor ",
+                           colourpicker::colourInput("barplotlabelcolor", "Text Color", value="black",
+                                                     showColour = "both",
+                                                     allowTransparent=FALSE,
+                                                     returnName=TRUE)
+                           ),
+                         conditionalPanel('input.barplotaddition && input.barplotlabel',
+                                          inline_ui(sliderInput("barplotlabelsize", "Text Size:",
+                                                                min=0, max=12, value=c(5), step=0.01)),
+                         checkboxInput('barplotlabellegend', "Show Text Legend ?",
+                                       value = TRUE)
+                         )
+                         )
+                         ),
+                  column (12,
+                          conditionalPanel('input.barplotaddition &&
+                          input.barplotlabel && input.barplotpercent && input.positionbar == "position_fill(vjust = 0.5)" ',
+                  h6("Currently there is ggplot2 text label limitations when Percentages and position 'Sum to 100%' are selected as such `ggally` `stat_prop` computed by the x or y axis values is used.")
+                          )
                   )
                   )#fluidrow
               ),
@@ -1369,8 +1610,7 @@ fluidPage(
                                    
                                  ),
                                  conditionalPanel(
-                                   " input.Mean== 'Mean/CI' && (
-                      input.geommeanCI == 'errorbar' | input.positionmean =='position_dodge')  ",
+                                   " (input.geommeanCI == 'errorbar' | input.positionmean =='position_dodge')  ",
                                    numericInput(
                                      inputId = "errbar",
                                      label = "CI errorbar/dodge width:",
@@ -1431,7 +1671,7 @@ fluidPage(
                                    checkboxInput('meanpoints', 'Show points')
                                  ),
                                  conditionalPanel(
-                                   " input.Mean!= 'None' & input.meanpoints ",
+                                   " input.Mean!= 'None' && input.meanpoints ",
                                    sliderInput(
                                      "meanpointsize",
                                      "Mean(s) Point(s) Size:",
@@ -1493,7 +1733,6 @@ fluidPage(
                                   " input.Mean!= 'None' ",
                                   checkboxInput('meanvalues', 'Label Values?') ,
                                   checkboxInput('meanN', 'Label N?') ),
-                                
                                 conditionalPanel(
                                   "input.meanvalues | input.meanN ",
                                   sliderInput("alphameanlabel", "Labels(s) Transparency:",
@@ -1503,6 +1742,11 @@ fluidPage(
                                                  "auto text repel" = "text_repel",
                                                  "auto label repel" = "label_repel"),selected = "text_repel",
                                                inline = TRUE)
+                                ),
+                                conditionalPanel("input.meanvalues",
+                                                 numericInput("nroundmeandigits",
+                                                              label = "Mean N Digits",
+                                                              value = 1,min=0,max=10)
                                 )
                                 
                                 ), # fourth column
@@ -1530,7 +1774,18 @@ fluidPage(
                                                                       allowTransparent = FALSE,
                                                                       returnName = TRUE)
                                                    )
-                                  )
+                                  ),
+                                  conditionalPanel("input.meanN",
+                                                   radioButtons("mean_N_position", "N Positioning:",
+                                                                c("min" = "min","max" = "max",
+                                                                  "lower/left edge" = "below",
+                                                                  "upper/right edge" = "up"
+                                                                ), inline = TRUE),
+                                                   numericInput("mean_N_add",label = "N Additive adjustment",
+                                                                value = 0, min = NA, max = NA, step = 0.1),
+                                                   numericInput("mean_N_mult",label = "N multiplicative adjustment",
+                                                                value = 1, min = NA, max = NA, step = 0.1)
+                                  ) 
 
                                 )
                          )#column 5
@@ -1556,8 +1811,7 @@ fluidPage(
                                   "Side By Side"="position_dodge"
                                 ),selected = "position_identity"),
                     conditionalPanel(
-                      " input.Median== 'Median/PI' && (
-                      input.geommedianPI == 'errorbar' | input.positionmedian =='position_dodge')  ",
+                      " (input.geommedianPI == 'errorbar' | input.positionmedian =='position_dodge')  ",
                       numericInput(
                         inputId = "medianerrbar",
                         label = "PI errorbar/dodge width:",
@@ -1661,7 +1915,12 @@ fluidPage(
                                         "auto text repel" = "text_repel",
                                         "auto label repel" = "label_repel"),selected = "text_repel",
                                       inline = TRUE)
-                       )
+                       ),
+                       conditionalPanel("input.medianvalues",
+                                        numericInput("nroundmediandigits",
+                                                     label = "Median N Digits",
+                                                     value = 1,min=0,max=10)
+                       ) 
                        
                 ), # fourth column
                 
@@ -1685,7 +1944,18 @@ fluidPage(
                                                                    allowTransparent=FALSE,
                                                                    returnName=TRUE)
                                                        )
-                                      )
+                                      ),
+                       conditionalPanel("input.medianN",
+                                        radioButtons("median_N_position", "N Positioning:",
+                                                     c("min" = "min","max" = "max",
+                                                       "lower/left edge" = "below",
+                                                       "upper/right edge" = "up"
+                                                     ), inline = TRUE),
+                                        numericInput("median_N_add",label = "N Additive adjustment",
+                                                     value = 0, min = NA, max = NA, step = 0.1),
+                                        numericInput("median_N_mult",label = "N multiplicative adjustment",
+                                                     value = 1, min = NA, max = NA, step = 0.1)
+                       )
                     )#main condition
                   )# column #5
                   
@@ -1759,13 +2029,16 @@ fluidPage(
                                 checkboxInput('addrisktable', 'Add Risk Table',value = FALSE)),
                                  conditionalPanel( " input.KM!= 'None' & input.addrisktable ",
                                                    selectizeInput("risktablevariables", 'Numbers to Show:',
-                                                                  choices = c("n.risk","n.event","n.censor","pct.risk","cum.n.event","cum.n.censor") ,multiple=TRUE,
+                                                                  choices = c("n.risk","n.event","n.censor",
+                                                                              "pct.risk","cum.n.event",
+                                                                              "cum.n.censor") ,multiple=TRUE,
                                                                   selected = c("n.risk","n.censor")),
                                                    checkboxInput('addhorizontallines', 'Draw Horizontal lines',value = TRUE),
                                                    numericInput(inputId = "breaktimeby",
                                                                 label = "Show Numbers Every x time unit:",value="", min = 0,max = NA),
                                                    sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
-                                                   sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01)
+                                                   sliderInput("nriskpositiondodge", "Numbers vertical dodge scaler:", min=-1, max=1, value=c(0.2),step=0.01),
+                                                   sliderInput("nriskoffset", "Numbers offset:", min=-1, max=1, value=c(0),step=0.01)
                                  )#risktable
                          ),
                          
@@ -1907,11 +2180,11 @@ fluidPage(
                            " input.addcustomlabel && input.labelignoresize  ",
                            sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1)
                          ),
-                         conditionalPanel(
-                           " input.addcustomlabel ",
-                           checkboxInput('roundlabeldigits', 'Round the numeric labels digits?'),
-                           numericInput("nroundlabeldigits",label = "N Digits",value = 0,min=0,max=10)
-                           )
+                         conditionalPanel(" input.addcustomlabel ",
+                                            checkboxInput('roundlabeldigits', 'Round the numeric labels digits?')),
+                         conditionalPanel(" input.roundlabeldigits && input.roundlabeldigits",
+                                          numericInput("nroundlabeldigits",label = "N Digits",
+                                                       value = 0,min=0,max=10) )
                   ),
                   
                   column(3,
@@ -1974,13 +2247,14 @@ fluidPage(
                                  uiOutput("xcolrug"))
                          ),
                          column(3,
-                                conditionalPanel(condition = "input.addrugmarks | input.addextrarugmarks",
+                                conditionalPanel(condition = "input.addrugmarks || input.addextrarugmarks",
                                 sliderInput("ruglinelength", "rug line length (percentage of the plot area):", min=0, max=1,value=c(0.03),step=0.005),
                                 sliderInput("ruglinealpha", "rug line transparency:", min=0, max=1, value=c(0.5),step=0.01)
                                 )
                                 ),
                          column(3,
-                         conditionalPanel(condition = "input.addrugmarks | input.addextrarugmarks",
+                         conditionalPanel(condition = "input.addrugmarks || input.addextrarugmarks",
+                           checkboxInput('rugoutside', 'rug marks on the Outside', value = FALSE),
                            checkboxInput('rugignorecol', 'Ignore Mapped Color'),
                            conditionalPanel(condition = " input.rugignorecol ",
                              colourpicker::colourInput("colrug", "rug Color", value="black",
