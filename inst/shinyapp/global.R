@@ -309,10 +309,38 @@ my.render.cat <- function (x, ..., na.is.category = FALSE)
                                    if (na.is.category) PCT else PCTnoNA))))
 }
 
-GeomErrorbar$draw_key  <-   function (data, params, size) {
-  data$linetype[is.na(data$linetype)] <- 0 
-  segmentsGrob(c(0.2, 0.2, 0.5), c(0.2, 0.8, 0.2),c(0.8, 0.8, 0.5),c(0.2, 0.8, 0.8),
-               gp = gpar(col = alpha(data$colour,
-                                     data$alpha), lwd = data$size * .pt,
-                         lty = data$linetype,          lineend = "butt"),
-               arrow = params$arrow) }
+draw_key_errorbar <- function (data, params, size) {
+    data$linetype[is.na(data$linetype)] <- 0
+    grid::segmentsGrob(c(0.2, 0.2, 0.5),
+                       c(0.2, 0.8, 0.2),
+                       c(0.8, 0.8, 0.5),
+                       c(0.2, 0.8, 0.8),
+                 gp = grid::gpar(col = alpha(data$colour,data$alpha),
+                           lwd = data$size * ggplot2::.pt,
+                           lty = data$linetype,
+                           lineend = "butt"),
+                           arrow = params$arrow)
+}
+draw_key_errorbarh <- function (data, params, size) {
+  data$linetype[is.na(data$linetype)] <- 0
+  grid::segmentsGrob(y0=c(0.2, 0.2, 0.5),
+                     x0=c(0.2, 0.8, 0.2),
+                     y1=c(0.8, 0.8, 0.5),
+                     x1=c(0.2, 0.8, 0.8),
+                     gp = grid::gpar(col = alpha(data$colour,data$alpha),
+                                     lwd = data$size * ggplot2::.pt,
+                                     lty = data$linetype,
+                                     lineend = "butt"),
+                     arrow = params$arrow)
+}
+
+draw_key_boxploth <- function (data, params, size) {
+  grid::grobTree(grid::linesGrob(c(0.1, 0.25), 0.5),
+                 grid::linesGrob(c(0.75,0.9), 0.5),
+                 grid::rectGrob(height = 0.75, width = 0.5),
+                 grid::linesGrob(0.5,c(0.125, 0.875)),
+                 gp = grid::gpar(col = data$colour,
+                     fill = alpha(data$fill, data$alpha),
+                     lwd = data$size * ggplot2::.pt,
+                     lty = data$linetype))
+}
