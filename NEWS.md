@@ -1,3 +1,18 @@
+# ggquickeda 0.2.9999
+* next release to do/wish list ::
+* ignore mapped color and or fill for barplot and density ?
+* density line style ?
+* zoom not working for univariate ?
+* allow axis label fomatting for univariate log ?
+* custom ticks for univariate ?
+* add more styling options to control labels justificaiton etc. ?
+* position/geom sina  ?
+* transform the label for median and log scale ?
+* mean sdl ?
+* violin half half boxplot position ?
+* label from precomputed N at the place we want ?
+* reduce list of package dependencies ?
+
 # ggquickeda 0.2.0
 * Added Violin plots
 * Added options and fixes for histograms, barplots and densities

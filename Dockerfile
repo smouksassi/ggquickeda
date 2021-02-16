@@ -5,7 +5,7 @@ RUN apt-get update && \
 
 RUN echo "options(repos = c(CRAN = 'https://cran.rstudio.com/'), download.file.method = 'libcurl')" >> /usr/local/lib/R/etc/Rprofile.site
 
-RUN install2.r colourpicker Formula GGally ggpmisc ggrepel ggstance ggpubr \
+RUN install2.r colourpicker Formula GGally ggpmisc ggrepel ggbeeswarm ggstance ggpubr \
     gridExtra Hmisc plotly quantreg scales shinyjs shinyjqui survminer table1 \
     shinyFiles RPostgres
 
