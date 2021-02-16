@@ -19,7 +19,8 @@ function(input, output, session) {
   #   gradient$reset()
   # })  
   observeEvent(input$userdefinedcontcolorreset, {
-    cols <- c(muted("red"),"white",muted("blue"))
+    cols <- c(scales::muted("red"),"white",
+              scales::muted("blue"))
     colourpicker::updateColourInput(session = session,
                       inputId = paste0("colcont1"),
                       value = cols[1]
@@ -2600,7 +2601,7 @@ function(input, output, session) {
         colourpicker::colourInput(
           "colcont1",
           "Starting Color",
-          value = muted("red"),
+          value = scales::muted("red"),
           showColour = "both",
           allowTransparent = FALSE,returnName = TRUE),
         
@@ -2614,7 +2615,7 @@ function(input, output, session) {
         colourpicker::colourInput(
           "colcont3",
           "Ending Color",
-          value =muted("blue"),
+          value =scales::muted("blue"),
           showColour = "both",
           allowTransparent = FALSE,returnName = TRUE)
   )
@@ -2716,34 +2717,34 @@ function(input, output, session) {
       
       scale_colour_continuous<- function(...) 
         scale_colour_gradient2(..., 
-                               low = muted("red"), 
+                               low = scales::muted("red"), 
                                mid = input$midcolor,
-                               high = muted("blue"),
+                               high = scales::muted("blue"),
                                midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous<- function(...) 
         scale_fill_gradient2(...,
-                             low = muted("red"),
+                             low = scales::muted("red"),
                              mid = input$midcolor,
-                               high = muted("blue"),
+                               high = scales::muted("blue"),
                              midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
     }
     if (input$themecontcolorswitcher=="RedWhiteGreen"){
       
       scale_colour_continuous <- function(...) 
-        scale_colour_gradient2(..., low = muted("red"),
+        scale_colour_gradient2(..., low = scales::muted("red"),
                                mid = input$midcolor,
-                               high = muted("darkgreen"),
+                               high = scales::muted("darkgreen"),
                                midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous <- function(...) 
         scale_fill_gradient2(...,
-                             low = muted("red"),
+                             low = scales::muted("red"),
                              mid = input$midcolor,
-                            high = muted("darkgreen"),
+                            high = scales::muted("darkgreen"),
                             midpoint = input$colormidpoint, space = "Lab",
                              na.value = "grey50", guide = "colourbar")
       
