@@ -3966,7 +3966,9 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
-                           fun.args = list(nroundlabel=input$nroundmeandigits),
+                           fun.args = list(nroundlabel=input$nroundmeandigits,
+                                           labeltrans =ifelse(input$expmean,"exp","none")
+                                           ),
                            alpha=input$alphameanlabel,
                            fontface = "bold",
                            position = eval(parse(text=positionmean)),
@@ -4084,7 +4086,9 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
-                           fun.args = list(nroundlabel=input$nroundmeandigits),
+                           fun.args = list(nroundlabel=input$nroundmeandigits,
+                                           labeltrans =ifelse(input$expmean,"exp","none")
+                           ),
                            alpha=input$alphameanlabel,
                            fontface = "bold",
                            col=meancolp,
@@ -4203,7 +4207,9 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
-                           fun.args = list(nroundlabel=input$nroundmeandigits),
+                           fun.args = list(nroundlabel=input$nroundmeandigits,
+                                           labeltrans =ifelse(input$expmean,"exp","none")
+                           ),
                            alpha=input$alphameanlabel,
                            aes(group=NULL),
                            fontface = "bold",
@@ -4322,7 +4328,9 @@ function(input, output, session) {
           if (input$Mean!="None" && input$meanvalues )  {
             p <-   p   +
               stat_summary(fun.data = mean.n, geom = input$geommeanlabel,
-                           fun.args = list(nroundlabel=input$nroundmeandigits),
+                           fun.args = list(nroundlabel=input$nroundmeandigits,
+                                           labeltrans =ifelse(input$expmean,"exp","none")
+                           ),
                            alpha=input$alphameanlabel,
                            col=meancolp,
                            aes(group=NULL),
@@ -4916,8 +4924,10 @@ function(input, output, session) {
           
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
-              stat_summary(fun.data = median.n,geom = input$geommedianlabel,
-                           fun.args = list(nroundlabel=input$nroundmediandigits),
+              stat_summary(fun.data = median.n, geom = input$geommedianlabel,
+                           fun.args = list(nroundlabel=input$nroundmediandigits,
+                                           labeltrans =ifelse(input$expmedian,"exp","none")
+                           ),
                            alpha=input$alphamedianlabel,
                            fontface = "bold",
                            position = eval(parse(text=positionmedian)),
@@ -5029,7 +5039,9 @@ function(input, output, session) {
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n, geom = input$geommedianlabel,
-                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           fun.args = list(nroundlabel=input$nroundmediandigits,
+                                           labeltrans =ifelse(input$expmedian,"exp","none")
+                           ),
                            alpha=input$alphamedianlabel,
                            fontface = "bold",
                            colour=mediancoll,
@@ -5145,7 +5157,9 @@ function(input, output, session) {
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n, geom = input$geommedianlabel,
-                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           fun.args = list(nroundlabel=input$nroundmediandigits,
+                                           labeltrans =ifelse(input$expmedian,"exp","none")
+                           ),
                            alpha=input$alphamedianlabel,
                            aes(group=NULL),
                            fontface = "bold",
@@ -5259,7 +5273,9 @@ function(input, output, session) {
           if (input$Median!="None" && input$medianvalues )  {
             p <-   p   +
               stat_summary(fun.data = median.n,geom = input$geommedianlabel,
-                           fun.args = list(nroundlabel=input$nroundmediandigits),
+                           fun.args = list(nroundlabel=input$nroundmediandigits,
+                                           labeltrans =ifelse(input$expmedian,"exp","none")
+                           ),
                            alpha=input$alphamedianlabel,
                            aes(group=NULL),
                            fontface = "bold",

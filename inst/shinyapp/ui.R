@@ -1736,7 +1736,10 @@ fluidPage(
                                 conditionalPanel("input.meanvalues",
                                                  numericInput("nroundmeandigits",
                                                               label = "Mean N Digits",
-                                                              value = 1,min=0,max=10)
+                                                              value = 1,min=0,max=10),
+                                                 checkboxInput('expmean',
+                                                               '10^Mean Label',
+                                                               value = FALSE) 
                                 )
                                 
                                 ), # fourth column
@@ -1909,7 +1912,11 @@ fluidPage(
                        conditionalPanel("input.medianvalues",
                                         numericInput("nroundmediandigits",
                                                      label = "Median N Digits",
-                                                     value = 1,min=0,max=10)
+                                                     value = 1,min=0,max=10),
+                                        checkboxInput('expmedian',
+                                                      '10^Median Label',
+                                                      value = FALSE) 
+                                        
                        ) 
                        
                 ), # fourth column
