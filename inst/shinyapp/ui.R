@@ -791,17 +791,18 @@ fluidPage(
                                           numericInput("colormidpoint", "Continuous Color/Fill Midpoint Value",
                                                        value = 0)
                          ),
+                          conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
+                                           gradientInputUI("gradientcol", "100%", "www"),
+                                           actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
+                                           ),
+                         
+                         
                          # conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
-                         #                  gradientInputUI("gradientcol", "100%", "www"),
-                         #                  actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
-                         #                  ),
-                         
-                         
-                         conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
-                                          uiOutput('userdefinedcontcolor'),
-                                          actionButton("userdefinedcontcolorreset", "Back to starting continuous colours", icon = icon("undo") )
-                                          
-                         )    
+                         #                  uiOutput('userdefinedcontcolor'),
+                         #                  actionButton("userdefinedcontcolorreset",
+                         #                               "Back to starting continuous colours", icon = icon("undo") )
+                         #                  
+                         # )    
                          
                 )
               ),

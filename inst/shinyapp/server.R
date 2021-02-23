@@ -7,33 +7,33 @@ function(input, output, session) {
     updateTable = FALSE  # whether to manually update the dstats table
   )
   
-  # gradient <- callModule(gradientInput, "gradientcol",
-  #                        init_col =c("#832424","white","#3A3A98"),
-  #            allow_modify = FALSE, col_expand = TRUE) 
+   gradient <- callModule(gradientInput, "gradientcol",
+                          init_col =c("#832424","white","#3A3A98"),
+              allow_modify = FALSE, col_expand = TRUE) 
   
-  # gradientTableData <- reactive({
-  #   df <- gradient$result()
-  # }
-  # )
-  # observeEvent(input$gradientreset, {
-  #   gradient$reset()
-  # })  
-  observeEvent(input$userdefinedcontcolorreset, {
-    cols <- c(scales::muted("red"),"white",
-              scales::muted("blue"))
-    colourpicker::updateColourInput(session = session,
-                      inputId = paste0("colcont1"),
-                      value = cols[1]
-    )
-    colourpicker::updateColourInput(session = session,
-                      inputId = paste0("colcont2"),
-                      value = cols[2]
-    )
-    colourpicker::updateColourInput(session = session,
-                      inputId = paste0("colcont3"),
-                      value = cols[3]
-    )
-  })
+   gradientTableData <- reactive({
+     df <- gradient$result()
+   }
+   )
+   observeEvent(input$gradientreset, {
+     gradient$reset()
+   })  
+  # observeEvent(input$userdefinedcontcolorreset, {
+  #   cols <- c(scales::muted("red"),"white",
+  #             scales::muted("blue"))
+  #   colourpicker::updateColourInput(session = session,
+  #                     inputId = paste0("colcont1"),
+  #                     value = cols[1]
+  #   )
+  #   colourpicker::updateColourInput(session = session,
+  #                     inputId = paste0("colcont2"),
+  #                     value = cols[2]
+  #   )
+  #   colourpicker::updateColourInput(session = session,
+  #                     inputId = paste0("colcont3"),
+  #                     value = cols[3]
+  #   )
+  # })
   
   observeEvent(input$outsidelogticks, {
     updateCheckboxInput(session = session,inputId = "clip",value = FALSE
@@ -2595,32 +2595,32 @@ function(input, output, session) {
   })
   
   
-  output$userdefinedcontcolor <- renderUI({ 
-      if(input$themecontcolorswitcher=="themeuser"){
-      list(
-        colourpicker::colourInput(
-          "colcont1",
-          "Starting Color",
-          value = scales::muted("red"),
-          showColour = "both",
-          allowTransparent = FALSE,returnName = TRUE),
-        
-        colourpicker::colourInput(
-          "colcont2",
-          "Midpoint Color",
-          value ="white",
-          showColour = "both",
-          allowTransparent = FALSE,returnName = TRUE),
-        
-        colourpicker::colourInput(
-          "colcont3",
-          "Ending Color",
-          value =scales::muted("blue"),
-          showColour = "both",
-          allowTransparent = FALSE,returnName = TRUE)
-  )
-      }
-    })
+  # output$userdefinedcontcolor <- renderUI({ 
+  #     if(input$themecontcolorswitcher=="themeuser"){
+  #     list(
+  #       colourpicker::colourInput(
+  #         "colcont1",
+  #         "Starting Color",
+  #         value = scales::muted("red"),
+  #         showColour = "both",
+  #         allowTransparent = FALSE,returnName = TRUE),
+  #       
+  #       colourpicker::colourInput(
+  #         "colcont2",
+  #         "Midpoint Color",
+  #         value ="white",
+  #         showColour = "both",
+  #         allowTransparent = FALSE,returnName = TRUE),
+  #       
+  #       colourpicker::colourInput(
+  #         "colcont3",
+  #         "Ending Color",
+  #         value =scales::muted("blue"),
+  #         showColour = "both",
+  #         allowTransparent = FALSE,returnName = TRUE)
+  # )
+  #     }
+  #   })
   
   
   observeEvent(input$userdefinedcolorreset, {
@@ -2753,17 +2753,17 @@ function(input, output, session) {
     if (input$themecontcolorswitcher=="themeuser"){
       scale_colour_continuous <- function(...) 
         scale_colour_gradient2(...,
-                               low = input$colcont1,,#gradientTableData()[1,1],
-                               mid = input$colcont2,#gradientTableData()[2,1],
-                               high =input$colcont3,#gradientTableData()[3,1],
+                               low = gradientTableData()[1,1],#input$colcont1,
+                               mid = gradientTableData()[2,1],#input$colcont2,
+                               high =gradientTableData()[3,1],#input$colcont3,
                                midpoint = input$colormidpoint, space = "Lab",
                                na.value = "grey50", guide = "colourbar")
       
       scale_fill_continuous <- function(...) 
         scale_fill_gradient2(...,
-                             low = input$colcont1,,#gradientTableData()[1,1],
-                             mid = input$colcont2,#gradientTableData()[2,1],
-                             high = input$colcont3,#gradientTableData()[3,1],
+                             low = gradientTableData()[1,1],#input$colcont1,
+                             mid = gradientTableData()[2,1],#input$colcont2,
+                             high =gradientTableData()[3,1],#input$colcont3,
                              midpoint = input$colormidpoint, space = "Lab",
                              na.value = "grey50", guide = "colourbar")
       

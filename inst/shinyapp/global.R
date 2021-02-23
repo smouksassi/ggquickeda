@@ -54,7 +54,7 @@ if (PGDATABASE != "" && PGHOST != "" && PORT != "" && PGUSER != "" && PGPASSWORD
 
 #### ARIDHIA ADDITIONS ####
 ###########################
-#source("gradientInput.R") pending a shinyjqui fix
+source("gradientInput.R") #pending a shinyjqui fix
 
 options(shiny.maxRequestSize=250*1024^2) 
 
