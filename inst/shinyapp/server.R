@@ -1672,6 +1672,9 @@ function(input, output, session) {
       if(input$functionordervariable=="Sum" )  {
         df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) sum(x[!is.na(x)]))
       }
+      if(input$functionordervariable=="Min-Max Difference" )  {
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) {max(x) - min(x)})
+      }
       if(input$reverseorder )  {
         df[,varname] <- factor( df[,varname], levels=rev(levels( df[,varname])))
         
@@ -2632,8 +2635,9 @@ function(input, output, session) {
     if( length(lev) <= 10 ){
       cols <- c(tableau10)
     }
+    mycolorupdatedfun <- get("updateColourInput", asNamespace("colourpicker"))
     lapply(seq_along(lev), function(i) {
-      do.call(what = "updateColourInput",
+      do.call(what = "mycolorupdatedfun",
               args = list(
                 session = session,
                 inputId = paste0("col", lev[i]),
@@ -2647,8 +2651,9 @@ function(input, output, session) {
     req(input$nusercol)
     lev <- 1:input$nusercol
     cols <- c("#D62728",rep("lightgray",input$nusercol-1))
+    mycolorupdatedfun <- get("updateColourInput", asNamespace("colourpicker"))
     lapply(seq_along(lev), function(i) {
-      do.call(what = "updateColourInput",
+      do.call(what = "mycolorupdatedfun",
               args = list(
                 session = session,
                 inputId = paste0("col", lev[i]),
@@ -6176,7 +6181,7 @@ function(input, output, session) {
         }
         if (input$yaxisformat=="logyformat"){
         p <- p + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                               labels = trans_format("log10", math_format(10^.x)),
+                               labels = trans_format("log10", scales::math_format(10^.x)),
                                expand = expansionobjy)
         }
         if (input$yaxisformat=="logyformat2"){
@@ -6205,7 +6210,7 @@ function(input, output, session) {
          }#default
          if (input$yaxisformat=="logyformat"){
            p <- p  + 
-             scale_y_log10(labels = trans_format("log10", math_format(10^.x)),
+             scale_y_log10(labels = trans_format("log10", scales::math_format(10^.x)),
                            breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                            minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
                            expand = expansionobjy) 
@@ -6349,7 +6354,7 @@ function(input, output, session) {
           }
           if (input$xaxisformat=="logxformat") {
             p <- p + scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                                   labels = trans_format("log10", math_format(10^.x)),
+                                   labels = trans_format("log10", scales::math_format(10^.x)),
                                    expand = expansionobjx)
           }
           if (input$xaxisformat=="logxformat2") {
@@ -6379,7 +6384,7 @@ function(input, output, session) {
           }#xaxisformat default
           if (input$xaxisformat=="logxformat") {
             p <- p  + 
-              scale_x_log10(labels = trans_format("log10", math_format(10^.x)),
+              scale_x_log10(labels = trans_format("log10", scales::math_format(10^.x)),
                             breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                             minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
                             expand = expansionobjx) 

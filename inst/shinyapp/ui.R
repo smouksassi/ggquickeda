@@ -113,7 +113,10 @@ fluidPage(
                 condition = "input.reordervarin!='' " ,
                 selectizeInput(
                   "functionordervariable", 'By the:',
-                  choices =c("Median","Mean","Minimum","Maximum","N","N Unique","SD","Sum") ,multiple=FALSE)
+                  choices =c("Median","Mean","Minimum","Maximum",
+                             "N","N Unique",
+                             "SD","Sum",
+                             "Min-Max Difference") ,multiple=FALSE)
               ),
               uiOutput("variabletoorderby"),
               conditionalPanel(
@@ -2313,8 +2316,8 @@ fluidPage(
                   numericInput("export_nrow", "Rows per page",
                                value = 1, min = 1, max = 20),
                   numericInput("export_ncol", "Columns per page",
-                               value = 1, min = 1, max = 20)
-                  
+                               value = 1, min = 1, max = 20),
+                  h6("Multiple plots per page cannot be used with Pairs/Matrix plots.")
                 ),
                 uiOutput("export_btn_ui")
               )
