@@ -1739,7 +1739,10 @@ fluidPage(
                                 conditionalPanel("input.meanvalues",
                                                  numericInput("nroundmeandigits",
                                                               label = "Mean N Digits",
-                                                              value = 1,min=0,max=10),
+                                                              value = 1,min=0,max=10)
+                                ),
+                                conditionalPanel("input.meanvalues &&
+                                                 (input.yaxisscale =='logy' |input.xaxisscale=='logyx' )",
                                                  checkboxInput('expmean',
                                                                '10^Mean Label',
                                                                value = FALSE) 
@@ -1915,12 +1918,15 @@ fluidPage(
                        conditionalPanel("input.medianvalues",
                                         numericInput("nroundmediandigits",
                                                      label = "Median N Digits",
-                                                     value = 1,min=0,max=10),
+                                                     value = 1,min=0,max=10)
+                                        
+                       ),
+                       conditionalPanel("input.medianvalues &&
+                                                 (input.yaxisscale =='logy' |input.xaxisscale=='logyx' )",
                                         checkboxInput('expmedian',
                                                       '10^Median Label',
                                                       value = FALSE) 
-                                        
-                       ) 
+                       )
                        
                 ), # fourth column
                 
