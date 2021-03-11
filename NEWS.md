@@ -1,11 +1,17 @@
 # ggquickeda 0.2.9999
+* added a new method for factor reordering min/max difference
+* allowed to transform the label for mean and median to 10^
+* fixed a namespace bug with calling the `scales` package functions like `muted` without the package being loaded
+* fixed a bug with `updateColourInput` which was moved to the `colourpicker` package
+* reactivating the colorgradient widget after `shinyjqui` was updated and fixed
+
 * next release to do/wish list ::
 * ignore mapped color and or fill for barplot and density ?
 * density line style ?
 * zoom not working for univariate ?
-* allow axis label fomatting for univariate log ?
+* allow axis label formatting for univariate log ?
 * custom ticks for univariate ?
-* add more styling options to control labels justificaiton etc. ?
+* add more styling options to control labels justification etc. ?
 * position/geom sina  ?
 * transform the label for median and log scale ?
 * mean sdl ?
