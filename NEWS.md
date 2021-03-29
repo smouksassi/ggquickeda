@@ -1,7 +1,7 @@
 # ggquickeda 0.2.9999
 * added a new method for factor reordering min/max difference
 * allowed to transform the label for mean and median to 10^
-* fixed a namespace bug with calling the `scales` package functions like `muted` without the package being loaded
+* fixed a namespace bug with calling the `scales` package functions like `muted` without the package being loaded now using `::`.
 * fixed a bug with `updateColourInput` which was moved to the `colourpicker` package
 * reactivating the colorgradient widget after `shinyjqui` was updated and fixed
 
@@ -13,10 +13,9 @@
 * custom ticks for univariate ?
 * add more styling options to control labels justification etc. ?
 * position/geom sina  ?
-* transform the label for median and log scale ?
 * mean sdl ?
 * violin half half boxplot position ?
-* label from precomputed N at the place we want ?
+* label from precomputed N at the forced x and or y we want ?
 * reduce list of package dependencies ?
 
 # ggquickeda 0.2.0

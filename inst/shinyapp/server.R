@@ -6180,8 +6180,8 @@ function(input, output, session) {
           p <- p + scale_y_log10(expand = expansionobjy )
         }
         if (input$yaxisformat=="logyformat"){
-        p <- p + scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                               labels = trans_format("log10", scales::math_format(10^.x)),
+        p <- p + scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
+                               labels = scales::trans_format("log10", scales::math_format(10^.x)),
                                expand = expansionobjy)
         }
         if (input$yaxisformat=="logyformat2"){
@@ -6210,7 +6210,7 @@ function(input, output, session) {
          }#default
          if (input$yaxisformat=="logyformat"){
            p <- p  + 
-             scale_y_log10(labels = trans_format("log10", scales::math_format(10^.x)),
+             scale_y_log10(labels = scales::trans_format("log10", scales::math_format(10^.x)),
                            breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                            minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
                            expand = expansionobjy) 
@@ -6353,8 +6353,8 @@ function(input, output, session) {
             p <- p + scale_x_log10(expand = expansionobjx)
           }
           if (input$xaxisformat=="logxformat") {
-            p <- p + scale_x_log10(breaks = trans_breaks("log10", function(x) 10^x),
-                                   labels = trans_format("log10", scales::math_format(10^.x)),
+            p <- p + scale_x_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
+                                   labels = scales::trans_format("log10", scales::math_format(10^.x)),
                                    expand = expansionobjx)
           }
           if (input$xaxisformat=="logxformat2") {
@@ -6384,8 +6384,8 @@ function(input, output, session) {
           }#xaxisformat default
           if (input$xaxisformat=="logxformat") {
             p <- p  + 
-              scale_x_log10(labels = trans_format("log10", scales::math_format(10^.x)),
-                            breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
+              scale_x_log10(labels = scales::trans_format("log10", scales::math_format(10^.x)),
+                            breaks = as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                             minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
                             expand = expansionobjx) 
           }
