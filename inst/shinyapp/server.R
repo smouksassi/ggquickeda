@@ -6122,7 +6122,10 @@ function(input, output, session) {
             scale_x_continuous(expand =expansionobjx)
         }
         #null y not numeric x
-        if(is.null(input$y) && !is.numeric(plotdata[,"xvalues"]) ){
+        if(is.null(input$y) &&
+           !is.numeric(plotdata[,"xvalues"]) &&
+           !inherits(plotdata[,"xvalues"], "POSIXct")
+           ){
           if(input$yaxisformat=="default"){
             p <- p +
               scale_y_continuous(expand = expansionobjy,
@@ -6146,7 +6149,9 @@ function(input, output, session) {
           }
         }
         #null x not numeric y
-        if(is.null(input$x) && !is.numeric(plotdata[,"yvalues"])  ){
+        if(is.null(input$x) &&
+           !is.numeric(plotdata[,"yvalues"])&&
+           !inherits(plotdata[,"yvalues"], "POSIXct")  ){
           if(input$xaxisformat=="default"){
             p <- p +
               scale_x_continuous(expand = expansionobjx,
@@ -6463,11 +6468,17 @@ function(input, output, session) {
       p <- attach_source_dep(p, "expansionobjy")
       p <- attach_source_dep(p, "expansionobjx")
       
-      if (!is.null(plotdata$xvalues) && !is.numeric(plotdata[,"xvalues"])) {
+      if (!is.null(plotdata$xvalues) &&
+          !is.numeric(plotdata[,"xvalues"]) &&
+          !inherits(plotdata[,"xvalues"], "POSIXct")
+          ) {
         p <- p  + scale_x_discrete(labels = label_wrap(input$x_label_text_width),
                                    expand = expansionobjx)
       }
-      if (!is.null(plotdata$yvalues) && !is.numeric(plotdata[,"yvalues"])) {
+      if (!is.null(plotdata$yvalues) &&
+          !is.numeric(plotdata[,"yvalues"])&&
+          !inherits(plotdata[,"yvalues"], "POSIXct")
+          ) {
         p <- p  + scale_y_discrete(labels = label_wrap(input$y_label_text_width),
                                    expand = expansionobjy)
       }
