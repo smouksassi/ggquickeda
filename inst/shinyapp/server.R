@@ -3501,8 +3501,12 @@ function(input, output, session) {
       if (input$showtarget)  {
         if (is.numeric( plotdata[,"yvalues"] ) ) {
           if (!is.numeric( plotdata[,"xvalues"] )){
-            p <-   p   + scale_x_discrete() }
-          
+            p <-   p   + scale_x_discrete(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                                      input$xexpansion_r_mult),
+                                                             add  = c(input$xexpansion_l_add,
+                                                                      input$xexpansion_r_add))
+                                          ) }
+           
           p <-   p   +
             annotate("rect", xmin = -Inf, xmax = Inf,
                      ymin = input$lowerytarget1,
@@ -3517,7 +3521,11 @@ function(input, output, session) {
       if (input$showtarget2)  {
         if ( is.numeric( plotdata[,"yvalues"] ) ) {
           if (!is.numeric( plotdata[,"xvalues"] )){
-            p <-   p   + scale_x_discrete() }
+            p <-   p   + scale_x_discrete(expand = expansion(mult = c(input$xexpansion_l_mult,
+                                                                      input$xexpansion_r_mult),
+                                                             add  = c(input$xexpansion_l_add,
+                                                                      input$xexpansion_r_add))
+                                          ) }
           
           p <-   p   +
             annotate("rect", xmin = -Inf,
@@ -6465,8 +6473,6 @@ function(input, output, session) {
                                expand = expansionobjx) 
         }
       }#percent x format
-      p <- attach_source_dep(p, "expansionobjy")
-      p <- attach_source_dep(p, "expansionobjx")
       
       if (!is.null(plotdata$xvalues) &&
           !is.numeric(plotdata[,"xvalues"]) &&
@@ -6482,7 +6488,8 @@ function(input, output, session) {
         p <- p  + scale_y_discrete(labels = label_wrap(input$y_label_text_width),
                                    expand = expansionobjy)
       }
-      
+      p <- attach_source_dep(p, "expansionobjy")
+      p <- attach_source_dep(p, "expansionobjx")
       if (!is.null(input$y) && length(input$y) >= 2 && input$ylab=="" ){
         p <- p + ylab("Y variable(s)")
       }
