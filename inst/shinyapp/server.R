@@ -332,8 +332,10 @@ function(input, output, session) {
   # Load sample dataset
   observeEvent(input$sample_data_btn, {
     file <- "data/sample_data.csv"
-    values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
+    values$maindata <- read.csv(file, na.strings = c("NA","."),
+                                stringsAsFactors = input$stringasfactor,
                                 sep = input$fileseparator)
+    #values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
     mockFileUpload("Sample Data")
   })
   
@@ -717,29 +719,29 @@ function(input, output, session) {
     }
   })
   
-  observe({
-    if (length(input$y)>1) {
-      updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
-                                                           "User" = "useryzoom"),inline=TRUE)
-    }
-    if (length(input$y)<2) {
-      updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
-                                                           "Automatic" = "automaticyzoom",
-                                                           "User" = "useryzoom"),inline=TRUE)
-    }
-  })
+  # observe({
+  #   if (length(input$y)>1) {
+  #     updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
+  #                                                          "User" = "useryzoom"),inline=TRUE)
+  #   }
+  #   if (length(input$y)<2) {
+  #     updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
+  #                                                          "Automatic" = "automaticyzoom",
+  #                                                          "User" = "useryzoom"),inline=TRUE)
+  #   }
+  # })
   
-  observe({
-    if (length(input$x)>1 ) {
-      updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
-                                                           "User" = "userxzoom"),inline=TRUE)
-    }
-    if (length(input$x)<2  ) {
-      updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
-                                                           "Automatic" = "automaticxzoom",
-                                                           "User" = "userxzoom"),inline=TRUE)
-    }
-  })
+  # observe({
+  #   if (length(input$x)>1 ) {
+  #     updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
+  #                                                          "User" = "userxzoom"),inline=TRUE)
+  #   }
+  #   if (length(input$x)<2  ) {
+  #     updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
+  #                                                          "Automatic" = "automaticxzoom",
+  #                                                          "User" = "userxzoom"),inline=TRUE)
+  #   }
+  # })
 
   outputOptions(output, "ycol", suspendWhenHidden=FALSE)
   outputOptions(output, "xcol", suspendWhenHidden=FALSE)
@@ -1540,17 +1542,20 @@ function(input, output, session) {
       validate(need(all(input$y %in% names(df)), "Invalid y value(s)"))
       tidydata <- df %>%
         gather( "yvars", "yvalues", !!!input$y ,factor_key = TRUE)
-      if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
-        tidydata <- tidydata %>%
-          mutate(yvalues=as.factor(as.character(yvalues) ))
-        ylevelsall<- vector(mode = "character", length = 0L)
-        for (i in 1:length(input$y) ) {
-          if( is.factor(df[,input$y[i]])) levelsvar <- levels(df[,input$y[i]])
-          if(!is.factor(df[,input$y[i]])) levelsvar <- levels(as.factor(df[,input$y[i]]))
-          ylevelsall<- c(ylevelsall,levelsvar)
+      
+      if (!all( sapply(df[,as.vector(input$y)], inherits, what ="POSIXct")) ) {
+        if (!all( sapply(df[,as.vector(input$y)], is.numeric)) ) {
+          tidydata <- tidydata %>%
+            mutate(yvalues=as.factor(as.character(yvalues) ))
+          ylevelsall<- vector(mode = "character", length = 0L)
+          for (i in 1:length(input$y) ) {
+            if( is.factor(df[,input$y[i]])) levelsvar <- levels(df[,input$y[i]])
+            if(!is.factor(df[,input$y[i]])) levelsvar <- levels(as.factor(df[,input$y[i]]))
+            ylevelsall<- c(ylevelsall,levelsvar)
+          }
+          ylevelsall <-  unique(ylevelsall, fromLast = TRUE)
+          tidydata$yvalues   <- factor(tidydata$yvalues,levels=ylevelsall)
         }
-        ylevelsall <-  unique(ylevelsall, fromLast = TRUE)
-        tidydata$yvalues   <- factor(tidydata$yvalues,levels=ylevelsall)
       }
       tidydata <- tidydata
       }
@@ -1580,7 +1585,8 @@ function(input, output, session) {
                     "Please modify your x or y variable(s) so they become distinct"))
         tidydata <- df %>%
         gather( "xvars", "xvalues", !!!input$x ,factor_key = TRUE)
-      if (!all( sapply(df[,as.vector(input$x)], is.numeric)) ) {
+        if (!all( sapply(df[,as.vector(input$x)], inherits, what ="POSIXct")) ) {
+         if (!all( sapply(df[,as.vector(input$x)], is.numeric)) ) {
         tidydata <- tidydata %>%
           mutate(xvalues=as.factor(as.character(xvalues) ))
         xlevelsall<- vector(mode = "character", length = 0L)
@@ -1592,6 +1598,7 @@ function(input, output, session) {
         xlevelsall <-  unique(xlevelsall, fromLast = TRUE)
         tidydata$xvalues   <- factor(tidydata$xvalues,levels=xlevelsall)
       }
+          }
         tidydata <- tidydata
     }
     if (!is.null(df) && is.null(input$x)){
@@ -2029,105 +2036,103 @@ function(input, output, session) {
   output$xaxiszoom <- renderUI({
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    if (  is.null(input$x)  ) return(NULL)
-    if ( !is.null(input$x)  ){
-      if (is.null(df) || !is.numeric(df[,"xvalues"] ) || (length(input$x) > 1 ) ) return(NULL)
-      if (all(is.numeric(df[,"xvalues"]) &&  (length(input$x) < 2 ) &&
-              input$facetscalesin!="free_x"&&
-              input$facetscalesin!="free")){
+    if ( is.null(df) || is.null(input$x)  ) return(NULL)
+    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
+        input$facetscalesin %in% c("free_x","free") ||
+        (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
+    ) return(NULL)
       xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
-      if (length(xvalues) > 0) {
         xmin <- min(xvalues)
-        if(input$xaxisscale=="logx"&& xmin<=0) xmin <- 0.01
+        if(input$xaxisscale=="logx" && xmin <=0 ) xmin <- 0.01
         xmax <- max(xvalues)
+        if(input$xaxisscale=="logx" && xmax <=0 ) xmax <- 0.1
         xstep <- (xmax -xmin)/100
-        sliderInput('xaxiszoomin',label = 'Zoom to X variable range:', min=xmin, max=xmax, value=c(xmin,xmax),step=xstep)
-      }
-    }
-    }
-    
+        sliderInput('xaxiszoomin',label = 'Zoom to X variable range:',
+                    min=xmin, max=xmax, value=c(xmin,xmax),step=xstep)
   })
   outputOptions(output, "xaxiszoom", suspendWhenHidden=FALSE)
   
   output$lowerx <- renderUI({
     df <-finalplotdata()
-    if (is.null(df) || is.null(df[,"xvalues"]) || !is.numeric(df[,"xvalues"] ) ) return(NULL)
-    if (all(
-      is.numeric(df[,"xvalues"])  &&
-      !input$facetscalesin%in% c("free_x","free")
-    )){
+    validate(need(!is.null(df), "Please select a data set"))
+    if (is.null(df)  ||  is.null(input$x) || is.null(df[,"xvalues"]) ) return(NULL)
+    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
+        input$facetscalesin %in% c("free_x","free") || 
+        (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
+        ) return(NULL)
       xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
-      if (length(xvalues) > 0) {
-        xmin <- min(xvalues)
-        if(input$xaxisscale=="logx"&& xmin<=0) xmin <- 0.01
-        numericInput("lowerxin",label = "Lower X Limit",value = xmin,min=NA,max=NA,width='100%')
-      }
-    }
+      xmin <- min(xvalues)
+      if(input$xaxisscale=="logx" && xmin<=0) xmin <- 0.01
+      numericInput("lowerxin",label = "Lower X Limit", 
+                   value = xmin, min=NA, max=NA, width='100%') 
+
   })
   output$upperx <- renderUI({
     df <-finalplotdata()
-    if (is.null(df) || is.null(df[,"xvalues"]) || !is.numeric(df[,"xvalues"] ) ) return(NULL)
-    if (all(
-      is.numeric(df[,"xvalues"])  &&
-      !input$facetscalesin%in% c("free_x","free")
-    )){
-      xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
-      if (length(xvalues) > 0) {
-        xmax <- max(xvalues)
-        numericInput("upperxin",label = "Upper X Limit",value = xmax,min=NA,max=NA,width='100%')
-      }
-    }
-  }) 
+    validate(need(!is.null(df), "Please select a data set"))
+    if (is.null(df)  ||  is.null(input$x) || is.null(df[,"xvalues"]) ) return(NULL)
+    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
+        input$facetscalesin %in% c("free_x","free") || 
+        (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
+    ) return(NULL)
+    xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
+    xmax <- max(xvalues)
+    if(input$xaxisscale=="logx"&& xmax<=0) xmax <- 0.1
+    numericInput("upperxin",label = "Upper X Limit",value = xmax,min=NA,max=NA,width='100%')
+  })
   outputOptions(output, "lowerx", suspendWhenHidden=FALSE)
   outputOptions(output, "upperx", suspendWhenHidden=FALSE)
   
   output$yaxiszoom <- renderUI({
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    if ( is.null(input$y)  ) return(NULL)
-    if ( !is.null(input$y)  ){
-      if (is.null(df)|| !is.numeric(df[,"yvalues"]) || (length(input$y) > 1 ) ) return(NULL)
-      if (all(is.numeric(df[,"yvalues"]) &&  (length(input$y) < 2 ) &&
-              input$facetscalesin!="free_y"&&
-              input$facetscalesin!="free")){
-        yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-        ymin <- min(yvalues)
-        if(input$yaxisscale=="logy"&& ymin<=0) ymin <- 0.01
-        ymax <- max(yvalues)
-        ystep <- (ymax -ymin)/100
-        sliderInput('yaxiszoomin',label = 'Zoom to Y variable range:', min=ymin, max=ymax, value=c(ymin,ymax),step=ystep)
-        
-      }
-    }
+    if ( is.null(df) || is.null(input$y)  ) return(NULL)
+    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
+        input$facetscalesin %in% c("free_y","free") ||
+        (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
+    ) return(NULL)
+    yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
+    ymin <- min(yvalues)
+    if(input$yaxisscale=="logy" && ymin <=0 ) ymin <- 0.01
+    ymax <- max(yvalues)
+    if(input$yaxisscale=="logy" && ymax <=0 ) ymax <- 0.1
+    ystep <- (ymax -ymin)/100
+    sliderInput('yaxiszoomin',label = 'Zoom to Y variable range:',
+                min=ymin, max=ymax, value=c(ymin,ymax),step=ystep)
     
   })
   outputOptions(output, "yaxiszoom", suspendWhenHidden=FALSE)  
   
   output$lowery <- renderUI({
     df <-finalplotdata()
-    if (is.null(df) || is.null(df[,"yvalues"]) || !is.numeric(df[,"yvalues"] ) ) return(NULL)
-    if (all(
-      is.numeric(df[,"yvalues"])  &&
-      !input$facetscalesin%in% c("free_y","free")
-    )){
-      yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-      ymin <- min(yvalues)
-	  if(input$yaxisscale=="logy"&& ymin<=0) ymin <- 0.01
-      numericInput("loweryin",label = "Lower Y Limit",value = ymin,min=NA,max=NA,width='50%')
-    }
+    validate(need(!is.null(df), "Please select a data set"))
+    if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
+    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
+        input$facetscalesin %in% c("free_y","free") || 
+        (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
+    ) return(NULL)
+    yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
+    ymin <- min(yvalues)
+    if(input$yaxisscale=="logy" && ymin<=0) ymin <- 0.01
+    numericInput("loweryin",label = "Lower Y Limit",
+                 value = ymin,min=NA,max=NA,width='50%')
   })
-  output$uppery <- renderUI({
+  
+  output$uppery <-  renderUI({
     df <-finalplotdata()
-    if (is.null(df) || is.null(df[,"yvalues"]) || !is.numeric(df[,"yvalues"] ) ) return(NULL)
-    if (all(
-      is.numeric(df[,"yvalues"])  &&
-      !input$facetscalesin%in% c("free_y","free")
-    )){
-      yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-      ymax <- max(yvalues)
-      numericInput("upperyin",label = "Upper Y Limit",value = ymax,min=NA,max=NA,width='50%')
-    }
-  }) 
+    validate(need(!is.null(df), "Please select a data set"))
+    if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
+    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
+        input$facetscalesin %in% c("free_y","free") || 
+        (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
+    ) return(NULL)
+    yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
+    ymax <- max(yvalues)
+    if(input$yaxisscale=="logy" && ymax<=0) ymax <- 0.1
+    numericInput("upperyin",label = "Upper Y Limit",
+                 value = ymax,min=NA,max=NA,width='50%')
+  })
+  
   outputOptions(output, "lowery", suspendWhenHidden=FALSE)
   outputOptions(output, "uppery", suspendWhenHidden=FALSE)
 
@@ -6642,97 +6647,99 @@ function(input, output, session) {
       }
       
       if(input$annotatelogticks){
-        p <-  p+
+        p <-  p +
           annotation_logticks(sides=paste(input$logsides,collapse="",sep=""),
                               outside = input$outsidelogticks )   
       }
       
-      if (all(
-        input$yaxiszoom=='noyzoom'&&
-        input$xaxiszoom=='noxzoom')
+      if (all(input$yaxiszoom=='noyzoom' && input$xaxiszoom=='noxzoom') 
       ){
         p <- p +
-          coord_cartesian(xlim= c(NA,NA),
-                          ylim= c(NA,NA),
+          coord_cartesian(xlim= NULL,
+                          ylim= NULL,
                           expand=input$expand,
                           clip=ifelse(input$clip,"on","off"))
       }
       
-      if (all(
-        input$yaxiszoom=='noyzoom'&&
-        !is.null(input$xaxiszoomin[1])&&
-        is.numeric(plotdata[,"xvalues"] )&&
-        input$facetscalesin!="free_x"&&
-        input$facetscalesin!="free")
+      if (all(input$yaxiszoom=='noyzoom'  && !is.null(plotdata$xvalues))
       ){
         if(input$xaxiszoom=="userxzoom"){
+          if( (!is.null(input$lowerxin) | !is.null(input$upperxin))
+              ){
           p <- p +
             coord_cartesian(xlim= c(ifelse(!is.finite(input$lowerxin),NA,input$lowerxin ),
                                     ifelse(!is.finite(input$upperxin),NA,input$upperxin )),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
+          }
         }
         if(input$xaxiszoom=="automaticxzoom"){
+          if(!is.null(input$xaxiszoomin[1])  
+             ){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
+          }
+          if(is.null(input$xaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim = NULL,
+                              expand = input$expand,
+                              clip = ifelse(input$clip,"on","off")) 
+          } 
         }
-        
       }
       
-      if (all(
-        input$xaxiszoom=='noxzoom'  &&
-        !is.null(plotdata$yvalues) &&
-        is.numeric(plotdata[,"yvalues"] ) &&
-        input$facetscalesin!="free_y" &&
-        input$facetscalesin!="free")
+      if (all(input$xaxiszoom=='noxzoom'  && !is.null(plotdata$yvalues) )
       ){
+        
         if(input$yaxiszoom=="useryzoom" ){
+          if( (!is.null(input$loweryin) | !is.null(input$upperyin))
+          ){
           p <- p +
-            coord_cartesian(ylim= c(ifelse(!is.finite(input$loweryin),NA,input$loweryin ),
-                                    ifelse(!is.finite(input$upperyin),NA,input$upperyin )),
-                            expand=input$expand,
-                            clip=ifelse(input$clip,"on","off"))
+            coord_cartesian(ylim = c(ifelse(!is.finite(input$loweryin),NA,input$loweryin ),
+                                     ifelse(!is.finite(input$upperyin),NA,input$upperyin )),
+                            expand = input$expand,
+                            clip = ifelse(input$clip,"on","off"))
+          }
         }
-        if(input$yaxiszoom=="automaticyzoom"){
-          
-          if(!is.null(input$yaxiszoomin[1]) ){
+        if(input$yaxiszoom == "automaticyzoom"){
+          if(!is.null(input$yaxiszoomin[1]) 
+             ){
             p <- p +
               coord_cartesian(
-                ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
-                expand=input$expand,
-                clip=ifelse(input$clip,"on","off")) 
+                ylim = c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
+                expand = input$expand,
+                clip = ifelse(input$clip,"on","off")) 
           } 
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(ylim= c(NA,NA),
-                              expand=input$expand,
-                              clip=ifelse(input$clip,"on","off")) 
+              coord_cartesian(ylim = NULL,
+                              expand = input$expand,
+                              clip = ifelse(input$clip,"on","off")) 
           } 
         }
         
       }
       
       
-      if (all(!is.null(input$xaxiszoomin[1])&&
-              is.numeric(plotdata[,"xvalues"] ) && !is.null(plotdata$yvalues) &&
-              is.numeric(plotdata[,"yvalues"]) &&
-              input$facetscalesin!="free_x" && input$facetscalesin!="free_y" &&
-              input$facetscalesin!="free")
+      if (all(!is.null(input$xaxiszoomin[1])  &&
+              !is.null(plotdata$yvalues) &&
+              !is.null(plotdata$xvalues))
       ){
-        
         if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="useryzoom"){
           p <- p +
-            coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
-                            ylim= c(input$loweryin,input$upperyin),
+            coord_cartesian(xlim= c(input$lowerxin,
+                                    input$upperxin),
+                            ylim= c(input$loweryin,
+                                    input$upperyin),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
         }
         if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim= c(input$lowerxin,input$upperxin),
+              coord_cartesian(xlim= c(input$lowerxin, input$upperxin),
                               ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
@@ -6740,7 +6747,7 @@ function(input, output, session) {
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$lowerxin, input$upperxin),
-                              ylim= c(NA,NA),
+                              ylim= NULL,
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
@@ -6753,18 +6760,32 @@ function(input, output, session) {
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
         }
-        if (input$xaxiszoom=="automaticxzoom"&&input$yaxiszoom=="automaticyzoom"){
-          if(!is.null(input$yaxiszoomin[1]) ){
+        if (input$xaxiszoom=="automaticxzoom" && input$yaxiszoom=="automaticyzoom"){
+          if(is.null(input$yaxiszoomin[1]) && is.null(input$xaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= NULL,
+                              ylim= NULL,
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
+          }
+          if(!is.null(input$yaxiszoomin[1]) && !is.null(input$xaxiszoomin[1])){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                               ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
-          if(is.null(input$yaxiszoomin[1]) ){
+          if(is.null(input$yaxiszoomin[1]) && !is.null(input$xaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                              ylim= c(NA,NA),
+                              ylim= NULL,
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
+          }
+          if(!is.null(input$yaxiszoomin[1]) && is.null(input$xaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= NULL,
+                              ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }

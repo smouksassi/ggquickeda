@@ -320,7 +320,7 @@ fluidPage(
               conditionalPanel(condition = "!input.show_pairs",
               h6("X Axis Zoom Automatic is available if you have exactly one x variable and it generates a slider with limits between your x variable min/max.
                  User let you input your own limits (works for more than one x and when left empty will use the default ggplot computed limit).
-                 If facet scales on the x position are free then no zooming is allowed. At the moment zoom does not work with univariate plots."),
+                 If facet scales on the x position are free then no zooming is allowed. At the moment zoom does not work with univariate plots neither with datetime, POSIXct data."),
               fluidRow(
                 column(12,
                        radioButtons("xaxiszoom", "X Axis Zoom:",
@@ -338,7 +338,7 @@ fluidPage(
             
               h6("Y Axis Zoom Automatic is available if you have exactly one y variable and it generates a slider with limits between your y variable min/max.
                  User let you input your own limits (works for more than one y and when left empty will use the default ggplot computed limit).
-                 If facet scales on the y position are free then no zooming is allowed. At the moment zoom does not work with univariate plots."),
+                 If facet scales on the y position are free then no zooming is allowed. At the moment zoom does not work with univariate plots neither with datetime, POSIXct data."),
               fluidRow(
                 column(12,
                        radioButtons("yaxiszoom", "Y Axis Zoom:",
