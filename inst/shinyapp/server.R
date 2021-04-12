@@ -6507,7 +6507,6 @@ function(input, output, session) {
       if (!is.null(input$x) && length(input$x) < 2 && input$xlab=="" ){
         p <- p + xlab(input$x)
       }
-      
       if (input$horizontalzero)
         p <-    p +
         geom_hline(aes(yintercept=0))
@@ -6818,10 +6817,16 @@ function(input, output, session) {
     
     if (input$xlab!="") {
       p <- p + xlab(xlablinebreak)
+      if (input$parsexaxistitle) { 
+        p <- p + xlab(parse(text=xlablinebreak))  
+      }
       p <- attach_source_dep(p, "xlablinebreak")
     }
     if (input$ylab!="") {
       p <- p + ylab(ylablinebreak)
+      if (input$parseyaxistitle) { 
+        p <- p + ylab(parse(text=ylablinebreak))  
+      }
       p <- attach_source_dep(p, "ylablinebreak")
     }
     

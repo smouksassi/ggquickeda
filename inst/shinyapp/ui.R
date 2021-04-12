@@ -155,7 +155,9 @@ fluidPage(
             tabPanel("X/Y Axes Log/Labels", value = "x_y_loglabels",
               hr(),
               textInput('ylab', 'Y axis Title', value = "") ,
+              checkboxInput('parseyaxistitle', 'Parse Y axis Title?', value = FALSE),
               textInput('xlab', 'X axis Title', value = "") ,
+              checkboxInput('parsexaxistitle', 'Parse X axis Title?', value = FALSE),
               checkboxInput('customizeaxestitles', 'Customize Axes Titles ?', value = FALSE),
               conditionalPanel(condition = "input.customizeaxestitles" ,
                                tabsetPanel(
