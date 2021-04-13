@@ -320,9 +320,10 @@ fluidPage(
             tabPanel("Graph Size/Zoom", value = "graph_size_zoom",
               sliderInput("height", "Plot Height", min=1080/4, max=1080, value=480, animate = FALSE),
               conditionalPanel(condition = "!input.show_pairs",
-              h6("X Axis Zoom Automatic is available if you have exactly one x variable and it generates a slider with limits between your x variable min/max.
-                 User let you input your own limits (works for more than one x and when left empty will use the default ggplot computed limit).
-                 If facet scales on the x position are free then no zooming is allowed. At the moment zoom does not work with univariate plots neither with datetime, POSIXct data."),
+              h6("X Axis Zoom Automatic generates a slider with limits between your x variable(s) min/max.
+                 The User option lets you input your own limits (when left empty it defaults to ggplot computed limit).
+                 If facet scales on the y position are free then zooming will not work.
+                 Univariate plots are not supported while datetime, POSIXct data have partial support."),
               fluidRow(
                 column(12,
                        radioButtons("xaxiszoom", "X Axis Zoom:",
@@ -337,11 +338,11 @@ fluidPage(
                 column(6,
                        conditionalPanel(condition = "input.xaxiszoom=='userxzoom' ",uiOutput("upperx")) )
               ),# fluidrow
-            
-              h6("Y Axis Zoom Automatic is available if you have exactly one y variable and it generates a slider with limits between your y variable min/max.
-                 User let you input your own limits (works for more than one y and when left empty will use the default ggplot computed limit).
-                 If facet scales on the y position are free then no zooming is allowed. At the moment zoom does not work with univariate plots neither with datetime, POSIXct data."),
-              fluidRow(
+              h6("Y Axis Zoom Automatic generates a slider with limits between your y variable(s) min/max.
+                 The User option lets you input your own limits (when left empty it defaults to ggplot computed limit).
+                 If facet scales on the y position are free then zooming will not work.
+                 Univariate plots are not supported while datetime, POSIXct data have partial support."),
+                    fluidRow(
                 column(12,
                        radioButtons("yaxiszoom", "Y Axis Zoom:",
                                     c("None" = "noyzoom",
@@ -649,6 +650,8 @@ fluidPage(
               ),
             
             tabPanel("Reference Lines/Target", value ="ref_line_target_options",
+              h6("Adding annotations of reference lines is supported for numeric and categorical x/y positions.
+                  Support for POSIXct x/y is limited at the moment."),
               checkboxInput('identityline', 'Identity Line')    ,   
               checkboxInput('horizontalzero', 'Horizontal Zero Line'),
               checkboxInput('customvline1', 'Vertical Line 1'),

@@ -8,14 +8,14 @@
 * prevented applying discrete scale when the x and or y variable inherits from `POSIXct`
 
 * next release to do/wish list ::
+* mean sdl ?
 * ignore mapped color and or fill for barplot and density ?
 * density line style ?
 * zoom not working for univariate ?
 * allow axis label formatting for univariate log ?
-* custom ticks for univariate ?
-* add more styling options to control labels justification etc. ?
+* custom ticks custom zoom for univariate ?
+* add more styling options to control text labels justification etc. ?
 * position/geom sina  ?
-* mean sdl ?
 * violin half half boxplot position ?
 * label from precomputed N at the forced x and or y we want ?
 * reduce list of package dependencies ?

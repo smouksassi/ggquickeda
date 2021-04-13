@@ -335,7 +335,7 @@ function(input, output, session) {
     values$maindata <- read.csv(file, na.strings = c("NA","."),
                                 stringsAsFactors = input$stringasfactor,
                                 sep = input$fileseparator)
-    #values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
+    values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
     mockFileUpload("Sample Data")
   })
   
@@ -3505,44 +3505,68 @@ function(input, output, session) {
       
       if (input$showtarget)  {
         if (is.numeric( plotdata[,"yvalues"] ) ) {
-          if (!is.numeric( plotdata[,"xvalues"] )){
+          
+          if (is.factor(   plotdata[,"xvalues"] ) |
+              is.character(plotdata[,"xvalues"])
+              ){ 
             p <-   p   + scale_x_discrete(expand = expansion(mult = c(input$xexpansion_l_mult,
                                                                       input$xexpansion_r_mult),
                                                              add  = c(input$xexpansion_l_add,
                                                                       input$xexpansion_r_add))
-                                          ) }
-           
-          p <-   p   +
-            annotate("rect", xmin = -Inf, xmax = Inf,
-                     ymin = input$lowerytarget1,
-                     ymax = input$upperytarget1,
-                     fill = input$targetcol1,
-                     alpha = input$targetopacity1)
-          
-        } 
-        
+            ) }
+
+          if (!inherits(plotdata[,"xvalues"], "POSIXct")) {
+            p <-   p   +
+              annotate("rect", xmin = -Inf, xmax = Inf,
+                       ymin = input$lowerytarget1,
+                       ymax = input$upperytarget1,
+                       fill = input$targetcol1,
+                       alpha = input$targetopacity1)
+          }
+          if (inherits(plotdata[,"xvalues"], "POSIXct")) {
+            p <-   p   +
+              annotate("rect",
+                       xmin = min(plotdata[,"xvalues"],na.rm = TRUE),
+                       xmax = max(plotdata[,"xvalues"],na.rm = TRUE),
+                       ymin = input$lowerytarget1,
+                       ymax = input$upperytarget1,
+                       fill = input$targetcol1,
+                       alpha = input$targetopacity1)
+          }
+        }
       } 
-      
       if (input$showtarget2)  {
         if ( is.numeric( plotdata[,"yvalues"] ) ) {
-          if (!is.numeric( plotdata[,"xvalues"] )){
+          if (is.factor(   plotdata[,"xvalues"] ) |
+              is.character(plotdata[,"xvalues"])
+          ){
             p <-   p   + scale_x_discrete(expand = expansion(mult = c(input$xexpansion_l_mult,
                                                                       input$xexpansion_r_mult),
                                                              add  = c(input$xexpansion_l_add,
                                                                       input$xexpansion_r_add))
-                                          ) }
+            ) }
           
-          p <-   p   +
-            annotate("rect", xmin = -Inf,
-                     xmax = Inf,
-                     ymin = input$lowerytarget2,
-                     ymax = input$upperytarget2,
-                     fill = input$targetcol2,
-                     alpha = input$targetopacity2)  
+          if (!inherits(plotdata[,"xvalues"], "POSIXct")) {
+            p <-   p   +
+              annotate("rect", xmin = -Inf,
+                       xmax = Inf,
+                       ymin = input$lowerytarget2,
+                       ymax = input$upperytarget2,
+                       fill = input$targetcol2,
+                       alpha = input$targetopacity2)
+          }
+          if (inherits(plotdata[,"xvalues"], "POSIXct")) {
+            p <-   p   +
+              annotate("rect",
+                       xmin = min(plotdata[,"xvalues"],na.rm = TRUE),
+                       xmax = max(plotdata[,"xvalues"],na.rm = TRUE),
+                       ymin = input$lowerytarget2,
+                       ymax = input$upperytarget2,
+                       fill = input$targetcol2,
+                       alpha = input$targetopacity2)
+          }
         } 
       } 
-      
-      
       if (input$colorin != 'None')
         p <- p + aes_string(color=input$colorin)
       if (input$fillin != 'None')
