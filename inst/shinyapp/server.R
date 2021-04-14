@@ -3918,23 +3918,45 @@ function(input, output, session) {
       if (!input$meanignoregroup) {
         if (!input$meanignorecol) {
           if(input$Mean!="None" && input$pointsizein == 'None')  {
-            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
-              p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
-                            fun.args=list(conf.int=input$CI), 
-                            size=input$meanlinesize,
-                            alpha=input$meancitransparency,
-                            col=NA,
-                            position = eval(parse(text=positionmean)))
+            if (input$Mean=="Mean/CI") {
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                              fun.args=list(conf.int=input$CI), 
+                              size=input$meanlinesize,
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                              fun.args=list(conf.int=input$CI), width = input$errbar,
+                              size=input$meancierrorbarsize,
+                              alpha=input$meancitransparency,
+                              position = eval(parse(text=positionmean)))
+              } 
             }
-            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
-              p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
-                            fun.args=list(conf.int=input$CI), width = input$errbar,
-                            size=input$meancierrorbarsize,
-                            alpha=input$meancitransparency,
-                            position = eval(parse(text=positionmean)))
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), 
+                              size=input$meanlinesize,
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), width = input$errbar,
+                              size=input$meancierrorbarsize,
+                              alpha=input$meancitransparency,
+                              position = eval(parse(text=positionmean)))
+              }
             }
+            
             if (input$meanlines){
               p <- p + 
                 stat_sum_single(mean, geom = "line",
@@ -3945,7 +3967,8 @@ function(input, output, session) {
           }
           
           if (input$Mean!="None" && input$pointsizein != 'None'){
-              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI") {
+              if (input$geommeanCI== "ribbon"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
@@ -3953,7 +3976,7 @@ function(input, output, session) {
                               col=NA,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "errorbar"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -3961,7 +3984,25 @@ function(input, output, session) {
                               size=input$meancierrorbarsize,
                               position = eval(parse(text=positionmean)))
               }
-            
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), 
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), width = input$errbar,
+                              alpha=input$meancitransparency,
+                              size=input$meancierrorbarsize,
+                              position = eval(parse(text=positionmean)))
+              }
+            } 
             if (input$meanlines){
               p <- p + 
                 stat_sum_single(mean, geom = "line",
@@ -4030,7 +4071,8 @@ function(input, output, session) {
         
         if (input$meanignorecol) {
           if(input$Mean!="None" && input$pointsizein != 'None') {
-              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "ribbon" ){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
@@ -4038,7 +4080,7 @@ function(input, output, session) {
                               col=NA,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "errorbar" ){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4046,6 +4088,25 @@ function(input, output, session) {
                               col=meancoll,size=input$meancierrorbarsize,
                               position = eval(parse(text=positionmean)))
               }
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult),
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), width = input$errbar,
+                              alpha=input$meancitransparency,
+                              col=meancoll,size=input$meancierrorbarsize,
+                              position = eval(parse(text=positionmean)))
+              }
+            } 
               if(input$meanlines) {
                 p <- p + 
                   stat_sum_single(mean, geom = "line",
@@ -4058,7 +4119,8 @@ function(input, output, session) {
           }
 
           if(input$Mean!="None" && input$pointsizein == 'None') {
-              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "ribbon"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
@@ -4067,7 +4129,7 @@ function(input, output, session) {
                               col=NA,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "errorbar"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4076,6 +4138,28 @@ function(input, output, session) {
                               alpha=input$meancitransparency,
                               position = eval(parse(text=positionmean)))
               }
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult),
+                              size=input$meanlinesize,
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), width = input$errbar,
+                              col=meancoll,
+                              size=input$meancierrorbarsize,
+                              alpha=input$meancitransparency,
+                              position = eval(parse(text=positionmean)))
+              }
+            } 
+            
             if (input$meanlines)  {
               p <- p + 
                 stat_sum_single(mean, geom = "line",
@@ -4153,7 +4237,8 @@ function(input, output, session) {
       if (input$meanignoregroup) {
         if (!input$meanignorecol) {
           if (input$Mean!="None" && input$pointsizein == 'None'){
-              if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "ribbon"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), aes(group=NULL),
@@ -4162,7 +4247,7 @@ function(input, output, session) {
                               size=input$meanlinesize,
                               position = eval(parse(text=positionmean)))
               }
-              if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "errorbar"){
                 p <- p + 
                   stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
                               fun.args=list(conf.int=input$CI),aes(group=NULL), 
@@ -4170,6 +4255,27 @@ function(input, output, session) {
                               size=input$meancierrorbarsize, width = input$errbar,
                               position = eval(parse(text=positionmean)))
               }
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), aes(group=NULL), 
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              size=input$meanlinesize,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), aes(group=NULL),
+                              alpha=input$meancitransparency,
+                              size=input$meancierrorbarsize,width = input$errbar,
+                              position = eval(parse(text=positionmean)))
+              }
+            } 
+            
             if(input$meanlines){
               p <- p + 
                 stat_sum_single(mean, geom = "line",
@@ -4182,7 +4288,8 @@ function(input, output, session) {
           }
           
           if (input$Mean!="None" && input$pointsizein != 'None'){
-            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "ribbon"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), aes(group=NULL),
@@ -4190,14 +4297,35 @@ function(input, output, session) {
                             col=NA,
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+            if (input$geommeanCI== "errorbar"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
-                            fun.args=list(conf.int=input$CI),aes(group=NULL), 
+                            fun.args=list(conf.int=input$CI), aes(group=NULL), 
                             alpha=input$meancitransparency,
                             width = input$errbar,size=input$meancierrorbarsize,
                             position = eval(parse(text=positionmean)))
             }
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), aes(group=NULL), 
+                              alpha=input$meancitransparency,
+                              col=NA,
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), aes(group=NULL),
+                              alpha=input$meancitransparency,
+                              width = input$errbar,size=input$meancierrorbarsize,
+                              position = eval(parse(text=positionmean)))
+              }
+            } 
+            
+            
             if(input$meanlines){
                 p <- p + 
                 stat_sum_single(mean, geom = "line",
@@ -4271,7 +4399,8 @@ function(input, output, session) {
         }# do not ignore color and ignore group
         if (input$meanignorecol) {
           if(input$Mean!="None" && input$pointsizein != 'None') {
-            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI"){
+              if (input$geommeanCI== "ribbon"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
@@ -4279,13 +4408,35 @@ function(input, output, session) {
                             col=NA,aes(group=NULL),
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+            if (input$geommeanCI== "errorbar"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
-                            fun.args=list(conf.int=input$CI), width = input$errbar,
+                            fun.args=list(conf.int=input$CI),
+                            width = input$errbar,
                             alpha=input$meancitransparency,
-                            col=meancoll,aes(group=NULL),size=input$meancierrorbarsize,
+                            col=meancoll,aes(group=NULL),
+                            size=input$meancierrorbarsize,
                             position = eval(parse(text=positionmean)))
+            }
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), 
+                              alpha=input$meancitransparency,
+                              col=NA,aes(group=NULL),
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult),
+                              alpha=input$meancitransparency,
+                              col=meancoll,aes(group=NULL),
+                              size=input$meancierrorbarsize,
+                              position = eval(parse(text=positionmean)))
+              }
             }
             if(input$meanlines) {
               p <- p + 
@@ -4298,7 +4449,8 @@ function(input, output, session) {
           }
           
           if(input$Mean!="None" && input$pointsizein == 'None') {
-            if (input$geommeanCI== "ribbon" && input$Mean=="Mean/CI"){
+            if (input$Mean=="Mean/CI"){
+            if (input$geommeanCI== "ribbon"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
@@ -4307,7 +4459,7 @@ function(input, output, session) {
                             col=NA,aes(group=NULL),
                             position = eval(parse(text=positionmean)))
             }
-            if (input$geommeanCI== "errorbar" && input$Mean=="Mean/CI"){
+            if (input$geommeanCI== "errorbar"){
               p <- p + 
                 stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
@@ -4315,6 +4467,28 @@ function(input, output, session) {
                             size=input$meancierrorbarsize,
                             alpha=input$meancitransparency,
                             position = eval(parse(text=positionmean)))
+            }
+            }
+            if (input$Mean=="Mean/mult_sd"){
+              if (input$geommeanCI== "ribbon"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult), 
+                              size=input$meanlinesize,
+                              alpha=input$meancitransparency,
+                              col=NA,aes(group=NULL),
+                              position = eval(parse(text=positionmean)))
+              }
+              if (input$geommeanCI== "errorbar"){
+                p <- p + 
+                  stat_sum_df("mean_sdl", geom = input$geommeanCI,
+                              fun.args=list(mult=input$meansd_mult),
+                              width = input$errbar,
+                              col=meancoll,aes(group=NULL),
+                              size=input$meancierrorbarsize,
+                              alpha=input$meancitransparency,
+                              position = eval(parse(text=positionmean)))
+              }
             }
             if(input$meanlines) {
               p <- p + 

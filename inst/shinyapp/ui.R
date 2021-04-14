@@ -1592,6 +1592,7 @@ fluidPage(
                                    c(
                                      "Mean" = "Mean",
                                      "Mean/CI" = "Mean/CI",
+                                     "Mean/mult_sd" = "Mean/mult_sd",
                                      "None" = "None"
                                    ) ,
                                    selected = "None",
@@ -1621,16 +1622,21 @@ fluidPage(
                          ),#first column
                          column (2,
                                 conditionalPanel(
-                                   " input.Mean== 'Mean/CI' ",
+                                   " input.Mean== 'Mean/CI' | input.Mean== 'Mean/mult_sd' ",
                                    radioButtons("geommeanCI", "CI Geom:",
                                                 c("errorbar" = "errorbar",
                                                   "ribbon"= "ribbon"),
                                                 selected = "errorbar",
                                                 inline = TRUE),
-                                   sliderInput("CI","CI %:",
-                                     min = 0, max = 1, value = c(0.95), step = 0.01),
-                                   sliderInput("meancitransparency", "CI Transparency:",
+                                   conditionalPanel("input.Mean== 'Mean/CI' ",
+                                                    sliderInput("CI","CI %:",
+                                     min = 0, max = 1, value = c(0.95), step = 0.01)
+                                     ),
+                                   sliderInput("meancitransparency", "Interval Transparency:",
                                                min=0, max=1, value=c(0.2),step=0.01),
+                                   conditionalPanel("input.Mean== 'Mean/mult_sd' ",
+                                   sliderInput("meansd_mult", "SD Multiplier:",
+                                               min=0, max=6, value=c(2),step=0.01) ),
                                    conditionalPanel(" input.geommeanCI == 'errorbar' ",
                                     sliderInput("meancierrorbarsize","Errorbar(s) Line(s) Size:",
                                                 min=0, max=4, value=c(1),step=0.1)
