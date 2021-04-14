@@ -766,10 +766,8 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
-    if (!is.null(input$catvarin)) {
-      if (length(input$catvarin ) >=1) {
+    if (!is.null(input$catvarin) && length(input$catvarin ) >=1) {
         NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
-      }  
     }
     selectInput('catvarquantin',
                 label = 'Recode into Quantile Categories:',
@@ -795,15 +793,11 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     MODEDF <- sapply(df, function(x) !is.factor(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
-    if (!is.null(input$catvarquantin)) {
-      if (length(input$catvarquantin ) >=1) {
+    if (!is.null(input$catvarquantin) && (length(input$catvarquantin ) >=1 ) ) {
         NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarquantin) ]
-      }  
     }
-    if (!is.null(input$catvarin)) {
-      if (length(input$catvarin ) >=1) {
+    if (!is.null(input$catvarin) && (length(input$catvarin ) >=1 )) {
         NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
-      }  
     }
     selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE)
   })
@@ -814,13 +808,13 @@ function(input, output, session) {
     MODEDF <- sapply(df, function(x) is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
     if (!is.null(input$catvarin) && length(input$catvarin ) >=1) {
-      NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
+      NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
     }
     if (!is.null(input$catvarquantin) && length(input$catvarquantin ) >=1) {
-      NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarquantin) ]
+      NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarquantin) ]
     }
     if (!is.null(input$catvar2in) && length(input$catvar2in ) >=1) {
-      NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvar2in) ]
+      NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvar2in) ]
     }
     selectizeInput(  "catvar3in", 'Custom cuts of this variable, defaults to min, median, max before any applied filtering:',
                      choices =NAMESTOKEEP2 ,multiple=FALSE,
@@ -869,9 +863,9 @@ function(input, output, session) {
   recodedata1  <- reactive({
     df <- values$maindata 
     validate(need(!is.null(df), "Please select a data set"))
-    if(!is.null(input$catvarin)&length(input$catvarin ) >=1) {
+    if(!is.null(input$catvarin) && length(input$catvarin ) >=1) {
       for (i in 1:length(input$catvarin ) ) {
-        varname<- input$catvarin[i]
+        varname <- input$catvarin[i]
         df[,varname] <- cut(df[,varname],input$ncuts , include.lowest = TRUE, right = FALSE, ordered_result = FALSE)
         df[,varname]   <- as.factor( df[,varname])
       }
@@ -926,7 +920,8 @@ function(input, output, session) {
       if(length(input$catvar2in ) >=1) {
         for (i in 1:length(input$catvar2in ) ) {
           varname<- input$catvar2in[i]
-          df[,varname]   <- as.factor( as.character(df[,varname]))
+          if( is.factor(df[,varname]))  df[,varname] 
+          if( !is.factor(df[,varname])) df[,varname] <- as.factor( as.character(df[,varname]))
         }
       }  
     }
@@ -949,7 +944,9 @@ function(input, output, session) {
       if(length(input$contvarin ) >=1) {
         for (i in 1:length(input$contvarin ) ) {
           varname<- input$contvarin[i]
-          df[,varname]   <- as.double( as.character(df[,varname]))
+          if( is.factor(df[,varname]))  df[,varname] <- as.double( as.factor(df[,varname]))-1
+          if( is.character(df[,varname])) df[,varname] <- as.double( as.character(df[,varname]))
+          if( inherits(df[,varname],"POSIXct"))   df[,varname]   <- as.numeric(df[,varname])
         }
       }
     }
