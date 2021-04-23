@@ -2756,7 +2756,23 @@ function(input, output, session) {
                              na.value = "grey50", guide = "colourbar")
       
     }
-    
+    if (input$themecontcolorswitcher=="themedistiller"){
+      
+      scale_colour_continuous <- function(...) 
+        scale_colour_distiller(..., palette = "Blues",
+                               direction = ifelse(input$distillerdirection,-1,1) ,
+                               space = "Lab",
+                               na.value = "grey50",
+                               guide = "colourbar")
+      
+      scale_fill_continuous <- function(...) 
+        scale_fill_distiller(...,palette = "Blues",
+                             direction = ifelse(input$distillerdirection,-1,1) ,
+                             space = "Lab",
+                             na.value = "grey50",
+                             guide = "colourbar")
+      
+    }
     if (input$themecontcolorswitcher=="themeuser"){
       scale_colour_continuous <- function(...) 
         scale_colour_gradient2(...,
@@ -3607,6 +3623,11 @@ function(input, output, session) {
           positionpoints <-  paste0("position_jitter(height=",
                               input$jittervertical,
                               ",width=",input$jitterhorizontal,")")
+        }
+        if (input$jitterdirection=="Nudge"){
+          positionpoints <-  paste0("position_nudge(x=",
+                                    input$position_nudge_x,
+                                    ",y=",input$position_nudge_y,")")
         }
         if (input$jitterdirection=="dodge"){
           positionpoints <-  paste0("position_dodge(width=",input$pointdodgewidth,")")

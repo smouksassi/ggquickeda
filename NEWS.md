@@ -1,14 +1,16 @@
 # ggquickeda 0.2.9999
 * fixed a bug where POSIXct where being treated as character now they are kept as is with the automatic zoom slider working.
 * added a new method for factor reordering min/max difference
+* added the mean +/- multiples of standard deviations summary
 * allowed to transform the label for mean and median to 10^ (useful when the x/y axis are logged)
 * fixed a namespace bug with calling the `scales` package functions like `muted` or `trans_xxx` without the package being loaded, now using `::`.
 * fixed a bug with `updateColourInput` which is now only available from the `colourpicker` package
 * reactivating the colorgradient widget after `shinyjqui` bug was updated and fixed
+* added distiller continuous Blues palette
 * prevented applying discrete scale when the x and or y variable inherits from `POSIXct`
 
+* better support for POSIXct
 * next release to do/wish list ::
-* mean sdl ?
 * ignore mapped color and or fill for barplot and density ?
 * density line style ?
 * zoom not working for univariate ?

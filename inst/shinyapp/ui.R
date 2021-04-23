@@ -782,6 +782,7 @@ fluidPage(
                                         "Red White Green"  = "RedWhiteGreen",
                                         "ggplot default" = "themeggplot",
                                         "viridis" = "themeviridis",
+                                        "distiller" = "themedistiller",
                                         "User defined" = "themeuser")
                                       ,inline=TRUE),
                          conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
@@ -793,6 +794,10 @@ fluidPage(
                                             showColour = "both",
                                             allowTransparent = FALSE,returnName = TRUE)
                          ),
+                         conditionalPanel(condition = " input.themecontcolorswitcher=='themedistiller'" ,
+                       checkboxInput('distillerdirection','Reverse the Distiller Palette?',value=FALSE)
+                         ),
+                         
                          conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
                                              input.themecontcolorswitcher=='RedWhiteGreen'|
                                              input.themecontcolorswitcher=='themeuser'" ,
@@ -1043,6 +1048,7 @@ fluidPage(
                                      "Jitter Horizontal"  = "Horizontal",
                                      "Jitter Both" = "Default",
                                      "Jitter Custom" = "Custom",
+                                     "Nudge" = "Nudge",
                                      "Side By Side"= "dodge",
                                      "Top on Top"= "dodgev",
                                      "Quasirandom"= "quasirandom",
@@ -1069,6 +1075,13 @@ fluidPage(
                         inline_ui(numericInput("jitterhorizontal",
                                                label = "Horizontal Jitter Width",
                                                value = 0.1, min = 0, step = 0.1,width='120px'))
+                      ),
+                      conditionalPanel(
+                        " input.jitterdirection== 'Nudge' ",
+                        inline_ui(numericInput("position_nudge_x",label = "X nudge",
+                                               value = 0, min = 0, step = 0.1, width='120px')) ,
+                        inline_ui(numericInput("position_nudge_y",label = "Y nudge",
+                                               value = 0, min = 0, step = 0.1,width='120px'))
                       ),
                       conditionalPanel(
                         " input.jitterdirection== 'dodge' ",
