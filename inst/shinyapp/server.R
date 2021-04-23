@@ -542,58 +542,58 @@ function(input, output, session) {
     }
   })
 
-  observe({
-    if(!input$show_pairs &&
-       !is.null(input$x) &&  
-        is.null(input$y) && 
-        !is.numeric(finalplotdata()[,"xvalues"]) ) {
-     updateNumericInput(session, "xexpansion_l_add", value = 0.6)
-     updateNumericInput(session, "xexpansion_r_add", value = 0.6) 
-    } else if(!input$show_pairs &&
-              is.null(input$x) &&  
-              !is.null(input$y) && 
-              !is.numeric(finalplotdata()[,"yvalues"]) ){
-      updateNumericInput(session, "yexpansion_l_add", value = 0.6)
-      updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
-    }  else if(!input$show_pairs &&
-               !is.null(input$x) &&  
-               is.null(input$y) && 
-               is.numeric(finalplotdata()[,"xvalues"]) ){
-      updateNumericInput(session, "xexpansion_l_add", value = 0)
-      updateNumericInput(session, "xexpansion_r_add", value = 0)
-      updateNumericInput(session, "yexpansion_l_add", value = 0)
-      updateNumericInput(session, "yexpansion_r_add", value = 0) 
-    } else if(!input$show_pairs &&
-             is.null(input$x) &&  
-             !is.null(input$y) && 
-             is.numeric(finalplotdata()[,"yvalues"]) ){
-      updateNumericInput(session, "xexpansion_l_add", value = 0)
-      updateNumericInput(session, "xexpansion_r_add", value = 0)
-      updateNumericInput(session, "yexpansion_l_add", value = 0)
-      updateNumericInput(session, "yexpansion_r_add", value = 0) 
-    } else if(!input$show_pairs &&
-              !is.null(input$x) &&  
-              is.null(input$y) && 
-              !is.numeric(finalplotdata()[,"xvalues"]) ){
-      updateNumericInput(session, "xexpansion_l_add", value = 0.6)
-      updateNumericInput(session, "xexpansion_r_add", value = 0.6)
-      updateNumericInput(session, "yexpansion_l_add", value = 0)
-      updateNumericInput(session, "yexpansion_r_add", value = 0)
-    } else if(!input$show_pairs &&
-              is.null(input$x) &&  
-              !is.null(input$y) && 
-              !is.numeric(finalplotdata()[,"yvalues"]) ){
-      updateNumericInput(session, "xexpansion_l_add", value = 0)
-      updateNumericInput(session, "xexpansion_r_add", value = 0)
-      updateNumericInput(session, "yexpansion_l_add", value = 0.6)
-      updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
-    } else{
-      updateNumericInput(session, "xexpansion_l_add", value = 0)
-      updateNumericInput(session, "xexpansion_r_add", value = 0)
-      updateNumericInput(session, "yexpansion_l_add", value = 0)
-      updateNumericInput(session, "yexpansion_r_add", value = 0) 
-    }
-    })
+  # observe({
+  #   if(!input$show_pairs &&
+  #      !is.null(input$x) &&  
+  #       is.null(input$y) && 
+  #       !is.numeric(finalplotdata()[,"xvalues"]) ) {
+  #    updateNumericInput(session, "xexpansion_l_add", value = 0.6)
+  #    updateNumericInput(session, "xexpansion_r_add", value = 0.6) 
+  #   } else if(!input$show_pairs &&
+  #             is.null(input$x) &&  
+  #             !is.null(input$y) && 
+  #             !is.numeric(finalplotdata()[,"yvalues"]) ){
+  #     updateNumericInput(session, "yexpansion_l_add", value = 0.6)
+  #     updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
+  #   }  else if(!input$show_pairs &&
+  #              !is.null(input$x) &&  
+  #              is.null(input$y) && 
+  #              is.numeric(finalplotdata()[,"xvalues"]) ){
+  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_r_add", value = 0) 
+  #   } else if(!input$show_pairs &&
+  #            is.null(input$x) &&  
+  #            !is.null(input$y) && 
+  #            is.numeric(finalplotdata()[,"yvalues"]) ){
+  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_r_add", value = 0) 
+  #   } else if(!input$show_pairs &&
+  #             !is.null(input$x) &&  
+  #             is.null(input$y) && 
+  #             !is.numeric(finalplotdata()[,"xvalues"]) ){
+  #     updateNumericInput(session, "xexpansion_l_add", value = 0.6)
+  #     updateNumericInput(session, "xexpansion_r_add", value = 0.6)
+  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_r_add", value = 0)
+  #   } else if(!input$show_pairs &&
+  #             is.null(input$x) &&  
+  #             !is.null(input$y) && 
+  #             !is.numeric(finalplotdata()[,"yvalues"]) ){
+  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_l_add", value = 0.6)
+  #     updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
+  #   } else{
+  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
+  #     updateNumericInput(session, "yexpansion_r_add", value = 0) 
+  #   }
+  #   })
   
   observe({
   if ( (input$colorin!="None" &&
@@ -6330,14 +6330,23 @@ function(input, output, session) {
   
       }#endfacetwrap
       
-      expansionobjy <- expansion(mult = c(input$yexpansion_l_mult,
-                                          input$yexpansion_r_mult),
-                                 add  = c(input$yexpansion_l_add,
-                                          input$yexpansion_r_add))
-      expansionobjx <- expansion(mult = c(input$xexpansion_l_mult,
-                                          input$xexpansion_r_mult),
-                                 add  = c(input$xexpansion_l_add,
-                                          input$xexpansion_r_add)) 
+      if (!input$custom_scale_y_expansion) expansionobjy <- waiver()
+      
+      if (input$custom_scale_y_expansion) {
+        expansionobjy <- expansion(mult = c(input$yexpansion_l_mult,
+                                            input$yexpansion_r_mult),
+                                   add  = c(input$yexpansion_l_add,
+                                            input$yexpansion_r_add))
+      }
+      if (!input$custom_scale_x_expansion) expansionobjx <- waiver()
+      
+      if (input$custom_scale_x_expansion) {
+        expansionobjx <- expansion(mult = c(input$xexpansion_l_mult,
+                                            input$xexpansion_r_mult),
+                                   add  = c(input$xexpansion_l_add,
+                                            input$xexpansion_r_add)) 
+      }
+
       #need logic for univariate plots also to apply formatting not just expansion
       if (is.null(input$y) || is.null(input$x)) {
         #null y numeric x

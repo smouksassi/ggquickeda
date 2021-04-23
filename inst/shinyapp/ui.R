@@ -356,6 +356,9 @@ fluidPage(
                 column(6,
                        conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("uppery")) ),
                 column(12,
+                       checkboxInput('custom_scale_x_expansion',
+                                     'Custom Add/Mult X Scale Expansion?', value = FALSE),
+                       conditionalPanel(condition = "input.custom_scale_x_expansion ",
                        inline_ui(
                          numericInput("xexpansion_l_add",label = "x expansion left additive",
                                       value = 0, min = 0, max = NA, step = 0.1, width='120px')),
@@ -368,8 +371,12 @@ fluidPage(
                        inline_ui(
                          numericInput("xexpansion_r_mult",label = "x expansion right multiplicative",
                                       value = 0.05, min = 0, max = NA, step = 0.1 , width='120px'))
+                       )
                        ),
                 column(12,
+                       checkboxInput('custom_scale_y_expansion',
+                                     'Custom Add/Mult Y Scale Expansion?', value = FALSE),
+                       conditionalPanel(condition = "input.custom_scale_y_expansion ",
                        inline_ui(
                          numericInput("yexpansion_l_add",label = "y expansion bottom additive",
                                       value = 0,min=0,max=NA,width='120px')),
@@ -382,7 +389,7 @@ fluidPage(
                        inline_ui(
                          numericInput("yexpansion_r_mult",label = "y expansion top multiplicative",
                                       value = 0.05, min=0,max=NA,width='120px'))
-                ),
+                )),
                 column(12,
                        checkboxInput('expand', 'Allow Coordinate Expansion?', value = TRUE),
                        checkboxInput('clip', 'Clip Plot Area?', value = TRUE)
