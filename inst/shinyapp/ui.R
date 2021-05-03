@@ -751,19 +751,29 @@ fluidPage(
                                         "Color Blind 2" = "themecolorblind2",
                                         "ggplot default" = "themeggplot",
                                         "viridis"        = "themeviridis",
+                                        "brewer" = "themebrewer",
                                         "User defined" = "themeuser")
                                       ,inline=TRUE),
-                         h6("If you get /Error: Insufficient values in manual scale. ## needed but only 10 provided.
-                 Try to use Tableau 20 or ggplot default. Color Blind and Color Blind 2 Themes support up to 8 colors.
-                 Contact me if you want to add your own set of colors."),
+              h6("if when using Tableau 10 (10 colors) or Color Blind/Color Blind 2 (8 colors) you get /Error: Insufficient values in manual scale. ## needed but only 10 or 8 provided,
+                Switch to using a color scale with more colors: brewer (9 colors + grays), Tableau 20 (20 colors), ggplot default and viridis (unlimited colors).
+                When possible, the app will auto switch to Tableau 20 or ggplot default, it will also try to increas the limit of User defined colors.
+                Contact me if you want to add your own set of colors."),
+              
+                         conditionalPanel(condition =
+                                          "input.themecolorswitcher == 'themebrewer' ||
+                                           input.themecolorswitcher == 'themeviridis'" 
+                                          ,
+                     checkboxInput('viridisbrewerdirection','Reverse the Color Palette?',value=FALSE)
+                         ),
                          conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
                                           sliderInput("nusercol", "N of User Colors:",
                                                       min=2, max=30, value=c(10),step=1)
                          ),
                          uiOutput('userdefinedcolor'),
                          conditionalPanel(condition = " input.themecolorswitcher=='themeuser' " ,
-                                          actionButton("userdefinedcolorreset", "Back to starting tableau colours", icon = icon("undo") ),
-                                          actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") )
+                                          actionButton("userdefinedcolorreset", "Tableau colours", icon = icon("undo") ),
+                                          actionButton("userdefinedcolorhighlight", "Highligth first colour", icon = icon("search") ),
+                                          actionButton("userdefinedcolorblues", "Brewer blues", icon = icon("palette") )
                                           
                          )
                 ),
@@ -815,7 +825,6 @@ fluidPage(
                                            gradientInputUI("gradientcol", "100%", "www"),
                                            actionButton("gradientreset", "Back to starting colours",icon = icon("undo") )
                                            ),
-                         
                          
                          # conditionalPanel(condition = " input.themecontcolorswitcher=='themeuser' " ,
                          #                  uiOutput('userdefinedcontcolor'),

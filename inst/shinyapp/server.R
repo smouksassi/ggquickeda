@@ -596,19 +596,23 @@ function(input, output, session) {
   #   })
   
   observe({
-  if ( (input$colorin!="None" &&
+  if   (((input$colorin!="None" &&
        input$colorin %in% names(finalplotdata()) &&
        !is.numeric(finalplotdata()[,input$colorin]) && 
        length(unique(finalplotdata()[,input$colorin])) > 20) ||
        (input$fillin!="None" &&
         input$fillin %in% names(finalplotdata()) &&
         !is.numeric(finalplotdata()[,input$fillin]) && 
-        length(unique(finalplotdata()[,input$fillin])) > 20)
+        length(unique(finalplotdata()[,input$fillin])) > 20) ) 
        ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themeggplot")
-     updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
-     updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
-  } else if ((input$colorin!="None" &&
+    updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
+    updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
+    updateSliderInput(session, "nusercol",
+                      value = length(unique(finalplotdata()[,input$colorin])),
+                      max = length(unique(finalplotdata()[,input$colorin]))+5)
+    
+  } else if (((input$colorin!="None" &&
              input$colorin %in% names(finalplotdata()) &&
              !is.numeric(finalplotdata()[,input$colorin]) &&
              (length(unique(finalplotdata()[,input$colorin])) > 10 &&
@@ -617,25 +621,18 @@ function(input, output, session) {
               input$fillin %in% names(finalplotdata()) &&
               !is.numeric(finalplotdata()[,input$fillin]) &&
               (length(unique(finalplotdata()[,input$fillin])) > 10 &&
-               length(unique(finalplotdata()[,input$fillin])) <= 20) )
+               length(unique(finalplotdata()[,input$fillin])) <= 20) ) ) 
              ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau20")
     updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
     updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
-  } else if ( (input$colorin!="None" &&
-             input$colorin %in% names(finalplotdata()) &&
-             !is.numeric(finalplotdata()[,input$colorin]) &&
-             length(unique(finalplotdata()[,input$colorin])) <= 10) ||
-             (input$fillin!="None" &&
-              input$fillin %in% names(finalplotdata()) &&
-              !is.numeric(finalplotdata()[,input$fillin]) &&
-              length(unique(finalplotdata()[,input$fillin])) <= 10)
-             ) {
-    updateRadioButtons(session, "themecolorswitcher", selected="themetableau10")
+    updateSliderInput(session, "nusercol",
+                      value = length(unique(finalplotdata()[,input$colorin])),
+                      max = 30)
   } else {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau10")
   }
-  })#zzz still need to fix when fill is mapped
+  })#zzz 
 
   
   observe({
@@ -2664,7 +2661,21 @@ function(input, output, session) {
       )
     })
   })
-
+  observeEvent(input$userdefinedcolorblues, {
+    req(input$nusercol)
+    lev <- 1:input$nusercol
+    cols <- colorRampPalette(RColorBrewer::brewer.pal(9,"Blues"))(length(lev))
+    mycolorupdatedfun <- get("updateColourInput", asNamespace("colourpicker"))
+    lapply(seq_along(lev), function(i) {
+      do.call(what = "mycolorupdatedfun",
+              args = list(
+                session = session,
+                inputId = paste0("col", lev[i]),
+                value = cols[i]
+              )
+      )
+    })
+  })
 
   observe({
     facet_choices <- unique(c(
@@ -2835,7 +2846,7 @@ function(input, output, session) {
         scale_fill_manual(..., values = cbbPalette,drop=!input$themecolordrop,
                           na.value = "grey50")
     }
-    
+
     if (input$scaleshapeswitcher=="themeuser"){
       shapes <- paste0("c(", paste0("input$shape", 1:input$nusershape, collapse = ", "), ")")
       shapes <- eval(parse(text = shapes))
@@ -2935,9 +2946,23 @@ function(input, output, session) {
           }
           if (input$themecolorswitcher=="themeviridis"){
             p <-  p +
-              scale_colour_viridis_d(drop=!input$themecolordrop) + 
-              scale_fill_viridis_d(drop=!input$themecolordrop)
+              scale_colour_viridis_d(drop=!input$themecolordrop,
+                                     direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                     na.value = "grey50") + 
+              scale_fill_viridis_d(drop=!input$themecolordrop,
+                                   direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                   na.value = "grey50")
           }
+         if (input$themecolorswitcher=="themebrewer"){
+           p <-  p +
+             scale_colour_brewer(drop=!input$themecolordrop,
+                                 direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                 na.value = "grey50") + 
+             scale_fill_brewer (drop=!input$themecolordrop,
+                                direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                na.value = "grey50")
+         }
+         
       }
       p <- attach_source_dep(p, "facetswitch")
       p <- attach_source_dep(p, "labellervalue")
@@ -6834,15 +6859,24 @@ function(input, output, session) {
       if(!input$show_pairs && input$colorin!="None"){
         if (input$themecolorswitcher=="themeggplot" &&
             !is.numeric(plotdata[,input$colorin])){
-          p <-  p + scale_colour_hue(drop=!input$themecolordrop)
+          p <-  p + scale_colour_hue(drop=!input$themecolordrop,
+                                     na.value = "grey50")
         }
         if (input$themecolorswitcher=="themeviridis" &&
             !is.numeric(plotdata[,input$colorin])){
-          p <-  p + scale_colour_viridis_d(drop=!input$themecolordrop)
+          p <-  p + scale_colour_viridis_d(drop=!input$themecolordrop,
+                                           direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                           na.value = "grey50")
         }
         if (input$themecontcolorswitcher=="themeviridis" &&
             is.numeric(plotdata[,input$colorin])){
-          p <-  p + scale_colour_viridis_c()
+          p <-  p + scale_colour_viridis_c(na.value = "grey50")
+        }
+        if (input$themecolorswitcher=="themebrewer" &&
+            !is.numeric(plotdata[,input$colorin])){
+          p <-  p + scale_colour_brewer(drop=!input$themecolordrop,
+                                        direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                        na.value = "grey50")
         }
       }
 
@@ -6853,13 +6887,20 @@ function(input, output, session) {
         }
         if (input$themecolorswitcher=="themeviridis" &&
             !is.numeric(plotdata[,input$fillin])){
-          p <-  p + scale_fill_viridis_d(drop=!input$themecolordrop)
+          p <-  p + scale_fill_viridis_d(drop=!input$themecolordrop,
+                                         direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                         na.value = "grey50")
         }
         if (input$themecontcolorswitcher=="themeviridis"&&
             is.numeric(plotdata[,input$fillin])){
-          p <-  p + scale_fill_viridis_c()
+          p <-  p + scale_fill_viridis_c( na.value = "grey50")
         }
-        
+        if (input$themecolorswitcher=="themebrewer" &&
+            !is.numeric(plotdata[,input$fillin])){
+          p <-  p + scale_fill_brewer(drop=!input$themecolordrop,
+                                      direction = ifelse(input$viridisbrewerdirection,-1,1),
+                                      na.value = "grey50")
+        }
       }
       
       if(input$pointsizein!="None"){
