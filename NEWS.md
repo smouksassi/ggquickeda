@@ -6,7 +6,7 @@
 * fixed a namespace bug with calling the `scales` package functions like `muted` or `trans_xxx` without the package being loaded, now using `::`.
 * fixed a bug with `updateColourInput` which is now only available from the `colourpicker` package
 * reactivating the colorgradient widget after `shinyjqui` bug was updated and fixed
-* added distiller continuous Blues and fermenter discrete Blues palettes
+* added distiller continuous Blues and brewer discrete Blues palettes
 * prevented applying discrete scale when the x and or y variable inherits from `POSIXct`
 * better support for POSIXct
 * modifying X/Y scale expansion is now optional
