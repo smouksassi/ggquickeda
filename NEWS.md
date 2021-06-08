@@ -1,27 +1,15 @@
 # ggquickeda 0.2.9999
-* fixed a bug where POSIXct where being treated as character now they are kept as is with the automatic zoom slider working.
 * added a new method for factor reordering min/max difference
-* added the mean +/- multiples of standard deviations summary
+* added the mean +/- multiples of standard deviations summary using the `mean_sdl` function
 * allowed to transform the label for mean and median to 10^ (useful when the x/y axis are logged)
 * fixed a namespace bug with calling the `scales` package functions like `muted` or `trans_xxx` without the package being loaded, now using `::`.
 * fixed a bug with `updateColourInput` which is now only available from the `colourpicker` package
 * reactivating the colorgradient widget after `shinyjqui` bug was updated and fixed
 * added distiller continuous Blues and brewer discrete Blues palettes
-* prevented applying discrete scale when the x and or y variable inherits from `POSIXct`
-* better support for POSIXct
-* modifying X/Y scale expansion is now optional
-
-* next release to do/wish list ::
-* ignore mapped color and or fill for barplot and density ?
-* density line style ?
-* zoom not working for univariate ?
-* allow axis label formatting for univariate log ?
-* custom ticks custom zoom for univariate ?
-* add more styling options to control text labels justification etc. ?
-* position/geom sina  ?
-* violin half half boxplot position ?
-* label from precomputed N at the forced x and or y we want ?
-* reduce list of package dependencies ?
+* added more support for `POSIXct` variables where previously they were being treated as character
+* automatic zoom slider is now working with `POSIXct`
+* discrete scale is no longer applied when the x and or y variable inherits from `POSIXct`
+* modifying X/Y scale expansion is now optional (fixed auto expansion with free facets)
 
 # ggquickeda 0.2.0
 * Added Violin plots

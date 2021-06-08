@@ -1611,7 +1611,7 @@ fluidPage(
               )
               ,
               ### Mean CI section
-              tabPanel("Mean (CI)",
+              tabPanel("Mean (CI/mult_sd)",
                        value = "mean_ci",
                        fluidRow(
                          column (2,
