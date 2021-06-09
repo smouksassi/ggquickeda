@@ -31,32 +31,29 @@ suppressMessages({
 DATABASE_CONN <- NULL
 PGDATABASE <- Sys.getenv("PGDATABASE")
 PGHOST <- Sys.getenv("PGHOST")
-PORT <- Sys.getenv("PORT")
 PGUSER <- Sys.getenv("PGUSER")
 PGPASSWORD <- Sys.getenv("PGPASSWORD")
-if (PGDATABASE != "" && PGHOST != "" && PORT != "" && PGUSER != "" && PGPASSWORD != "") {
-  if (dbCanConnect(RPostgres::Postgres(),
-                   dbname = PGDATABASE,
-                   host = PGHOST,
-                   port = PORT,
-                   user = PGUSER,
-                   password = PGPASSWORD)
-  ) {
-    # get connection to database
-    DATABASE_CONN <- dbConnect(RPostgres::Postgres(),
-                               dbname = PGDATABASE,
-                               host = PGHOST,
-                               port = PORT,
-                               user = PGUSER,
-                               password = PGPASSWORD)
-  }
+
+if (dbCanConnect(RPostgres::Postgres(),
+                 dbname = PGDATABASE,
+                 host = PGHOST,
+                 user = PGUSER,
+                 password = PGPASSWORD)
+) {
+  # get connection to database
+  DATABASE_CONN <- dbConnect(RPostgres::Postgres(),
+                             dbname = PGDATABASE,
+                             host = PGHOST,
+                             user = PGUSER,
+                             password = PGPASSWORD)
 }
+
 
 #### ARIDHIA ADDITIONS ####
 ###########################
-source("gradientInput.R") #pending a shinyjqui fix
+source("gradientInput.R") 
 
-options(shiny.maxRequestSize=250*1024^2) 
+options(shiny.maxRequestSize=250*1024^2)  
 
 stat_sum_df <- function(fun, geom="point", ...) {
   stat_summary(fun.data = fun,  geom=geom,  ...)
