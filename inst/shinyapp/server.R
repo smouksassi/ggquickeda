@@ -6840,11 +6840,11 @@ function(input, output, session) {
                                   order = linetypepos)
         
         if (input$removelegend){
-          if( colourpos==0) gcol = FALSE
-          if( fillpos==0) gfill = FALSE
-          if( sizepos==0) gsize = FALSE
-          if( shapepos==0) gshape = FALSE
-          if( linetypepos==0) glinetype = FALSE
+          if( colourpos==0) gcol = "none"
+          if( fillpos==0) gfill = "none"
+          if( sizepos==0) gsize = "none"
+          if( shapepos==0) gshape = "none"
+          if( linetypepos==0) glinetype = "none"
         }
         
         
