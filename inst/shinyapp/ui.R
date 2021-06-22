@@ -322,7 +322,7 @@ fluidPage(
               conditionalPanel(condition = "!input.show_pairs",
               h6("X Axis Zoom Automatic generates a slider with limits between your x variable(s) min/max.
                  The User option lets you input your own limits (when left empty it defaults to ggplot computed limit).
-                 If facet scales on the y position are free then zooming will not work.
+                 If facet scales on the x position are free then zooming will override it.
                  Univariate plots are not supported while datetime, POSIXct data have partial support."),
               fluidRow(
                 column(12,
@@ -332,7 +332,7 @@ fluidPage(
                                       "User" = "userxzoom"),inline=TRUE )
                        ,
                        conditionalPanel(condition = "input.xaxiszoom=='automaticxzoom'",
-                                        uiOutput("xaxiszoom") ) ),
+                                        uiOutput("xaxiszoomslider") ) ),
                 column(6,
                        conditionalPanel(condition = "input.xaxiszoom=='userxzoom' ",uiOutput("lowerx")) ),
                 column(6,
@@ -340,7 +340,7 @@ fluidPage(
               ),# fluidrow
               h6("Y Axis Zoom Automatic generates a slider with limits between your y variable(s) min/max.
                  The User option lets you input your own limits (when left empty it defaults to ggplot computed limit).
-                 If facet scales on the y position are free then zooming will not work.
+                 If facet scales on the y position are free then zooming will override it.
                  Univariate plots are not supported while datetime, POSIXct data have partial support."),
                     fluidRow(
                 column(12,
@@ -350,7 +350,7 @@ fluidPage(
                                       "User" = "useryzoom"),inline=TRUE )
                        ,
                        conditionalPanel(condition = "input.yaxiszoom=='automaticyzoom'",
-                                        uiOutput("yaxiszoom") ) ),
+                                        uiOutput("yaxiszoomslider") ) ),
                 column(6,
                        conditionalPanel(condition = "input.yaxiszoom=='useryzoom' ",uiOutput("lowery")) ),
                 column(6,

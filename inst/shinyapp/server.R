@@ -2027,12 +2027,11 @@ function(input, output, session) {
     as.data.frame(df)
   })
   
-  output$xaxiszoom <- renderUI({
+  output$xaxiszoomslider <- renderUI({
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if ( is.null(df) || is.null(input$x)  ) return(NULL)
     if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
-        input$facetscalesin %in% c("free_x","free") ||
         (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
     ) return(NULL)
       xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
@@ -2044,14 +2043,13 @@ function(input, output, session) {
         sliderInput('xaxiszoomin',label = 'Zoom to X variable range:',
                     min=xmin, max=xmax, value=c(xmin,xmax),step=xstep)
   })
-  outputOptions(output, "xaxiszoom", suspendWhenHidden=FALSE)
+  outputOptions(output, "xaxiszoomslider", suspendWhenHidden=FALSE)
   
   output$lowerx <- renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if (is.null(df)  ||  is.null(input$x) || is.null(df[,"xvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
-        input$facetscalesin %in% c("free_x","free") || 
+    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) || 
         (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
         ) return(NULL)
       xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
@@ -2065,8 +2063,7 @@ function(input, output, session) {
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if (is.null(df)  ||  is.null(input$x) || is.null(df[,"xvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
-        input$facetscalesin %in% c("free_x","free") || 
+    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) || 
         (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
     ) return(NULL)
     xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
@@ -2077,12 +2074,11 @@ function(input, output, session) {
   outputOptions(output, "lowerx", suspendWhenHidden=FALSE)
   outputOptions(output, "upperx", suspendWhenHidden=FALSE)
   
-  output$yaxiszoom <- renderUI({
+  output$yaxiszoomslider <- renderUI({
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if ( is.null(df) || is.null(input$y)  ) return(NULL)
     if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
-        input$facetscalesin %in% c("free_y","free") ||
         (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
     ) return(NULL)
     yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
@@ -2095,14 +2091,13 @@ function(input, output, session) {
                 min=ymin, max=ymax, value=c(ymin,ymax),step=ystep)
     
   })
-  outputOptions(output, "yaxiszoom", suspendWhenHidden=FALSE)  
+  outputOptions(output, "yaxiszoomslider", suspendWhenHidden=FALSE)  
   
   output$lowery <- renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
-        input$facetscalesin %in% c("free_y","free") || 
+    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
         (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
     ) return(NULL)
     yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
@@ -2116,8 +2111,7 @@ function(input, output, session) {
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
-        input$facetscalesin %in% c("free_y","free") || 
+    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
         (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
     ) return(NULL)
     yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
