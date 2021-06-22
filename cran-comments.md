@@ -1,6 +1,6 @@
 ## Test environments
-* local Windows 10 install, R 4.0.3
-* ubuntu 16.04.6 LTS (on travis-ci), R 4.0.2
+* local Windows 10 install, R 4.1.0
+* ubuntu 20.04 (on github actions), R 4.1.0
 * win-builder (devel and release)
 
 ## R CMD check results
