@@ -5,7 +5,8 @@
 * fixed a namespace bug with calling the `scales` package functions like `muted` or `trans_xxx` without the package being loaded, now using `::`.
 * fixed a bug with `updateColourInput` which is now only available from the `colourpicker` package
 * reactivating the colorgradient widget after `shinyjqui` bug was updated and fixed
-* added distiller continuous Blues and brewer discrete Blues palettes
+* added distiller continuous Blues and brewer discrete palettes
+* added possibility to specify palette for viridis discrete and continuous with possibility to reverse the scale
 * added more support for `POSIXct` variables where previously they were being treated as character
 * automatic zoom slider is now working with `POSIXct`
 * automatic Slider or User zoom now is controllable when facets scales are free  

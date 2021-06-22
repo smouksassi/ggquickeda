@@ -2764,14 +2764,14 @@ function(input, output, session) {
     if (input$themecontcolorswitcher=="themedistiller"){
       
       scale_colour_continuous <- function(...) 
-        scale_colour_distiller(..., palette = "Blues",
+        scale_colour_distiller(..., palette = input$themedistillerpalettes,
                                direction = ifelse(input$distillerdirection,-1,1) ,
                                space = "Lab",
                                na.value = "grey50",
                                guide = "colourbar")
       
       scale_fill_continuous <- function(...) 
-        scale_fill_distiller(...,palette = "Blues",
+        scale_fill_distiller(...,palette = input$themedistillerpalettes,
                              direction = ifelse(input$distillerdirection,-1,1) ,
                              space = "Lab",
                              na.value = "grey50",
@@ -6869,7 +6869,9 @@ function(input, output, session) {
         }
         if (input$themecontcolorswitcher=="themeviridis" &&
             is.numeric(plotdata[,input$colorin])){
-          p <-  p + scale_colour_viridis_c(na.value = "grey50")
+          p <-  p + scale_colour_viridis_c(na.value = "grey50",
+                                           option = input$themeviridiscpalettes,
+                                           direction = ifelse(input$viridiscdirection,-1,1))
         }
         if (input$themecolorswitcher=="themebrewer" &&
             !is.numeric(plotdata[,input$colorin])){
@@ -6894,7 +6896,9 @@ function(input, output, session) {
         }
         if (input$themecontcolorswitcher=="themeviridis"&&
             is.numeric(plotdata[,input$fillin])){
-          p <-  p + scale_fill_viridis_c( na.value = "grey50")
+          p <-  p + scale_fill_viridis_c(na.value = "grey50",
+                                 option = input$themeviridiscpalettes,
+                                 direction = ifelse(input$viridiscdirection,-1,1))
         }
         if (input$themecolorswitcher=="themebrewer" &&
             !is.numeric(plotdata[,input$fillin])){

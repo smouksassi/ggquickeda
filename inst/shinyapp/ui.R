@@ -827,8 +827,9 @@ fluidPage(
                                         "distiller" = "themedistiller",
                                         "User defined" = "themeuser")
                                       ,inline=TRUE),
-                         conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
-                                             input.themecontcolorswitcher=='RedWhiteGreen'" ,
+                         conditionalPanel(condition =
+                         " input.themecontcolorswitcher=='RedWhiteBlue' |
+                           input.themecontcolorswitcher=='RedWhiteGreen'" ,
                                           colourpicker::colourInput(
                                             "midcolor",
                                             "Midpoint Color",
@@ -837,10 +838,31 @@ fluidPage(
                                             allowTransparent = FALSE,returnName = TRUE)
                          ),
                          conditionalPanel(condition = " input.themecontcolorswitcher=='themedistiller'" ,
+                                          radioButtons("themedistillerpalettes",
+                                                         "Distiller Palettes:",
+                                                         c("Blues"  = "Blues",
+                                                           "Reds"  = "Reds",
+                                                           "Purples"  = "Purples",
+                                                           "Oranges"  = "Oranges",
+                                                           "Greens"  = "Greens")
+                                                         ,inline=TRUE),
                        checkboxInput('distillerdirection','Reverse the Distiller Palette?',value=FALSE)
                          ),
-                         
-                         conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
+                       conditionalPanel(condition = " input.themecontcolorswitcher=='themeviridis'" ,
+                                        radioButtons("themeviridiscpalettes",
+                                                     "Viridis Palettes:",
+                                                     c("viridis"  = "viridis",
+                                                       "magma"  = "magma",
+                                                       "plasma"  = "plasma",
+                                                       "inferno"  = "inferno",
+                                                       "civids"  = "civids",
+                                                       "mako"  = "mako",
+                                                       "rocket"  = "rocket",
+                                                       "turbo"  = "turbo")
+                                                     ,inline=TRUE),
+                                        checkboxInput('viridiscdirection','Reverse the Viridis Palette?',value=FALSE)
+                       ),
+                       conditionalPanel(condition = " input.themecontcolorswitcher=='RedWhiteBlue' |
                                              input.themecontcolorswitcher=='RedWhiteGreen'|
                                              input.themecontcolorswitcher=='themeuser'" ,
                                           numericInput("colormidpoint", "Continuous Color/Fill Midpoint Value",
