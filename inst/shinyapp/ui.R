@@ -754,6 +754,31 @@ fluidPage(
                                         "brewer" = "themebrewer",
                                         "User defined" = "themeuser")
                                       ,inline=TRUE),
+                         conditionalPanel(
+                           condition = "input.themecolorswitcher == 'themeviridis'" ,
+                           radioButtons("themeviridispalettes",
+                                        "Viridis Palettes:",
+                                        c("viridis"  = "viridis",
+                                          "magma"  = "magma",
+                                          "plasma"  = "plasma",
+                                          "inferno"  = "inferno",
+                                          "civids"  = "civids",
+                                          "mako"  = "mako",
+                                          "rocket"  = "rocket",
+                                          "turbo"  = "turbo")
+                                        ,inline=TRUE)
+                         ),
+                         conditionalPanel(
+                           condition = "input.themecolorswitcher == 'themebrewer'" ,
+                           radioButtons("themebrewerpalettes",
+                                        "Brewer Palettes:",
+                                        c("Blues"  = "Blues",
+                                          "Reds"  = "Reds",
+                                          "Purples"  = "Purples",
+                                          "Oranges"  = "Oranges",
+                                          "Greens"  = "Greens")
+                                        ,inline=TRUE)
+                         ),                 
               h6("if when using Tableau 10 (10 colors) or Color Blind/Color Blind 2 (8 colors) you get /Error: Insufficient values in manual scale. ## needed but only 10 or 8 provided,
                 Switch to using a color scale with more colors: brewer (9 colors + grays), Tableau 20 (20 colors), ggplot default and viridis (unlimited colors).
                 When possible, the app will auto switch to Tableau 20 or ggplot default, it will also try to increas the limit of User defined colors.

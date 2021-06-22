@@ -1,4 +1,4 @@
-# ggquickeda 0.2.9999
+# ggquickeda 0.2.1
 * added a new method for factor reordering min/max difference
 * added the mean +/- multiples of standard deviations summary using the `mean_sdl` function
 * allowed to transform the label for mean and median to 10^ (useful when the x/y axis are logged)
@@ -8,6 +8,7 @@
 * added distiller continuous Blues and brewer discrete Blues palettes
 * added more support for `POSIXct` variables where previously they were being treated as character
 * automatic zoom slider is now working with `POSIXct`
+* automatic Slider or User zoom now is controllable when facets scales are free  
 * discrete scale is no longer applied when the x and or y variable inherits from `POSIXct`
 * modifying X/Y scale expansion is now optional (fixed auto expansion with free facets)
 

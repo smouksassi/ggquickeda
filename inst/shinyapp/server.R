@@ -2941,18 +2941,22 @@ function(input, output, session) {
           if (input$themecolorswitcher=="themeviridis"){
             p <-  p +
               scale_colour_viridis_d(drop=!input$themecolordrop,
+                                     option = input$themeviridispalettes,
                                      direction = ifelse(input$viridisbrewerdirection,-1,1),
                                      na.value = "grey50") + 
               scale_fill_viridis_d(drop=!input$themecolordrop,
+                                   option = input$themeviridispalettes,
                                    direction = ifelse(input$viridisbrewerdirection,-1,1),
                                    na.value = "grey50")
           }
          if (input$themecolorswitcher=="themebrewer"){
            p <-  p +
              scale_colour_brewer(drop=!input$themecolordrop,
+                                 palette = input$themebrewerpalettes,
                                  direction = ifelse(input$viridisbrewerdirection,-1,1),
                                  na.value = "grey50") + 
              scale_fill_brewer (drop=!input$themecolordrop,
+                                palette = input$themebrewerpalettes,
                                 direction = ifelse(input$viridisbrewerdirection,-1,1),
                                 na.value = "grey50")
          }
@@ -6859,6 +6863,7 @@ function(input, output, session) {
         if (input$themecolorswitcher=="themeviridis" &&
             !is.numeric(plotdata[,input$colorin])){
           p <-  p + scale_colour_viridis_d(drop=!input$themecolordrop,
+                                           option = input$themeviridispalettes,
                                            direction = ifelse(input$viridisbrewerdirection,-1,1),
                                            na.value = "grey50")
         }
@@ -6869,6 +6874,7 @@ function(input, output, session) {
         if (input$themecolorswitcher=="themebrewer" &&
             !is.numeric(plotdata[,input$colorin])){
           p <-  p + scale_colour_brewer(drop=!input$themecolordrop,
+                                        palette = input$themebrewerpalettes,
                                         direction = ifelse(input$viridisbrewerdirection,-1,1),
                                         na.value = "grey50")
         }
@@ -6882,6 +6888,7 @@ function(input, output, session) {
         if (input$themecolorswitcher=="themeviridis" &&
             !is.numeric(plotdata[,input$fillin])){
           p <-  p + scale_fill_viridis_d(drop=!input$themecolordrop,
+                                         option = input$themeviridispalettes,
                                          direction = ifelse(input$viridisbrewerdirection,-1,1),
                                          na.value = "grey50")
         }
@@ -6892,6 +6899,7 @@ function(input, output, session) {
         if (input$themecolorswitcher=="themebrewer" &&
             !is.numeric(plotdata[,input$fillin])){
           p <-  p + scale_fill_brewer(drop=!input$themecolordrop,
+                                      palette = input$themebrewerpalettes,
                                       direction = ifelse(input$viridisbrewerdirection,-1,1),
                                       na.value = "grey50")
         }
