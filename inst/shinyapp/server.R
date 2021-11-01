@@ -606,8 +606,8 @@ function(input, output, session) {
         length(unique(finalplotdata()[,input$fillin])) > 20) ) 
        ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themeggplot")
-    updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
-    updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
+    #updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
+    #updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
     updateSliderInput(session, "nusercol",
                       value = length(unique(finalplotdata()[,input$colorin])),
                       max = length(unique(finalplotdata()[,input$colorin]))+5)
@@ -624,8 +624,8 @@ function(input, output, session) {
                length(unique(finalplotdata()[,input$fillin])) <= 20) ) ) 
              ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau20")
-    updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
-    updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
+    #updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
+    #updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
     updateSliderInput(session, "nusercol",
                       value = length(unique(finalplotdata()[,input$colorin])),
                       max = 30)

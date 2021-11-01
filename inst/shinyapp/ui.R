@@ -1253,7 +1253,10 @@ fluidPage(
                   column (3, uiOutput("facet_col"),uiOutput("facet_row"),uiOutput("facet_row_extra")),
                   column (3, uiOutput("pointshape") ,uiOutput("linetype")),
                   column (3, uiOutput("pointsize"),uiOutput("fill")),
-                  column (12, h6("Make sure not to choose a variable that is in the y variable(s) list otherwise you will get an error Variable not found. These variables are stacked and become yvars and yvalues.This ensures that colour/group/etc. are kept intact when you apply a new filter or recode a variable. When you combine variables all mappings will be updated so you can choose the newly formed variable and as such the previous state will be lost." ))
+                  column (12, h6("Make sure not to choose a variable that is in the y or x variable(s) list otherwise you will get an error Variable not found.
+                                 These variables are stacked and become yvars/yvalues and xvars/xvalues.
+                                 This ensures that colour/group/etc. are kept intact when you apply a new filter or recode a variable.
+                                 When you combine variables all mappings will be reset so you can choose the newly formed variable and as such the previous state will be lost." ))
                   
                 )
               ),#tabpanel
