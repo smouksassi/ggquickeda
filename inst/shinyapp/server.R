@@ -2041,12 +2041,12 @@ function(input, output, session) {
   output$lowery <- renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
-        (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
-    ) return(NULL)
-    yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-    ymin <- min(yvalues)
+    # if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
+    # if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
+    #     (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
+    # ) return(NULL)
+    #yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
+    ymin <- min(df[,"yvalues"],na.rm = TRUE)
     if(input$yaxisscale=="logy" && ymin<=0) ymin <- 0.01
     numericInput("loweryin",label = "Lower Y Limit",
                  value = ymin,min=NA,max=NA,width='50%')
@@ -2055,12 +2055,12 @@ function(input, output, session) {
   output$uppery <-  renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
-        (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
-    ) return(NULL)
-    yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-    ymax <- max(yvalues)
+    # if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
+    # if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
+    #     (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
+    # ) return(NULL)
+    #yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
+    ymax <- max(df[,"yvalues"],na.rm = TRUE)
     if(input$yaxisscale=="logy" && ymax<=0) ymax <- 0.1
     numericInput("upperyin",label = "Upper Y Limit",
                  value = ymax,min=NA,max=NA,width='50%')
@@ -3411,12 +3411,7 @@ function(input, output, session) {
                                   show.legend = input$barplotlabellegend,
                                   colour = input$barplotlabelcolor)
             }
-                         
-            
-            if ( input$barplotflip){
-              p <- p +
-                coord_flip()
-            }
+
           }
           if ( input$barplotaddition && input$barplotpercent){
             p <- p+  
@@ -3470,10 +3465,6 @@ function(input, output, session) {
               }
             }
 
-            if ( input$barplotflip){
-              p <- p +
-                coord_flip()
-            }
           }
         }# not numeric yvalues no x
       } # is null x univariate y plots ends  
@@ -3490,11 +3481,8 @@ function(input, output, session) {
           if (is.factor(   plotdata[,"xvalues"] ) |
               is.character(plotdata[,"xvalues"])
               ){ 
-            p <-   p   + scale_x_discrete(expand = expansion(mult = c(input$xexpansion_l_mult,
-                                                                      input$xexpansion_r_mult),
-                                                             add  = c(input$xexpansion_l_add,
-                                                                      input$xexpansion_r_add))
-            ) }
+            p <-   p   + scale_x_discrete(expand = expansionobjx) 
+            }
 
           if (!inherits(plotdata[,"xvalues"], "POSIXct")) {
             p <-   p   +
@@ -3521,11 +3509,8 @@ function(input, output, session) {
           if (is.factor(   plotdata[,"xvalues"] ) |
               is.character(plotdata[,"xvalues"])
           ){
-            p <-   p   + scale_x_discrete(expand = expansion(mult = c(input$xexpansion_l_mult,
-                                                                      input$xexpansion_r_mult),
-                                                             add  = c(input$xexpansion_l_add,
-                                                                      input$xexpansion_r_add))
-            ) }
+            p <-   p   + scale_x_discrete(expand = expansionobjx) 
+          }
           
           if (!inherits(plotdata[,"xvalues"], "POSIXct")) {
             p <-   p   +
@@ -6300,6 +6285,7 @@ function(input, output, session) {
       }#endfacetwrap
       
       if (!input$custom_scale_y_expansion) expansionobjy <- waiver()
+      if (!input$custom_scale_x_expansion) expansionobjx <- waiver()
       
       if (input$custom_scale_y_expansion) {
         expansionobjy <- expansion(mult = c(input$yexpansion_l_mult,
@@ -6307,8 +6293,7 @@ function(input, output, session) {
                                    add  = c(input$yexpansion_l_add,
                                             input$yexpansion_r_add))
       }
-      if (!input$custom_scale_x_expansion) expansionobjx <- waiver()
-      
+
       if (input$custom_scale_x_expansion) {
         expansionobjx <- expansion(mult = c(input$xexpansion_l_mult,
                                             input$xexpansion_r_mult),
@@ -6337,22 +6322,19 @@ function(input, output, session) {
             p <- p +
               scale_y_continuous(expand = expansionobjy,
                                  breaks = waiver(),
-                                 labels = waiver()) +
-              scale_x_discrete(expand = expansionobjx)
+                                 labels = waiver())
           }
           if(input$yaxisformat=="percenty"){
             p <- p +
               scale_y_continuous(expand = expansionobjy,
                                  breaks = waiver(),
-                                 labels = scales::percent_format()) +
-              scale_x_discrete(expand = expansionobjx)
+                                 labels = scales::percent_format())
           }
           if(input$yaxisformat=="scientificy"){
             p <- p +
               scale_y_continuous(expand = expansionobjy,
                                  breaks = waiver(),
-                                 labels = comma) +
-              scale_x_discrete(expand = expansionobjx)
+                                 labels = comma) 
           }
         }
         #null x not numeric y
@@ -6363,22 +6345,19 @@ function(input, output, session) {
             p <- p +
               scale_x_continuous(expand = expansionobjx,
                                  breaks = waiver(),
-                                 labels = waiver()) +
-              scale_y_discrete(expand = expansionobjy)
+                                 labels = waiver())
           }
           if(input$xaxisformat=="percentx"){
             p <- p +
               scale_x_continuous(expand = expansionobjx,
                                  breaks = waiver(),
-                                 labels = scales::percent_format()) +
-              scale_y_discrete(expand = expansionobjy)
+                                 labels = scales::percent_format())
           }
           if(input$xaxisformat=="scientificx"){
             p <- p +
               scale_x_continuous(expand = expansionobjx,
                                  breaks = waiver(),
-                                 labels = comma) +
-              scale_y_discrete(expand = expansionobjy)
+                                 labels = comma)
           }
         }
       }#logic for univariate plots ends
@@ -6673,14 +6652,16 @@ function(input, output, session) {
         }
       }#percent x format
       
-      if (!is.null(plotdata$xvalues) &&
+      if (!all(is.na(plotdata$xvalues)) &&
+          !is.null(plotdata$xvalues) &&
           !is.numeric(plotdata[,"xvalues"]) &&
           !inherits(plotdata[,"xvalues"], "POSIXct")
           ) {
         p <- p  + scale_x_discrete(labels = label_wrap(input$x_label_text_width),
                                    expand = expansionobjx)
       }
-      if (!is.null(plotdata$yvalues) &&
+      if (!all(is.na(plotdata$yvalues)) &&
+          !is.null(plotdata$yvalues) &&
           !is.numeric(plotdata[,"yvalues"])&&
           !inherits(plotdata[,"yvalues"], "POSIXct")
           ) {
@@ -6876,12 +6857,17 @@ function(input, output, session) {
                           ylim= NULL,
                           expand=input$expand,
                           clip=ifelse(input$clip,"on","off"))
+
       }
       
-      if (all(input$yaxiszoom=='noyzoom'  && !is.null(plotdata$xvalues))
+      if (all(input$yaxiszoom=='noyzoom'  &&
+              !all(is.na(plotdata$xvalues)) &&
+              (!is.factor(plotdata$xvalues) ||
+                  !is.character(plotdata$xvalues))
+      )
       ){
         if(input$xaxiszoom=="userxzoom"){
-          if( (!is.null(input$lowerxin) | !is.null(input$upperxin))
+          if( (!is.null(input$lowerxin) || !is.null(input$upperxin))
               ){
           p <- p +
             coord_cartesian(xlim= c(ifelse(!is.finite(input$lowerxin),NA,input$lowerxin ),
@@ -6891,8 +6877,7 @@ function(input, output, session) {
           }
         }
         if(input$xaxiszoom=="automaticxzoom"){
-          if(!is.null(input$xaxiszoomin[1])  
-             ){
+          if(!is.null(input$xaxiszoomin[1]) ){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                             expand=input$expand,
@@ -6900,14 +6885,13 @@ function(input, output, session) {
           }
           if(is.null(input$xaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim = NULL,
-                              expand = input$expand,
+              coord_cartesian(expand = input$expand,
                               clip = ifelse(input$clip,"on","off")) 
           } 
         }
       }
       
-      if (all(input$xaxiszoom=='noxzoom'  && !is.null(plotdata$yvalues) )
+      if (all(input$xaxiszoom=='noxzoom'   )
       ){
         
         if(input$yaxiszoom=="useryzoom" ){
@@ -6941,30 +6925,32 @@ function(input, output, session) {
       
       
       if (all(!is.null(input$xaxiszoomin[1])  &&
-              !is.null(plotdata$yvalues) &&
-              !is.null(plotdata$xvalues))
+              !all(is.na(plotdata$yvalues)) &&
+              !all(is.na(plotdata$xvalues)))
       ){
         if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="useryzoom"){
           p <- p +
-            coord_cartesian(xlim= c(input$lowerxin,
-                                    input$upperxin),
-                            ylim= c(input$loweryin,
-                                    input$upperyin),
+            coord_cartesian(xlim= c(ifelse(!is.finite(input$lowerxin),NA,input$lowerxin ),
+                                     ifelse(!is.finite(input$upperxin),NA,input$upperxin )),
+                            ylim= c(ifelse(!is.finite(input$loweryin),NA,input$loweryin ),
+                                    ifelse(!is.finite(input$upperyin),NA,input$upperyin )),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
         }
         if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="automaticyzoom"){
           if(!is.null(input$yaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim= c(input$lowerxin, input$upperxin),
+              coord_cartesian(xlim= c(ifelse(!is.finite(input$lowerxin),NA,input$lowerxin ),
+                                      ifelse(!is.finite(input$upperxin),NA,input$upperxin )),
                               ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
           if(is.null(input$yaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim= c(input$lowerxin, input$upperxin),
-                              ylim= NULL,
+              coord_cartesian(xlim= c(ifelse(!is.finite(input$lowerxin),NA,input$lowerxin ),
+                                      ifelse(!is.finite(input$upperxin),NA,input$upperxin )),
+                              ylim= c(NA,NA),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
@@ -6973,15 +6959,16 @@ function(input, output, session) {
         if (input$xaxiszoom=="automaticxzoom" && input$yaxiszoom=="useryzoom"){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                            ylim= c(input$loweryin,input$upperyin),
+                            ylim= c(ifelse(!is.finite(input$loweryin),NA,input$loweryin ),
+                                    ifelse(!is.finite(input$upperyin),NA,input$upperyin )),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
         }
         if (input$xaxiszoom=="automaticxzoom" && input$yaxiszoom=="automaticyzoom"){
           if(is.null(input$yaxiszoomin[1]) && is.null(input$xaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim= NULL,
-                              ylim= NULL,
+              coord_cartesian(xlim= c(NA,NA),
+                              ylim= c(NA,NA),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
@@ -6995,18 +6982,23 @@ function(input, output, session) {
           if(is.null(input$yaxiszoomin[1]) && !is.null(input$xaxiszoomin[1]) ){
             p <- p +
               coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
-                              ylim= NULL,
+                              ylim= c(NA,NA),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
           if(!is.null(input$yaxiszoomin[1]) && is.null(input$xaxiszoomin[1]) ){
             p <- p +
-              coord_cartesian(xlim= NULL,
+              coord_cartesian(xlim= c(NA,NA),
                               ylim= c(input$yaxiszoomin[1],input$yaxiszoomin[2]),
                               expand=input$expand,
                               clip=ifelse(input$clip,"on","off"))
           }
         }
+      }
+      
+      if ( input$barplotflip){
+        p <- p +
+          coord_flip()
       }
       
       if (input$showtargettext){

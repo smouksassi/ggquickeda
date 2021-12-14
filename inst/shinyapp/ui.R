@@ -1399,11 +1399,13 @@ fluidPage(
                   column (3,
                     checkboxInput('barplotaddition', 'Add a Barplot ?', value = TRUE),
                     conditionalPanel("input.barplotaddition",
-                                     inline_ui(selectInput("positionbar", label = "Bar positioning:",
+                                     inline_ui(selectInput("positionbar",
+                                                           label = "Bar positioning:",
                                 choices = c("Stacked"="position_stack(vjust = 0.5)",
                                             "Side By Side"="position_dodge(width = 0.9)",
                                             "Sum to 100%"="position_fill(vjust = 0.5)"),
-                                selected = "position_stack(vjust = 0.5)") ),
+                                selected = "position_stack(vjust = 0.5)",
+                                width = '90%') ),
                     checkboxInput('barplotflip', 'Flip the Barplot ?',value = FALSE)
                     )
                   ),
