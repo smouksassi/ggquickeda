@@ -542,59 +542,6 @@ function(input, output, session) {
     }
   })
 
-  # observe({
-  #   if(!input$show_pairs &&
-  #      !is.null(input$x) &&  
-  #       is.null(input$y) && 
-  #       !is.numeric(finalplotdata()[,"xvalues"]) ) {
-  #    updateNumericInput(session, "xexpansion_l_add", value = 0.6)
-  #    updateNumericInput(session, "xexpansion_r_add", value = 0.6) 
-  #   } else if(!input$show_pairs &&
-  #             is.null(input$x) &&  
-  #             !is.null(input$y) && 
-  #             !is.numeric(finalplotdata()[,"yvalues"]) ){
-  #     updateNumericInput(session, "yexpansion_l_add", value = 0.6)
-  #     updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
-  #   }  else if(!input$show_pairs &&
-  #              !is.null(input$x) &&  
-  #              is.null(input$y) && 
-  #              is.numeric(finalplotdata()[,"xvalues"]) ){
-  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_r_add", value = 0) 
-  #   } else if(!input$show_pairs &&
-  #            is.null(input$x) &&  
-  #            !is.null(input$y) && 
-  #            is.numeric(finalplotdata()[,"yvalues"]) ){
-  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_r_add", value = 0) 
-  #   } else if(!input$show_pairs &&
-  #             !is.null(input$x) &&  
-  #             is.null(input$y) && 
-  #             !is.numeric(finalplotdata()[,"xvalues"]) ){
-  #     updateNumericInput(session, "xexpansion_l_add", value = 0.6)
-  #     updateNumericInput(session, "xexpansion_r_add", value = 0.6)
-  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_r_add", value = 0)
-  #   } else if(!input$show_pairs &&
-  #             is.null(input$x) &&  
-  #             !is.null(input$y) && 
-  #             !is.numeric(finalplotdata()[,"yvalues"]) ){
-  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_l_add", value = 0.6)
-  #     updateNumericInput(session, "yexpansion_r_add", value = 0.6) 
-  #   } else{
-  #     updateNumericInput(session, "xexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "xexpansion_r_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_l_add", value = 0)
-  #     updateNumericInput(session, "yexpansion_r_add", value = 0) 
-  #   }
-  #   })
-  
   observe({
   if   (((input$colorin!="None" &&
        input$colorin %in% names(finalplotdata()) &&
@@ -624,8 +571,6 @@ function(input, output, session) {
                length(unique(finalplotdata()[,input$fillin])) <= 20) ) ) 
              ) {
     updateRadioButtons(session, "themecolorswitcher", selected="themetableau20")
-    #updateTabsetPanel(session, "sidebar_upper_menus", selected="sidebar_Graph_Options")
-    #updateTabsetPanel(session, "graphicaloptions", selected="themes_color_other")
     updateSliderInput(session, "nusercol",
                       value = length(unique(finalplotdata()[,input$colorin])),
                       max = 30)
@@ -4722,10 +4667,10 @@ function(input, output, session) {
                                          method.args = list(formula = y ~ x, weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
                                          label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
-                                         aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
-                                                                   "%+-%", signif(..x_se.., digits = 2),
-                                                                   "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
-                                                                   "%+-%", signif(..Intercept_se.., digits = 2),
+                                         aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
+                                                                   "%+-%", signif(..Intercept_se.. , digits = 2),
+                                                                   "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
+                                                                   "%+-%", signif(..x_se.. , digits = 2),
                                                                    sep = ""),
                                              group=NULL,weight=!!aesweight),
                                        parse = TRUE, show.legend = FALSE)
@@ -4821,10 +4766,10 @@ function(input, output, session) {
                                              method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
                                              label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
-                                             aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
-                                                               "%+-%", signif(..x_se.., digits = 2),
-                                                               "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
-                                                               "%+-%", signif(..Intercept_se.., digits = 2),
+                                             aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
+                                                               "%+-%", signif(..Intercept_se.. , digits = 2),
+                                                               "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
+                                                               "%+-%", signif(..x_se.. , digits = 2),
                                                                sep = ""),
                                                  group=NULL,weight=!!aesweight),
                                              parse = TRUE, show.legend = FALSE)
@@ -4923,10 +4868,10 @@ function(input, output, session) {
                                              method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
                                              label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
-                                             aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
-                                                               "%+-%", signif(..x_se.., digits = 2),
-                                                               "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
-                                                               "%+-%", signif(..Intercept_se.., digits = 2),
+                                             aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
+                                                               "%+-%", signif(..Intercept_se.. , digits = 2),
+                                                               "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
+                                                               "%+-%", signif(..x_se.. , digits = 2),
                                                                sep = ""),
                                                  weight=!!aesweight),
                                              parse = TRUE, show.legend = FALSE)
@@ -5025,11 +4970,12 @@ function(input, output, session) {
                                              method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
                                              label.x = Inf ,label.y = -Inf, size=input$smoothtextsize,
-                                             aes(label = paste("Intercept~`=`~", signif(..x_estimate.., digits = 3),
-                                                               "%+-%", signif(..x_se.., digits = 2),
-                                                               "~Slope~`=`~", signif(..Intercept_estimate.., digits = 3),
-                                                               "%+-%", signif(..Intercept_se.., digits = 2),
-                                                               sep = ""),weight=!!aesweight),
+                                             aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
+                                                               "%+-%", signif(..Intercept_se.. , digits = 2),
+                                                               "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
+                                                               "%+-%", signif(..x_se.. , digits = 2),
+                                                               sep = ""),
+                                                 weight=!!aesweight),
                                              parse = TRUE, show.legend = FALSE)
             }
             

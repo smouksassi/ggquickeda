@@ -991,7 +991,7 @@ fluidPage(
                             "Update plot automatically", value = TRUE)
             ),
             actionButton("update_plot_btn", "Update plot",
-                         icon = icon("refresh"))
+                         icon = icon("sync"))
           )),
           shinyjs::hidden(div(
             id = "save_plot_area",
@@ -2448,7 +2448,7 @@ fluidPage(
                                  "Update table automatically", value = TRUE)
                  ),
                  actionButton("update_table_btn", "Update table",
-                              icon = icon("refresh")),
+                              icon = icon("sync")),
                  fluidRow(
                    column(3,
                           div(id="quick_relabel_placeholder"),

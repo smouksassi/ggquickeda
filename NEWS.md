@@ -1,4 +1,7 @@
 # ggquickeda 0.2.1.9999
+* fixed bug in linear model equation where slope and intercept values were switched
+* bug flip barplot add group aes to pairs
+
 * next release to do/wish list ::
 * ignore mapped color and or fill for barplot and density ?
 * density line style ?
