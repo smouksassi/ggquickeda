@@ -660,30 +660,7 @@ function(input, output, session) {
                                                              "Pretty X" ="logxformat2"))
     }
   })
-  
-  # observe({
-  #   if (length(input$y)>1) {
-  #     updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
-  #                                                          "User" = "useryzoom"),inline=TRUE)
-  #   }
-  #   if (length(input$y)<2) {
-  #     updateRadioButtons(session, "yaxiszoom", choices = c("None" = "noyzoom",
-  #                                                          "Automatic" = "automaticyzoom",
-  #                                                          "User" = "useryzoom"),inline=TRUE)
-  #   }
-  # })
-  
-  # observe({
-  #   if (length(input$x)>1 ) {
-  #     updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
-  #                                                          "User" = "userxzoom"),inline=TRUE)
-  #   }
-  #   if (length(input$x)<2  ) {
-  #     updateRadioButtons(session, "xaxiszoom", choices = c("None" = "noxzoom",
-  #                                                          "Automatic" = "automaticxzoom",
-  #                                                          "User" = "userxzoom"),inline=TRUE)
-  #   }
-  # })
+
 
   outputOptions(output, "ycol", suspendWhenHidden=FALSE)
   outputOptions(output, "xcol", suspendWhenHidden=FALSE)
@@ -2036,7 +2013,7 @@ function(input, output, session) {
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     ymin <- NA
-    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+    if (!all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] ))){
       ymin <- min(df[,"yvalues"],na.rm = TRUE)}
     if(input$yaxisscale=="logy" && ymin<=0) ymin <- 0.01
     numericInput("loweryin",label = "Lower Y Limit",
@@ -2046,7 +2023,7 @@ function(input, output, session) {
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     ymax <- NA
-    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+    if (!all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] ))){
       ymax <- max(df[,"yvalues"],na.rm = TRUE)}
     if(input$yaxisscale=="logy" && ymax<=0) ymax <- 0.1
     numericInput("upperyin",label = "Upper Y Limit",
@@ -3483,13 +3460,30 @@ function(input, output, session) {
       p <- sourceable(ggplot(plotdata, aes_string(x="xvalues", y="yvalues")))
       p <- p # helps in initializing the scales
       
+      if (!input$custom_scale_y_expansion) expansionobjy <- waiver()
+      if (!input$custom_scale_x_expansion) expansionobjx <- waiver()
+      if (input$custom_scale_y_expansion) {
+        expansionobjy <- expansion(mult = c(input$yexpansion_l_mult,
+                                            input$yexpansion_r_mult),
+                                   add  = c(input$yexpansion_l_add,
+                                            input$yexpansion_r_add))
+      }
+      
+      if (input$custom_scale_x_expansion) {
+        expansionobjx <- expansion(mult = c(input$xexpansion_l_mult,
+                                            input$xexpansion_r_mult),
+                                   add  = c(input$xexpansion_l_add,
+                                            input$xexpansion_r_add)) 
+      }
+      
       if (input$showtarget)  {
         if (is.numeric( plotdata[,"yvalues"] ) ) {
           
           if (is.factor(   plotdata[,"xvalues"] ) |
               is.character(plotdata[,"xvalues"])
               ){ 
-            p <-   p   + scale_x_discrete(expand = expansionobjx) 
+            p <-   p   + scale_x_discrete(labels = label_wrap(input$x_label_text_width),
+                                          expand = expansionobjx) 
             }
 
           if (!inherits(plotdata[,"xvalues"], "POSIXct")) {
@@ -3517,7 +3511,8 @@ function(input, output, session) {
           if (is.factor(   plotdata[,"xvalues"] ) |
               is.character(plotdata[,"xvalues"])
           ){
-            p <-   p   + scale_x_discrete(expand = expansionobjx) 
+            p <-   p   + scale_x_discrete(labels = label_wrap(input$x_label_text_width),
+                                          expand = expansionobjx) 
           }
           
           if (!inherits(plotdata[,"xvalues"], "POSIXct")) {
