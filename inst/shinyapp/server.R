@@ -1993,28 +1993,22 @@ function(input, output, session) {
   output$lowerx <- renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    if (is.null(df)  ||  is.null(input$x) || is.null(df[,"xvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) || 
-        (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
-        ) return(NULL)
-      xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
-      xmin <- min(xvalues)
+    xmin <- NA
+    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+      xmin <- min(df[,"xvalues"],na.rm = TRUE)}
       if(input$xaxisscale=="logx" && xmin<=0) xmin <- 0.01
       numericInput("lowerxin",label = "Lower X Limit", 
-                   value = xmin, min=NA, max=NA, width='100%') 
-
+                   value = xmin, min=NA, max=NA, width='50%')
   })
   output$upperx <- renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    if (is.null(df)  ||  is.null(input$x) || is.null(df[,"xvalues"]) ) return(NULL)
-    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) || 
-        (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
-    ) return(NULL)
-    xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
-    xmax <- max(xvalues)
+    xmax <- NA
+    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+      xmax <- max(df[,"xvalues"],na.rm = TRUE)}
     if(input$xaxisscale=="logx"&& xmax<=0) xmax <- 0.1
-    numericInput("upperxin",label = "Upper X Limit",value = xmax,min=NA,max=NA,width='100%')
+    numericInput("upperxin",label = "Upper X Limit",
+                 value = xmax,min=NA,max=NA,width='50%')
   })
   outputOptions(output, "lowerx", suspendWhenHidden=FALSE)
   outputOptions(output, "upperx", suspendWhenHidden=FALSE)
@@ -2041,26 +2035,19 @@ function(input, output, session) {
   output$lowery <- renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    # if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
-    # if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
-    #     (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
-    # ) return(NULL)
-    #yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-    ymin <- min(df[,"yvalues"],na.rm = TRUE)
+    ymin <- NA
+    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+      ymin <- min(df[,"yvalues"],na.rm = TRUE)}
     if(input$yaxisscale=="logy" && ymin<=0) ymin <- 0.01
     numericInput("loweryin",label = "Lower Y Limit",
                  value = ymin,min=NA,max=NA,width='50%')
   })
-  
   output$uppery <-  renderUI({
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    # if ( is.null(df) || is.null(input$y) || is.null(df[,"yvalues"]) ) return(NULL)
-    # if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) || 
-    #     (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
-    # ) return(NULL)
-    #yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
-    ymax <- max(df[,"yvalues"],na.rm = TRUE)
+    ymax <- NA
+    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+      ymax <- max(df[,"yvalues"],na.rm = TRUE)}
     if(input$yaxisscale=="logy" && ymax<=0) ymax <- 0.1
     numericInput("upperyin",label = "Upper Y Limit",
                  value = ymax,min=NA,max=NA,width='50%')
@@ -2167,10 +2154,29 @@ function(input, output, session) {
     }
     selectInput("groupin", "Group By:",items)
   })
+  output$grouppairs <- renderUI({
+    df <-values$maindata
+    validate(need(!is.null(df), "Please select a data set"))
+    items=names(df)
+    names(items)=items
+    items= c("None",items)
+    if ( !is.null(input$y) ){
+      items = c(items, "yvars","yvalues") 
+    }
+    if ( !is.null(input$x) ){
+      items = c(items, "xvars","xvalues") 
+    }
+    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      items= c(items,nameofcombinedvariables)
+    }
+    selectInput("grouppairsin", "Group By:",items)
+  })
   outputOptions(output, "colour", suspendWhenHidden=FALSE)
   outputOptions(output, "colourpairs", suspendWhenHidden=FALSE)
   outputOptions(output, "group", suspendWhenHidden=FALSE)
-
+  outputOptions(output, "grouppairs", suspendWhenHidden=FALSE)
+  
   output$facet_col <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
@@ -2821,18 +2827,20 @@ function(input, output, session) {
         
       }
       # Matrix of pairs of plots of all the Y variables
-      if (input$colorpairsin != 'None') {
+      if (input$colorpairsin != 'None' && input$grouppairsin == 'None') {
         ggpairsmapping = ggplot2::aes_string(color = input$colorpairsin)
       }
-      if (input$colorpairsin == 'None') {
+      if (input$colorpairsin == 'None' && input$grouppairsin == 'None') {
         ggpairsmapping = NULL
       }
-# 
-#       GGally::wrap("cor",
-#                    size = 5,
-#                    align_percent = 0.8,
-#                    alpha = 1)
-      
+      if (input$colorpairsin == 'None' && input$grouppairsin != 'None') {
+        ggpairsmapping = ggplot2::aes_string(group = input$grouppairsin)
+      }
+      if (input$colorpairsin != 'None' && input$grouppairsin != 'None') {
+        ggpairsmapping = ggplot2::aes_string(color = input$colorpairsin,
+                                             group = input$grouppairsin)
+      }
+
         p <- sourceable(
           GGally::ggpairs(
             plotdata,
@@ -6860,11 +6868,7 @@ function(input, output, session) {
 
       }
       
-      if (all(input$yaxiszoom=='noyzoom'  &&
-              !all(is.na(plotdata$xvalues)) &&
-              (!is.factor(plotdata$xvalues) ||
-                  !is.character(plotdata$xvalues))
-      )
+      if (all(input$yaxiszoom=='noyzoom' )
       ){
         if(input$xaxiszoom=="userxzoom"){
           if( (!is.null(input$lowerxin) || !is.null(input$upperxin))
@@ -6923,11 +6927,6 @@ function(input, output, session) {
         
       }
       
-      
-      if (all(!is.null(input$xaxiszoomin[1])  &&
-              !all(is.na(plotdata$yvalues)) &&
-              !all(is.na(plotdata$xvalues)))
-      ){
         if (input$xaxiszoom=="userxzoom" && input$yaxiszoom=="useryzoom"){
           p <- p +
             coord_cartesian(xlim= c(ifelse(!is.finite(input$lowerxin),NA,input$lowerxin ),
@@ -6957,12 +6956,22 @@ function(input, output, session) {
           
         }
         if (input$xaxiszoom=="automaticxzoom" && input$yaxiszoom=="useryzoom"){
+          if(!is.null(input$xaxiszoomin[1]) ){
           p <- p +
             coord_cartesian(xlim= c(input$xaxiszoomin[1],input$xaxiszoomin[2]),
                             ylim= c(ifelse(!is.finite(input$loweryin),NA,input$loweryin ),
                                     ifelse(!is.finite(input$upperyin),NA,input$upperyin )),
                             expand=input$expand,
                             clip=ifelse(input$clip,"on","off"))
+          }
+          if(is.null(input$xaxiszoomin[1]) ){
+            p <- p +
+              coord_cartesian(xlim= c(NA,NA),
+                              ylim= c(ifelse(!is.finite(input$loweryin),NA,input$loweryin ),
+                                      ifelse(!is.finite(input$upperyin),NA,input$upperyin )),
+                              expand=input$expand,
+                              clip=ifelse(input$clip,"on","off"))
+          }
         }
         if (input$xaxiszoom=="automaticxzoom" && input$yaxiszoom=="automaticyzoom"){
           if(is.null(input$yaxiszoomin[1]) && is.null(input$xaxiszoomin[1]) ){
@@ -6994,7 +7003,6 @@ function(input, output, session) {
                               clip=ifelse(input$clip,"on","off"))
           }
         }
-      }
       
       if ( input$barplotflip){
         p <- p +

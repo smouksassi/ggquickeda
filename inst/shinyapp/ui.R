@@ -1021,7 +1021,8 @@ fluidPage(
                        value = "pairs_plot",
                        fluidRow(
                          column (3,
-                                 uiOutput("colourpairs")),
+                                 uiOutput("colourpairs"),
+                                 uiOutput("grouppairs")),
                          column (3,
                                  radioButtons("pairslowercont", "Lower Panel Continuous:",
                                               c("Smooth"  = "smooth",
