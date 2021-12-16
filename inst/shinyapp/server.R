@@ -1596,7 +1596,7 @@ function(input, output, session) {
         df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) sum(x[!is.na(x)]))
       }
       if(input$functionordervariable=="Min-Max Difference" )  {
-        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) {max(x) - min(x)})
+        df[,varname]   <- reorder( df[,varname],variabletoorderby,  FUN=function(x) {abs(max(x) - min(x))})
       }
       if(input$reverseorder )  {
         df[,varname] <- factor( df[,varname], levels=rev(levels( df[,varname])))
@@ -2826,16 +2826,23 @@ function(input, output, session) {
             diag = list(
               continuous = GGally::wrap(input$pairsdiagcontinuous,
                                         alpha = input$alphadiagpairs,
-                                        linetype = ifelse(input$colorpairsin == 'None',1,0)),
+                                        linetype = ifelse(input$densitylinepairs,1,0),
+                                        color=ifelse(input$densitylinepairs &
+                                         input$pairsdiagcontinuous%in%c("barDiag","densityDiag"),
+                                                     "black","transparent")
+                                        ),
               discrete = GGally::wrap(input$pairsdiagdiscrete,
                                       alpha = input$alphadiagpairs,
-                                      linetype = ifelse(input$colorpairsin == 'None',1,0))
+                                      linetype = ifelse(input$barslinepairs,1,0),
+                                      color=ifelse(input$barslinepairs,"black","transparent"))
             ),
             lower = list(
               continuous = GGally::wrap(input$pairslowercont,
                                         alpha = ifelse(input$pairslowercont == 'cor',1,
                                                        input$alphalowerpairs),
-                                        size = input$sizelowerpairs),
+                                        size = input$sizelowerpairs,
+                                        se= input$selowerpairs
+                                        ),
               combo = GGally::wrap(input$pairslowercombo,
                                    alpha = input$alphalowerpairs,
                                    position = "dodge2"),
@@ -2846,7 +2853,8 @@ function(input, output, session) {
               continuous = GGally::wrap(input$pairsuppercont,
                                         alpha = ifelse(input$pairsuppercont == 'cor',1,
                                                        input$alphaupperpairs),
-                                        size = input$sizeupperpairs),
+                                        size = input$sizeupperpairs,
+                                        se= input$seupperpairs),
               combo = GGally::wrap(input$pairsuppercombo,
                                    alpha = input$alphaupperpairs,
                                    position = "dodge2"),

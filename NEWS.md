@@ -1,13 +1,16 @@
 # ggquickeda 0.2.1.9999
 * fixed bug in linear model equation where slope and intercept values were switched
-* bug flip barplot add group aes to pairs
+* fixed bug where flip barplot was not working
+* added group aesthetic for pairs plot
+* bug fixes and expansion for plot zooming with user input for x or y only plots
+* restored target windows working with factor/character x axis
 
 * next release to do/wish list ::
+*************************************
 * ignore mapped color and or fill for barplot and density ?
 * density line style ?
-* zoom not working for univariate ?
 * allow axis label formatting for univariate log ?
-* custom ticks custom zoom for univariate ?
+* custom ticks for univariate ?
 * add more styling options to control text labels justification etc. ?
 * position/geom sina  ?
 * violin half half boxplot position ?

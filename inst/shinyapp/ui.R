@@ -1025,7 +1025,8 @@ fluidPage(
                                  uiOutput("grouppairs")),
                          column (3,
                                  radioButtons("pairslowercont", "Lower Panel Continuous:",
-                                              c("Smooth"  = "smooth",
+                                              c("Smooth"  = "smooth_loess",
+                                                "Linear Fit"  = "smooth_lm",
                                                 "Density"  = "density",
                                                 "Points"  = "points",
                                                 "Correlation"  = "cor"
@@ -1033,6 +1034,11 @@ fluidPage(
                                               ,inline=TRUE),
                                    sliderInput("sizelowerpairs", "Cont (point/line/text) Size:",
                                                min=0, max=6, value=c(1), step=0.01),
+                                 conditionalPanel(
+                                   " input.pairslowercont == 'smooth_loess' |
+                                     input.pairslowercont == 'smooth_lm'",
+                                   checkboxInput('selowerpairs', 'Show SE around Smooth/Linear Fit?')
+                                   ),
                                  radioButtons("pairslowerdisc", "Lower Panel Discrete:",
                                               c("Facet Bars"  = "facetbar",
                                                 "Count" = "count",
@@ -1051,9 +1057,14 @@ fluidPage(
                          column (3,
                                  radioButtons("pairsdiagcontinuous", "Diagonal Panel Continuous:",
                                               c("Density"  = "densityDiag",
+                                                "Bars"  = "barDiag",
                                                 "Blank"  = "blankDiag"
                                               )
                                               ,inline=TRUE),
+                                 conditionalPanel(
+                                   " input.pairsdiagcontinuous != 'blankDiag' ",
+                                 checkboxInput('densitylinepairs', 'Show Density/Bars Lines?',value = TRUE)
+                                 ),
                                  radioButtons("pairsdiagdiscrete", "Diagonal Panel Discrete:",
                                               c("Bars"  = "barDiag",
                                                 "Count" = "countDiag",
@@ -1061,6 +1072,11 @@ fluidPage(
                                                 "Blank"  = "blankDiag"
                                               )
                                               ,inline=TRUE),
+                                 conditionalPanel(
+                                   " input.pairsdiagdiscrete == 'barDiag' |
+                                     input.pairsdiagdiscrete == 'countDiag'",
+                                   checkboxInput('barslinepairs', 'Show Bars/Count Lines?')
+                                 ),
                                  sliderInput("alphadiagpairs", "Diagonal Panel Transparency:",
                                              min = 0 ,max = 1, value = c(0.2), step = 0.01
                                  )
@@ -1070,11 +1086,17 @@ fluidPage(
                                               c("Correlation"  = "cor",
                                                 "Density"  = "density",
                                                 "Points"  = "points",
-                                                "Smooth"  = "smooth"
+                                                "Smooth"  = "smooth_loess",
+                                                "Linear Fit"  = "smooth_lm"
                                               )
                                               ,inline=TRUE),
                                    sliderInput("sizeupperpairs", "Cont (point/line/text) Size:",
                                                min=0, max=6, value=c(6), step=0.01),
+                                 conditionalPanel(
+                                   " input.pairsuppercont == 'smooth_loess' |
+                                     input.pairsuppercont == 'smooth_lm'",
+                                   checkboxInput('seupperpairs', 'Show SE around Smooth/Linear Fit?')
+                                 ),
                                  radioButtons("pairsupperdisc", "Upper Panel Discrete:",
                                               c("Facet Bars"  = "facetbar",
                                                 "Count" = "count",
