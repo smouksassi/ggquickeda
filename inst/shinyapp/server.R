@@ -579,6 +579,25 @@ function(input, output, session) {
   }
   })#zzz 
 
+  observe({ if(input$histogramaddition=="None"){
+  updateRadioButtons(session, "densityaddition",
+                     choices = c("Density" = "Density",
+                       "Counts" = "Counts",
+                       "Scaled Density" = "Scaled Density",
+                       "None" = "None"))
+    
+  }
+  })
+  observe({ if(input$histogramaddition!="None" && input$histogrambinwidth== "userbinwidth"){
+    updateRadioButtons(session, "densityaddition",
+                       choices = c("Density" = "Density",
+                                   "Counts" = "Counts",
+                                   "Match Histo Count"="histocount",
+                                   "Scaled Density" = "Scaled Density",
+                                   "None" = "None"))
+    
+  }
+  })
   
   observe({
     if( (is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"] )) ||
@@ -2986,28 +3005,41 @@ function(input, output, session) {
                                     binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )},
                                     position =input$positionhistogram)
           }
-        }  
-       
-        if ( input$densityaddition=="Density"){
-          p <- p + geom_density(aes(y=..density..),
+        } 
+        
+        if (input$densityaddition=="Density")  densitytype <- "..density.."
+        if (input$densityaddition=="Scaled Density")  densitytype <- "..scaled.."
+        if (input$densityaddition=="Counts")  densitytype <- "..count.."
+
+       if(!input$densityignorelinetype && !input$densityaddition%in% c("None","histocount")) {
+           p <- p + geom_density(aes_string(y=densitytype),
+                                 alpha=input$densityalpha,
+                                 adjust=input$densityadjust,
+                                 size = input$densitylinesize)
+       }
+        if(input$densityignorelinetype && !input$densityaddition%in% c("None","histocount")) {
+          p <- p + geom_density(aes_string(binwidth=input$histobinwidth,
+                                           y=densitytype),
                                 alpha=input$densityalpha,
-                                adjust=input$densityadjust)
+                                adjust=input$densityadjust,
+                                linetype = input$densitylinetypes,
+                                size = input$densitylinesize)
         }
-        if ( input$densityaddition=="Scaled Density"){
-          p <- p + geom_density(aes(y=..scaled..),
-                                alpha=input$densityalpha,
-                                adjust=input$densityadjust)
-        }
-        if ( input$densityaddition=="Counts"){
-          p <- p + geom_density(aes(y=..count..),
-                                alpha=input$densityalpha,
-                                adjust=input$densityadjust)
-        }
-        if ( input$densityaddition=="histocount"){
+
+        if(!input$densityignorelinetype && input$densityaddition == "histocount" ) {
           p <- p + geom_density(aes(binwidth=input$histobinwidth, y=binwidth*..count..),
                                 alpha=input$densityalpha,
-                                adjust=input$densityadjust)
+                                adjust=input$densityadjust,
+                                size = input$densitylinesize)
         }
+        if(input$densityignorelinetype && input$densityaddition=="histocount") {
+          p <- p + geom_density(aes(binwidth=input$histobinwidth, y=binwidth*..count..),
+                                alpha=input$densityalpha,
+                                adjust=input$densityadjust,
+                                linetype = input$densitylinetypes,
+                                size = input$densitylinesize)
+        }
+
 
         ylabeltext <- ""
         if(input$histogramaddition!="None"){

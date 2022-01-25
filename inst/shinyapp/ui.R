@@ -1412,9 +1412,17 @@ fluidPage(
                                              "densityalpha",
                                              "Density Fill Transparency:",
                                              min = 0 ,max = 1, value = c(0.2), step = 0.01
-                                           )
-                          )
-                  )
+                                           ),
+                          checkboxInput('densityignorelinetype', 'Ignore Mapped Linetype')
+                          ),
+                          conditionalPanel("input.densityaddition!='None' &&  input.densityignorelinetype",
+                          selectInput('densitylinetypes','Line(s) Type:',c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank"))
+                          ),
+                          conditionalPanel(" input.densityaddition!= 'None' ",
+                            sliderInput("densitylinesize", "Line(s) Size:", min=0, max=4, value=c(1.5),step=0.1)
+                          ),
+                          
+                  )#333
                 )),
               tabPanel("Barplots",
                 value = "barplots",
