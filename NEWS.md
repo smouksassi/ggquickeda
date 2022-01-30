@@ -2,8 +2,8 @@
 * fixed bug in linear model equation where slope and intercept values were switched
 * fixed bug where flip barplot was not working (auto flipped barplot already supported)
 * added group aesthetic and other enhancements for pairs plot
-* bug fixes for expansion, zooming with user input (plots with only x variable(s) or only y variable(s)
-* restored target windows working with factor/character x axis
+* bug fixes for expansion, zooming with user input (plots with only x variable(s) or only y variable(s))
+* restored target window annotations to work with factor/character x axis
 * added the possibility to change the size and linetype of density plots
 
 # ggquickeda 0.2.1

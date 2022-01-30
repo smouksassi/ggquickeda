@@ -132,16 +132,17 @@ Main plot is output here with the various options to generate the plot below the
 Selecting scatter plots points and or lines with control over transparency and more.
 * **Color/Group/Split/Size/Fill Mappings**
 `ggplot2` built-in functionality for Group, color, size, fill mappings as well as up to two variables for column and row splits (faceting).
-* **Boxplots**
-* **Histograms/Density/Bar**
+* **Boxplots/Violins**
 * **Quantile Regression**
 * **Smooth/Linear/Logistic Regressions**
-* **Mean (CI)**  Mean Confidence Intervals
+* **Mean (CI/mult_sd)**  Mean Confidence Intervals or multiples of SD
 * **Median (PIs)** Median Prediction Intervals
 * **Kaplan-Meier (CI)** Survival K-M curves
 * **Correlation Coefficient** add a text label with the correlation coefficient
 * **Text Labels** add a text label from a column existent in the data
 * **Rug Marks** add rug marks to the side of the plot
+* **Histograms/Density/Bar** (only shows when there is X or Y not both)
+* **Pairs Plot Options** (only shows when Plot a matrix of all Y variables is on)
 
 ### Additional Information
 
