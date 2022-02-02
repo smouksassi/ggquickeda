@@ -5,6 +5,7 @@
 * bug fixes for expansion, zooming with user input (plots with only x variable(s) or only y variable(s))
 * restored target window annotations to work with factor/character x axis
 * added the possibility to change the size and linetype of density plots
+* added the possibility to choose the shape of boxplot outlier points
 
 # ggquickeda 0.2.1
 * added a new method for factor reordering min/max difference

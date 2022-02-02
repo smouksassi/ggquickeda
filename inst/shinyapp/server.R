@@ -3807,6 +3807,7 @@ function(input, output, session) {
                 alpha = input$boxplotalpha,
                 outlier.alpha = input$boxplotoutlieralpha,
                 outlier.size = input$boxplotoutliersize,
+                outlier.shape = ifelse(input$boxplotoutliersize==0,NA,translate_shape_string(input$boxplotoutliershape)),
                 position = eval(parse(text=positionboxplot))
               )
             }
@@ -3821,6 +3822,7 @@ function(input, output, session) {
                 alpha = input$boxplotalpha,
                 outlier.alpha = input$boxplotoutlieralpha,
                 outlier.size = input$boxplotoutliersize,
+                outlier.shape = ifelse(input$boxplotoutliersize==0,NA,translate_shape_string(input$boxplotoutliershape)),
                 position = eval(parse(text=positionboxplot))
               )
             }
@@ -3836,6 +3838,7 @@ function(input, output, session) {
               alpha = input$boxplotalpha,
               outlier.alpha = input$boxplotoutlieralpha,
               outlier.size = input$boxplotoutliersize,
+              outlier.shape = ifelse(input$boxplotoutliersize==0,NA,translate_shape_string(input$boxplotoutliershape)),
               position = eval(parse(text=positionboxplot))
             )
           }
@@ -3849,6 +3852,7 @@ function(input, output, session) {
               alpha = input$boxplotalpha,
               outlier.alpha = input$boxplotoutlieralpha,
               outlier.size = input$boxplotoutliersize,
+              outlier.shape = ifelse(input$boxplotoutliersize==0,NA,translate_shape_string(input$boxplotoutliershape)),
               position = eval(parse(text=positionboxplot))
             )
           }
