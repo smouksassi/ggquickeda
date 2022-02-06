@@ -217,7 +217,6 @@ fluidPage(
                              ), inline = TRUE),
               hr(),
               conditionalPanel(condition = "!input.show_pairs",
-                               
                        inline_ui(radioButtons("yaxisscale", "Y Axis scale:",
                                               c("Linear" = "lineary",
                                                 "Log10" = "logy"))),
@@ -235,7 +234,8 @@ fluidPage(
                        inline_ui(sliderInput("y_label_text_width", "N Characters to Wrap Y Labels:",
                                    min=5, max=100, value=c(25),step=1,width = '120px')),
                        inline_ui(sliderInput("x_label_text_width", "N Characters to Wrap X Labels:",
-                                   min=5, max=100, value=c(25),step=1,width = '120px')),
+                                   min=5, max=100, value=c(25),step=1,width = '120px'))
+              ),
               checkboxInput('rotateyticks', 'Rotate/Customize Y axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotateyticks" ,
                                inline_ui(
@@ -266,6 +266,7 @@ fluidPage(
                                  sliderInput("xticksvjust", "X axis labels vertical justification:",
                                              min=0, max=1, value=c(1),step=0.1, width='120px'))
               ),
+              conditionalPanel(condition = "!input.show_pairs",
               checkboxInput('customxticks', 'Custom X axis Ticks ?', value = FALSE),
               conditionalPanel(condition = "input.customxticks" , 
                                textInput("xaxisbreaks",label ="X axis major Breaks",
@@ -295,6 +296,7 @@ fluidPage(
                                textInput("yaxislabels",label ="Y axis Labels",
                                          value = as.character(paste("A","B","C" ,sep=",") )
                                )
+              )
               ),
               inline_ui(
                 checkboxInput('rmxaxisticks', 'Remove X axis ticks ?',value=FALSE,width='120px')),
@@ -304,7 +306,7 @@ fluidPage(
                 checkboxInput('rmyaxisticks', 'Remove Y axis ticks ?',value=FALSE,width='120px')),
               inline_ui(
                 checkboxInput('rmyaxislabels', 'Remove Y axis labels ?',value=FALSE,width='120px')),
-              
+              conditionalPanel(condition = "!input.show_pairs",
               checkboxInput('annotatelogticks', 'Add Log Tick Annotations ?', value = FALSE),
               conditionalPanel(condition = "input.annotatelogticks",
                                selectInput('logsides', label ='Log Tick Sides',
@@ -315,8 +317,8 @@ fluidPage(
                                            multiple=TRUE, selectize=TRUE,selected="l"),
                                checkboxInput('outsidelogticks', 'Log Ticks on the Outside?', value = FALSE)
               )
-              )# conditional on pairs is off
-            ),
+              )# if showpairs not selected
+            ), # end x/y axis tab
             tabPanel("Graph Size/Zoom", value = "graph_size_zoom",
               sliderInput("height", "Plot Height", min=1080/4, max=1080, value=480, animate = FALSE),
               conditionalPanel(condition = "!input.show_pairs",
