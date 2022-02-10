@@ -6,6 +6,8 @@
 * restored target window annotations to work with factor/character x axis
 * added the possibility to change the size and linetype of density plots
 * added the possibility to choose the shape of boxplot outlier points
+* added options for x and y scale tick formatting are now visible when pairs plot are active
+* added options for identity line and for placement of custom/target text at plot edges
 
 # ggquickeda 0.2.1
 * added a new method for factor reordering min/max difference

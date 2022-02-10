@@ -3531,8 +3531,7 @@ function(input, output, session) {
               annotate("rect", xmin = -Inf, xmax = Inf,
                        ymin = input$lowerytarget1,
                        ymax = input$upperytarget1,
-                       fill = input$targetcol1,
-                       alpha = input$targetopacity1)
+                       fill = input$targetcol1)
           }
           if (inherits(plotdata[,"xvalues"], "POSIXct")) {
             p <-   p   +
@@ -3541,8 +3540,7 @@ function(input, output, session) {
                        xmax = max(plotdata[,"xvalues"],na.rm = TRUE),
                        ymin = input$lowerytarget1,
                        ymax = input$upperytarget1,
-                       fill = input$targetcol1,
-                       alpha = input$targetopacity1)
+                       fill = input$targetcol1)
           }
         }
       } 
@@ -3561,8 +3559,7 @@ function(input, output, session) {
                        xmax = Inf,
                        ymin = input$lowerytarget2,
                        ymax = input$upperytarget2,
-                       fill = input$targetcol2,
-                       alpha = input$targetopacity2)
+                       fill = input$targetcol2)
           }
           if (inherits(plotdata[,"xvalues"], "POSIXct")) {
             p <-   p   +
@@ -3571,8 +3568,7 @@ function(input, output, session) {
                        xmax = max(plotdata[,"xvalues"],na.rm = TRUE),
                        ymin = input$lowerytarget2,
                        ymax = input$upperytarget2,
-                       fill = input$targetcol2,
-                       alpha = input$targetopacity2)
+                       fill = input$targetcol2)
           }
         } 
       } 
@@ -6749,7 +6745,10 @@ function(input, output, session) {
         geom_hline(yintercept=input$hline2,color=input$hlinecol2,linetype=input$hlinetype2,size=input$hlinesize2)     
       
       if (input$identityline)
-        p <-    p + geom_abline(intercept = 0, slope = 1)
+        p <-    p + geom_abline(intercept = 0, slope = 1,
+                                col = input$identitylinecol,
+                                size = input$identitylinesize,
+                                linetype = input$identitylinetype)  
 
       
       if (input$customlegendtitle){
@@ -7051,10 +7050,19 @@ function(input, output, session) {
       if (input$showtargettext){
         targettext <-  gsub("\\\\n", "\\\n", input$targettext)
         p <- p +
-          annotate("text", x=input$targettextxpos, y=input$targettextypos,
-                   label=targettext, col=input$targettextcol,
-                   hjust=input$targettexthjust,
-                   vjust=input$targettextvjust,size=input$targettextsize)
+          annotate(geom = input$customtextgeom,
+                   x = ifelse(input$customtext_xposition=="min", -Inf,
+                            ifelse(input$customtext_xposition=="max", Inf,
+                                    ifelse(input$customtext_xposition =="use provided X", input$targettextxpos))),
+                   y = ifelse(input$customtext_yposition=="min", -Inf,
+                              ifelse(input$customtext_yposition=="max", Inf,
+                                     ifelse(input$customtext_yposition =="use provided Y", input$targettextypos))),
+                   label = targettext,
+                   col = input$targettextcol,
+                   fill = input$targettextfill,
+                   hjust = input$targettexthjust,
+                   vjust = input$targettextvjust,
+                   size = input$targettextsize)
       }
     } # end of things that do not apply to pairs plot
     
