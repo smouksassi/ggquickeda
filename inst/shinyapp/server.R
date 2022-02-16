@@ -327,14 +327,25 @@ function(input, output, session) {
     file <- input$datafile$datapath
     values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
                                 sep = input$fileseparator)
+    if(input$ninetyninemissing){
+      tempdata <-  values$maindata
+      NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
+      NAMESTOKEEP <- names(tempdata ) [ NUMCOLUMNS ]
+      for (i in 1:length(NAMESTOKEEP) ) {
+        varname<- NAMESTOKEEP[i]
+        tempdata[,varname] <-  ifelse(tempdata[,varname] ==-99,NA,tempdata[,varname] )
+      }
+      values$maindata <- tempdata
+    }
+    
   })
   
   # Load sample dataset
   observeEvent(input$sample_data_btn, {
     file <- "data/sample_data.csv"
     values$maindata <- read.csv(file, na.strings = c("NA","."),
-                                stringsAsFactors = input$stringasfactor,
-                                sep = input$fileseparator)
+                                stringsAsFactors = TRUE,
+                                sep = ",")
     values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
     mockFileUpload("Sample Data")
   })

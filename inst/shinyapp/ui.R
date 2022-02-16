@@ -18,6 +18,7 @@ fluidPage(
           ),
           fileInput("datafile", NULL, multiple = FALSE, accept = c("csv")),
           checkboxInput("stringasfactor", "Character Variables as Factors?", TRUE),
+          checkboxInput("ninetyninemissing", "Numeric Variables -99 as Missing?", FALSE),
           uiOutput("ycol"),
           checkboxInput("show_pairs", "Plot a matrix of all Y variables", value = FALSE),
           conditionalPanel(
