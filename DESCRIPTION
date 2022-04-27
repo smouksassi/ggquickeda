@@ -29,7 +29,6 @@ Imports:
     ggplot2 (>= 3.3.4),
     ggpmisc,
     ggrepel (>= 0.7.0),
-    ggstance,
     ggpubr,
     gridExtra,
     Hmisc,
