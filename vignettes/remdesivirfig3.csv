@@ -1,5 +1,5 @@
 Subgroup,Subgroupvalue,Subgroupvalueorder,N of patients,Recovery Rate Ratio,RRLCI,RRUCI
-All Patients,All Patients,1,1062,1.29,1.12,1.49
+All Patients,,1,1062,1.29,1.12,1.49
 Geographic Region,North America,2,847,1.30,1.10,1.53
 Geographic Region,Europe,3,163,1.30,0.91,1.87
 Geographic Region,Asia,4,52,1.36,0.74,2.47
@@ -19,4 +19,4 @@ Symptoms duration,> 10 days,17,383,1.20,0.94,1.52
 Baseline Ordinal Score,4 (not receiving oxygen),18,138,1.29,0.91,1.83
 Baseline Ordinal Score,5 (receiving oxygen),19,435,1.45,1.18,1.79
 Baseline Ordinal Score,6 (receiving high-flow oxygen),20,193,1.09,0.76,1.57
-Baseline Ordinal Score,7 (receicing mv or ECMO),21,285,0.98,0.70,1.36
+Baseline Ordinal Score,7 (receiving mv or ECMO),21,285,0.98,0.70,1.36
