@@ -325,19 +325,23 @@ function(input, output, session) {
   # Load user data
   observeEvent(input$datafile, {
     file <- input$datafile$datapath
-    values$maindata <- read.csv(file, na.strings = c("NA","."), stringsAsFactors = input$stringasfactor,
-                                sep = input$fileseparator)
+    na.strings <-  c("NA",".")
     if(input$ninetyninemissing){
-      tempdata <-  values$maindata
-      NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
-      NAMESTOKEEP <- names(tempdata ) [ NUMCOLUMNS ]
-      for (i in 1:length(NAMESTOKEEP) ) {
-        varname<- NAMESTOKEEP[i]
-        tempdata[,varname] <-  ifelse(tempdata[,varname] ==-99,NA,tempdata[,varname] )
-      }
-      values$maindata <- tempdata
+    na.strings <-  c("NA",".",-99)
     }
     
+    values$maindata <- read.csv(file, na.strings = na.strings, stringsAsFactors = input$stringasfactor,
+                                sep = input$fileseparator)
+    # if(input$ninetyninemissing){
+    #   tempdata <-  values$maindata
+    #   NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
+    #   NAMESTOKEEP <- names(tempdata ) [ NUMCOLUMNS ]
+    #   for (i in 1:length(NAMESTOKEEP) ) {
+    #     varname<- NAMESTOKEEP[i]
+    #     tempdata[,varname] <-  ifelse(tempdata[,varname] ==-99,NA,tempdata[,varname] )
+    #   }
+    #   values$maindata <- tempdata
+    # }
   })
   
   # Load sample dataset
