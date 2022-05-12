@@ -6,7 +6,6 @@ suppressMessages({
   library(ggplot2)
   library(ggbeeswarm)
   library(ggpmisc)
-  library(ggstance)
   library(ggpubr)
   library(ggrepel)
   library(ggquickeda)

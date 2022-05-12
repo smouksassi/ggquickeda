@@ -7,7 +7,6 @@
 #' @importFrom scales identity_trans
 #' @importFrom ggbeeswarm position_beeswarm
 #' @importFrom ggbeeswarm position_quasirandom
-#' @importFrom ggstance position_dodgev
 #' @importFrom scales percent
 #' @importFrom scales percent_format
 

@@ -9,7 +9,7 @@
 * added options for x and y scale tick formatting are now visible when pairs plot are active
 * added options for identity line and for placement of custom/target text at plot edges
 * added checkbox to recode numeric variables with -99 to missing
-* removed ggstance dependency
+* removed ggstance dependency by adding needed positions to global.r
 * fixed typos in Visualizing Summary Data vignette data labels
 
 # ggquickeda 0.2.1
