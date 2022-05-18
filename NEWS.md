@@ -1,3 +1,6 @@
+# ggquickeda 0.2.9999
+* prepare for next release
+
 # ggquickeda 0.2.2
 * fixed bug in linear model equation where slope and intercept values were switched
 * fixed bug where flip barplot was not working (auto flipped barplot already supported)

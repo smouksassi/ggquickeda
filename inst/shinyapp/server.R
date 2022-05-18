@@ -7279,6 +7279,10 @@ function(input, output, session) {
     p <- attach_source_dep(p, "y.strip.text")
     p <- attach_source_dep(p, "x.strip.text")
     
+    p <- attach_source_dep(p, "x.axis.text")
+    p <- attach_source_dep(p, "y.axis.text")
+    
+    
     
     p <-  p + theme(
             panel.grid.major.x = element_line(colour = input$majorgridlinescolx),
