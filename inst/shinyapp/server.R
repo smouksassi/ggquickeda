@@ -7239,7 +7239,8 @@ function(input, output, session) {
       }
       p <-  p+
         theme(axis.text.x = x.axis.text )
-      
+      p <- attach_source_dep(p, "x.axis.text")
+
     }
     
     if (!input$rmyaxislabels && input$rotateyticks){
@@ -7254,7 +7255,9 @@ function(input, output, session) {
       
       p <-  p+
         theme(axis.text.y = y.axis.text,
-              axis.text.y.left = y.axis.text)                              
+              axis.text.y.left = y.axis.text)
+      
+      p <- attach_source_dep(p, "y.axis.text")
     }  
     if (input$striptextsizex <= 0) {
       x.strip.text <- ggplot2::element_blank()
@@ -7279,11 +7282,7 @@ function(input, output, session) {
     p <- attach_source_dep(p, "y.strip.text")
     p <- attach_source_dep(p, "x.strip.text")
     
-    p <- attach_source_dep(p, "x.axis.text")
-    p <- attach_source_dep(p, "y.axis.text")
-    
-    
-    
+
     p <-  p + theme(
             panel.grid.major.x = element_line(colour = input$majorgridlinescolx),
             panel.grid.minor.x = element_line(colour = input$minorgridlinescolx))
