@@ -1,11 +1,12 @@
-ggquickeda
-========
-<img src="./man/figures/ggquickedahex.png" width="300px" align="right" />
+# ggquickeda <img src="man/figures/ggquickedahex.png" align="right" height="200" />
 
+<!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/ggquickeda)](https://cran.r-project.org/package=ggquickeda)
 [![R-CMD-check](https://github.com/smouksassi/ggquickeda/workflows/R-CMD-check/badge.svg)](https://github.com/smouksassi/ggquickeda/actions)
-![MonthlyDOWNLOADS](https://cranlogs.r-pkg.org/badges/ggquickeda)
-![DOWNLOADS](https://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)
+[![MonthlyDOWNLOADS](https://cranlogs.r-pkg.org/badges/ggquickeda)](https://CRAN.R-project.org/package=ggquickeda)
+[![DOWNLOADS](https://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)](https://CRAN.R-project.org/package=ggquickeda)
+<!-- badges: end -->
+
 
 ### Description 
 
@@ -49,13 +50,13 @@ The package has also the following vignettes:
 3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
 
 ### Plot Example
-![Example use case 1 with the included sample_df](./inst/shinyapp/img/snapshot1.gif)
+![Example use case 1 with the included sample_df](vignettes/img/snapshot1.gif)
 
 ### Table Example
-![Example Descriptive Stats](./inst/shinyapp/img/snapshot3.1.png)
+![Example Descriptive Stats](vignettes/img/snapshot3.1.png)
 
 ### Pairs Plot Example
-![Example Illustrating a Pairs Plot](./inst/shinyapp/img/snapshot4.1.png)
+![Example Illustrating a Pairs Plot](vignettes/img/snapshot4.1.png)
 
 The **Export Plots** and **Plot Code** tabs were contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the **X/Y Plot** tab by providing a name and hitting the **Save plot** star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.  
 The **Plot Code** tab will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.
