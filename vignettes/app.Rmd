@@ -1,0 +1,13 @@
+---
+title: "Shiny App"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Shiny App}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+<iframe
+  src="https://pharmacometrics.shinyapps.io/ggquickeda/"
+  style="width:150%; height:1000px;" frameBorder="0"></iframe>
