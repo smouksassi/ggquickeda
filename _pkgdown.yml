@@ -1,0 +1,22 @@
+template:
+  params:
+    bootswatch: united
+navbar:
+  structure:
+    left:  [home, reference, articles, app]
+    right: [github]
+    navbar:
+  components:
+    home: ~
+    articles:
+     text: Vignettes
+     menu:
+     - text: Introduction to ggquickeda
+       href: articles/introduction_to_ggquickeda.html
+     - text: Visualizing Summary Data
+       href: articles/Visualizing_Summary_Data.html
+     - text: Additional Plot Statisitics
+       href: articles/AdditionalPlotsStats.html
+    app:
+      text: Shiny App
+      href: articles/app.html
