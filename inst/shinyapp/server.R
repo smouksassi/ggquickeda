@@ -490,7 +490,7 @@ function(input, output, session) {
       hideTab("graphicaltypes", target = "kaplan_meier")
       hideTab("graphicaltypes", target = "corr_coeff")
       hideTab("graphicaltypes", target = "text_labels")
-      showTab("graphicaltypes", target = "rug_marks")
+      hideTab("graphicaltypes", target = "rug_marks")
       hideTab("graphicaltypes", target = "pairs_plot")
       updateTabsetPanel(session, "graphicaltypes", "barplots")
     }
@@ -3324,9 +3324,6 @@ function(input, output, session) {
                                    colour = input$barplotlabelcolor)
             } #input$barplotlabel && input$ignorebarplotlabelcolor 
           
-          if ( input$barplotflip){
-            p <- p + coord_flip()
-          }
         }
         if ( input$barplotaddition && input$barplotpercent){
           p <- p +  
@@ -3391,10 +3388,6 @@ function(input, output, session) {
             }
           }
 
-          if ( input$barplotflip){
-            p <- p +
-              coord_flip()
-          }
         }
       }# not numericx
        }#null y
@@ -7054,9 +7047,12 @@ function(input, output, session) {
           }
         }
       
-      if ( input$barplotflip){
-        p <- p +
-          coord_flip()
+      if ( (
+           (is.null(input$y) && !is.numeric(plotdata[,"xvalues"]))  ||
+           (is.null(input$x) && !is.numeric(plotdata[,"yvalues"]))
+           ) && input$barplotflip)
+           {
+        p <- p + coord_flip()
       }
       
       if (input$showtargettext){
