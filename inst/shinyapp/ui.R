@@ -828,7 +828,8 @@ fluidPage(
                          radioButtons("scaleshapeswitcher", "Discrete Shape Scale:",
                                       c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
                          conditionalPanel(condition = " input.scaleshapeswitcher=='themeuser' " ,
-                                          sliderInput("nusershape", "N of User Shapes:", min=1, max=20, value=c(6),step=1)
+                                          sliderInput("nusershape", "N of User Shapes:", min=1, max=20, value=c(6),step=1),
+                                          checkboxInput('themeshapedrop', 'Keep All levels of Shapes ?',value=TRUE)
                          ),
                          uiOutput('userdefinedshape')
                 ),
@@ -836,7 +837,8 @@ fluidPage(
                          radioButtons("scalelinetypeswitcher", "Discrete Linetype Scale:",
                                       c("ggplot default" = "themeggplot","User defined" = "themeuser") ,inline=TRUE),
                          conditionalPanel(condition = " input.scalelinetypeswitcher=='themeuser' " ,
-                                          sliderInput("nuserlinetype", "N of User Linetypes:", min=1, max=10, value=c(6),step=1)
+                                          sliderInput("nuserlinetype", "N of User Linetypes:", min=1, max=10, value=c(6),step=1),
+                                          checkboxInput('themelinetypedrop', 'Keep All levels of Linetypes ?',value=TRUE)
                          ),
                          uiOutput('userdefinedlinetype')
                 ),

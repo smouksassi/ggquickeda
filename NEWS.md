@@ -1,5 +1,6 @@
 # ggquickeda 0.2.9999
-* prepare for next release
+* added options to drop levels for user discrete shape and linetype scales
+
 
 # ggquickeda 0.2.2
 * fixed bug in linear model equation where slope and intercept values were switched

@@ -2808,14 +2808,14 @@ function(input, output, session) {
       shapes <- eval(parse(text = shapes))
       shapes <- translate_shape_string(shapes)
       scale_shape_discrete <- function(...)
-        scale_shape_manual(..., values = shapes)
+        scale_shape_manual(..., values = shapes, drop = !input$themeshapedrop)
     }
     
     if (input$scalelinetypeswitcher=="themeuser"){
       linetypes <- paste0("c(", paste0("input$linetype", 1:input$nuserlinetype, collapse = ", "), ")")
       linetypes <- eval(parse(text = linetypes))
       scale_linetype_discrete <- function(...)
-        scale_linetype_manual(..., values = linetypes)
+        scale_linetype_manual(..., values = linetypes, drop = !input$themelinetypedrop)
     }
     
     # Determine what type of plot to show based on what variables were chosen
