@@ -3346,7 +3346,7 @@ function(input, output, session) {
                                   show.legend = input$barplotlabellegend)
             }
             if(input$positionbar=="position_fill(vjust = 0.5)"){
-              p <- p + geom_text(aes(by=yvalues,
+              p <- p + geom_text(aes(by=xvalues,
                                      label = scales::percent(..prop..,
                                        accuracy = 10^-(input$nroundbarplotpercentdigits))
                                      ),
@@ -3464,6 +3464,19 @@ function(input, output, session) {
                                     position = eval(parse(text=input$positionbar)),
                                     show.legend = input$barplotlabellegend)
               }
+              if(input$positionbar=="position_fill(vjust = 0.5)"){
+                p <- p + geom_text(aes(by=yvalues,
+                                       label = scales::percent(..prop..,
+                                               accuracy = 10^-(input$nroundbarplotpercentdigits))
+                ),
+                stat = "prop",
+                vjust = input$barplotlabelvjust,
+                hjust = input$barplotlabelhjust,
+                size = input$barplotlabelsize,
+                position = eval(parse(text=input$positionbar)),
+                show.legend = input$barplotlabellegend)
+              }
+              
             }
             if (input$barplotlabel  && input$ignorebarplotlabelcolor){
               if(input$positionbar!="position_fill(vjust = 0.5)"){
@@ -3494,7 +3507,6 @@ function(input, output, session) {
                                    colour = input$barplotlabelcolor)
               }
             }
-
           }
         }# not numeric yvalues no x
       } # is null x univariate y plots ends  

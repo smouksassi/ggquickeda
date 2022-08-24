@@ -1,6 +1,8 @@
 # ggquickeda 0.2.9999
 * added options to drop levels for user discrete shape and linetype scales
-
+* fixed ggpairs group input and added ability to combine y variables
+* fixed issue with barplot flip applied to bivariate plots
+* fixed issues with barplot percent labels when position is fill
 
 # ggquickeda 0.2.2
 * fixed bug in linear model equation where slope and intercept values were switched
