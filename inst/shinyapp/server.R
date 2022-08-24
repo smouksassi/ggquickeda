@@ -971,7 +971,6 @@ function(input, output, session) {
     df
   })
   
-  
   output$pastevar <- renderUI({
     df <- recodedata4()
     validate(need(!is.null(df), "Please select a data set"))
@@ -979,7 +978,9 @@ function(input, output, session) {
     MODEDF <- sapply(df, function(x) is.numeric(x))
     yvariables <- input$y
     NAMESTOKEEP2<- names(df)  [! MODEDF ]
+    if(!input$show_pairs){
     NAMESTOKEEP2<- NAMESTOKEEP2[!NAMESTOKEEP2 %in% yvariables]
+    }
     selectizeInput("pastevarin", "Combine the categories of these two variables:",
                    choices = NAMESTOKEEP2, multiple=TRUE,
                    options = list(
@@ -2166,17 +2167,13 @@ function(input, output, session) {
     selectInput("groupin", "Group By:",items)
   })
   output$grouppairs <- renderUI({
-    df <-values$maindata
+    df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
+    MODEDF <- sapply(df, function(x) is.numeric(x))
+    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
+    items=NAMESTOKEEP2
     names(items)=items
     items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
       nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
       items= c(items,nameofcombinedvariables)
