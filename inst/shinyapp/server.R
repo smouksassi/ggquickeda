@@ -6716,17 +6716,30 @@ function(input, output, session) {
           !is.null(plotdata$xvalues) &&
           !is.numeric(plotdata[,"xvalues"]) &&
           !inherits(plotdata[,"xvalues"], "POSIXct")
-          ) {
-        p <- p  + scale_x_discrete(labels = label_wrap(input$x_label_text_width),
+          ) 
+        if(!input$x_label_text_parse){
+          p <- p  + scale_x_discrete(labels = label_wrap(input$y_label_text_width),
+                                     expand = expansionobjx)
+        }
+        if(input$x_label_text_parse){
+          p <- p  + scale_x_discrete(labels = scales::label_parse(),
                                    expand = expansionobjx)
       }
+
       if (!all(is.na(plotdata$yvalues)) &&
           !is.null(plotdata$yvalues) &&
           !is.numeric(plotdata[,"yvalues"])&&
           !inherits(plotdata[,"yvalues"], "POSIXct")
           ) {
-        p <- p  + scale_y_discrete(labels = label_wrap(input$y_label_text_width),
-                                   expand = expansionobjy)
+        if(!input$y_label_text_parse){
+          p <- p  + scale_y_discrete(labels = label_wrap(input$y_label_text_width),
+                                     expand = expansionobjy)
+        }
+        if(input$y_label_text_parse){
+          p <- p  + scale_y_discrete(labels = scales::label_parse(),
+                                     expand = expansionobjy)
+        }
+
       }
       p <- attach_source_dep(p, "expansionobjy")
       p <- attach_source_dep(p, "expansionobjx")
@@ -7062,9 +7075,9 @@ function(input, output, session) {
       if ( (
            (is.null(input$y) && !is.numeric(plotdata[,"xvalues"]))  ||
            (is.null(input$x) && !is.numeric(plotdata[,"yvalues"]))
-           ) && input$barplotflip)
+           ) && input$barplotflip && input$barplotaddition)
            {
-        p <- p + coord_flip()
+        p <- p + coord_flip(expand=input$expand)
       }
       
       if (input$showtargettext){

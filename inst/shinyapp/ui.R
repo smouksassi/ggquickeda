@@ -235,7 +235,9 @@ fluidPage(
                        inline_ui(sliderInput("y_label_text_width", "N Characters to Wrap Y Labels:",
                                    min=5, max=100, value=c(25),step=1,width = '120px')),
                        inline_ui(sliderInput("x_label_text_width", "N Characters to Wrap X Labels:",
-                                   min=5, max=100, value=c(25),step=1,width = '120px'))
+                                   min=5, max=100, value=c(25),step=1,width = '120px')),
+                       inline_ui(checkboxInput('y_label_text_parse', 'Parse Y axis Labels ?', value = FALSE,width = '120px')),
+                       inline_ui(checkboxInput('x_label_text_parse', 'Parse X axis Labels ?', value = FALSE,width = '120px'))
               ),
               checkboxInput('rotateyticks', 'Rotate/Customize Y axis Labels ?', value = FALSE),
               conditionalPanel(condition = "input.rotateyticks" ,

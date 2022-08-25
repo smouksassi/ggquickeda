@@ -58,4 +58,4 @@ License: MIT + file LICENSE
 SystemRequirements: pandoc with https support
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1

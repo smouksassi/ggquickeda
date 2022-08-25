@@ -3,6 +3,7 @@
 * fixed ggpairs group input and added ability to combine y variables
 * fixed issue with barplot flip applied to bivariate plots
 * fixed issues with barplot percent labels when position is fill
+* added checkboxes to parse x and y axis labels text
 
 # ggquickeda 0.2.2
 * fixed bug in linear model equation where slope and intercept values were switched

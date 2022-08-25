@@ -7,8 +7,16 @@
 #' @importFrom scales identity_trans
 #' @importFrom ggbeeswarm position_beeswarm
 #' @importFrom ggbeeswarm position_quasirandom
-#' @importFrom scales percent
+#' @importFrom scales muted
+#' @importFrom scales trans_breaks
+#' @importFrom scales trans_format
+#' @importFrom scales math_format
 #' @importFrom scales percent_format
+#' @importFrom scales parse_format
+#' @importFrom scales percent
+#' @importFrom scales label_parse
+#' @importFrom scales label_wrap 
+
 
 GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
                            
