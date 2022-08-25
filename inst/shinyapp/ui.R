@@ -2338,7 +2338,8 @@ fluidPage(
                     radioButtons("geomlabel", "Label Geom:",
                                  c("text" = "text","label" = "label",
                                    "auto text repel" = "text_repel",
-                                   "auto label repel" = "label_repel"), inline = TRUE)
+                                   "auto label repel" = "label_repel"), inline = TRUE),
+                    checkboxInput('customlabelparse',"Parse Label ?", value=FALSE)
                   ),
                   column(3,
                          conditionalPanel(

@@ -2329,6 +2329,16 @@ function(input, output, session) {
       items= c(items,nameofcombinedvariables)
     }
     selectInput("labeltextin", "Label By:",items )
+    # selectizeInput("labeltextin", "Label By:",
+    #                choices = items, multiple=TRUE,
+    #                options = list(
+    #                  maxItems = 1 ,
+    #                  placeholder = 'Please select label variables to be pasted',
+    #                  onInitialize = I('function() { this.setValue(""); }'),
+    #                  plugins = list('remove_button', 'drag_drop')
+    #                )
+    # )
+    
   })
 
   output$pointshape <- renderUI({
@@ -5818,6 +5828,7 @@ function(input, output, session) {
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
                                      size=input$labelsize,
+                                     parse=input$customlabelparse,
                                      seed = 1234,
                                      mapping = label_aes)
             }
@@ -5825,6 +5836,7 @@ function(input, output, session) {
               p <- p + stat_identity(data=plotdata,
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
+                                     parse=input$customlabelparse,
                                      seed = 1234,
                                      mapping = label_aes)
             } 
@@ -5837,6 +5849,7 @@ function(input, output, session) {
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
                                      size=input$labelsize,
+                                     parse=input$customlabelparse,
                                      seed = 1234,
                                      mapping = label_aes)
             }
@@ -5845,6 +5858,7 @@ function(input, output, session) {
                                      aes(group=NULL),
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
+                                     parse=input$customlabelparse,
                                      seed = 1234,
                                      mapping = label_aes)
               
@@ -5861,6 +5875,7 @@ function(input, output, session) {
                                      color=input$customlabelcol,
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
+                                     parse=input$customlabelparse,
                                      size=input$labelsize,
                                      seed = 1234,
                                      mapping = label_aes)
@@ -5871,6 +5886,7 @@ function(input, output, session) {
                                       color=input$customlabelcol,
                                       geom=input$geomlabel, position = "identity",
                                       show.legend = input$customlabellegend,
+                                      parse=input$customlabelparse,
                                       seed = 1234,
                                       mapping = label_aes)
               
@@ -5884,6 +5900,7 @@ function(input, output, session) {
                                      color=input$customlabelcol,
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
+                                     parse=input$customlabelparse,
                                      size=input$labelsize,
                                      seed = 1234,
                                      mapping = label_aes)
@@ -5894,6 +5911,7 @@ function(input, output, session) {
                                      color=input$customlabelcol,
                                      geom=input$geomlabel, position = "identity",
                                      show.legend = input$customlabellegend,
+                                     parse=input$customlabelparse,
                                      seed = 1234,
                                      mapping = label_aes)                
             }
