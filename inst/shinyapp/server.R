@@ -6307,20 +6307,20 @@ function(input, output, session) {
       if (facets != '. + . ~ . + .' && input$facetwrap) {
         multiline <-  input$facetwrapmultiline
         wrapncol <-
-          if (is.na(input$wrapncol) |
+          if (is.na(input$wrapncol) ||
               is.null(input$wrapncol))
             NULL
         else {
           input$wrapncol
         }
         wrapnrow <-
-          if (is.na(input$wrapnrow) |
+          if (is.na(input$wrapnrow) ||
               is.null(input$wrapnrow))
             NULL
         else {
           input$wrapnrow
         }
-        
+
         facetgridvariables <-
           c(
             input$facetcolin,
@@ -6337,8 +6337,8 @@ function(input, output, session) {
           p <- p + facet_wrap(
             facetgridvariables,
             scales = input$facetscalesin,
-            ncol = input$wrapncol,
-            nrow = input$wrapnrow,
+            ncol = wrapncol,
+            nrow = wrapnrow,
             labeller = eval(parse(
               text=paste0("function(labs){",input$facetlabeller,
                           "(labs, multi_line = ",input$facetwrapmultiline,")}")
@@ -6351,8 +6351,8 @@ function(input, output, session) {
         p <- p + facet_wrap(
           facetgridvariables,
           scales = input$facetscalesin,
-          ncol = input$wrapncol,
-          nrow = input$wrapnrow,
+          ncol = wrapncol,
+          nrow = wrapnrow,
           labeller = label_wrap_gen(width = input$labelwrapwidth,
                                     multi_line = input$facetwrapmultiline),
           strip.position = input$stripposition,
