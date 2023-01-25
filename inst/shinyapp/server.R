@@ -7796,4 +7796,9 @@ function(input, output, session) {
     values$maindata <- read.csv("data/sample_data.csv", na.strings = c("NA","."),
                                 stringsAsFactors = TRUE)
   }
+
+  
+  # ----- File Settings ------
+
+  source(file.path("server", "file-settings.R"), local = TRUE)$value
 }
