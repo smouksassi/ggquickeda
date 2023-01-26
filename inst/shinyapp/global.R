@@ -147,10 +147,12 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
                         x <- unlist(strsplit(x, "=|,\\s+", perl=TRUE))
                         x[seq(1, length(x), 2)]
                       })
-  variables <- unique(as.vector(variables))
+  #variables <- unique(as.vector(variables))
+  variables <- unique(as.vector(unlist(variables)))
   variables <- intersect(variables, colnames(.get_data(fit, data) ))
   variables
 }
+
 .get_data <- function(fit, data = NULL, complain = TRUE) {
   if(is.null(data)){
     if (complain)
@@ -163,7 +165,8 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
 }
 .get_variable_value <- function(variable, strata, fit, data = NULL){
   res <- sapply(as.vector(strata), function(x){
-    x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
+    #x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
+    x <- unlist(strsplit(x, "(?<![<>])=|(\\s+)?,\\s+", perl=TRUE))
     index <- grep(paste0("^", variable, "$"), x)
     .trim(x[index+1])
   })

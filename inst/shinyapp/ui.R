@@ -2218,6 +2218,7 @@ fluidPage(
                                                                               "cum.n.censor") ,multiple=TRUE,
                                                                   selected = c("n.risk","n.censor")),
                                                    checkboxInput('addhorizontallines', 'Draw Horizontal lines',value = TRUE),
+                                                   sliderInput("risktabletextsize", "Text Size:", min=0, max=6, value=c(3.88), step=0.01),
                                                    numericInput(inputId = "breaktimeby",
                                                                 label = "Show Numbers Every x time unit:",value="", min = 0,max = NA),
                                                    sliderInput("nriskpositionscaler", "Numbers position scaler:", min=0.1, max=1, value=c(0.2),step=0.01),
