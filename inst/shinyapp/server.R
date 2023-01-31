@@ -75,12 +75,20 @@ function(input, output, session) {
   
   # If this app was launched from a function that explicitly set an initial dataset
   if (exists("ggquickeda_initdata")) {
-    values$maindata <- get("ggquickeda_initdata")
-    mockFileUpload("Initial Data")
+    message("init data found")
+    if (exists("phx_bookmark_dir") &&
+               file.exists(file.path(".", "shiny_bookmarks", basename(phx_bookmark_dir), "input.rds"))) {
+      message("using bookmarked startup")
+      useBookMark <- TRUE
+    } else {
+      useBookMark <- FALSE
+      values$maindata <- get("ggquickeda_initdata")
+      mockFileUpload("Initial Data")
+    }
   }
   
   # Kill the application/R session when a single shiny session is closed
-  session$onSessionEnded(stopApp)
+  #session$onSessionEnded(stopApp)
   
   # Variables to help with maintaining the dynamic number of "change the labels
   # of a variable" boxes

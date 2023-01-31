@@ -1,4 +1,5 @@
-fluidPage(
+function(request) {
+  fluidPage(
   useShinyjs(),
   tags$link(rel = "stylesheet", href = "app.css"),
   tags$link(rel = "stylesheet", href = "table1-style.css"),
@@ -2596,3 +2597,5 @@ fluidPage(
       )#mainPanel
   )#sidebarLayout
 )#fluidPage
+}
+

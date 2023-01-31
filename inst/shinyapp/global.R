@@ -27,6 +27,8 @@ suppressMessages({
   library(RPostgres)
 })
 
+enableBookmarking(store = "server")
+
 DATABASE_CONN <- NULL
 PGDATABASE <- Sys.getenv("PGDATABASE")
 PGHOST <- Sys.getenv("PGHOST")
