@@ -22,7 +22,6 @@ run_ggquickeda <- function(data = NULL, ...) {
     stop("Could not find shiny app directory. Try re-installing `ggquickeda`.",
          call. = FALSE)
   } else if (!is.null(args$phx_app_dir)) {
-    #phx_appDir should be created prior to running ggquickeda?, #add validation check on files
     stopifnot(dir.exists(args$phx_app_dir))
     appDir <- file.path(args$phx_app_dir, "shinyapp")
     
@@ -40,10 +39,6 @@ run_ggquickeda <- function(data = NULL, ...) {
     on.exit(rm(ggquickeda_initdata, envir = .GlobalEnv))
   }
 
-  if (!is.null(args$settingsFile)) {
-    .GlobalEnv$ggquickeda_settingsfile <- args$settingsFile
-    on.exit(rm(ggquickeda_settingsfile, envir = .GlobalEnv))
-  }
   if (!is.null(args$phx_bookmark_dir)) {
     .GlobalEnv$phx_bookmark_dir <- args$phx_bookmark_dir
     message("phx_bookmark_dir: ", phx_bookmark_dir)
@@ -54,4 +49,4 @@ run_ggquickeda <- function(data = NULL, ...) {
 }
 
 # Make CRAN happy
-if (getRversion() >= "2.15.1") utils::globalVariables(c("ggquickeda_initdata", "ggquickeda_settingsfile"))
+if (getRversion() >= "2.15.1") utils::globalVariables(c("ggquickeda_initdata", "ggquickeda_phx_app_dir", "phx_bookmark_dir"))
