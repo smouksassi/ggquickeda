@@ -1004,14 +1004,8 @@ function(input, output, session) {
   
   output$pastevar <- renderUI({
     items <- choice_items_char()
-    prev_input <- input$pastevarin
-    if (!is.null(prev_input)) {
-      selected <- prev_input
-    } else {
-      selected <- NULL
-    }
     selectizeInput("pastevarin", "Combine the categories of these two variables:",
-                   choices = items, multiple=TRUE, selected = selected,
+                   choices = items, multiple=TRUE,
                    options = list(
                      maxItems = 2 ,
                      placeholder = 'Please select two variables',
