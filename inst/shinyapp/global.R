@@ -175,6 +175,33 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
   else res <- as.factor(res)
   res
 }
+
+.get_choice_items <- function(data, x = NULL, y = NULL, pastevarin = NULL) {
+  items <- names(data)
+  names(items) <- items
+  items <- c("None",items)
+  if ( !is.null(x) ){
+    items <- c(items, "yvars","yvalues") 
+  }
+  if ( !is.null(y) ){
+    items <- c(items, "xvars","xvalues") 
+  }
+  if (!is.null(pastevarin) && length(pastevarin) > 1 ){
+    nameofcombinedvariables<- paste(as.character(pastevarin),collapse="_",sep="") 
+    items <- c(items,nameofcombinedvariables)
+  }
+  return(items)
+}
+
+.get_choice_items_char <- function(data) {
+  MODEDF <- sapply(data, function(x) is.numeric(x))
+  NAMESTOKEEP2<- names(data)  [ !MODEDF ]
+  items <- NAMESTOKEEP2
+  names(items) <- items
+  items <- c("None",items)
+  return(items)
+}
+
 .trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
 # from survminer
 
