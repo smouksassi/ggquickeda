@@ -1,4 +1,5 @@
 function(input, output, session) {
+  shinyjs::show(selector = ".file-inputs")
   values <- reactiveValues(
     plots = list(),      # list of plots the user saved
     maindata = NULL,     # the data frame used throughout the app
@@ -6,6 +7,9 @@ function(input, output, session) {
     prevPlot = NULL,     # the last plot that was successfully plotted
     updateTable = FALSE  # whether to manually update the dstats table
   )
+  #### create a reactive observer for values to include items
+  choice_items <- reactiveVal()
+  choice_items_char <- reactiveVal()
   
    gradient <- callModule(gradientInput, "gradientcol",
                           init_col =c("#832424","white","#3A3A98"),
@@ -75,12 +79,31 @@ function(input, output, session) {
   
   # If this app was launched from a function that explicitly set an initial dataset
   if (exists("ggquickeda_initdata")) {
-    values$maindata <- get("ggquickeda_initdata")
-    mockFileUpload("Initial Data")
+    message("init data found")
+    if (exists("phx_bookmark_dir") &&
+               file.exists(file.path(".", "shiny_bookmarks", basename(phx_bookmark_dir), "input.rds"))) {
+      message("using bookmarked startup")
+      useBookMark <- TRUE
+    } else {
+      useBookMark <- FALSE
+      values$maindata <- get("ggquickeda_initdata")
+      items <- .get_choice_items(get("ggquickeda_initdata"))
+      choice_items(items)
+      items_char <- .get_choice_items_char(get("ggquickeda_initdata"))
+      choice_items_char(items_char)
+      mockFileUpload("Initial Data")
+    }
   }
   
+  observeEvent(c(input$x, input$y, input$pastevarin), {
+    items <- .get_choice_items(values$maindata, input$x, input$y, input$pastevarin)
+    choice_items(items)
+    items_char <- .get_choice_items_char(values$maindata)
+    choice_items_char(items_char)
+  }, ignoreInit = TRUE, priority = 98)
+  
   # Kill the application/R session when a single shiny session is closed
-  session$onSessionEnded(stopApp)
+  #session$onSessionEnded(stopApp)
   
   # Variables to help with maintaining the dynamic number of "change the labels
   # of a variable" boxes
@@ -332,6 +355,10 @@ function(input, output, session) {
     
     values$maindata <- read.csv(file, na.strings = na.strings, stringsAsFactors = input$stringasfactor,
                                 sep = input$fileseparator)
+    items <- .get_choice_items(values$maindata)
+    choice_items(items)
+    items_char <- .get_choice_items_char(values$maindata)
+    choice_items_char(items_char)
     # if(input$ninetyninemissing){
     #   tempdata <-  values$maindata
     #   NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
@@ -351,6 +378,10 @@ function(input, output, session) {
                                 stringsAsFactors = TRUE,
                                 sep = ",")
     values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
+    items <- .get_choice_items(values$maindata)
+    choice_items(items)
+    items_char <- .get_choice_items_char(values$maindata)
+    choice_items_char(items_char)
     mockFileUpload("Sample Data")
   })
   
@@ -972,21 +1003,19 @@ function(input, output, session) {
   })
   
   output$pastevar <- renderUI({
-    df <- recodedata4()
-    validate(need(!is.null(df), "Please select a data set"))
-    df <- df[!names(df) %in% "custombins"]
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    yvariables <- input$y
-    NAMESTOKEEP2<- names(df)  [! MODEDF ]
-    if(!input$show_pairs){
-    NAMESTOKEEP2<- NAMESTOKEEP2[!NAMESTOKEEP2 %in% yvariables]
+    items <- choice_items_char()
+    prev_input <- input$pastevarin
+    if (!is.null(prev_input)) {
+      selected <- prev_input
+    } else {
+      selected <- NULL
     }
     selectizeInput("pastevarin", "Combine the categories of these two variables:",
-                   choices = NAMESTOKEEP2, multiple=TRUE,
+                   choices = items, multiple=TRUE, selected = selected,
                    options = list(
                      maxItems = 2 ,
                      placeholder = 'Please select two variables',
-                     onInitialize = I('function() { this.setValue(""); }'),
+                   #  onInitialize = I('function() { this.setValue(""); }'),
                      plugins = list('remove_button', 'drag_drop')
                    )
     )
@@ -2067,118 +2096,73 @@ function(input, output, session) {
   
   outputOptions(output, "lowery", suspendWhenHidden=FALSE)
   outputOptions(output, "uppery", suspendWhenHidden=FALSE)
-
+  
   output$colour <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- choice_items()
     selectInput("colorin", "Colour By:",items) 
   })
-  observe({
-    df <-values$maindata
-    validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    current_color_value <- input$colorin
-    if (!is.null(current_color_value) && current_color_value %in% items) {
-      new_value <- current_color_value
-    } else {
-      new_value <- items[1]
-    }
-    updateSelectInput(session, "colorin",
-                      choices = items, selected = new_value)
-  })
+  
+  # observe({
+  #   df <-values$maindata
+  #   validate(need(!is.null(df), "Please select a data set"))
+  #   items=names(df)
+  #   names(items)=items
+  #   items= c("None",items)
+  #   if ( !is.null(input$y) ){
+  #     items = c(items, "yvars","yvalues") 
+  #   }
+  #   if ( !is.null(input$x) ){
+  #     items = c(items, "xvars","xvalues") 
+  #   }
+  #   if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
+  #     nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+  #     items= c(items,nameofcombinedvariables)
+  #   }
+  #   current_color_value <- input$colorin
+  #   if (!is.null(current_color_value) && current_color_value %in% items) {
+  #     new_value <- current_color_value
+  #   } else {
+  #     new_value <- items[1]
+  #   }
+  #   updateSelectInput(session, "colorin",
+  #                     choices = items, selected = new_value)
+  # 
+  # })
   
   output$colourpairs <- renderUI({
     df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
-    items=NAMESTOKEEP2
-    names(items)=items
-    items= c("None",items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    selectInput("colorpairsin", "Colour/Fill By:",items) 
-  })
-  observe({
-    df <- rounddata()
-    validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
-    items=NAMESTOKEEP2
-    names(items)=items
-    items= c("None",items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    current_color_value <- input$colorpairsin
-    if (!is.null(current_color_value) && current_color_value %in% items) {
-      new_value <- current_color_value
+    items <- choice_items_char()
+    #Initializing selected with previous input (can be NULL) is only approach that permits bookmarking of this input
+    prev_input <- input$colorpairsin
+    if (!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
     } else {
-      new_value <- items[1]
+      selected <- NULL
     }
-    updateSelectInput(session, "colorpairsin",
-                      choices = items, selected = new_value)
+    selectInput("colorpairsin", "Colour/Fill By:",items, selected = selected)
   })
   
   output$group <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- choice_items()
     selectInput("groupin", "Group By:",items)
   })
   output$grouppairs <- renderUI({
     df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
-    items=NAMESTOKEEP2
-    names(items)=items
-    items= c("None",items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
+    items <- choice_items_char()
+    #Initializing selected with previous input (can be NULL) is only approach that permits bookmarking of this input
+    prev_input <- input$grouppairsin
+    if (!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
+    } else {
+      selected <- NULL
     }
-    selectInput("grouppairsin", "Group By:",items)
+    selectInput("grouppairsin", "Group By:",items, selected = selected)
   })
   outputOptions(output, "colour", suspendWhenHidden=FALSE)
   outputOptions(output, "colourpairs", suspendWhenHidden=FALSE)
@@ -2186,64 +2170,29 @@ function(input, output, session) {
   outputOptions(output, "grouppairs", suspendWhenHidden=FALSE)
   
   output$facet_col <- renderUI({
+    req(values$maindata)
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c(None='.',items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    selectInput("facetcolin", "Column Split:",items)
+    items <- c("None" = ".", choice_items()[-1]) # Replace 'None' value with 'None' label abd '.' value (for ggplot2 ease)
+    selectInput("facetcolin", "Column Split:", items)
   })
   
   output$facet_row <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c(None='.',items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- c("None" = ".", choice_items()[-1]) # Replace 'None' value with 'None' label abd '.' value (for ggplot2 ease)
     selectInput("facetrowin", "Row Split:", items)
   })
   
   output$facet_col_extra <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    
+    items <- choice_items()[-1]
     if (length(input$x) < 2 ){
-      items= c(None=".",items)    
+      items= c(None=".",items)
       }
     if (length(input$x) > 1  ){
-      items= c("xvars",None=".",items[items!="xvars"])    
+      items= c("xvars",None=".",items[items!="xvars"])
     }
     selectInput("facetcolextrain", "Extra Column Split:",items)
   })
@@ -2251,23 +2200,12 @@ function(input, output, session) {
   output$facet_row_extra <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- choice_items()[-1]
     if (length(input$y) < 2 ){
-      items= c(None=".",items)    
+      items= c(None=".",items)
     }
     if (length(input$y) > 1  ){
-      items= c("yvars",None=".",items[items!="yvars"])    
+      items= c("yvars",None=".",items[items!="yvars"])
     }
     selectInput("facetrowextrain", "Extra Row Split:",items)
   })
@@ -2296,38 +2234,14 @@ function(input, output, session) {
   output$pointsize <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- choice_items()
     selectInput("pointsizein", "Size By:",items )
   })
 
   output$labeltext <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- choice_items()
     selectInput("labeltextin", "Label By:",items )
     # selectizeInput("labeltextin", "Label By:",
     #                choices = items, multiple=TRUE,
@@ -2344,84 +2258,28 @@ function(input, output, session) {
   output$pointshape <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    } 
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    selectInput("pointshapein", "Shape By:",items )
+    items <- choice_items()
+    selectInput("pointshapein", "Shape By:", items)
   })
   
   output$linetype <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    } 
-    if (!is.null(input$pastevarin)&length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+    items <- choice_items()
     selectInput("linetypein", "Linetype By:",items )
   })
   
   output$fill <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    } 
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    selectInput("fillin", "Fill By:"    ,items )
-  })
-
-  observe({
-    df <-values$maindata
-    validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    current_fill_value <- input$fillin
-    if (!is.null(current_fill_value) && current_fill_value %in% items) {
-      new_value <- current_fill_value
+    items <- choice_items()
+    prev_input <- input$fillin
+    if(!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
     } else {
-      new_value <- items[1]
+      selected <- NULL
     }
-    updateSelectInput(session, "fillin",
-                      choices = items, selected = new_value)
+    selectInput("fillin", "Fill By:", items, selected = selected )
   })
   
   output$weight <- renderUI({
@@ -2672,11 +2530,11 @@ function(input, output, session) {
         return(values$prevPlot)
       }
     }
-    
     # Retrieve the correct dataset
     if (input$show_pairs) {
       validate(need(!is.null(input$y), "Please select at least one Y variable"))
       plotdata <- rounddata()
+      req(input$colorpairsin)
     } else {
       validate(  need(! (is.null(input$x) && is.null(input$y)),
                       "Please select at least one x or at least one y."))
@@ -7537,10 +7395,10 @@ function(input, output, session) {
     items= items[!is.element(items,"xvalues")]
     items =c(None='.',items)
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="")
       items= c(items,nameofcombinedvariables)
     }
-    
+
     # Keep the current value selected unless it's not in the new items list
     current_value <- input$dstatscolextrain
     if (!is.null(current_value) && current_value %in% items) {
@@ -7796,4 +7654,9 @@ function(input, output, session) {
     values$maindata <- read.csv("data/sample_data.csv", na.strings = c("NA","."),
                                 stringsAsFactors = TRUE)
   }
+
+  
+  # ----- File Settings ------
+
+  source(file.path("server", "file-settings.R"), local = TRUE)$value
 }

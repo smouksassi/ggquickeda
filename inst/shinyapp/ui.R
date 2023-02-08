@@ -1,4 +1,5 @@
-fluidPage(
+function(request) {
+  fluidPage(
   useShinyjs(),
   tags$link(rel = "stylesheet", href = "app.css"),
   tags$link(rel = "stylesheet", href = "table1-style.css"),
@@ -9,14 +10,16 @@ fluidPage(
         tabPanel("Inputs", value = "sidebar_inputs", 
           tags$style(".shiny-file-input-progress {margin-bottom: 0px;margin-top: 0px}"),
           tags$style(".form-group {margin-bottom: 0px;margin-top: 0px}"),
-          tags$div(
-            tags$strong("Click Browse to choose csv file to upload with"),
-            inline_ui(radioButtons("fileseparator", NULL,
+          tags$div(class = ifelse(exists("ggquickeda_phx_app_dir"), "", "file-inputs"),
+            tags$div(
+              tags$strong("Click Browse to choose csv file to upload with"),
+              inline_ui(radioButtons("fileseparator", NULL,
                                    choices = c("comma (,)" = ",","or semicolon (;)" = ";"),
                                    selected = ",", inline = TRUE)),
-            "separators, or",actionLink("sample_data_btn", "use sample data")
-          ),
-          fileInput("datafile", NULL, multiple = FALSE, accept = c("csv")),
+              "separators, or",actionLink("sample_data_btn", "use sample data")
+            ),
+            fileInput("datafile", NULL, multiple = FALSE, accept = c("csv"))
+          ) %>% shinyjs::hidden(),
           checkboxInput("stringasfactor", "Character Variables as Factors?", TRUE),
           checkboxInput("ninetyninemissing", "Numeric Variables -99 as Missing?", FALSE),
           uiOutput("ycol"),
@@ -2596,3 +2599,5 @@ fluidPage(
       )#mainPanel
   )#sidebarLayout
 )#fluidPage
+}
+
