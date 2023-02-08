@@ -5939,6 +5939,14 @@ function(input, output, session) {
           }
 
           risktabledata<- ggsurv$table$data
+          
+          if(!is.null(fitsurv$strata)){
+            variables <- .get_variables(risktabledata$strata, fitsurv, plotdata)
+            for(variable in variables) {
+              risktabledata[[variable]] <- .get_variable_value(variable, risktabledata$strata, fitsurv, plotdata)
+                    }
+          }
+
           if(!is.null(input$risktablevariables) && length(as.vector(input$risktablevariables)) > 0){
             risktabledatag<- gather(risktabledata,key,value, !!!input$risktablevariables , factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) + input$nriskoffset
@@ -5947,6 +5955,7 @@ function(input, output, session) {
             risktabledatag<- gather(risktabledata,key,value, n.risk, factor_key = TRUE)
             risktabledatag$keynumeric<- - input$nriskpositionscaler* as.numeric(as.factor(risktabledatag$key)) + input$nriskoffset
           }
+
           if(!is.null(fitsurv$strata) | is.matrix(fitsurv$surv))  {
             .table <- as.data.frame(summary(fitsurv)$table)
           } else {
@@ -5964,7 +5973,9 @@ function(input, output, session) {
                                  strata = .clean_strata(rownames(.table)))
           if(!is.null(fitsurv$strata)){
             variables <- .get_variables(dfmedian$strata, fitsurv, plotdata)
-            for(variable in variables) dfmedian[[variable]] <- .get_variable_value(variable, dfmedian$strata, fitsurv, plotdata)
+            for(variable in variables) {
+              dfmedian[[variable]] <- .get_variable_value(variable, dfmedian$strata, fitsurv, plotdata)
+            }
           }
           
         }
@@ -5976,6 +5987,7 @@ function(input, output, session) {
               geom_text(data=risktabledatag,
                         aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),
                         show.legend = FALSE,
+                        size=input$risktabletextsize,
                         position =   position_dodgev(height =input$nriskpositiondodge)
               )
             
@@ -5985,6 +5997,7 @@ function(input, output, session) {
               geom_text(data=risktabledatag,
                         aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL ),
                         show.legend = FALSE,
+                        size=input$risktabletextsize,
                         position =   position_dodgev(height =input$nriskpositiondodge),
                         color=input$colkml)
            }
@@ -7490,13 +7503,14 @@ function(input, output, session) {
       "Min"                  = function(x) x$MIN,
       "Max"                  = function(x) x$MAX,
       "IQR"                  = function(x) x$IQR,
-      "Q1"                  = function(x) x$Q1,      
-      "Q2"                  = function(x) x$Q2,
-      "Q3"                  = function(x) x$Q3,
-      "T1"                  = function(x) x$T1,
-      "T2"                  = function(x) x$T2,
+      "Q1"                   = function(x) x$Q1,      
+      "Q2"                   = function(x) x$Q2,
+      "Q3"                   = function(x) x$Q3,
+      "T1"                   = function(x) x$T1,
+      "T2"                   = function(x) x$T2,
       "Geo. Mean"            = function(x) x$GMEAN,
       "Geo. CV%"             = function(x) x$GCV,
+      "Geo. SD"              = function(x) x$GSD,
       "Mean (SD)"            = function(x) sprintf("%s (%s)", x$MEAN, x$SD),
       "Mean (CV%)"           = function(x) sprintf("%s (%s)", x$MEAN, x$CV),
       "Mean (SD) (CV%)"      = function(x) sprintf("%s (%s) (%s)", x$MEAN, x$SD, x$CV),
