@@ -9,6 +9,7 @@ function(input, output, session) {
   )
   #### create a reactive observer for values to include items
   choice_items <- reactiveVal()
+  choice_items_char <- reactiveVal()
   
    gradient <- callModule(gradientInput, "gradientcol",
                           init_col =c("#832424","white","#3A3A98"),
@@ -86,31 +87,20 @@ function(input, output, session) {
     } else {
       useBookMark <- FALSE
       values$maindata <- get("ggquickeda_initdata")
-      items <- names(get("ggquickeda_initdata"))
-      names(items) <- items
-      items <- c("None",items, "xvars", "xvalues", "yvars", "yvalues")
+      items <- .get_choice_items(get("ggquickeda_initdata"))
       choice_items(items)
+      items_char <- .get_choice_items_char(get("ggquickeda_initdata"))
+      choice_items_char(items_char)
       mockFileUpload("Initial Data")
     }
   }
   
-  observeEvent(c(input$x, input$y), {
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
+  observeEvent(c(input$x, input$y, input$pastevarin), {
+    items <- .get_choice_items(values$maindata, input$x, input$y, input$pastevarin)
     choice_items(items)
-    message("... choice_items() updated")
-    
-  }, suspended = TRUE, ignoreInit = TRUE)
+    items_char <- .get_choice_items_char(values$maindata)
+    choice_items_char(items_char)
+  }, ignoreInit = TRUE, priority = 98)
   
   # Kill the application/R session when a single shiny session is closed
   #session$onSessionEnded(stopApp)
@@ -1007,17 +997,15 @@ function(input, output, session) {
   })
   
   output$pastevar <- renderUI({
-    df <- recodedata4()
-    validate(need(!is.null(df), "Please select a data set"))
-    df <- df[!names(df) %in% "custombins"]
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    yvariables <- input$y
-    NAMESTOKEEP2<- names(df)  [! MODEDF ]
-    if(!input$show_pairs){
-    NAMESTOKEEP2<- NAMESTOKEEP2[!NAMESTOKEEP2 %in% yvariables]
+    items <- choice_items_char()
+    prev_input <- input$pastevarin
+    if (!is.null(prev_input)) {
+      selected <- prev_input
+    } else {
+      selected <- NULL
     }
     selectizeInput("pastevarin", "Combine the categories of these two variables:",
-                   choices = NAMESTOKEEP2, multiple=TRUE,
+                   choices = items, multiple=TRUE, selected = selected,
                    options = list(
                      maxItems = 2 ,
                      placeholder = 'Please select two variables',
@@ -2140,37 +2128,15 @@ function(input, output, session) {
   output$colourpairs <- renderUI({
     df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
-    items=NAMESTOKEEP2
-    names(items)=items
-    items= c("None",items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    selectInput("colorpairsin", "Colour/Fill By:",items) 
-  })
-  observe({
-    df <- rounddata()
-    validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
-    items=NAMESTOKEEP2
-    names(items)=items
-    items= c("None",items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    current_color_value <- input$colorpairsin
-    if (!is.null(current_color_value) && current_color_value %in% items) {
-      new_value <- current_color_value
+    items <- choice_items_char()
+    #Initializing selected with previous input (can be NULL) is only approach that permits bookmarking of this input
+    prev_input <- input$colorpairsin
+    if (!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
     } else {
-      new_value <- items[1]
+      selected <- NULL
     }
-    updateSelectInput(session, "colorpairsin",
-                      choices = items, selected = new_value)
+    selectInput("colorpairsin", "Colour/Fill By:",items, selected = selected)
   })
   
   output$group <- renderUI({
@@ -2182,16 +2148,15 @@ function(input, output, session) {
   output$grouppairs <- renderUI({
     df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ !MODEDF ]
-    items=NAMESTOKEEP2
-    names(items)=items
-    items= c("None",items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
+    items <- choice_items_char()
+    #Initializing selected with previous input (can be NULL) is only approach that permits bookmarking of this input
+    prev_input <- input$grouppairsin
+    if (!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
+    } else {
+      selected <- NULL
     }
-    selectInput("grouppairsin", "Group By:",items)
+    selectInput("grouppairsin", "Group By:",items, selected = selected)
   })
   outputOptions(output, "colour", suspendWhenHidden=FALSE)
   outputOptions(output, "colourpairs", suspendWhenHidden=FALSE)
@@ -2302,35 +2267,13 @@ function(input, output, session) {
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
     items <- choice_items()
-    selectInput("fillin", "Fill By:"    ,items )
-  })
-
-  observe({
-    df <-values$maindata
-    validate(need(!is.null(df), "Please select a data set"))
-    items=names(df)
-    names(items)=items
-    items= c("None",items)
-    if ( !is.null(input$y) ){
-      items = c(items, "yvars","yvalues") 
-    }
-    if ( !is.null(input$x) ){
-      items = c(items, "xvars","xvalues") 
-    }
-    
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
-      items= c(items,nameofcombinedvariables)
-    }
-    
-    current_fill_value <- input$fillin
-    if (!is.null(current_fill_value) && current_fill_value %in% items) {
-      new_value <- current_fill_value
+    prev_input <- input$fillin
+    if(!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
     } else {
-      new_value <- items[1]
+      selected <- NULL
     }
-    updateSelectInput(session, "fillin",
-                      choices = items, selected = new_value)
+    selectInput("fillin", "Fill By:", items, selected = selected )
   })
   
   output$weight <- renderUI({
@@ -2581,11 +2524,11 @@ function(input, output, session) {
         return(values$prevPlot)
       }
     }
-    
     # Retrieve the correct dataset
     if (input$show_pairs) {
       validate(need(!is.null(input$y), "Please select at least one Y variable"))
       plotdata <- rounddata()
+      req(input$colorpairsin)
     } else {
       validate(  need(! (is.null(input$x) && is.null(input$y)),
                       "Please select at least one x or at least one y."))
@@ -7446,10 +7389,10 @@ function(input, output, session) {
     items= items[!is.element(items,"xvalues")]
     items =c(None='.',items)
     if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="") 
+      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="")
       items= c(items,nameofcombinedvariables)
     }
-    
+
     # Keep the current value selected unless it's not in the new items list
     current_value <- input$dstatscolextrain
     if (!is.null(current_value) && current_value %in% items) {
