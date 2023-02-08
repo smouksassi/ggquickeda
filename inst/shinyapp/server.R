@@ -355,7 +355,10 @@ function(input, output, session) {
     
     values$maindata <- read.csv(file, na.strings = na.strings, stringsAsFactors = input$stringasfactor,
                                 sep = input$fileseparator)
-    choice_items(names(values$maindata))
+    items <- .get_choice_items(values$maindata)
+    choice_items(items)
+    items_char <- .get_choice_items_char(values$maindata)
+    choice_items_char(items_char)
     # if(input$ninetyninemissing){
     #   tempdata <-  values$maindata
     #   NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
@@ -374,8 +377,11 @@ function(input, output, session) {
     values$maindata <- read.csv(file, na.strings = c("NA","."),
                                 stringsAsFactors = TRUE,
                                 sep = ",")
-    choice_items(names(values$maindata))
     values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
+    items <- .get_choice_items(values$maindata)
+    choice_items(items)
+    items_char <- .get_choice_items_char(values$maindata)
+    choice_items_char(items_char)
     mockFileUpload("Sample Data")
   })
   
