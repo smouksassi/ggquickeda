@@ -10,44 +10,28 @@ onBookmarked(
 
 onRestore(function(state) {
   values$maindata <- get("ggquickeda_initdata")
-  items <- names(values$maindata)
-  names(items) <- items
-  items <- c("None",items)
-  if ( !is.null(state$input$y) ){
-    items <- c(items, "yvars","yvalues") 
-  }
-  if ( !is.null(state$input$x) ){
-    items <- c(items, "xvars","xvalues") 
-  }
-  if (!is.null(state$input$pastevarin) && length(state$input$pastevarin) > 1 ){
-    nameofcombinedvariables<- paste(as.character(state$input$pastevarin),collapse="_",sep="") 
-    items <- c(items,nameofcombinedvariables)
-  }
-  message("Settings choices_items() to: ", items)
+  items <- .get_choice_items(values$maindata, state$input$x, state$input$y, state$input$pastevarin)
   choice_items(items)
-  # TO DO
-  # Create additional reactiveVal for other choices where we are evaluating input$ inside
+  items_char <- .get_choice_items_char(values$maindata)
+  choice_items_char(items_char)
 })
 
 onRestored(function(state) {
-  # savedInputs <- list(
-  #                     "catvarin" = state$input$catvarin,
-  #                     "pastevarin" =  state$input$pastevarin,
-  #                     "colorin" = state$input$colorin,
-  #                     "facetcolin" =  state$input$facetcolin,
-  #                     "facetcolextrain" = state$input$facetcolextrain,
-  #                     "pointshapein" = state$input$pointshapein)
-  # inputIds <- names(savedInputs)
-  # for (i in 1:length(savedInputs)) {
-  #   session$sendInputMessage(inputIds[i], list(value=savedInputs[[i]]))
-  # }
   showNotification(paste("Restored session:", basename(state$dir)),
                    duration = 10,
                    type = "message")
+  # savedInputs <- list(
+  #                     "pastevarin" = state$input$pastevarin
+  #                     )
+  # inputIds <- names(savedInputs)
+  # for (i in seq_along(savedInputs)) {
+  #   session$sendInputMessage(inputIds[i], list(value=savedInputs[[i]]))
+  #   message(inputIds[i], "=", savedInputs[[i]])
+  # }
 })
 
-# TO DO: Make below smarter with reactive listener for select input names
-observeEvent(bookMarkTriggers(), {
+# Bookmark on plotObject() change
+observeEvent(plotObject(), {
   if (exists("phx_bookmark_dir")) {
   session$doBookmark()
   message(paste0("Bookmark copied from:", file.path(".", "shiny_bookmarks", req(latestBookmarkURL()), "input.rds")))
@@ -56,10 +40,9 @@ observeEvent(bookMarkTriggers(), {
             overwrite = TRUE)
   message(paste0("Bookmark copied to:",file.path(".", "shiny_bookmarks", basename(phx_bookmark_dir) , "input.rds")))
   }
-  
 }, ignoreInit = TRUE)
 
-# Startup observer gets autodestroyed because no reactive domain, ui.r first loads, then we destory
+# Startup observer gets auto-destroyed because no reactive domain
 observe({
   if (exists("ggquickeda_phx_app_dir")) {
     if (useBookMark && !file.exists("stop.txt")) {
@@ -81,24 +64,3 @@ observe({
     }
   }
 }, priority = 99)
-
-bookMarkTriggers <- reactive({
-  list(
-    input$catvarin,
-    input$catvar2in,
-    input$catvar3in,
-    input$catvarquantin,
-    input$colorin,
-    input$contvarin,
-    input$facetcolin,
-    input$facetcolextrain,
-    input$facetrowin,
-    input$pointshapein,
-    input$pointsizein,
-    input$pointsizes,
-    input$pointstransparency,
-    input$x,
-    input$y
-  )
-})
-
