@@ -10,10 +10,10 @@ onBookmarked(
 
 onRestore(function(state) {
   values$maindata <- get("ggquickeda_initdata")
-  items <- .get_choice_items(values$maindata, state$input$x, state$input$y, state$input$pastevarin)
-  choice_items(items)
-  items_char <- .get_choice_items_char(values$maindata)
-  choice_items_char(items_char)
+  choice_items(.get_choice_items(values$maindata, state$input$x, state$input$y, state$input$pastevarin))
+  choice_items_char(.get_choice_items_char(values$maindata))
+  choice_facet_scales(.get_choice_facet_scales(state$input$x, state$input$y))
+  
 })
 
 onRestored(function(state) {
@@ -34,7 +34,10 @@ onRestored(function(state) {
 bookMarkTriggers <- reactive({
   list(
     input$Penalty,
-    input$Constraints
+    input$Constraints,
+    input$scalesizearea,
+    input$scalesizearearange1,
+    input$scalesizearearange2
   )
 })
 # Bookmark on plotObject() and misc bookmark triggers change (e.g., inputs that do not affect plot display)

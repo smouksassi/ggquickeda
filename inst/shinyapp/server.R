@@ -10,6 +10,7 @@ function(input, output, session) {
   #### create a reactive observer for values to include items
   choice_items <- reactiveVal()
   choice_items_char <- reactiveVal()
+  choice_facet_scales <- reactiveVal()
   
    gradient <- callModule(gradientInput, "gradientcol",
                           init_col =c("#832424","white","#3A3A98"),
@@ -63,7 +64,7 @@ function(input, output, session) {
     updateCheckboxInput(session = session,inputId = "facetwrap",
                         value = FALSE
     )
-  })
+  }, ignoreInit = TRUE)
   
   observeEvent(input$facetswitch %in% c("y","both"), {
     updateSliderInput(session = session,
@@ -91,18 +92,18 @@ function(input, output, session) {
       choice_items(items)
       items_char <- .get_choice_items_char(get("ggquickeda_initdata"))
       choice_items_char(items_char)
+      choice_facet_scales(.get_choice_facet_scales())
       mockFileUpload("Initial Data")
     }
   }
   
   observeEvent(c(input$x, input$y, input$pastevarin), {
-    items <- .get_choice_items(values$maindata, input$x, input$y, input$pastevarin)
-    choice_items(items)
-    items_char <- .get_choice_items_char(values$maindata)
-    choice_items_char(items_char)
+    choice_items(.get_choice_items(values$maindata, input$x, input$y, input$pastevarin))
+    choice_items_char(.get_choice_items_char(values$maindata))
+    choice_facet_scales(.get_choice_facet_scales(input$x, input$y))
   }, ignoreInit = TRUE, priority = 98)
   
-  # Kill the application/R session when a single shiny session is closed
+  # Kill the application/R session when a single shiny session is closed 
   #session$onSessionEnded(stopApp)
   
   # Variables to help with maintaining the dynamic number of "change the labels
@@ -359,6 +360,7 @@ function(input, output, session) {
     choice_items(items)
     items_char <- .get_choice_items_char(values$maindata)
     choice_items_char(items_char)
+    choice_facet_scales(.get_choice_facet_scales())
     # if(input$ninetyninemissing){
     #   tempdata <-  values$maindata
     #   NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
@@ -382,6 +384,7 @@ function(input, output, session) {
     choice_items(items)
     items_char <- .get_choice_items_char(values$maindata)
     choice_items_char(items_char)
+    choice_facet_scales(.get_choice_facet_scales())
     mockFileUpload("Sample Data")
   })
   
@@ -670,22 +673,17 @@ function(input, output, session) {
     }
   })
   
-  observe({
-    if (input$KM!="None") {
-      updateRadioButtons(session, "yaxisscale", choices = c(
-        "Linear" = "lineary"))
-    }
+  observeEvent(input$KM, {
     if (input$KM=="None") {
       updateRadioButtons(session, "yaxisscale", choices = c(
         "Linear" = "lineary",
         "Log10" = "logy"))
-    }
- })
-  observe({
-    if (input$KM=="None") {
       updateCheckboxInput(session, "addrisktable", value = FALSE)
+    } else {
+      updateRadioButtons(session, "yaxisscale", choices = c(
+        "Linear" = "lineary"))
     }
-  })
+ }, ignoreInit = TRUE)
 
   observe({
     if (input$yaxisscale=="lineary" && input$KM=="None") {
@@ -2204,18 +2202,8 @@ function(input, output, session) {
     selectInput("facetrowextrain", "Extra Row Split:",items)
   })
 
-  output$facetscales <- renderUI({
-    items= c("fixed","free_x","free_y","free")   
-    if (is.null(input$x) && !is.null(input$y) && length(input$y) > 1 ){
-      items= c("free_y","fixed","free_x","free")    
-    }
-    if (is.null(input$y) && !is.null(input$x) && length(input$x) > 1 ){
-      items= c("free_x","fixed","free_y","free")    
-    }
-    if (!is.null(input$x) && !is.null(input$y) && (length(input$y) > 1  || 
-                                                   length(input$x) > 1)  ){
-      items= c("free","fixed","free_x","free_y")    
-    }
+  output$facetscales <- renderUI({ 
+    items <- choice_facet_scales()
     selectInput('facetscalesin','Facet Scales:',items)
   })
   
