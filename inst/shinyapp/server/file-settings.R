@@ -37,7 +37,8 @@ bookMarkTriggers <- reactive({
     input$Constraints,
     input$scalesizearea,
     input$scalesizearearange1,
-    input$scalesizearearange2
+    input$scalesizearearange2,
+    input$height
   )
 })
 # Bookmark on plotObject() and misc bookmark triggers change (e.g., inputs that do not affect plot display)
