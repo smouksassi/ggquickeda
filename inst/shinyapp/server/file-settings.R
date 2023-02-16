@@ -30,8 +30,15 @@ onRestored(function(state) {
   # }
 })
 
-# Bookmark on plotObject() change
-observeEvent(plotObject(), {
+# Create additional bookmark triggers that we want to persist, but don't affect plotObject() change
+bookMarkTriggers <- reactive({
+  list(
+    input$Penalty,
+    input$Constraints
+  )
+})
+# Bookmark on plotObject() and misc bookmark triggers change (e.g., inputs that do not affect plot display)
+observeEvent(c(plotObject(), bookMarkTriggers()), {
   if (exists("phx_bookmark_dir")) {
   session$doBookmark()
   message(paste0("Bookmark copied from:", file.path(".", "shiny_bookmarks", req(latestBookmarkURL()), "input.rds")))
