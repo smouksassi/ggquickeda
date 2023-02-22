@@ -2544,7 +2544,7 @@ function(request) {
                               icon = icon("sync")),
                  fluidRow(
                    column(3,
-                          div(id="quick_relabel_placeholder"),
+                          uiOutput("quick_relabel_placeholder"),
                           uiOutput("dstats_col_extra"),
                           uiOutput("flipthelevels")
                    ),

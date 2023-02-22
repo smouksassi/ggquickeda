@@ -13,36 +13,57 @@ onRestore(function(state) {
   choice_items(.get_choice_items(values$maindata, state$input$x, state$input$y, state$input$pastevarin))
   choice_items_char(.get_choice_items_char(values$maindata))
   choice_facet_scales(.get_choice_facet_scales(state$input$x, state$input$y))
-  
+  choice_items_dstatscolextrain(.get_choice_items(values$maindata, pastevarin =  state$input$pastevarin))
 })
 
 onRestored(function(state) {
   showNotification(paste("Restored session:", basename(state$dir)),
                    duration = 10,
                    type = "message")
-  # savedInputs <- list(
-  #                     "pastevarin" = state$input$pastevarin
-  #                     )
-  # inputIds <- names(savedInputs)
-  # for (i in seq_along(savedInputs)) {
-  #   session$sendInputMessage(inputIds[i], list(value=savedInputs[[i]]))
-  #   message(inputIds[i], "=", savedInputs[[i]])
-  # }
+  # update misc inputs that cannot be automatically updated in onRestore
+  savedInputs <- list(
+                      "yaxisformat" = state$input$yaxisformat,
+                      "xaxisformat" = state$input$xaxisformat,
+                      "Smooth" = state$input$Smooth,
+                      "flipthelevelsin", state$input$flipthelevelsin
+                      )
+  inputIds <- names(savedInputs)
+  for (i in seq_along(savedInputs)) {
+    session$sendInputMessage(inputIds[i], list(value=savedInputs[[i]]))
+    message(inputIds[i], "=", savedInputs[[i]])
+  }
+
 })
 
 # Create additional bookmark triggers that we want to persist, but don't affect plotObject() change
 bookMarkTriggers <- reactive({
-  list(
+  triggers <- list(
     input$Penalty,
     input$Constraints,
     input$scalesizearea,
     input$scalesizearearange1,
     input$scalesizearearange2,
-    input$height
+    input$height,
+    input$tablecaption,
+    input$tablefootnote,
+    input$table_incl_overall,
+    input$table_style,
+    input$dstats_cont_list,
+    input$table_suppress_missing,
+    input$dstats_sigfig,
+    input$round_median_min_max,
+    input$table_na_is_category,
+    input$dstatscolextrain,
+    input$flipthelevelsin
   )
+  yvars <- input$y
+  dynamic_relabel_triggers <- lapply(yvars, function(yvar) {
+    input[[paste0("quick_relabel_", yvar)]]
+  })
+  return(c(triggers, dynamic_relabel_triggers))
 })
 # Bookmark on plotObject() and misc bookmark triggers change (e.g., inputs that do not affect plot display)
-observeEvent(c(plotObject(), bookMarkTriggers()), {
+observeEvent(c(plotObject(), bookMarkTriggers()), { 
   if (exists("phx_bookmark_dir")) {
   session$doBookmark()
   message(paste0("Bookmark copied from:", file.path(".", "shiny_bookmarks", req(latestBookmarkURL()), "input.rds")))
