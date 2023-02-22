@@ -627,27 +627,34 @@ function(input, output, session) {
   }
   })#zzz 
 
-  observe({ if(input$histogramaddition=="None"){
-  updateRadioButtons(session, "densityaddition",
-                     choices = c("Density" = "Density",
-                       "Counts" = "Counts",
-                       "Scaled Density" = "Scaled Density",
-                       "None" = "None"))
-    
-  }
-  })
-  observe({ if(input$histogramaddition!="None" && input$histogrambinwidth== "userbinwidth"){
-    updateRadioButtons(session, "densityaddition",
-                       choices = c("Density" = "Density",
-                                   "Counts" = "Counts",
-                                   "Match Histo Count"="histocount",
-                                   "Scaled Density" = "Scaled Density",
-                                   "None" = "None"))
-    
-  }
-  })
+  observeEvent(c(input$histogrambinwidth), {
+    items <- c(
+      "Density" = "Density",
+      "Counts" = "Counts",
+      "Scaled Density" = "Scaled Density",
+      "None" = "None"
+    )
+    if (input$histogramaddition != "None" &&
+        input$histogrambinwidth == "userbinwidth") {
+        items <- c(
+          "Match Histo Count" = "histocount",
+          items
+        )
+    }
+    if (!is.null(input$densityaddition) && input$densityaddition %in% items) {
+      selected <- input$densityaddition
+    } else {
+      selected <- NULL
+    }
+    updateRadioButtons(
+      session,
+      "densityaddition",
+      choices = items,
+      selected = selected
+    )
+  }, ignoreInit = TRUE)
   
-  observe({
+  observeEvent(finalplotdata(), {
     if( (is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"] )) ||
         (is.null(input$x) && !is.numeric(finalplotdata()[,"yvalues"] ))
          ) {
@@ -658,19 +665,16 @@ function(input, output, session) {
       shinyjs::enable(id="barplotaddition")
       updateCheckboxInput(session, "barplotaddition", value = TRUE)
     }
-  })
-  observe({
     if( (is.null(input$y) &&  is.numeric(finalplotdata()[,"xvalues"] )) ||
         (is.null(input$x) &&  is.numeric(finalplotdata()[,"yvalues"] ))
     ) {
       shinyjs::enable(id="histogramaddition")
       shinyjs::enable(id="densityaddition")
-      updateRadioButtons(session, "densityaddition" , selected = "Density")
+      #updateRadioButtons(session, "densityaddition" , selected = "Density")
       updateCheckboxInput(session, "barplotaddition", value = FALSE)
       shinyjs::disable(id="barplotaddition")
-      
     }
-  })
+  }, ignoreInit = TRUE)
   
   observeEvent(input$KM, {
     if (input$KM=="None") {

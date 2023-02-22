@@ -24,8 +24,7 @@ onRestored(function(state) {
   savedInputs <- list(
                       "yaxisformat" = state$input$yaxisformat,
                       "xaxisformat" = state$input$xaxisformat,
-                      "Smooth" = state$input$Smooth,
-                      "flipthelevelsin", state$input$flipthelevelsin
+                      "Smooth" = state$input$Smooth
                       )
   inputIds <- names(savedInputs)
   for (i in seq_along(savedInputs)) {
