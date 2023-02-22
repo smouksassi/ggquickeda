@@ -1,6 +1,6 @@
 Package: ggquickeda
 Title: Quickly Explore Your Data Using 'ggplot2' and 'table1' Summary Tables
-Version: 0.2.2.9999
+Version: 0.3.0.9999
 Authors@R: c(
     person("Samer", "Mouksassi", email = "samermouksassi@gmail.com",
       role = c("aut", "cre"),comment = c(ORCID = "https://orcid.org/0000-0002-7152-6654")),
@@ -11,7 +11,7 @@ Authors@R: c(
     person("Michael", "Sachs", email = "sachsmc@gmail.com",
       role = c("aut"), comment = "provided ggkm code"),
     person("James", "Craig", email = "james.craig@certara.com",
-      role = c("ctb"), comment = "Create pkgdown website")
+      role = c("aut"), comment = "implemented bookmarking and created pkgdown website")
     )
 Description: Quickly and easily perform exploratory data analysis by uploading your
      data as a 'csv' file. Start generating insights using 'ggplot2' plots and
