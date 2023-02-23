@@ -205,6 +205,22 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
   return(items)
 }
 
+.get_choice_facet_scales <- function(x = NULL, y = NULL) {
+  items <- c("fixed","free_x","free_y","free")   
+  if (is.null(x) && !is.null(y) && length(y) > 1 ){
+    items <- c("free_y","fixed","free_x","free")    
+  }
+  if (is.null(y) && !is.null(x) && length(x) > 1 ){
+    items <- c("free_x","fixed","free_y","free")    
+  }
+  if (!is.null(x) && !is.null(y) && (length(y) > 1  || 
+      length(x) > 1)  ){
+    items <- c("free","fixed","free_x","free_y")    
+  }
+  return(items)
+}
+
+
 .trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
 # from survminer
 

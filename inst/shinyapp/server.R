@@ -7,9 +7,14 @@ function(input, output, session) {
     prevPlot = NULL,     # the last plot that was successfully plotted
     updateTable = FALSE  # whether to manually update the dstats table
   )
-  #### create a reactive observer for values to include items
+  # create reactive values for choices of renderUI inputs
   choice_items <- reactiveVal()
   choice_items_char <- reactiveVal()
+  choice_facet_scales <- reactiveVal()
+  choice_items_dstatscolextrain <- reactiveVal()
+  # special case for bookmarking quick_relabel_n input
+  relabel_inputs <- reactiveValues(lab = NULL)
+  
   
    gradient <- callModule(gradientInput, "gradientcol",
                           init_col =c("#832424","white","#3A3A98"),
@@ -63,7 +68,7 @@ function(input, output, session) {
     updateCheckboxInput(session = session,inputId = "facetwrap",
                         value = FALSE
     )
-  })
+  }, ignoreInit = TRUE)
   
   observeEvent(input$facetswitch %in% c("y","both"), {
     updateSliderInput(session = session,
@@ -87,22 +92,25 @@ function(input, output, session) {
     } else {
       useBookMark <- FALSE
       values$maindata <- get("ggquickeda_initdata")
-      items <- .get_choice_items(get("ggquickeda_initdata"))
-      choice_items(items)
-      items_char <- .get_choice_items_char(get("ggquickeda_initdata"))
-      choice_items_char(items_char)
+      choice_items(.get_choice_items(get("ggquickeda_initdata")))
+      choice_items_char(.get_choice_items_char(get("ggquickeda_initdata")))
+      choice_items_dstatscolextrain(.get_choice_items(get("ggquickeda_initdata")))
+      choice_facet_scales(.get_choice_facet_scales())
       mockFileUpload("Initial Data")
     }
   }
   
   observeEvent(c(input$x, input$y, input$pastevarin), {
-    items <- .get_choice_items(values$maindata, input$x, input$y, input$pastevarin)
-    choice_items(items)
-    items_char <- .get_choice_items_char(values$maindata)
-    choice_items_char(items_char)
+    choice_items(.get_choice_items(values$maindata, input$x, input$y, input$pastevarin))
+    choice_items_char(.get_choice_items_char(values$maindata))
+    choice_facet_scales(.get_choice_facet_scales(input$x, input$y))
+    choice_items_dstatscolextrain(.get_choice_items(values$maindata, 
+                                                    x = NULL, #avoid xvalues
+                                                    y = NULL, #avoid yvalues
+                                                    pastevarin = input$pastevarin))
   }, ignoreInit = TRUE, priority = 98)
   
-  # Kill the application/R session when a single shiny session is closed
+  # Kill the application/R session when a single shiny session is closed 
   #session$onSessionEnded(stopApp)
   
   # Variables to help with maintaining the dynamic number of "change the labels
@@ -118,12 +126,6 @@ function(input, output, session) {
   #   numTotal = 0  # Max # of boxes at the same time, to prevent memory leaks
   # )
   
-  # Variables to help with maintaining the dynamic number of "quick relabel" boxes
-  quickRelabel <- reactiveValues(
-    numCurrent = 0,  # How many boxes are there currently
-    numTotal = 0     # Max # of boxes at the same time, to prevent memory leaks
-  )
-  relabels <- character(0)
   
   # This object will track the order of values even through being renamed by
   # factor_lvl_change_select_* widgets
@@ -355,10 +357,10 @@ function(input, output, session) {
     
     values$maindata <- read.csv(file, na.strings = na.strings, stringsAsFactors = input$stringasfactor,
                                 sep = input$fileseparator)
-    items <- .get_choice_items(values$maindata)
-    choice_items(items)
-    items_char <- .get_choice_items_char(values$maindata)
-    choice_items_char(items_char)
+    choice_items(.get_choice_items(values$maindata))
+    choice_items_char(.get_choice_items_char(values$maindata))
+    choice_items_dstatscolextrain(.get_choice_items(values$maindata))
+    choice_facet_scales(.get_choice_facet_scales())
     # if(input$ninetyninemissing){
     #   tempdata <-  values$maindata
     #   NUMCOLUMNS <- sapply(tempdata , function(x) is.numeric(x))
@@ -378,10 +380,10 @@ function(input, output, session) {
                                 stringsAsFactors = TRUE,
                                 sep = ",")
     values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
-    items <- .get_choice_items(values$maindata)
-    choice_items(items)
-    items_char <- .get_choice_items_char(values$maindata)
-    choice_items_char(items_char)
+    choice_items(.get_choice_items(values$maindata))
+    choice_items_char(.get_choice_items_char(values$maindata))
+    choice_items_dstatscolextrain(.get_choice_items(values$maindata))
+    choice_facet_scales(.get_choice_facet_scales())
     mockFileUpload("Sample Data")
   })
   
@@ -625,27 +627,34 @@ function(input, output, session) {
   }
   })#zzz 
 
-  observe({ if(input$histogramaddition=="None"){
-  updateRadioButtons(session, "densityaddition",
-                     choices = c("Density" = "Density",
-                       "Counts" = "Counts",
-                       "Scaled Density" = "Scaled Density",
-                       "None" = "None"))
-    
-  }
-  })
-  observe({ if(input$histogramaddition!="None" && input$histogrambinwidth== "userbinwidth"){
-    updateRadioButtons(session, "densityaddition",
-                       choices = c("Density" = "Density",
-                                   "Counts" = "Counts",
-                                   "Match Histo Count"="histocount",
-                                   "Scaled Density" = "Scaled Density",
-                                   "None" = "None"))
-    
-  }
-  })
+  observeEvent(c(input$histogrambinwidth), {
+    items <- c(
+      "Density" = "Density",
+      "Counts" = "Counts",
+      "Scaled Density" = "Scaled Density",
+      "None" = "None"
+    )
+    if (input$histogramaddition != "None" &&
+        input$histogrambinwidth == "userbinwidth") {
+        items <- c(
+          "Match Histo Count" = "histocount",
+          items
+        )
+    }
+    if (!is.null(input$densityaddition) && input$densityaddition %in% items) {
+      selected <- input$densityaddition
+    } else {
+      selected <- NULL
+    }
+    updateRadioButtons(
+      session,
+      "densityaddition",
+      choices = items,
+      selected = selected
+    )
+  }, ignoreInit = TRUE)
   
-  observe({
+  observeEvent(finalplotdata(), {
     if( (is.null(input$y) && !is.numeric(finalplotdata()[,"xvalues"] )) ||
         (is.null(input$x) && !is.numeric(finalplotdata()[,"yvalues"] ))
          ) {
@@ -656,38 +665,31 @@ function(input, output, session) {
       shinyjs::enable(id="barplotaddition")
       updateCheckboxInput(session, "barplotaddition", value = TRUE)
     }
-  })
-  observe({
     if( (is.null(input$y) &&  is.numeric(finalplotdata()[,"xvalues"] )) ||
         (is.null(input$x) &&  is.numeric(finalplotdata()[,"yvalues"] ))
     ) {
       shinyjs::enable(id="histogramaddition")
       shinyjs::enable(id="densityaddition")
-      updateRadioButtons(session, "densityaddition" , selected = "Density")
+      #updateRadioButtons(session, "densityaddition" , selected = "Density")
       updateCheckboxInput(session, "barplotaddition", value = FALSE)
       shinyjs::disable(id="barplotaddition")
-      
     }
-  })
+  }, ignoreInit = TRUE)
   
-  observe({
-    if (input$KM!="None") {
-      updateRadioButtons(session, "yaxisscale", choices = c(
-        "Linear" = "lineary"))
-    }
+  observeEvent(input$KM, {
     if (input$KM=="None") {
       updateRadioButtons(session, "yaxisscale", choices = c(
         "Linear" = "lineary",
         "Log10" = "logy"))
-    }
- })
-  observe({
-    if (input$KM=="None") {
       updateCheckboxInput(session, "addrisktable", value = FALSE)
+    } else {
+      updateRadioButtons(session, "yaxisscale", choices = c(
+        "Linear" = "lineary"))
     }
-  })
+ }, ignoreInit = TRUE)
 
-  observe({
+  observeEvent(input$yaxisscale, {
+    req(input$yaxisscale, input$KM)
     if (input$yaxisscale=="lineary" && input$KM=="None") {
       updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
                                                              "Comma separated" = "scientificy",
@@ -697,14 +699,16 @@ function(input, output, session) {
       updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
                                                              "Percent" = "percenty"))
     }
-    
+
     if (input$yaxisscale!="lineary") {
       updateRadioButtons(session, "yaxisformat", choices = c("default" = "default",
                                                              "Log 10^x Format" = "logyformat",
                                                              "Pretty Y" ="logyformat2"))
     }
   })
+
   observe({
+    req(input$yaxisformat, input$xaxisformat)
     if (input$yaxisformat!="default") {
     updateCheckboxInput(session, "customytickslabel", value = FALSE)
     }
@@ -714,6 +718,7 @@ function(input, output, session) {
   })
   
   observe({
+    req(input$xaxisscale)
     if (input$xaxisscale=="linearx") {
       updateRadioButtons(session, "xaxisformat", choices = c("default" = "default",
                                                              "Comma separated" = "scientificx",
@@ -2204,18 +2209,8 @@ function(input, output, session) {
     selectInput("facetrowextrain", "Extra Row Split:",items)
   })
 
-  output$facetscales <- renderUI({
-    items= c("fixed","free_x","free_y","free")   
-    if (is.null(input$x) && !is.null(input$y) && length(input$y) > 1 ){
-      items= c("free_y","fixed","free_x","free")    
-    }
-    if (is.null(input$y) && !is.null(input$x) && length(input$x) > 1 ){
-      items= c("free_x","fixed","free_y","free")    
-    }
-    if (!is.null(input$x) && !is.null(input$y) && (length(input$y) > 1  || 
-                                                   length(input$x) > 1)  ){
-      items= c("free","fixed","free_x","free_y")    
-    }
+  output$facetscales <- renderUI({ 
+    items <- choice_facet_scales()
     selectInput('facetscalesin','Facet Scales:',items)
   })
   
@@ -2535,7 +2530,6 @@ function(input, output, session) {
       plotdata <- finalplotdata() 
     }
     validate(need(!is.null(plotdata), "Please select a data set") )
-    
     # Fix the colour palettes
     #continuous
     if (input$themecontcolorswitcher=="themeggplot"){
@@ -4520,6 +4514,7 @@ function(input, output, session) {
         p <- attach_source_dep(p, "colsmooth")
         p <- attach_source_dep(p, "smoothmethodargument")
         
+        req(input$weightin)
         if (input$weightin == 'None') aesweight <- 1L
         if (input$weightin != 'None') aesweight <- as.symbol(input$weightin)
         
@@ -7389,33 +7384,24 @@ function(input, output, session) {
   
   
   output$dstats_col_extra <- renderUI({
-    df <-tabledata()
+    df <- tabledata()
     validate(need(!is.null(df), "Please select a data set"))
-    selectInput("dstatscolextrain", "Extra Column Split:", c("None" = "."))
-  })
-  
-  observe({
-    req(tabledata())
-    items=names(tabledata())
-    names(items)=items
-    items= items
-    items= items[!is.element(items,"xvalues")]
-    items =c(None='.',items)
-    if (!is.null(input$pastevarin) && length(input$pastevarin) >1 ){
-      nameofcombinedvariables<- paste(as.character(input$pastevarin),collapse="_",sep="")
-      items= c(items,nameofcombinedvariables)
-    }
-
-    # Keep the current value selected unless it's not in the new items list
-    current_value <- input$dstatscolextrain
-    if (!is.null(current_value) && current_value %in% items) {
-      new_value <- current_value
+    items <- choice_items_dstatscolextrain()[-1]
+    items <- c(None = ".", items)
+    prev_input <- input$dstatscolextrain
+    if (!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
     } else {
-      new_value <- items[1]
+      selected <- NULL
     }
-    updateSelectInput(session, "dstatscolextrain",
-                      choices = items, selected = new_value)
+    selectInput(
+      "dstatscolextrain",
+      "Extra Column Split:",
+      choices = items,
+      selected = selected
+    )
   })
+  outputOptions(output, "dstats_col_extra", suspendWhenHidden = FALSE)
   
   output$flipthelevels <- renderUI({
     df <-tabledata()
@@ -7544,17 +7530,17 @@ function(input, output, session) {
     )
     
     df <- dstatsTableData() 
-    
     if(!is.null(df)) {
       vars <- input$y
       names(vars) <- vars
       for (i in seq_along(vars)) {
-        if (i <= quickRelabel$numTotal) {
-          lab <- as.character(input[[paste0("quick_relabel_", i)]])
+        yvar <- vars[i]
+        lab <- input[[paste0("quick_relabel_", yvar)]]
+        # if (i <= quickRelabel$numTotal) {
+        #   lab <- as.character(input[[paste0("quick_relabel_", i)]])
           if (length(lab) > 0) {
             label(df[[vars[i]]]) <- lab
           }
-        }
       }
       LHS <- paste(vars, collapse=" + ")
       RHS <- input$x[1]
@@ -7585,66 +7571,32 @@ function(input, output, session) {
     HTML(dstatsTable())
   })
   
-  #observe({
-  #  df <- values$maindata
-  #  if (is.null(df)) return(NULL)
-  #  items <- names(df)
-  #  names(items) <- items
-  #  quickRelabel$labels <- items
-  #})
-  observeEvent(values$maindata, {
-    relabels <- character(0)
-  })
   
-  
-  observe({
+  output$quick_relabel_placeholder <- renderUI({
     yvars <- input$y
-    nyvars <- length(yvars)
-    
-    for (i in seq_len(quickRelabel$numTotal)) {
-      shinyjs::hide(paste0("quick_relabel_", i))
-    }
-    for (i in seq_len(nyvars)) {
-      lab <- as.character(yvars[i])
-      if (lab %in% names(relabels)) {
-        lab <- as.character(relabels[lab])
+    ui <- list()
+    for (i in seq_along(yvars)) {
+      yvar <- yvars[i]
+      # if (yvar %in% names(relabel_inputs$lab)) {
+      #     lab <- as.character(relabel_inputs$lab[[yvar]])
+      #   } else {
+      #     lab <- yvar
+      #   }
+      if (!is.null(input[[paste0("quick_relabel_", yvar)]])) {
+        lab <- input[[paste0("quick_relabel_", yvar)]]
       } else {
-        relabels[lab] <- lab
+        lab <- yvar
       }
-      if (i <= quickRelabel$numTotal) {
-        updateTextInput(session, 
-                        inputId=paste0("quick_relabel_", i),
-                        label=if (i==1) "Quick HTML Labels" else NULL,
-                        value=lab)
-      } else {
-        insertUI(
-          selector = "#quick_relabel_placeholder", where = "beforeEnd",
-          immediate = TRUE,
-          div(class = "quick_relabel",
-              textInput(
-                inputId=paste0("quick_relabel_", i),
-                label=if (i==1) "Quick HTML Labels" else NULL,
-                value=lab)
-          )
-        )
-        quickRelabel$numTotal <- quickRelabel$numTotal + 1
-      }
-      shinyjs::show(paste0("quick_relabel_", i))
+      relabel_inputs$lab[[yvar]] <- lab
+      ui[i] <- tagList(
+        textInput(
+          inputId=paste0("quick_relabel_", yvar),
+          label=if (i==1) "Quick HTML Labels" else NULL,
+          value=lab)
+      )
     }
+    ui
   })
-  
-  observe({
-    yvars <- input$y
-    nyvars <- length(yvars)
-    for (i in seq_len(nyvars)) {
-      newlab <- as.character(input[[paste0("quick_relabel_", i)]])
-      if (length(newlab) == 0) {
-        newlab <- as.character(yvars[i])
-      }
-      relabels[as.character(yvars[i])] <- newlab
-    }
-  })
-  
   # Don't show the table options when there is no table
   observe({
     shinyjs::toggle("table_options_area", condition = !is.null(values$maindata))
