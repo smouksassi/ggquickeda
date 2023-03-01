@@ -205,6 +205,13 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
   return(items)
 }
 
+.get_choice_items_num <- function(data) {
+  MODEDF <- sapply(data, function(x) is.numeric(x))
+  NAMESTOKEEP2<- names(data)[MODEDF]
+  items <- c("None",NAMESTOKEEP2, "yvalues") 
+  return(items)
+}
+
 .get_choice_facet_scales <- function(x = NULL, y = NULL) {
   items <- c("fixed","free_x","free_y","free")   
   if (is.null(x) && !is.null(y) && length(y) > 1 ){

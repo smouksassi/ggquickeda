@@ -10,6 +10,7 @@ function(input, output, session) {
   # create reactive values for choices of renderUI inputs
   choice_items <- reactiveVal()
   choice_items_char <- reactiveVal()
+  choice_items_num <- reactiveVal()
   choice_facet_scales <- reactiveVal()
   choice_items_dstatscolextrain <- reactiveVal()
   # special case for bookmarking quick_relabel_n input
@@ -94,6 +95,7 @@ function(input, output, session) {
       values$maindata <- get("ggquickeda_initdata")
       choice_items(.get_choice_items(get("ggquickeda_initdata")))
       choice_items_char(.get_choice_items_char(get("ggquickeda_initdata")))
+      choice_items_num(.get_choice_items_num(get("ggquickeda_initdata")))
       choice_items_dstatscolextrain(.get_choice_items(get("ggquickeda_initdata")))
       choice_facet_scales(.get_choice_facet_scales())
       mockFileUpload("Initial Data")
@@ -103,6 +105,7 @@ function(input, output, session) {
   observeEvent(c(input$x, input$y, input$pastevarin), {
     choice_items(.get_choice_items(values$maindata, input$x, input$y, input$pastevarin))
     choice_items_char(.get_choice_items_char(values$maindata))
+    choice_items_num(.get_choice_items_num(values$maindata))
     choice_facet_scales(.get_choice_facet_scales(input$x, input$y))
     choice_items_dstatscolextrain(.get_choice_items(values$maindata, 
                                                     x = NULL, #avoid xvalues
@@ -359,6 +362,7 @@ function(input, output, session) {
                                 sep = input$fileseparator)
     choice_items(.get_choice_items(values$maindata))
     choice_items_char(.get_choice_items_char(values$maindata))
+    choice_items_num(.get_choice_items_num(values$maindata))
     choice_items_dstatscolextrain(.get_choice_items(values$maindata))
     choice_facet_scales(.get_choice_facet_scales())
     # if(input$ninetyninemissing){
@@ -382,6 +386,7 @@ function(input, output, session) {
     values$maindata[,"time_DT"] <- as.POSIXct(values$maindata[,"Time"],origin ="01-01-1970",format="%H")
     choice_items(.get_choice_items(values$maindata))
     choice_items_char(.get_choice_items_char(values$maindata))
+    choice_items_num(.get_choice_items_num(values$maindata))
     choice_items_dstatscolextrain(.get_choice_items(values$maindata))
     choice_facet_scales(.get_choice_facet_scales())
     mockFileUpload("Sample Data")
@@ -758,9 +763,14 @@ function(input, output, session) {
     if (!is.null(input$catvarin) && length(input$catvarin ) >=1) {
         NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
     }
+    if (!is.null(input$catvarquantin) && input$catvarquantin %in% NAMESTOKEEP2) {
+      selected <- input$catvarquantin
+    } else {
+      selected <- NULL
+    }
     selectInput('catvarquantin',
                 label = 'Recode into Quantile Categories:',
-                choices = NAMESTOKEEP2, multiple=TRUE)
+                choices = NAMESTOKEEP2, multiple=TRUE, selected = selected)
   })
   
   # Show/hide the "N of cut quantiles" input
@@ -788,7 +798,12 @@ function(input, output, session) {
     if (!is.null(input$catvarin) && (length(input$catvarin ) >=1 )) {
         NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
     }
-    selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE)
+    if (!is.null(input$catvar2in) && input$catvar2in %in% NAMESTOKEEP2) {
+      selected <- input$catvar2in
+    } else {
+      selected <- NULL
+    }
+    selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE, selected = selected)
   })
   
   output$catvar3 <- renderUI({
@@ -805,13 +820,22 @@ function(input, output, session) {
     if (!is.null(input$catvar2in) && length(input$catvar2in ) >=1) {
       NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvar2in) ]
     }
-    selectizeInput(  "catvar3in", 'Custom cuts of this variable, defaults to min, median, max before any applied filtering:',
-                     choices =NAMESTOKEEP2 ,multiple=FALSE,
-                     options = list(    placeholder = 'Please select a variable',
-                                        onInitialize = I('function() { this.setValue(""); }')
-                     )
+    # names(NAMESTOKEEP2) <- NAMESTOKEEP2
+    NAMESTOKEEP2 <- c("", NAMESTOKEEP2)
+    if (!is.null(input$catvar3in) && input$catvar3in %in% NAMESTOKEEP2) {
+      selected <- input$catvar3in
+    } else {
+      selected <- NULL
+    }
+    selectInput(
+      "catvar3in",
+      'Custom cuts of this variable, defaults to min, median, max before any applied filtering:',
+      choices = NAMESTOKEEP2 ,
+      multiple = FALSE,
+      selected = selected
     )
   })
+  
   output$ncuts2 <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
@@ -1055,7 +1079,7 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     NUNIQUEDF <- sapply(df, function(x) length(unique(x)))
     NAMESTOKEEP<- names(df)  [ NUNIQUEDF  < input$inmaxlevels ]
-    selectInput("infiltervar1" , "Filter variable (1):",c('None',NAMESTOKEEP ) )
+    selectInput("infiltervar1" , "Filter variable (1):",c('None',NAMESTOKEEP ))
   })
   
   output$filtervar2 <- renderUI({
@@ -1063,7 +1087,7 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     NUNIQUEDF <- sapply(df, function(x) length(unique(x)))
     NAMESTOKEEP<- names(df)  [ NUNIQUEDF  < input$inmaxlevels ]
-    selectInput("infiltervar2" , "Filter variable (2):",c('None',NAMESTOKEEP ) )
+    selectInput("infiltervar2" , "Filter variable (2):",c('None',NAMESTOKEEP ))
   })
   
   output$filtervar3 <- renderUI({
@@ -1071,7 +1095,7 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     NUNIQUEDF <- sapply(df, function(x) length(unique(x)))
     NAMESTOKEEP<- names(df)  [ NUNIQUEDF  < input$inmaxlevels ]
-    selectInput("infiltervar3" , "Filter variable (3):",c('None',NAMESTOKEEP ) )
+    selectInput("infiltervar3" , "Filter variable (3):",c('None',NAMESTOKEEP ))
   })
   
   
@@ -1875,14 +1899,16 @@ function(input, output, session) {
   # Add UI and corresponding outputs+observers for a "merge factor levels"
   # section
   add_factor_merge_box <- function() {
+    req(recodedata3())
     factor_merge_vals$num_current <- factor_merge_vals$num_current + 1
     
     df <- recodedata3()
+    
     factors <- df %>%
       sapply(is.factor) %>%
       which() %>%
       names()
-    
+ 
     insertUI(
       selector = "#factor_merge_placeholder", where = "beforeEnd",
       immediate = TRUE,
@@ -1919,7 +1945,6 @@ function(input, output, session) {
     # when the user selects a factor to merge
     observeEvent(input[[paste0("factor_merge_select_", num1)]], {
       selected_var <- input[[paste0("factor_merge_select_", num1)]]
-      
       if (selected_var == "") {
         shinyjs::hide(paste0("factor_merge_levels_", num1))
         return()
@@ -1928,7 +1953,7 @@ function(input, output, session) {
       
       df <- factor_merge_data()
       levelsvalues <- levels(df[[selected_var]])
-      
+
       updateCheckboxGroupInput(
         session, paste0("factor_merge_levels_", num1),
         choices = levelsvalues,
@@ -2193,7 +2218,12 @@ function(input, output, session) {
     if (length(input$x) > 1  ){
       items= c("xvars",None=".",items[items!="xvars"])
     }
-    selectInput("facetcolextrain", "Extra Column Split:",items)
+    if(!is.null(input$facetcolextrain) && input$facetcolextrain %in% items) {
+      selected <- input$facetcolextrain
+    } else {
+      selected <- NULL
+    }
+    selectInput("facetcolextrain", "Extra Column Split:",items, selected = selected)
   })
   
   output$facet_row_extra <- renderUI({
@@ -2206,7 +2236,12 @@ function(input, output, session) {
     if (length(input$y) > 1  ){
       items= c("yvars",None=".",items[items!="yvars"])
     }
-    selectInput("facetrowextrain", "Extra Row Split:",items)
+    if(!is.null(input$facetrowextrain) && input$facetrowextrain %in% items) {
+      selected <- input$facetrowextrain
+    } else {
+      selected <- NULL
+    }
+    selectInput("facetrowextrain", "Extra Row Split:",items, selected = selected)
   })
 
   output$facetscales <- renderUI({ 
@@ -2274,10 +2309,14 @@ function(input, output, session) {
   output$weight <- renderUI({
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
-    MODEDF <- sapply(df, function(x) is.numeric(x))
-    NAMESTOKEEP2<- names(df)  [ MODEDF ]
-    items= c("None",NAMESTOKEEP2, "yvalues") 
-    selectInput("weightin", "Weight By:",items )
+    items <- choice_items_num()
+    prev_input <- input$weightin
+    if(!is.null(prev_input) && prev_input %in% items) {
+      selected <- prev_input
+    } else {
+      selected <- NULL
+    }
+    selectInput("weightin", "Weight By:",items, selected = selected )
   })
   outputOptions(output, "pointsize", suspendWhenHidden=FALSE)
   outputOptions(output, "fill", suspendWhenHidden=FALSE)
