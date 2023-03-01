@@ -12,6 +12,7 @@ onRestore(function(state) {
   values$maindata <- get("ggquickeda_initdata")
   choice_items(.get_choice_items(values$maindata, state$input$x, state$input$y, state$input$pastevarin))
   choice_items_char(.get_choice_items_char(values$maindata))
+  choice_items_num(.get_choice_items_num(values$maindata))
   choice_facet_scales(.get_choice_facet_scales(state$input$x, state$input$y))
   choice_items_dstatscolextrain(.get_choice_items(values$maindata, pastevarin =  state$input$pastevarin))
 })
