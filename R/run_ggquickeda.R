@@ -3,7 +3,7 @@
 #' Run the \code{ggquickeda} application. 
 #' 
 #' @param data The initial data.frame to load into the application.
-#' @param ... Additional arguments
+#' @param ... Additional arguments for bookmarking
 #' 
 #' @examples
 #' if (interactive()) {
