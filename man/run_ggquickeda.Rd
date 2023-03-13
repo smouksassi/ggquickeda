@@ -4,10 +4,12 @@
 \alias{run_ggquickeda}
 \title{Run the ggquickeda application}
 \usage{
-run_ggquickeda(data = NULL)
+run_ggquickeda(data = NULL, ...)
 }
 \arguments{
 \item{data}{The initial data.frame to load into the application.}
+
+\item{...}{Additional arguments for bookmarking}
 }
 \description{
 Run the \code{ggquickeda} application.
