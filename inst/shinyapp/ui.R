@@ -3,9 +3,8 @@ function(request) {
   useShinyjs(),
   tags$link(rel = "stylesheet", href = "app.css"),
   tags$link(rel = "stylesheet", href = "table1-style.css"),
-  titlePanel(paste("Welcome to ggquickeda!",utils::packageVersion("ggquickeda"))),
   sidebarLayout(
-    sidebarPanel(
+    sidebarPanel(style = "padding-top: 0px;",
       tabsetPanel(id = "sidebar_upper_menus", selected="sidebar_inputs",
         tabPanel("Inputs", value = "sidebar_inputs", 
           tags$style(".shiny-file-input-progress {margin-bottom: 0px;margin-top: 0px}"),
