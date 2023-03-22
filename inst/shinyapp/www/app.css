@@ -1,3 +1,7 @@
+.container-fluid {
+  padding-top:10px;
+}
+
 #save_plot_area {
   display: inline-block;
   margin-top: 15px;
