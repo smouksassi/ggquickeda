@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggquickeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -61,13 +63,10 @@
 <li>
   <a href="../articles/app.html">Shiny App</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/smouksassi/ggquickeda/">
+  <a href="https://github.com/smouksassi/ggquickeda/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -82,35 +81,40 @@
 
       
 
-      </header><script src="Visualizing_Summary_Data_files/header-attrs-2.13/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Visualizing Summary Data</h1>
-                        <h4 class="author">Samer Mouksassi</h4>
+                        <h4 data-toc-skip class="author">Samer
+Mouksassi</h4>
             
-            <h4 class="date">2022-06-16</h4>
+            <h4 data-toc-skip class="date">2023-04-27</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/smouksassi/ggquickeda/blob/master/vignettes/Visualizing_Summary_Data.Rmd"><code>vignettes/Visualizing_Summary_Data.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/smouksassi/ggquickeda/blob/HEAD/vignettes/Visualizing_Summary_Data.Rmd" class="external-link"><code>vignettes/Visualizing_Summary_Data.Rmd</code></a></small>
       <div class="hidden name"><code>Visualizing_Summary_Data.Rmd</code></div>
 
     </div>
 
     
     
-<p>In this vignette we will demo how to visualize data which is only available in summary format as it is coming from a published paper table or figure for example Figure 3 from this paper:</p>
+<p>In this vignette we will demo how to visualize data which is only
+available in summary format as it is coming from a published paper table
+or figure for example Figure 3 from this paper:</p>
 <p>“Remdesivir for the Treatment of Covid-19 — Final Report”</p>
 <div class="figure">
-<img src="nejmfigure.png" style="width:100.0%" alt=""><p class="caption">JH Beigel et al. N Engl J Med 2020. DOI: 10.1056/NEJMoa2007764</p>
+<img src="nejmfigure.png" style="width:100.0%" alt=""><p class="caption">JH Beigel et al. N Engl J Med 2020. DOI:
+10.1056/NEJMoa2007764</p>
 </div>
-<div id="published-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#published-data" class="anchor"></a>Published Data</h3>
-<p>The data has been made available in a csv data file named <code>remdesivirfig3.csv</code></p>
+<div class="section level3">
+<h3 id="published-data">Published Data<a class="anchor" aria-label="anchor" href="#published-data"></a>
+</h3>
+<p>The data has been made available in a csv data file named
+<code>remdesivirfig3.csv</code></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/smouksassi/ggquickeda">ggquickeda</a></span><span class="op">)</span> <span class="co">#load ggquickeda</span>
-<span class="va">remdesivirdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"./remdesivirfig3.csv"</span><span class="op">)</span> <span class="co"># in vignette folder</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">remdesivirdata</span><span class="op">)</span></code></pre></div>
-<table class="table">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/smouksassi/ggquickeda" class="external-link">ggquickeda</a></span><span class="op">)</span> <span class="co">#load ggquickeda</span>
+<span class="va">remdesivirdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"./remdesivirfig3.csv"</span><span class="op">)</span> <span class="co"># in vignette folder</span>
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">remdesivirdata</span><span class="op">)</span></code></pre></div>
+<table style="width:100%;" class="table">
 <colgroup>
 <col width="19%">
 <col width="26%">
@@ -322,23 +326,25 @@
 </tbody>
 </table>
 </div>
-<div id="load-the-data-into-the-app" class="section level3">
-<h3 class="hasAnchor">
-<a href="#load-the-data-into-the-app" class="anchor"></a>Load the Data into the app</h3>
+<div class="section level3">
+<h3 id="load-the-data-into-the-app">Load the Data into the app<a class="anchor" aria-label="anchor" href="#load-the-data-into-the-app"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># from R launch the app with the data </span>
 <span class="co">#run_ggquickeda(remdesivirdata) </span>
 <span class="co"># if you have access the the app on a server browse to the file and load it</span></code></pre></div>
 </div>
-<div id="xy-mappings-and-splitting-options" class="section level3">
-<h3 class="hasAnchor">
-<a href="#xy-mappings-and-splitting-options" class="anchor"></a>X/Y Mappings and Splitting Options</h3>
+<div class="section level3">
+<h3 id="xy-mappings-and-splitting-options">X/Y Mappings and Splitting Options<a class="anchor" aria-label="anchor" href="#xy-mappings-and-splitting-options"></a>
+</h3>
 <ul>
 <li>After the app finishes loading the data:
 <ul>
-<li>Change the mapped <strong>y variable(s)</strong> to ‘Subgroupvalue’<br>
+<li>Change the mapped <strong>y variable(s)</strong> to
+‘Subgroupvalue’<br>
 </li>
-<li>Change the mapped <strong>x variable(s)</strong> to ‘RRLCI’, ‘Recovery Rate Ratio’ and ‘RRUCI’</li>
+<li>Change the mapped <strong>x variable(s)</strong> to ‘RRLCI’,
+‘Recovery Rate Ratio’ and ‘RRUCI’</li>
 </ul>
 </li>
 </ul>
@@ -346,9 +352,11 @@
 <img src="sumdata1.png" style="width:70.0%" alt=""><p class="caption">Summary Data Mapping</p>
 </div>
 <ul>
-<li>Go to <strong>Color/Group/Split/Size/Fill Mappings</strong> below the graph
+<li>Go to <strong>Color/Group/Split/Size/Fill Mappings</strong> below
+the graph
 <ul>
-<li>cancel the automatic <strong>Extra Column Split</strong> and set it to ‘None’</li>
+<li>cancel the automatic <strong>Extra Column Split</strong> and set it
+to ‘None’</li>
 <li>set <strong>Select Row Split</strong> to ‘Subgroup’.</li>
 </ul>
 </li>
@@ -357,24 +365,34 @@
 <img src="sumdata2.png" style="width:70.0%" alt=""><p class="caption">Graph Splitting</p>
 </div>
 </div>
-<div id="facets-options" class="section level3">
-<h3 class="hasAnchor">
-<a href="#facets-options" class="anchor"></a>Facets Options</h3>
+<div class="section level3">
+<h3 id="facets-options">Facets Options<a class="anchor" aria-label="anchor" href="#facets-options"></a>
+</h3>
 <ul>
-<li>Go to <strong>Graph Options</strong> tab and select the <strong>Facets Options</strong> subtab. We will be using advanced Faceting (graph splitting options):
+<li>Go to <strong>Graph Options</strong> tab and select the
+<strong>Facets Options</strong> subtab. We will be using advanced
+Faceting (graph splitting options):
 <ul>
-<li>Set <strong>Facet Scales</strong> to ‘free_y’ (this allows only Subgroupvalue specific to the Subgroup to appear on each graph panel)</li>
-<li>Set <strong>Facet Spaces</strong> to ‘free_y’ (this allows for each panel to occupy space proportional to the number of unique Subgroupvalue)</li>
-<li>Set <strong>Facet Switch to Near Axis</strong> to ‘y’ (this will move the y strips to the left)</li>
-<li>Set <strong>Strip Placement</strong> to ‘outside’ (this will put the y strips to the left of the axis)</li>
+<li>Set <strong>Facet Scales</strong> to ‘free_y’ (this allows only
+Subgroupvalue specific to the Subgroup to appear on each graph
+panel)</li>
+<li>Set <strong>Facet Spaces</strong> to ‘free_y’ (this allows for each
+panel to occupy space proportional to the number of unique
+Subgroupvalue)</li>
+<li>Set <strong>Facet Switch to Near Axis</strong> to ‘y’ (this will
+move the y strips to the left)</li>
+<li>Set <strong>Strip Placement</strong> to ‘outside’ (this will put the
+y strips to the left of the axis)</li>
 </ul>
 </li>
 </ul>
-<p>We still have to set text formatting options using the group of subtabs in the lower part of the page:</p>
+<p>We still have to set text formatting options using the group of
+subtabs in the lower part of the page:</p>
 <ul>
 <li>Default subtab: <strong>Facet Text Size/Angle/Face</strong>
 <ul>
-<li>Set <strong>Facet Text Angle Y</strong> to 0 (if not automatically set)</li>
+<li>Set <strong>Facet Text Angle Y</strong> to 0 (if not automatically
+set)</li>
 <li>Check the <strong>Y strip Text Bold</strong>
 </li>
 </ul>
@@ -382,7 +400,8 @@
 <li>Second subtab: <strong>Facet Text Justification</strong>
 <ul>
 <li>Set <strong>Facet Text Vertical Justification Y</strong> to 1</li>
-<li>Set <strong>Facet Text Horizontal Justification Y</strong> to 0<br>
+<li>Set <strong>Facet Text Horizontal Justification Y</strong> to
+0<br>
 (not shown in the screenshot)</li>
 </ul>
 </li>
@@ -398,11 +417,12 @@
 <img src="sumdata3.png" style="width:100.0%" alt=""><p class="caption">Facet Options</p>
 </div>
 </div>
-<div id="ordering-of-variables-and-values" class="section level3">
-<h3 class="hasAnchor">
-<a href="#ordering-of-variables-and-values" class="anchor"></a>Ordering of Variables and Values</h3>
+<div class="section level3">
+<h3 id="ordering-of-variables-and-values">Ordering of Variables and Values<a class="anchor" aria-label="anchor" href="#ordering-of-variables-and-values"></a>
+</h3>
 <ul>
-<li>Go to main <strong>Inputs</strong> tab and select the <strong>Recode/Reorder Categories</strong> subtab.
+<li>Go to main <strong>Inputs</strong> tab and select the
+<strong>Recode/Reorder Categories</strong> subtab.
 <ul>
 <li>Set <strong>Select a variable(s)</strong> to ‘Subgroup’</li>
 <li>Drag and drop the order of levels as in the screenshot</li>
@@ -412,7 +432,9 @@
 <div class="figure">
 <img src="sumdata4.png" style="width:50.0%" alt=""><p class="caption">reordering of subgroup</p>
 </div>
-<p>While you can add another variable and manually drag and drop we will demo next another possibility to reorder yvalues using a statistic (e.g. median) of another variable (Subroupvalueorder):</p>
+<p>While you can add another variable and manually drag and drop we will
+demo next another possibility to reorder yvalues using a statistic
+(e.g. median) of another variable (Subroupvalueorder):</p>
 <ul>
 <li>Select the <strong>Reorder Facets or axis Levels</strong> subtab
 <ul>
@@ -426,9 +448,9 @@
 <img src="sumdata5.png" style="width:50.0%" alt=""><p class="caption">reordering of Subgroupvalue</p>
 </div>
 </div>
-<div id="remove-default-points-and-add-a-point-interval" class="section level3">
-<h3 class="hasAnchor">
-<a href="#remove-default-points-and-add-a-point-interval" class="anchor"></a>Remove Default Points and add a Point Interval</h3>
+<div class="section level3">
+<h3 id="remove-default-points-and-add-a-point-interval">Remove Default Points and add a Point Interval<a class="anchor" aria-label="anchor" href="#remove-default-points-and-add-a-point-interval"></a>
+</h3>
 <ul>
 <li>Select the <strong>Points, Lines</strong> subtab
 <ul>
@@ -439,8 +461,10 @@
 <ul>
 <li>Set <strong>Median</strong> to ‘Median/PI’</li>
 <li>Set <strong>PI Geom:</strong> to ‘errorbar’</li>
-<li>Set <strong>PI %:</strong> to 1 (this ensures that the errorbar goes from the min to max of values)</li>
-<li>Uncheck <strong>Show lines</strong> and check <strong>Show points</strong>
+<li>Set <strong>PI %:</strong> to 1 (this ensures that the errorbar goes
+from the min to max of values)</li>
+<li>Uncheck <strong>Show lines</strong> and check <strong>Show
+points</strong>
 </li>
 <li>Set <strong>Median(s) Point(s) Size:</strong> to 6</li>
 </ul>
@@ -450,27 +474,38 @@
 <img src="sumdata6.png" style="width:75.0%" alt=""><p class="caption">Median/PI options</p>
 </div>
 </div>
-<div id="setting-titles-captions-and-logging-the-x-axis" class="section level3">
-<h3 class="hasAnchor">
-<a href="#setting-titles-captions-and-logging-the-x-axis" class="anchor"></a>Setting Titles, Captions and Logging the X axis</h3>
+<div class="section level3">
+<h3 id="setting-titles-captions-and-logging-the-x-axis">Setting Titles, Captions and Logging the X axis<a class="anchor" aria-label="anchor" href="#setting-titles-captions-and-logging-the-x-axis"></a>
+</h3>
 <ul>
-<li>Select the <strong>Graph Options</strong> subtab next to the <strong>Inputs</strong> and in the first default subtab <strong>X/Y Axes Log/Labels</strong>:
+<li>Select the <strong>Graph Options</strong> subtab next to the
+<strong>Inputs</strong> and in the first default subtab <strong>X/Y Axes
+Log/Labels</strong>:
 <ul>
-<li>Type in one space in the <strong>Y axis label</strong> (this removes the default label)</li>
-<li>Type in one space in the <strong>X axis label</strong> (this removes the default label)</li>
-<li>Type in “Time to Recovery According to Subgroup” in the <strong>Plot Title</strong> field</li>
-<li>Type in “The widths of the confidence intervals have not been adjusted for multiplicity\nand therefore cannot be used to infer treatment effects.\nRace and ethnic group were reported by the patients.” in the <strong>Plot Caption</strong> field (notice how the\n produce a line break)</li>
+<li>Type in one space in the <strong>Y axis label</strong> (this removes
+the default label)</li>
+<li>Type in one space in the <strong>X axis label</strong> (this removes
+the default label)</li>
+<li>Type in “Time to Recovery According to Subgroup” in the <strong>Plot
+Title</strong> field</li>
+<li>Type in “The widths of the confidence intervals have not been
+adjusted for multiplicity\nand therefore cannot be used to infer
+treatment effects.\nRace and ethnic group were reported by the
+patients.” in the <strong>Plot Caption</strong> field (notice how the\n
+produce a line break)</li>
 <li>Set <strong>X Axis scale</strong> to ‘log10’</li>
 </ul>
 </li>
 </ul>
 <p>And now you should get the below plot !: <img src="sumdata7.png" style="width:100.0%" alt="xy label options"></p>
 </div>
-<div id="example-of-what-is-possible-with-ggquickeda" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example-of-what-is-possible-with-ggquickeda" class="anchor"></a>Example of what is Possible with <code>ggquickeda</code>
+<div class="section level3">
+<h3 id="example-of-what-is-possible-with-ggquickeda">Example of what is Possible with <code>ggquickeda</code><a class="anchor" aria-label="anchor" href="#example-of-what-is-possible-with-ggquickeda"></a>
 </h3>
-<p>As an example of even more advanced features consider the screenshot below where the Intervals Values are shown while the point Size is proportional to the N of patients. Some theme adjustments to customize the plot and legend were also done.</p>
+<p>As an example of even more advanced features consider the screenshot
+below where the Intervals Values are shown while the point Size is
+proportional to the N of patients. Some theme adjustments to customize
+the plot and legend were also done.</p>
 <div class="figure">
 <img src="sumdata8.png" style="width:100.0%" alt=""><p class="caption">more options</p>
 </div>
@@ -486,11 +521,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs.</p>
+  <p></p>
+<p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs, James Craig.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -498,6 +535,8 @@
 
   
 
+
+  
 
   </body>
 </html>

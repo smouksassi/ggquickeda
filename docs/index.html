@@ -22,6 +22,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -34,7 +36,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ggquickeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -64,13 +66,10 @@
 <li>
   <a href="articles/app.html">Shiny App</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/smouksassi/ggquickeda/">
+  <a href="https://github.com/smouksassi/ggquickeda/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -87,85 +86,82 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="ggquickeda-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#ggquickeda-" class="anchor"></a>ggquickeda <img src="reference/figures/ggquickedahex.png" align="right" height="200">
+<div class="section level1">
+<div class="page-header"><h1 id="ggquickeda-">ggquickeda <img src="reference/figures/ggquickedahex.png" style="float:right; height: 200px;"><a class="anchor" aria-label="anchor" href="#ggquickeda-"></a>
 </h1></div>
 <!-- badges: start -->
 
-<div id="description" class="section level3">
-<h3 class="hasAnchor">
-<a href="#description" class="anchor"></a>Description</h3>
+<div class="section level3">
+<h3 id="description">Description<a class="anchor" aria-label="anchor" href="#description"></a>
+</h3>
 <p><code>ggquickeda</code> is an R <code>Shiny</code> app/package providing a graphical user interface (GUI) to <code>ggplot2</code> and <code>table1</code>.</p>
 <p>It enables you to quickly explore your data and to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics of one or multiple variable(s) by column(s) splits and an optional overall column.</p>
 <p>It also has the <code>km</code>, <code>kmband</code> and <code>kmticks</code> geoms/stats to facilitate the plotting of <strong>Kaplan-Meier</strong> Survival curves.</p>
-<p>For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.</p>
+<p>For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank" class="external-link"> Youtube Tutorial </a>.</p>
 </div>
-<div id="installation-and-running-information" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation-and-running-information" class="anchor"></a>Installation and Running information</h3>
-<pre><code># Install from CRAN:
-install.packages("ggquickeda")
+<div class="section level3">
+<h3 id="installation-and-running-information">Installation and Running information<a class="anchor" aria-label="anchor" href="#installation-and-running-information"></a>
+</h3>
+<pre><code><span class="co"># Install from CRAN:</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggquickeda"</span><span class="op">)</span>
 
-# Or the development version from GitHub:
-# install.packages("remotes")
-remotes::install_github("smouksassi/ggquickeda")
-</code></pre>
+<span class="co"># Or the development version from GitHub:</span>
+<span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"smouksassi/ggquickeda"</span><span class="op">)</span></code></pre>
 </div>
-<div id="usage" class="section level3">
-<h3 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h3>
+<div class="section level3">
+<h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h3>
 <p>To use your <strong>pre-existing csv file</strong> launch the shiny app then navigate to your csv file and load it.</p>
-<pre><code><a href="reference/run_ggquickeda.html">run_ggquickeda()</a></code></pre>
+<pre><code><span class="fu"><a href="reference/run_ggquickeda.html">run_ggquickeda</a></span><span class="op">(</span><span class="op">)</span></code></pre>
 <p>To use your <strong>data that is already in R</strong> launch the shiny app with the dataset object as an argument:</p>
-<pre><code>run_ggquickeda(myRdataset)</code></pre>
+<pre><code><span class="fu"><a href="reference/run_ggquickeda.html">run_ggquickeda</a></span><span class="op">(</span><span class="va">myRdataset</span><span class="op">)</span></code></pre>
 <p>The best way to learn how to use ggquickeda is to load a data your are familiar with and start experimenting. Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.</p>
-<p>The package has also the following vignettes:</p>
-<ol>
-<li>
-<a href="https://cran.r-project.org/package=ggquickeda/vignettes/ggquickeda.html" target="_blank"> Introduction to ggquickeda </a>.<br>
-</li>
-<li>
-<a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html" target="_blank"> Additional Plots and Stats with ggquickeda </a>.<br>
-</li>
-<li>
-<a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html" target="_blank"> Visualizing Summary Data with ggquickeda </a>.</li>
-</ol>
+<p>The package has also the following vignettes:<br>
+1. <a href="https://cran.r-project.org/web/packages/ggquickeda/vignettes/introduction_to_ggquickeda.html" target="_blank" class="external-link"> Introduction to ggquickeda </a>.<br>
+2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html" target="_blank" class="external-link"> Additional Plots and Stats with ggquickeda </a>.<br>
+3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html" target="_blank" class="external-link"> Visualizing Summary Data with ggquickeda </a>.</p>
 </div>
-<div id="plot-example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#plot-example" class="anchor"></a>Plot Example</h3>
-<p><img src="articles/img/snapshot1.gif" alt="Example use case 1 with the included sample_df"></p>
+<div class="section level3">
+<h3 id="plot-example">Plot Example<a class="anchor" aria-label="anchor" href="#plot-example"></a>
+</h3>
+<div class="figure">
+<img src="articles/img/snapshot1.gif" alt=""><p class="caption">Example use case 1 with the included sample_df</p>
 </div>
-<div id="table-example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#table-example" class="anchor"></a>Table Example</h3>
-<p><img src="articles/img/snapshot3.1.png" alt="Example Descriptive Stats"></p>
 </div>
-<div id="pairs-plot-example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#pairs-plot-example" class="anchor"></a>Pairs Plot Example</h3>
-<p><img src="articles/img/snapshot4.1.png" alt="Example Illustrating a Pairs Plot"></p>
-<p>The <strong>Export Plots</strong> and <strong>Plot Code</strong> tabs were contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank">Dean Attali</a>. Once a plot is saved in the <strong>X/Y Plot</strong> tab by providing a name and hitting the <strong>Save plot</strong> star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.<br>
+<div class="section level3">
+<h3 id="table-example">Table Example<a class="anchor" aria-label="anchor" href="#table-example"></a>
+</h3>
+<div class="figure">
+<img src="articles/img/snapshot3.1.png" alt=""><p class="caption">Example Descriptive Stats</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="pairs-plot-example">Pairs Plot Example<a class="anchor" aria-label="anchor" href="#pairs-plot-example"></a>
+</h3>
+<div class="figure">
+<img src="articles/img/snapshot4.1.png" alt=""><p class="caption">Example Illustrating a Pairs Plot</p>
+</div>
+<p>The <strong>Export Plots</strong> and <strong>Plot Code</strong> tabs were contributed along many other additions and capabilities by <a href="https://github.com/daattali" target="_blank" class="external-link">Dean Attali</a>. Once a plot is saved in the <strong>X/Y Plot</strong> tab by providing a name and hitting the <strong>Save plot</strong> star button it will become available for exporting. You can export in portrait, landscape and multiple plots per page.<br>
 The <strong>Plot Code</strong> tab will let you look at the source code that generated the plot with the various options. This is helpful to get you to know ggplot2 code.</p>
-<p>The Quick summary statistics tables using <a href="https://github.com/benjaminrich" target="_blank">Benjamin Rich </a> <code>table1</code> package.</p>
+<p>The Quick summary statistics tables using <a href="https://github.com/benjaminrich" target="_blank" class="external-link">Benjamin Rich </a> <code>table1</code> package.</p>
 <p>Here is a high level overview of some of the things that can be done with the various menus:</p>
 </div>
-<div id="details" class="section level2">
-<h2 class="hasAnchor">
-<a href="#details" class="anchor"></a>Details</h2>
-<div id="inputs" class="section level3">
-<h3 class="hasAnchor">
-<a href="#inputs" class="anchor"></a>Inputs</h3>
+<div class="section level2">
+<h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a>
+</h2>
+<div class="section level3">
+<h3 id="inputs">Inputs<a class="anchor" aria-label="anchor" href="#inputs"></a>
+</h3>
 <p><strong>Choose csv file to upload or use sample data</strong> This execute the code to load your csv file or the internal sample_data.csv:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"youruploadeddata.csv"</span>,na.strings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"NA"</span>,<span class="st">"."</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"youruploadeddata.csv"</span>,na.strings <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"NA"</span>,<span class="st">"."</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Once your data is uploaded the first column will be selected for the <strong>y variable(s):</strong> and the second column for the <strong>x variable:</strong>, respectively. A simple scatter plot of y versus x variables is shown. ggquickeda can handle one or more y variable(s) selections and more recently one or more x variable(s). Note that the x variable(x) should be different from those selected for y variable(s). Whether the user selects one or more y variable(s), the y variable(s) data will be automatically stacked (gathered) into two columns named yvalues (values) and yvars (identifier from which variable the value is coming from) and a scatter plot of yvalues versus x, faceted plot by yvars will be shown. Mixing categorical and continuous variables will render all yvalues to be treated as character. The order of the selected y variables(s) matters and can be changed via drag and drop. Selections can be removed by clicking on the small x. When no y variable(s) is selected a histogram (if x variable is continuous) or a barplot (if x variable is categorical) is shown.</p>
 <p>The same applies when ore or more x variable(x) where the values are named (xvalues) and the identifier variable name is (xvars). When no x variable(s) is selected a histogram (if y variable is continuous) or a barplot (if y variable is categorical) is shown.</p>
 </div>
-<div id="data-manipulations" class="section level3">
-<h3 class="hasAnchor">
-<a href="#data-manipulations" class="anchor"></a>Data Manipulations</h3>
+<div class="section level3">
+<h3 id="data-manipulations">Data Manipulations<a class="anchor" aria-label="anchor" href="#data-manipulations"></a>
+</h3>
 <p>After selecting your y variable(s) if any and x variable you can directly proceed into data manipulation within the <strong>Inputs</strong> tab using the following subtabs. Note that the subtabs execution is sequential i.e. each subtab actions are executed in the order they appear. If the user changes an upstream action this will reset the subsequent ones.</p>
 <ul>
 <li>
@@ -174,7 +170,7 @@ The <strong>Plot Code</strong> tab will let you look at the source code that gen
 <li>
 <strong>Recode into Binned Categories:</strong> Recode one or more continuous variable(s) into 2 to 10 categories as chosen with the <strong>N of Cut Breaks</strong> Slider.</li>
 <li>
-<strong>Recode into Quantile Categories:</strong> Recode one or more continuous variables(s) into chosen number <strong>N of Quantiles</strong>. Powered by <code><a href="https://rdrr.io/pkg/table1/man/eqcut.html">table1::eqcut</a></code>. Additional options is to treat zero as separate category (Placebo) and or to treat missing as a separate category as well.</li>
+<strong>Recode into Quantile Categories:</strong> Recode one or more continuous variables(s) into chosen number <strong>N of Quantiles</strong>. Powered by <code><a href="https://rdrr.io/pkg/table1/man/eqcut.html" class="external-link">table1::eqcut</a></code>. Additional options is to treat zero as separate category (Placebo) and or to treat missing as a separate category as well.</li>
 <li>
 <strong>Treat as Categories:</strong> Treat a continuous/numeric variable as a factor.</li>
 <li>
@@ -221,32 +217,27 @@ This subtab is dynamic in the sense that the user can add/remove fields.
 </ul>
 </li>
 <li>
-<strong>Reorder Facets or axis Levels</strong> Enables the user to reorder the yvalues/xvalues using a statistical function (Median, Mean, Minimum, Maximum, length, length of unique values, standard deviation and sum of another variable) with a checkbox to quickly reverse the order, if desired. The user can also manually drag and drop the levels order and change the name of the levels where \n is recognized as a line break.</li>
+<strong>Reorder Facets or axis Levels</strong> Enables the user to reorder the yvalues/xvalues using a statistical function (Median, Mean, Minimum, Maximum, length, length of unique values, standard deviation and sum of another variable) with a checkbox to quickly reverse the order, if desired. The user can also manually drag and drop the levels order and change the name of the levels where is recognized as a line break.</li>
 </ul>
 </div>
-<div id="graph-options" class="section level3">
-<h3 class="hasAnchor">
-<a href="#graph-options" class="anchor"></a>Graph Options</h3>
-<p>Various options to tweak the plot:</p>
-<ul>
-<li>Controlling y and x axis labels, legends and other commonly used theme options.</li>
-<li>Adding a title, subtitle and a caption</li>
-<li>Controlling color palette, themes, reference lines and more.</li>
-</ul>
+<div class="section level3">
+<h3 id="graph-options">Graph Options<a class="anchor" aria-label="anchor" href="#graph-options"></a>
+</h3>
+<p>Various options to tweak the plot: * Controlling y and x axis labels, legends and other commonly used theme options. * Adding a title, subtitle and a caption * Controlling color palette, themes, reference lines and more.</p>
 </div>
-<div id="how-to" class="section level3">
-<h3 class="hasAnchor">
-<a href="#how-to" class="anchor"></a>How To</h3>
+<div class="section level3">
+<h3 id="how-to">How To<a class="anchor" aria-label="anchor" href="#how-to"></a>
+</h3>
 <p>A shorter version of this walk-through within the app.</p>
 </div>
-<div id="xy-plot" class="section level3">
-<h3 class="hasAnchor">
-<a href="#xy-plot" class="anchor"></a>X/Y Plot</h3>
+<div class="section level3">
+<h3 id="xy-plot">X/Y Plot<a class="anchor" aria-label="anchor" href="#xy-plot"></a>
+</h3>
 <p>Main plot is output here with the various options to generate the plot below the possibilities include:</p>
 </div>
-<div id="summaryregression-functions" class="section level3">
-<h3 class="hasAnchor">
-<a href="#summaryregression-functions" class="anchor"></a>Summary/Regression functions</h3>
+<div class="section level3">
+<h3 id="summaryregression-functions">Summary/Regression functions<a class="anchor" aria-label="anchor" href="#summaryregression-functions"></a>
+</h3>
 <ul>
 <li>
 <strong>Points, Lines</strong> Selecting scatter plots points and or lines with control over transparency and more.</li>
@@ -273,12 +264,12 @@ This subtab is dynamic in the sense that the user can add/remove fields.
 <strong>Pairs Plot Options</strong> (only shows when Plot a matrix of all Y variables is on)</li>
 </ul>
 </div>
-<div id="additional-information" class="section level3">
-<h3 class="hasAnchor">
-<a href="#additional-information" class="anchor"></a>Additional Information</h3>
+<div class="section level3">
+<h3 id="additional-information">Additional Information<a class="anchor" aria-label="anchor" href="#additional-information"></a>
+</h3>
 <p>Installing the package should handle the installation of all dependencies.</p>
 <p>The app can also be directly launched using this command:</p>
-<pre><code>shiny::runGitHub('ggquickeda', 'smouksassi', subdir = 'inst/shinyapp')</code></pre>
+<pre><code><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runUrl.html" class="external-link">runGitHub</a></span><span class="op">(</span><span class="st">'ggquickeda'</span>, <span class="st">'smouksassi'</span>, subdir <span class="op">=</span> <span class="st">'inst/shinyapp'</span><span class="op">)</span></code></pre>
 </div>
 </div>
 </div>
@@ -286,56 +277,65 @@ This subtab is dynamic in the sense that the user can add/remove fields.
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=ggquickeda">https://​cloud.r-project.org/​package=ggquickeda</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/smouksassi/ggquickeda/">https://​github.com/​smouksassi/​ggquickeda/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/smouksassi/ggquickeda/issues">https://​github.com/​smouksassi/​ggquickeda/​issues</a>
-</li>
-</ul>
-</div>
-<div class="license">
-<h2>License</h2>
-<ul class="list-unstyled">
-<li>
-<a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
-</li>
-</ul>
-</div>
-<div class="developers">
-<h2>Developers</h2>
-<ul class="list-unstyled">
-<li>Samer Mouksassi <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/https://orcid.org/0000-0002-7152-6654" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Dean Attali <br><small class="roles"> Author </small>  </li>
-<li>Benjamin Rich <br><small class="roles"> Author </small>  <br><small>(provided summary stats tables tab code)</small>
-</li>
-<li>Michael Sachs <br><small class="roles"> Author </small>  <br><small>(provided ggkm code)</small>
-</li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="https://cloud.r-project.org/package=ggquickeda" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/smouksassi/ggquickeda/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/smouksassi/ggquickeda/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="license">
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=ggquickeda"><img src="https://www.r-pkg.org/badges/version-last-release/ggquickeda" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://github.com/smouksassi/ggquickeda/actions"><img src="https://github.com/smouksassi/ggquickeda/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://CRAN.R-project.org/package=ggquickeda"><img src="https://cranlogs.r-pkg.org/badges/ggquickeda" alt="MonthlyDOWNLOADS"></a></li>
-<li><a href="https://CRAN.R-project.org/package=ggquickeda"><img src="https://cranlogs.r-pkg.org/badges/grand-total/ggquickeda" alt="DOWNLOADS"></a></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing ggquickeda</a></li>
+</ul>
 </div>
+
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
+<ul class="list-unstyled">
+<li>Samer Mouksassi <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/https://orcid.org/0000-0002-7152-6654" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Dean Attali <br><small class="roles"> Author </small>  </li>
+<li>Benjamin Rich <br><small class="roles"> Author </small>  </li>
+<li>Michael Sachs <br><small class="roles"> Author </small>  </li>
+<li>James Craig <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://cran.r-project.org/package=ggquickeda" class="external-link"><img src="https://www.r-pkg.org/badges/version-last-release/ggquickeda" alt="CRAN_Status_Badge"></a></li>
+<li><a href="https://github.com/smouksassi/ggquickeda/actions" class="external-link"><img src="https://github.com/smouksassi/ggquickeda/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=ggquickeda" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/ggquickeda" alt="MonthlyDOWNLOADS"></a></li>
+<li><a href="https://CRAN.R-project.org/package=ggquickeda" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/ggquickeda" alt="DOWNLOADS"></a></li>
+</ul>
+</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs.</p>
+  <p></p>
+<p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs, James Craig.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -343,6 +343,8 @@ This subtab is dynamic in the sense that the user can add/remove fields.
 
   
 
+
+  
 
   </body>
 </html>
