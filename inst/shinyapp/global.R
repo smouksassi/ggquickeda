@@ -17,6 +17,7 @@ suppressMessages({
   library(shiny)
   library(shinyjs)
   library(survminer)
+  library(survival)
   library(table1)
   library(tidyr)
 })

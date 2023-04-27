@@ -2366,11 +2366,13 @@ function(request) {
                            checkboxInput('labelignoresize', 'Ignore Mapped Size')),
                          conditionalPanel(
                            " input.addcustomlabel && input.labelignoresize  ",
-                           sliderInput("labelsize", "Label Size:", min=0, max=6, value=c(1),step=0.1)
+                           sliderInput("labelsize", "Label Size:", min=0, max=10, value=c(1),step=0.1)
                          ),
                          conditionalPanel(" input.addcustomlabel ",
-                                            checkboxInput('roundlabeldigits', 'Round the numeric labels digits?')),
-                         conditionalPanel(" input.roundlabeldigits && input.roundlabeldigits",
+                                            checkboxInput('multiply100', 'Multiply by 100?')),
+                         conditionalPanel(" input.addcustomlabel ",
+                                          checkboxInput('roundlabeldigits', 'Round the numeric labels digits?')),
+                         conditionalPanel(" input.addcustomlabel && input.roundlabeldigits",
                                           numericInput("nroundlabeldigits",label = "N Digits",
                                                        value = 0,min=0,max=10) )
                   ),

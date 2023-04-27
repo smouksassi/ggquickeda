@@ -5697,11 +5697,13 @@ function(input, output, session) {
       #### data label Start
       if(input$addcustomlabel&&input$labeltextin != 'None') {
         
+        labelmultiplier <- ifelse(input$multiply100,100,1)
+        
         if ( is.numeric(plotdata[,input$labeltextin]) && input$roundlabeldigits) {
-           label_aes <- aes_string(label = paste("round(",input$labeltextin,",",input$nroundlabeldigits,")"))
+           label_aes <- aes_string(label = paste("round(",paste(labelmultiplier,"*",input$labeltextin),",",input$nroundlabeldigits,")"))
         }
         if ( is.numeric(plotdata[,input$labeltextin]) && !input$roundlabeldigits) {
-          label_aes <- aes_string(label = input$labeltextin)
+          label_aes <- aes_string(label = paste(labelmultiplier,"*",input$labeltextin))
         }          
         if ( !is.numeric(plotdata[,input$labeltextin]) ) {
           label_aes <- aes_string(label = input$labeltextin)
@@ -6429,7 +6431,7 @@ function(input, output, session) {
           input$yaxisformat=="percenty"){ 
         if (!input$addrisktable){
           p <- p  + 
-            scale_y_continuous(labels=percent, expand = expansionobjy)
+            scale_y_continuous(labels=scales::percent_format(), expand = expansionobjy)
         }#norisktable
         if (input$KM!="None" && input$addrisktable){
             p  <- p +
@@ -6506,7 +6508,7 @@ function(input, output, session) {
           !input$customytickslabel &&
           input$yaxisformat=="percenty" ) {
         p <- p  + 
-          scale_y_continuous(labels=percent,
+          scale_y_continuous(labels=scales::percent_format(),
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ) ,
                              expand = expansionobjy) 
@@ -6617,12 +6619,12 @@ function(input, output, session) {
           input$xaxisformat=="percentx"){
         if(!input$customxticks){
           p <- p  + 
-            scale_x_continuous(labels=percent ,
+            scale_x_continuous(labels=scales::percent_format() ,
                                expand = expansionobjx) 
         }
         if(input$customxticks){
           p <- p  + 
-            scale_x_continuous(labels=percent,
+            scale_x_continuous(labels=scales::percent_format(),
                                breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                                minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
                                expand = expansionobjx) 
