@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ggquickeda</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
       </span>
     </div>
 
@@ -61,13 +63,10 @@
 <li>
   <a href="../articles/app.html">Shiny App</a>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
-</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/smouksassi/ggquickeda/">
+  <a href="https://github.com/smouksassi/ggquickeda/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -82,57 +81,89 @@
 
       
 
-      </header><script src="introduction_to_ggquickeda_files/header-attrs-2.13/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to ggquickeda</h1>
-                        <h4 class="author">Samer Mouksassi</h4>
+                        <h4 data-toc-skip class="author">Samer
+Mouksassi</h4>
             
-            <h4 class="date">2022-06-16</h4>
+            <h4 data-toc-skip class="date">2023-04-27</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/smouksassi/ggquickeda/blob/master/vignettes/introduction_to_ggquickeda.Rmd"><code>vignettes/introduction_to_ggquickeda.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/smouksassi/ggquickeda/blob/HEAD/vignettes/introduction_to_ggquickeda.Rmd" class="external-link"><code>vignettes/introduction_to_ggquickeda.Rmd</code></a></small>
       <div class="hidden name"><code>introduction_to_ggquickeda.Rmd</code></div>
 
     </div>
 
     
     
-<p>This R package/Shiny app is a handy interface to <code>ggplot2</code>/<code>table1</code>. It enables you to quickly explore your data to detect trends on the fly. You can do scatter plots, dotplots, boxplots, barplots, histograms, densities and summary statistics tables. For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>. This intro will walk you through making a plot and a summary table.</p>
-<pre><code># Install from CRAN:
-install.packages("ggquickeda")
-library(ggquickeda)
-run_ggquickeda()</code></pre>
-<p>After launching the app with <code><a href="../reference/run_ggquickeda.html">run_ggquickeda()</a></code> and clicking on use sample_data: The app will load the built-in example dataset and map the first column to y variable(s) and the second column to x variable and a simple scatter plot with points will be generated:</p>
+<p>This R package/Shiny app is a handy interface to
+<code>ggplot2</code>/<code>table1</code>. It enables you to quickly
+explore your data to detect trends on the fly. You can do scatter plots,
+dotplots, boxplots, barplots, histograms, densities and summary
+statistics tables. For a quick overview using an older version of the
+app head to this
+<a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank" class="external-link">
+Youtube Tutorial </a>. This intro will walk you through making a plot
+and a summary table.</p>
+<pre><code><span class="co"># Install from CRAN:</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"ggquickeda"</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/smouksassi/ggquickeda" class="external-link">ggquickeda</a></span><span class="op">)</span>
+<span class="fu"><a href="../reference/run_ggquickeda.html">run_ggquickeda</a></span><span class="op">(</span><span class="op">)</span></code></pre>
+<p>After launching the app with <code><a href="../reference/run_ggquickeda.html">run_ggquickeda()</a></code> and
+clicking on use sample_data: The app will load the built-in example
+dataset and map the first column to y variable(s) and the second column
+to x variable and a simple scatter plot with points will be
+generated:</p>
 <div class="figure">
 <img src="intro_1.png" style="width:100.0%" alt=""><p class="caption">select sample_df.csv</p>
 </div>
-<p>We want to look at the Column Conc (concentration of drug in blood) versus Time joining each Subject data with a line:</p>
+<p>We want to look at the Column Conc (concentration of drug in blood)
+versus Time joining each Subject data with a line:</p>
 <ul>
-<li>Change the mapped y variable(s) from ID to Conc (remove the default selection of ID by clicking on the small x and then select Conc)</li>
-<li>Switch to the <strong>Points, Lines</strong> tab and select Lines (you can also choose another symbol for points and play with point sizes and transparency)</li>
+<li>Change the mapped y variable(s) from ID to Conc (remove the default
+selection of ID by clicking on the small x and then select Conc)</li>
+<li>Switch to the <strong>Points, Lines</strong> tab and select Lines
+(you can also choose another symbol for points and play with point sizes
+and transparency)</li>
 </ul>
 <div class="figure">
 <img src="intro_2.png" style="width:100.0%" alt=""><p class="caption">select sample_df.csv</p>
 </div>
-<p>Wait something is wrong! We forgot to tell the app that we want to group by ID.</p>
+<p>Wait something is wrong! We forgot to tell the app that we want to
+group by ID.</p>
 <ul>
-<li>Go Back to <strong>Color/Group/Split/Size/Fill Mappings</strong> tab and select ID for the Group By:</li>
+<li>Go Back to <strong>Color/Group/Split/Size/Fill Mappings</strong> tab
+and select ID for the Group By:</li>
 </ul>
 <div class="figure">
 <img src="intro_3.png" style="width:100.0%" alt=""><p class="caption">select sample_df.csv</p>
 </div>
-<p>While we are on this tab let us map Color By:, Column Split:, Linetype By: and Shape By: to Gender</p>
+<p>While we are on this tab let us map Color By:, Column Split:,
+Linetype By: and Shape By: to Gender</p>
 <div class="figure">
 <img src="intro_4.png" style="width:100.0%" alt=""><p class="caption">select sample_df.csv</p>
 </div>
-<p>Now we want to add a loess trend line: * Go to <strong>Smooth/Linear/Logistic Regressions</strong> and click on the Smooth radio button:</p>
-<p><img src="intro_5.png" style="width:100.0%" alt="select sample_df.csv"> After we made the plot we wanted, now we are interested to do a summary statistics of Weight and Age columns by Gender this will require the following steps: * Change the mapped y variable(s) to Weight, Age and Race * Change the mapped x variable to Gender * Go to <strong>One Row by ID(s)</strong> and select ID so we keep one row by ID<br>
-* Go to <strong>Descriptive Stats</strong> tab (notice how you can use html codes for line breaks, superscript and subscript in the Quick HTML Labels. e.g. Weight<sup>(kg)</sup>)</p>
+<p>Now we want to add a loess trend line: * Go to
+<strong>Smooth/Linear/Logistic Regressions</strong> and click on the
+Smooth radio button:</p>
+<p><img src="intro_5.png" style="width:100.0%" alt="select sample_df.csv"> After we made the plot we wanted, now we
+are interested to do a summary statistics of Weight and Age columns by
+Gender this will require the following steps: * Change the mapped y
+variable(s) to Weight, Age and Race * Change the mapped x variable to
+Gender * Go to <strong>One Row by ID(s)</strong> and select ID so we
+keep one row by ID<br>
+* Go to <strong>Descriptive Stats</strong> tab (notice how you can use
+html codes for line breaks, superscript and subscript in the Quick HTML
+Labels. e.g. Weight<sup>(kg)</sup>)</p>
 <div class="figure">
 <img src="intro_6.png" style="width:100.0%" alt=""><p class="caption">select sample_df.csv</p>
 </div>
-<p>Now launch the application on your own data that is already in R and start exploring it: <strong><code>run_ggquickeda(yourdataname)</code></strong></p>
-<p>Alternatively launch the application without any data and navigate to your csv file: <strong><code><a href="../reference/run_ggquickeda.html">run_ggquickeda()</a></code></strong></p>
+<p>Now launch the application on your own data that is already in R and
+start exploring it:
+<strong><code>run_ggquickeda(yourdataname)</code></strong></p>
+<p>Alternatively launch the application without any data and navigate to
+your csv file: <strong><code><a href="../reference/run_ggquickeda.html">run_ggquickeda()</a></code></strong></p>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -144,11 +175,13 @@ run_ggquickeda()</code></pre>
 
 
       <footer><div class="copyright">
-  <p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs.</p>
+  <p></p>
+<p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs, James Craig.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -156,6 +189,8 @@ run_ggquickeda()</code></pre>
 
   
 
+
+  
 
   </body>
 </html>
