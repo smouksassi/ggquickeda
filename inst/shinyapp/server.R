@@ -763,14 +763,14 @@ function(input, output, session) {
     if (!is.null(input$catvarin) && length(input$catvarin ) >=1) {
         NAMESTOKEEP2 <- NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
     }
-    if (!is.null(input$catvarquantin) && input$catvarquantin %in% NAMESTOKEEP2) {
-      selected <- input$catvarquantin
-    } else {
-      selected <- NULL
-    }
+    # if (!is.null(input$catvarquantin) && input$catvarquantin %in% NAMESTOKEEP2) {
+    #   selected <- input$catvarquantin
+    # } else {
+    #   selected <- NULL
+    # }
     selectInput('catvarquantin',
                 label = 'Recode into Quantile Categories:',
-                choices = NAMESTOKEEP2, multiple=TRUE, selected = selected)
+                choices = NAMESTOKEEP2, multiple=TRUE)
   })
   
   # Show/hide the "N of cut quantiles" input
