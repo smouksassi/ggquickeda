@@ -641,21 +641,23 @@ function(input, output, session) {
     )
     if (input$histogramaddition != "None" &&
         input$histogrambinwidth == "userbinwidth") {
-        items <- c(
-          "Match Histo Count" = "histocount",
-          items
-        )
+      items <- c(
+        "Density" = "Density",
+        "Counts" = "Counts",
+        "Match Histo Count" = "histocount",
+        "Scaled Density" = "Scaled Density",
+        "None" = "None"
+      )
     }
-    if (!is.null(input$densityaddition) && input$densityaddition %in% items) {
-      selected <- input$densityaddition
-    } else {
-      selected <- NULL
-    }
+    # if (!is.null(input$densityaddition) && input$densityaddition %in% items) {
+    #   selected <- input$densityaddition
+    # } else {
+    #   selected <- NULL
+    # }
     updateRadioButtons(
       session,
       "densityaddition",
-      choices = items,
-      selected = selected
+      choices = items
     )
   }, ignoreInit = TRUE)
   
@@ -798,12 +800,12 @@ function(input, output, session) {
     if (!is.null(input$catvarin) && (length(input$catvarin ) >=1 )) {
         NAMESTOKEEP2<-NAMESTOKEEP2 [ !is.element(NAMESTOKEEP2,input$catvarin) ]
     }
-    if (!is.null(input$catvar2in) && input$catvar2in %in% NAMESTOKEEP2) {
-      selected <- input$catvar2in
-    } else {
-      selected <- NULL
-    }
-    selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE, selected = selected)
+    # if (!is.null(input$catvar2in) && input$catvar2in %in% NAMESTOKEEP2) {
+    #   selected <- input$catvar2in
+    # } else {
+    #   selected <- NULL
+    # }
+    selectInput('catvar2in',label = 'Treat as Categories:',choices=NAMESTOKEEP2,multiple=TRUE)
   })
   
   output$catvar3 <- renderUI({
@@ -822,17 +824,16 @@ function(input, output, session) {
     }
     # names(NAMESTOKEEP2) <- NAMESTOKEEP2
     NAMESTOKEEP2 <- c("", NAMESTOKEEP2)
-    if (!is.null(input$catvar3in) && input$catvar3in %in% NAMESTOKEEP2) {
-      selected <- input$catvar3in
-    } else {
-      selected <- NULL
-    }
+    # if (!is.null(input$catvar3in) && input$catvar3in %in% NAMESTOKEEP2) {
+    #   selected <- input$catvar3in
+    # } else {
+    #   selected <- NULL
+    # }
     selectInput(
       "catvar3in",
       'Custom cuts of this variable, defaults to min, median, max before any applied filtering:',
       choices = NAMESTOKEEP2 ,
-      multiple = FALSE,
-      selected = selected
+      multiple = FALSE #,selected = selected
     )
   })
   
