@@ -1,3 +1,7 @@
+# ggquickeda 0.3.9999
+* rebuilt docs fixed broken link
+* 
+
 # ggquickeda 0.3.0
 * added options to drop levels for user discrete shape and linetype scales
 * fixed ggpairs group input and added ability to combine y variables

@@ -2219,7 +2219,7 @@ function(input, output, session) {
       items= c("xvars",None=".",items[items!="xvars"])
     }
     if(!is.null(input$facetcolextrain) && input$facetcolextrain %in% items) {
-      selected <- input$facetcolextrain
+      selected <- items[1]
     } else {
       selected <- NULL
     }
@@ -2237,7 +2237,7 @@ function(input, output, session) {
       items= c("yvars",None=".",items[items!="yvars"])
     }
     if(!is.null(input$facetrowextrain) && input$facetrowextrain %in% items) {
-      selected <- input$facetrowextrain
+      selected <- items[1]
     } else {
       selected <- NULL
     }
