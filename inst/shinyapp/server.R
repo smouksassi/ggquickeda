@@ -7116,13 +7116,15 @@ function(input, output, session) {
       plot.caption.position =input$captionposition,
       plot.tag.position = input$tagposition)
     
-    if (input$labelguides)
+    if (input$labelguides){
       p <-    p +
-      theme(legend.title=element_blank())
-    if (input$themeaspect)
+        theme(legend.title = element_blank())
+    }
+
+    if (input$themeaspect){
       p <-    p +
-      theme(aspect.ratio=input$aspectratio)
-    
+        theme(aspect.ratio = as.numeric(input$aspectratio))
+    }
 
     if (input$customizeaxestitles  ){
       if (input$x_axis_title_size <= 0) {
