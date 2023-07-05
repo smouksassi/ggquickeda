@@ -2159,7 +2159,7 @@ function(input, output, session) {
   output$colourpairs <- renderUI({
     df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    items <- choice_items_char()
+    items <- .get_choice_items_char(df) #choice_items_char()
     #Initializing selected with previous input (can be NULL) is only approach that permits bookmarking of this input
     prev_input <- input$colorpairsin
     if (!is.null(prev_input) && prev_input %in% items) {
@@ -2179,7 +2179,7 @@ function(input, output, session) {
   output$grouppairs <- renderUI({
     df <- rounddata()
     validate(need(!is.null(df), "Please select a data set"))
-    items <- choice_items_char()
+    items <- .get_choice_items_char(df) #choice_items_char()
     #Initializing selected with previous input (can be NULL) is only approach that permits bookmarking of this input
     prev_input <- input$grouppairsin
     if (!is.null(prev_input) && prev_input %in% items) {
