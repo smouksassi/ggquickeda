@@ -943,7 +943,7 @@ function(input, output, session) {
   })
   
   output$contvar <- renderUI({
-    df <-values$maindata
+    df <- recodedata2()
     validate(need(!is.null(df), "Please select a data set"))
     MODEDF <- sapply(df, function(x) !is.numeric(x))
     NAMESTOKEEP2<- names(df)  [ MODEDF ]
@@ -1010,9 +1010,9 @@ function(input, output, session) {
     # get all the "change factor levels" inputs and apply them
     for (i in seq_len(changeLblsVals$numCurrent)) {
       variable_name <- input[[paste0("factor_lvl_change_select_", i)]]
-      if (is.null(variable_name) || variable_name == "") next
+      if (is.null(variable_name) || all(variable_name == "")) next
       labels <- input[[paste0("factor_lvl_change_labels_", i)]]
-      if (is.null(labels) || labels == "") next
+      if (is.null(labels) || all(labels == "")) next
       labels <- gsub("\\\\n", "\\\n", labels)
       if (!variable_name %in% names(df)) next
       
@@ -1033,11 +1033,15 @@ function(input, output, session) {
   })
   
   output$pastevar <- renderUI({
-    items <- choice_items_char()
-    selectizeInput("pastevarin", "Combine the categories of these two variables:",
+    # items <-    c(choice_items_char(),
+    # c(input$catvar2in, input$catvar2in, input$catvar3in,input$catvarquantin)[ ! 
+    # c(input$catvar2in, input$catvar2in, input$catvar3in,input$catvarquantin) %in% c(input$contvarin) ]
+    # )
+    items <-    choice_items_char()
+    selectizeInput("pastevarin", "Combine the categories of these variables:",
                    choices = items, multiple=TRUE,
                    options = list(
-                     maxItems = 2 ,
+                     maxItems = 3 ,
                      placeholder = 'Please select two variables',
                    #  onInitialize = I('function() { this.setValue(""); }'),
                      plugins = list('remove_button', 'drag_drop')
@@ -1048,21 +1052,24 @@ function(input, output, session) {
   pastedata  <- reactive({
     df <- recodedata4()
     validate(need(!is.null(df), "Please select a data set"))
-    df <- df[!names(df)%in%"custombins"]
+    df <- df[!names(df)%in% "custombins"]
     if( !is.null(input$pastevarin)   ) {
-      if (length(input$pastevarin) > 1) {
+      if (length(input$pastevarin) > 1 ) {
         newcol_name <- paste(as.character(input$pastevarin),collapse="_",sep="")
         df <- unite(df, !!newcol_name,
                     c(input$pastevarin[1], input$pastevarin[2] ), remove=FALSE)
         
       }
+      # if (length(input$pastevarin) > 2) {
+      #   newcol_name <- paste(as.character(input$pastevarin),collapse="_",sep="")
+      #   df <- unite(df, !!newcol_name,
+      #               c(input$pastevarin[1], input$pastevarin[2] , input$pastevarin[3]), remove=FALSE)
+      #   
+      # }
     }
     df
   })
-  
-  
-  
-  
+
   outputOptions(output, "pastevar", suspendWhenHidden=FALSE)
   outputOptions(output, "bintext", suspendWhenHidden=FALSE)
   
@@ -1076,7 +1083,7 @@ function(input, output, session) {
   
   
   output$filtervar1 <- renderUI({
-    df <-pastedata()
+    df <- pastedata()
     validate(need(!is.null(df), "Please select a data set"))
     NUNIQUEDF <- sapply(df, function(x) length(unique(x)))
     NAMESTOKEEP<- names(df)  [ NUNIQUEDF  < input$inmaxlevels ]
@@ -1101,7 +1108,7 @@ function(input, output, session) {
   
   
   output$filtervarcont1 <- renderUI({
-    df <-pastedata()
+    df <- pastedata()
     validate(need(!is.null(df), "Please select a data set"))
     NUNIQUEDF <- sapply(df, function(x) length(unique(x)))
     NAMESTOKEEP<- names(df)
@@ -1117,7 +1124,7 @@ function(input, output, session) {
     selectInput("infiltervarcont2" , "Filter continuous (2):",c('None',NAMESTOKEEP ) )
   })
   output$filtervarcont3 <- renderUI({
-    df <-pastedata()
+    df <- pastedata()
     validate(need(!is.null(df), "Please select a data set"))
     NUNIQUEDF <- sapply(df, function(x) length(unique(x)))
     NAMESTOKEEP<- names(df)  
@@ -1125,7 +1132,7 @@ function(input, output, session) {
     selectInput("infiltervarcont3" , "Filter continuous (3):",c('None',NAMESTOKEEP ) )
   })
   output$filtervar1values <- renderUI({
-    df <-pastedata()
+    df <- pastedata()
     validate(need(!is.null(df), "Please select a data set"))
     if(is.null(input$infiltervar1) || input$infiltervar1=="None") {return(NULL)}
     if(!is.null(input$infiltervar1) && input$infiltervar1!="None" )  {
@@ -2171,7 +2178,7 @@ function(input, output, session) {
   })
   
   output$group <- renderUI({
-    df <-values$maindata
+    df <- values$maindata
     validate(need(!is.null(df), "Please select a data set"))
     items <- choice_items()
     selectInput("groupin", "Group By:",items)
@@ -2212,7 +2219,7 @@ function(input, output, session) {
   output$facet_col_extra <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items <- choice_items()[-1]
+    items <- isolate(choice_items()[-1])
     if (length(input$x) < 2 ){
       items= c(None=".",items)
       }

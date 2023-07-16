@@ -70,7 +70,7 @@ function(request) {
                 actionButton("factor_lvl_change_remove", "Remove last", icon("trash"))
               ))
             ),
-            tabPanel("Combine Two Variables",
+            tabPanel("Combine Two/Three Variables",
                      h6("Combined variables can be used for colour, fill, group, size and facets. They cannot be used as X or Y variables."),
                      
                      uiOutput("pastevar")
