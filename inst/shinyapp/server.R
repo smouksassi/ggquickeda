@@ -1034,10 +1034,11 @@ function(input, output, session) {
   
   output$pastevar <- renderUI({
     # items <-    c(choice_items_char(),
-    # c(input$catvar2in, input$catvar2in, input$catvar3in,input$catvarquantin)[ ! 
-    # c(input$catvar2in, input$catvar2in, input$catvar3in,input$catvarquantin) %in% c(input$contvarin) ]
-    # )
-    items <-    choice_items_char()
+    items <-    c(choice_items_char(),setdiff(
+      c(input$catvarin,input$catvar2in,input$catvarquantin,input$catvar3in),
+      c(setdiff(input$contvarin,input$catvar3in))
+    )
+    )
     selectizeInput("pastevarin", "Combine the categories of these variables:",
                    choices = items, multiple=TRUE,
                    options = list(
