@@ -1,6 +1,11 @@
 # ggquickeda 0.3.9999
 * rebuilt docs fixed broken link
-* 
+* fixing some regressions introduced by bookmarking
+* fixing some errors by the new R rules for logical comparison ||
+* fixing error in aspect.ratio not numeric
+* fixing other regression with ggpairs color and group
+* TBD reduce package size ! 
+
 
 # ggquickeda 0.3.0
 * added options to drop levels for user discrete shape and linetype scales

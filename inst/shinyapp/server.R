@@ -2206,14 +2206,14 @@ function(input, output, session) {
     req(values$maindata)
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items <- c("None" = ".", choice_items()[-1]) # Replace 'None' value with 'None' label abd '.' value (for ggplot2 ease)
+    items <- c("None" = ".", choice_items()[-1]) # Replace 'None' value with 'None' label and '.' value (for ggplot2 ease)
     selectInput("facetcolin", "Column Split:", items)
   })
   
   output$facet_row <- renderUI({
     df <-values$maindata
     validate(need(!is.null(df), "Please select a data set"))
-    items <- c("None" = ".", choice_items()[-1]) # Replace 'None' value with 'None' label abd '.' value (for ggplot2 ease)
+    items <- c("None" = ".", choice_items()[-1]) # Replace 'None' value with 'None' label and '.' value (for ggplot2 ease)
     selectInput("facetrowin", "Row Split:", items)
   })
   
@@ -2227,12 +2227,12 @@ function(input, output, session) {
     if (length(input$x) > 1  ){
       items= c("xvars",None=".",items[items!="xvars"])
     }
-    if(!is.null(input$facetcolextrain) && input$facetcolextrain %in% items) {
-      selected <- items[1]
-    } else {
-      selected <- NULL
-    }
-    selectInput("facetcolextrain", "Extra Column Split:",items, selected = selected)
+    # if(!is.null(input$facetcolextrain) && input$facetcolextrain %in% items) {
+    #   selected <- items[1]
+    # } else {
+    #   selected <- NULL
+    # }
+    selectInput("facetcolextrain", "Extra Column Split:",items, selected = items[1])
   })
   
   output$facet_row_extra <- renderUI({
@@ -2245,12 +2245,12 @@ function(input, output, session) {
     if (length(input$y) > 1  ){
       items= c("yvars",None=".",items[items!="yvars"])
     }
-    if(!is.null(input$facetrowextrain) && input$facetrowextrain %in% items) {
-      selected <- items[1]
-    } else {
-      selected <- NULL
-    }
-    selectInput("facetrowextrain", "Extra Row Split:",items, selected = selected)
+    # if(!is.null(input$facetrowextrain) && input$facetrowextrain %in% items) {
+    #   selected <- items[1]
+    # } else {
+    #   selected <- NULL
+    # }
+    selectInput("facetrowextrain", "Extra Row Split:",items, selected =  items[1])
   })
 
   output$facetscales <- renderUI({ 
