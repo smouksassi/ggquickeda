@@ -5583,10 +5583,11 @@ function(input, output, session) {
           
           if(!input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label = paste("italic(R)", ..r.., sep = "~`=`~")),
+              stat_correlation(data=plotdata,
+                       #aes(label = paste("italic(R)", ..r.., sep = "~`=`~")),
+                       aes(label = paste(after_stat(r.label), sep = "*\", \"*")),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype,
+                       method = input$corrtype, small.p=TRUE,
                        geom = input$geomcorr,
                        segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
@@ -5595,11 +5596,12 @@ function(input, output, session) {
           }
           if(input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
-                           ),
+              stat_correlation(data=plotdata,
+                       #aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")),
+                       aes(label = paste(after_stat(r.label),after_stat(p.value.label), sep = "*\", \"*")),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype, small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
                        show.legend = input$correlationshowlegend)
             
@@ -5611,25 +5613,24 @@ function(input, output, session) {
           
           if(!input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label = paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
+              stat_correlation(data=plotdata,
+                       #aes(label = paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
+                       aes(label = paste(after_stat(r.label), sep = "*\", \"*"),group=NULL),
                        position  = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype, small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
                        show.legend = input$correlationshowlegend)
-            
           }
-          
-          
           if(input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
-                           ,group=NULL),
+              stat_correlation(data=plotdata,
+                       #aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep=""),group=NULL),
+                       aes(label = paste(after_stat(r.label),after_stat(p.value.label), sep = "*\", \"*"),group=NULL),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
-                       label.x = label.x.value,
-                       label.y = label.y.value,
+                       method = input$corrtype , small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
+                       label.x = label.x.value,label.y = label.y.value,
                        show.legend = input$correlationshowlegend)
             
           }
@@ -5653,20 +5654,24 @@ function(input, output, session) {
           
           if(!input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label =paste("italic(R)", ..r.., sep = "~`=`~")),
+              stat_correlation(data=plotdata,
+                       #aes(label =paste("italic(R)", ..r.., sep = "~`=`~")),
+                       aes(label = paste(after_stat(r.label), sep = "*\", \"*")),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype, small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
                        color=input$corrcol, show.legend = input$correlationshowlegend)
           }
           
           if(input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="") ),
+              stat_correlation(data=plotdata,
+                       #aes(label = paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="") ),
+                       aes(label = paste(after_stat(r.label),after_stat(p.value.label), sep = "*\", \"*")),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype ,geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype, small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
                        color=input$corrcol, show.legend = input$correlationshowlegend)
           }
@@ -5678,20 +5683,23 @@ function(input, output, session) {
         if(input$addcorrcoeff&&input$addcorrcoeffignoregroup) {
           if(!input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label =paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
+              stat_correlation(data=plotdata,
+                       #aes(label =paste("italic(R)", ..r.., sep = "~`=`~"),group=NULL),
+                       aes(label = paste(after_stat(r.label), sep = "*\", \"*"),group=NULL),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype, small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
                        color= input$corrcol, show.legend = input$correlationshowlegend)
           }
           if(input$addcorrcoeffpvalue){
             p <- p +
-              stat_cor(data=plotdata,
-                       aes(label =paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep="")
-                           , group=NULL),
+              stat_correlation(data=plotdata,
+                       #aes(label =paste("list(italic(R)~`=`~",..r..,",italic(p)~`=`~", ..p..,")",sep=""), group=NULL),
+                       aes(label = paste(after_stat(r.label),after_stat(p.value.label), sep = "*\", \"*"),group=NULL),
                        position = position_identity(),size=input$corrlabelsize,
-                       method = input$corrtype, geom = input$geomcorr,segment.color=NA,direction="y",
+                       method = input$corrtype, small.p=TRUE,
+                       geom = input$geomcorr,segment.color=NA,direction="y",
                        label.x = label.x.value, label.y = label.y.value,
                        color= input$corrcol, show.legend = input$correlationshowlegend)
           }
