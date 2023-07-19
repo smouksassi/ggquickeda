@@ -5,6 +5,7 @@
 [![R-CMD-check](https://github.com/smouksassi/ggquickeda/workflows/R-CMD-check/badge.svg)](https://github.com/smouksassi/ggquickeda/actions)
 [![MonthlyDOWNLOADS](https://cranlogs.r-pkg.org/badges/ggquickeda)](https://CRAN.R-project.org/package=ggquickeda)
 [![DOWNLOADS](https://cranlogs.r-pkg.org/badges/grand-total/ggquickeda)](https://CRAN.R-project.org/package=ggquickeda)
+[![R-CMD-check](https://github.com/smouksassi/ggquickeda/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/smouksassi/ggquickeda/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 

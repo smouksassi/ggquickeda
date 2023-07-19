@@ -1,4 +1,4 @@
-# ggquickeda 0.3.9999
+# ggquickeda 0.3.1
 * rebuilt docs fixed broken link
 * fixing some regressions introduced by bookmarking
 * fixing some errors by the new R rules for logical comparison ||
