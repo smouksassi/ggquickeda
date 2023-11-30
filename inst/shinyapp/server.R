@@ -1043,7 +1043,7 @@ function(input, output, session) {
                    choices = items, multiple=TRUE,
                    options = list(
                      maxItems = 3 ,
-                     placeholder = 'Please select two variables',
+                     placeholder = 'Please select two/three variables',
                    #  onInitialize = I('function() { this.setValue(""); }'),
                      plugins = list('remove_button', 'drag_drop')
                    )
@@ -1055,18 +1055,18 @@ function(input, output, session) {
     validate(need(!is.null(df), "Please select a data set"))
     df <- df[!names(df)%in% "custombins"]
     if( !is.null(input$pastevarin)   ) {
-      if (length(input$pastevarin) > 1 ) {
+      if (length(input$pastevarin) == 2 ) {
         newcol_name <- paste(as.character(input$pastevarin),collapse="_",sep="")
         df <- unite(df, !!newcol_name,
                     c(input$pastevarin[1], input$pastevarin[2] ), remove=FALSE)
         
       }
-      # if (length(input$pastevarin) > 2) {
-      #   newcol_name <- paste(as.character(input$pastevarin),collapse="_",sep="")
-      #   df <- unite(df, !!newcol_name,
-      #               c(input$pastevarin[1], input$pastevarin[2] , input$pastevarin[3]), remove=FALSE)
-      #   
-      # }
+      if (length(input$pastevarin) == 3 ) {
+        newcol_name <- paste(as.character(input$pastevarin),collapse="_",sep="")
+        df <- unite(df, !!newcol_name,
+                    c(input$pastevarin[1], input$pastevarin[2], input$pastevarin[3] ), remove=FALSE)
+        
+      }
     }
     df
   })
