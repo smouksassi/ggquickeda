@@ -4,8 +4,9 @@
 * fixing some errors by the new R rules for logical comparison ||
 * fixing error in aspect.ratio not numeric
 * fixing other regression with ggpairs color and group
+* added support of pasting values of two/three variables
+* added function `ggkmrisktable` to add facettable risk tables, km and split exposures to ntiles
 * TBD reduce package size ! 
-
 
 # ggquickeda 0.3.0
 * added options to drop levels for user discrete shape and linetype scales

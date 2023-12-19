@@ -3859,7 +3859,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI") {
               if (input$geommeanCI== "ribbon"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
                               size=input$meanlinesize,
                               alpha=input$meancitransparency,
@@ -3868,7 +3868,7 @@ function(input, output, session) {
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               size=input$meancierrorbarsize,
                               alpha=input$meancitransparency,
@@ -3908,7 +3908,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI") {
               if (input$geommeanCI== "ribbon"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
                               alpha=input$meancitransparency,
                               col=NA,
@@ -3916,7 +3916,7 @@ function(input, output, session) {
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
                               size=input$meancierrorbarsize,
@@ -4012,7 +4012,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI"){
               if (input$geommeanCI== "ribbon" ){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
                               alpha=input$meancitransparency,
                               col=NA,
@@ -4020,7 +4020,7 @@ function(input, output, session) {
               }
               if (input$geommeanCI== "errorbar" ){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               alpha=input$meancitransparency,
                               col=meancoll,size=input$meancierrorbarsize,
@@ -4060,7 +4060,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI"){
               if (input$geommeanCI== "ribbon"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), 
                               size=input$meanlinesize,
                               alpha=input$meancitransparency,
@@ -4069,7 +4069,7 @@ function(input, output, session) {
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), width = input$errbar,
                               col=meancoll,
                               size=input$meancierrorbarsize,
@@ -4178,7 +4178,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI"){
               if (input$geommeanCI== "ribbon"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                               fun.args=list(conf.int=input$CI), aes(group=NULL),
                               alpha=input$meancitransparency,
                               col=NA,
@@ -4187,7 +4187,7 @@ function(input, output, session) {
               }
               if (input$geommeanCI== "errorbar"){
                 p <- p + 
-                  stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
+                  stat_sum_df("mean_cl_boot", geom = input$geommeanCI, 
                               fun.args=list(conf.int=input$CI),aes(group=NULL), 
                               alpha=input$meancitransparency,
                               size=input$meancierrorbarsize, width = input$errbar,
@@ -4229,7 +4229,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI"){
               if (input$geommeanCI== "ribbon"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), aes(group=NULL),
                             alpha=input$meancitransparency,
                             col=NA,
@@ -4237,7 +4237,7 @@ function(input, output, session) {
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI, 
+                stat_sum_df("mean_cl_boot", geom = input$geommeanCI, 
                             fun.args=list(conf.int=input$CI), aes(group=NULL), 
                             alpha=input$meancitransparency,
                             width = input$errbar,size=input$meancierrorbarsize,
@@ -4340,7 +4340,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI"){
               if (input$geommeanCI== "ribbon"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
                             alpha=input$meancitransparency,
                             col=NA,aes(group=NULL),
@@ -4348,7 +4348,7 @@ function(input, output, session) {
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI),
                             width = input$errbar,
                             alpha=input$meancitransparency,
@@ -4390,7 +4390,7 @@ function(input, output, session) {
             if (input$Mean=="Mean/CI"){
             if (input$geommeanCI== "ribbon"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), 
                             size=input$meanlinesize,
                             alpha=input$meancitransparency,
@@ -4399,7 +4399,7 @@ function(input, output, session) {
             }
             if (input$geommeanCI== "errorbar"){
               p <- p + 
-                stat_sum_df("mean_cl_normal", geom = input$geommeanCI,
+                stat_sum_df("mean_cl_boot", geom = input$geommeanCI,
                             fun.args=list(conf.int=input$CI), width = input$errbar,
                             col=meancoll,aes(group=NULL),
                             size=input$meancierrorbarsize,
@@ -6330,7 +6330,7 @@ function(input, output, session) {
             p <- p +
               scale_y_continuous(expand = expansionobjy,
                                  breaks = waiver(),
-                                 labels = comma) 
+                                 labels = scales::comma_format()) 
           }
         }
         #null x not numeric y
@@ -6438,7 +6438,7 @@ function(input, output, session) {
           !input$customyticks &&
           input$yaxisformat=="scientificy"){
         p <- p  + 
-          scale_y_continuous(labels=comma, expand = expansionobjy)
+          scale_y_continuous(labels=scales::comma_format(), expand = expansionobjy)
         
       }# input$yaxisscale=="lineary" input$yaxisformat=="scientificy"
       if (input$yaxisscale=="lineary" &&
@@ -6512,7 +6512,7 @@ function(input, output, session) {
           !input$customytickslabel &&
           input$yaxisformat=="scientificy" ) {
         p <- p  + 
-          scale_y_continuous(labels=comma,
+          scale_y_continuous(labels=scales::comma_format(),
                              breaks=as.numeric(unique(unlist (strsplit(input$yaxisbreaks, ","))) ),
                              minor_breaks = as.numeric(unique(unlist (strsplit(input$yaxisminorbreaks, ","))) ),
                              expand = expansionobjy ) 
@@ -6618,12 +6618,12 @@ function(input, output, session) {
           input$xaxisformat=="scientificx"){
         if(!input$customyticks){
           p <- p  + 
-            scale_x_continuous(labels=comma ,
+            scale_x_continuous(labels=scales::comma_format() ,
                                expand = expansionobjx) 
         }
         if(input$customxticks){
           p <- p  + 
-            scale_x_continuous(labels=comma,
+            scale_x_continuous(labels=scales::comma_format(),
                                breaks=as.numeric(unique(unlist (strsplit(input$xaxisbreaks, ","))) ),
                                minor_breaks = as.numeric(unique(unlist (strsplit(input$xaxisminorbreaks, ","))) ),
                                expand = expansionobjx)   
