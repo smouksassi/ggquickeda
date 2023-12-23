@@ -137,15 +137,15 @@ lung_long$facetdum <- "(all)"
 #'
 #' Produces a km plot with a facettable risk table in ggplot2
 #' 
-#' @param data Data to use with multiple endpoints stacked
+#' @param data Data to use with multiple endpoints stacked into time, status, endpoint name
 #' @param time name of the column holding the time to event information default to `time`
 #' @param status name of the column holding the event information default to `DV`
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
 #' @param groupvar1 name of the column to group by, default `Endpoint`
 #' @param groupvar2 name of the column to group by in addition to groupvar1, default `expname`
-#' @param groupvar3 name of the column to group by in addition to groupvar1 and groupvar2, default none
+#' @param groupvar3 name of the column to group by in addition to groupvar1 and groupvar2, default "none"
 #' @param exposure_metrics name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`
-#' @param exposure_metric_split Possible values: "median","tertile","quartile","none"
+#' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
 #' @param color_fill name of the column to be used for color/fill default to `exptile`
@@ -153,7 +153,7 @@ lung_long$facetdum <- "(all)"
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
 #' @param nrisk_table_plot TRUE
-#' @param nrisk_table_variables  c("n.risk"),#n.risk pct.risk n.event cum.n.event n.censor
+#' @param nrisk_table_variables one or more from: "n.risk", "pct.risk", "n.event, "cum.n.event, "n.censor"
 #' @param nrisk_table_breaktimeby NULL
 #' @param nrisk_table_textsize 4
 #' @param nrisk_position_scaler 0.2
@@ -166,12 +166,12 @@ lung_long$facetdum <- "(all)"
 #' @param km_ticks TRUE
 #' @param km_band TRUE
 #' @param km_conf_int 0.95
-#' @param km_conf_type default "log", #c("none" , "plain", "log" ,"log-log","logit"),
-#' @param km_conf_lower "usual", #c("peto" , "modified", "usual"),
-#' @param km_median add median survival information "none", "median", "medianci", "table"
+#' @param km_conf_type default one of "log", "plain", "log-log", "logit", "none"
+#' @param km_conf_lower one of "usual", "peto", "modified"
+#' @param km_median add median survival information one of "none", "median", "medianci", "table"
 #' @param km_median_pos when table is chosen where to put it  "left" or "right
 #' @param km_yaxis_position where to put y axis on "left" or "right
-#' @param facet_formula facet formula to be used otherwise groupvar1 ~ groupvar2 or ~ groupvar1
+#' @param facet_formula facet formula to be used otherwise ~ groupvar1 + groupvar2 + groupvar3
 #' @param facet_ncol NULL if not specified the automatic waiver will be used
 #' @param facet_strip_position position in sequence for the variable used in faceting default to c("top","top","top","top")
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
@@ -262,10 +262,11 @@ lung_long$facetdum <- "(all)"
 #' ggkmrisktable(data=lung_long,
 #'              exposure_metrics = c("ph.karno","age"),
 #'              exposure_metric_split = "none",
-#'               color_fill = "none",
+#'               color_fill = "facetdum",
 #'              linetype = "none",
 #'              nrisk_table_variables = c("n.risk", "pct.risk", "n.event", "cum.n.event", "n.censor"),
-#'               km_median = "table"
+#'               km_median = "table",
+#'               nrisk_position_scaler = 0.1
 #'              )             
 #'              
 #'}
@@ -274,11 +275,10 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          time = "time"   , # long format filter to Endpoint of choice
                          status = "DV",
                          endpoint ="Endpoint",
-                         groupvar1 = "Endpoint", #separate fit by endpoint and by expname
-                         groupvar2 ="expname", # and up to three additional grouping
+                         groupvar1 = "Endpoint", 
+                         groupvar2 ="expname", 
                          groupvar3 ="none",
                          exposure_metrics = c("age","ph.karno"),
-                                            # exposures/covariates will be stacked into expname exptile
                          exposure_metric_split = c("median","tertile","quartile","none"),
                          exposure_metric_soc_value = -99,
                          exposure_metric_plac_value = 0,
@@ -287,7 +287,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          xlab = "Time of follow_up",
                          ylab ="Overall survival probability",
                          nrisk_table_plot = TRUE,
-                         nrisk_table_variables = c("n.risk"),#n.risk pct.risk n.event cum.n.event n.censor
+                         nrisk_table_variables = c("n.risk", "pct.risk", "n.event", "cum.n.event", "n.censor"), 
                          nrisk_table_breaktimeby = NULL,
                          nrisk_table_textsize = 4,
                          nrisk_position_scaler = 0.2,
@@ -295,16 +295,16 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          nrisk_offset = 0,
                          nrisk_filterout0 = FALSE,
                          km_logrank_pvalue = FALSE,
-                         km_logrank_pvalue_pos = "left",
-                         km_trans ="identity" ,#"identity","event","cumhaz","cloglog")
+                         km_logrank_pvalue_pos = c("left","right"),
+                         km_trans = c("identity","event","cumhaz","cloglog"),
                          km_ticks = TRUE,
                          km_band  = TRUE,
                          km_conf_int = 0.95,
-                         km_conf_type = "log", #c("none" , "plain", "log" ,"log-log","logit"),
-                         km_conf_lower = "usual", #c("peto" , "modified", "usual"),
-                         km_median = "none", #medianci,median none, table
-                         km_median_pos = "left", # left or right bottom
-                         km_yaxis_position = c("left"),#"right
+                         km_conf_type  = c("log" , "plain", "log" ,"log-log","logit","none"),
+                         km_conf_lower = c("usual","peto" , "modified"),
+                         km_median = c("none","median","medianci","table"),
+                         km_median_pos = c("left","right"),
+                         km_yaxis_position = c("left","right"),
                          facet_formula = NULL,
                          facet_ncol = NULL,
                          facet_strip_position = c("top","top","top","top"),
@@ -321,17 +321,29 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   linetypeinputvar <-  if (linetype   !="none") linetype   else NULL
   survformula      <-  paste( "Surv","(",timevar,",",statusvar,")",sep="")
   
+  exposure_metric_split <- match.arg(exposure_metric_split, several.ok = FALSE)
+  nrisk_table_variables  <- match.arg(nrisk_table_variables, several.ok = TRUE)
+  km_logrank_pvalue_pos <- match.arg(km_logrank_pvalue_pos, several.ok = FALSE)
+  
+  km_trans <- match.arg(km_trans, several.ok = FALSE)
+  km_conf_type <- match.arg(km_conf_type, several.ok = FALSE)
+  km_conf_lower <- match.arg(km_conf_lower, several.ok = FALSE)
+  km_median <- match.arg(km_median, several.ok = FALSE)
+  km_median_pos <- match.arg(km_median_pos, several.ok = FALSE)
+  km_yaxis_position <- match.arg(km_yaxis_position, several.ok = FALSE)
+  
   pval.txt = expname = expvalue = x1lower = x1upper = x1 = y2 = keynumeric = key = n.risk = value = loopvariable = NULL
   
-  if(groupvar1inputvar != groupvar2inputvar) {
-    facet_formula <- if (is.null(facet_formula) ) stats::as.formula( paste("~",groupvar1inputvar,"+",groupvar2inputvar)) else
-      stats::as.formula(facet_formula)
-  }
-  if(groupvar1inputvar == groupvar2inputvar) {
-    facet_formula <- if (is.null(facet_formula) ) stats::as.formula( paste("~",groupvar1inputvar)) else
-      stats::as.formula(facet_formula)
-  }
+  facetvars <- unique(c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar))
+  facetvars <- c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar) [
+    c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar)!= "."]
+  facetvars <- c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar) [
+    c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar)!= "none"]
   
+  
+  facet_formula <- if (is.null(facet_formula) ) stats::as.formula( paste("~",paste(facetvars, collapse=" + "))) else
+      stats::as.formula(facet_formula)
+
   exposure_metric_split <- match.arg(exposure_metric_split)
   data <- data |> 
     dplyr::mutate(none = "none") # needed when no metric are chosen
@@ -476,7 +488,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   }
   if(is.null(nrisk_table_variables) || all(nrisk_table_variables == "") ) {
     risktabledatag<- tidyr::gather(risktabledata,key,value, n.risk, factor_key = TRUE)
-    risktabledatag$keynumeric<- - nrisk_position_scaler* as.numeric(as.factor(risktabledatag$key)) + nrisk_offset
+    risktabledatag$keynumeric<- - nrisk_position_scaler*as.numeric(as.factor(risktabledatag$key)) + nrisk_offset
   }
   
   if (km_median!="none"){
@@ -503,15 +515,15 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   }
   }
   
-  plotkm0 <-   ggplot2::ggplot(data.long,ggplot2::aes_string(time = time,status = status,
+  plotkm0 <-   ggplot2::ggplot(data.long,ggplot2::aes_string(time = time, status = status,
                                             color = colorinputvar, fill = fillinputvar,
                                             linetype = linetypeinputvar))+
     ggplot2::geom_line(stat = "km",trans = km_trans)
   if(km_band){
     plotkm00 <-  plotkm0 +
-      ggplot2::geom_ribbon(stat="kmband",alpha=0.2,color="transparent",
-                  conf.int = km_conf_int,
-                  conf.type = km_conf_type,
+      ggplot2::geom_ribbon(stat = "kmband", alpha=0.2, color = "transparent",
+                  conf.int   = km_conf_int,
+                  conf.type  = km_conf_type,
                   conf.lower = km_conf_lower,
                   error = "greenwood",
                   trans = km_trans) 
@@ -532,11 +544,11 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
         ggplot2::geom_text(data=risktabledatag,
                            ggplot2::aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL),
                 show.legend = FALSE,
-                size= nrisk_table_textsize, 
+                size = nrisk_table_textsize, 
                 position = ggstance::position_dodgev(height =nrisk_position_dodge)
       )+
         ggplot2::geom_hline(yintercept = -nrisk_position_scaler *unique(c(1,(as.numeric(as.factor(
-          risktabledatag$key))+1 )) )  + (abs(nrisk_position_dodge)/2 ) + nrisk_offset
+          risktabledatag$key))+ nrisk_position_scaler )) )  + (abs(nrisk_position_dodge)/2 ) + nrisk_offset
         )
     }
 
@@ -558,11 +570,11 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                 hjust = km_median_pos_hjust, show.legend = FALSE, 
                 color="gray30",inherit.aes = FALSE) +
       ggplot2::geom_text(data=dfmedian |>
-                           dplyr::mutate(none="none",
+                           dplyr::mutate(none = "none",
                                          "{timevar}" := NA,
                                          "{statusvar}" := NA), 
-      ggplot2::aes(    x=km_median_pos_x, y=0.09*as.numeric(as.factor(get(!!color_fill))),
-                   label=paste0(get(!!color_fill), ": ",
+      ggplot2::aes(    x = km_median_pos_x, y = 0.09*as.numeric(as.factor(get(!!color_fill))),
+                   label = paste0(get(!!color_fill), ": ",
                                 sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper)
                                 )), 
                 hjust = km_median_pos_hjust,

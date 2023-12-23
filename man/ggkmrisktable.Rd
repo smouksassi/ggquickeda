@@ -11,6 +11,7 @@ ggkmrisktable(
   endpoint = "Endpoint",
   groupvar1 = "Endpoint",
   groupvar2 = "expname",
+  groupvar3 = "none",
   exposure_metrics = c("age", "ph.karno"),
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
@@ -20,7 +21,7 @@ ggkmrisktable(
   xlab = "Time of follow_up",
   ylab = "Overall survival probability",
   nrisk_table_plot = TRUE,
-  nrisk_table_variables = c("n.risk"),
+  nrisk_table_variables = c("n.risk", "pct.risk", "n.event", "cum.n.event", "n.censor"),
   nrisk_table_breaktimeby = NULL,
   nrisk_table_textsize = 4,
   nrisk_position_scaler = 0.2,
@@ -28,15 +29,16 @@ ggkmrisktable(
   nrisk_offset = 0,
   nrisk_filterout0 = FALSE,
   km_logrank_pvalue = FALSE,
-  km_trans = "identity",
+  km_logrank_pvalue_pos = c("left", "right"),
+  km_trans = c("identity", "event", "cumhaz", "cloglog"),
   km_ticks = TRUE,
   km_band = TRUE,
   km_conf_int = 0.95,
-  km_conf_type = "log",
-  km_conf_lower = "usual",
-  km_median = "none",
-  km_median_pos = "left",
-  km_yaxis_position = c("left"),
+  km_conf_type = c("log", "plain", "log", "log-log", "logit", "none"),
+  km_conf_lower = c("usual", "peto", "modified"),
+  km_median = c("none", "median", "medianci", "table"),
+  km_median_pos = c("left", "right"),
+  km_yaxis_position = c("left", "right"),
   facet_formula = NULL,
   facet_ncol = NULL,
   facet_strip_position = c("top", "top", "top", "top"),
@@ -44,7 +46,7 @@ ggkmrisktable(
 )
 }
 \arguments{
-\item{data}{Data to use with multiple endpoints stacked}
+\item{data}{Data to use with multiple endpoints stacked into time, status, endpoint name}
 
 \item{time}{name of the column holding the time to event information default to `time`}
 
@@ -52,13 +54,15 @@ ggkmrisktable(
 
 \item{endpoint}{name of the column holding the name/key of the endpoint default to `Endpoint`}
 
-\item{groupvar1}{name of the column to group by default `Endpoint`}
+\item{groupvar1}{name of the column to group by, default `Endpoint`}
 
-\item{groupvar2}{name of the column to group by in addition to endpoint and `expname`}
+\item{groupvar2}{name of the column to group by in addition to groupvar1, default `expname`}
+
+\item{groupvar3}{name of the column to group by in addition to groupvar1 and groupvar2, default "none"}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`}
 
-\item{exposure_metric_split}{Possible values: "median","tertile","quartile","none"}
+\item{exposure_metric_split}{one of "median", "tertile", "quartile", "none"}
 
 \item{exposure_metric_soc_value}{special exposure code for standard of care default -99}
 
@@ -74,7 +78,7 @@ ggkmrisktable(
 
 \item{nrisk_table_plot}{TRUE}
 
-\item{nrisk_table_variables}{c("n.risk"),#n.risk pct.risk n.event cum.n.event n.censor}
+\item{nrisk_table_variables}{one or more from: "n.risk", "pct.risk", "n.event, "cum.n.event, "n.censor"}
 
 \item{nrisk_table_breaktimeby}{NULL}
 
@@ -90,7 +94,9 @@ ggkmrisktable(
 
 \item{km_logrank_pvalue}{FALSE}
 
-\item{km_trans}{#"identity","event","cumhaz","cloglog")}
+\item{km_logrank_pvalue_pos}{"left" or "right"}
+
+\item{km_trans}{one of "identity","event","cumhaz","cloglog"}
 
 \item{km_ticks}{TRUE}
 
@@ -98,21 +104,21 @@ ggkmrisktable(
 
 \item{km_conf_int}{0.95}
 
-\item{km_conf_type}{"log", #c("none" , "plain", "log" ,"log-log","logit"),}
+\item{km_conf_type}{default one of "log", "plain", "log-log", "logit", "none"}
 
-\item{km_conf_lower}{"usual", #c("peto" , "modified", "usual"),}
+\item{km_conf_lower}{one of "usual", "peto", "modified"}
 
-\item{km_median}{add median survival information "none", "median", "medianci", "table"}
+\item{km_median}{add median survival information one of "none", "median", "medianci", "table"}
 
-\item{km_median_pos}{when table is chosen where to put it}
+\item{km_median_pos}{when table is chosen where to put it  "left" or "right}
 
 \item{km_yaxis_position}{where to put y axis on "left" or "right}
 
-\item{facet_formula}{facet formula}
+\item{facet_formula}{facet formula to be used otherwise ~ groupvar1 + groupvar2 + groupvar3}
 
-\item{facet_ncol}{NULL}
+\item{facet_ncol}{NULL if not specified the automatic waiver will be used}
 
-\item{facet_strip_position}{c("top","top","top","top")}
+\item{facet_strip_position}{position in sequence for the variable used in faceting default to c("top","top","top","top")}
 
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
 }
@@ -164,12 +170,13 @@ ggkmrisktable(data = lung_long, time= "time", status ="DV",
              nrisk_table_breaktimeby = 200,
              facet_ncol = 3,
              facet_formula = ~expname)
+\dontrun{
 #Example 3
 ggkmrisktable(data = lung_long, time = "time", status = "DV",
              exposure_metrics =c("ph.karno","pat.karno"),
              exposure_metric_split = "median",
              color_fill = "exptile",
-             linetype = "none",
+             linetype = "exptile",
              groupvar1 = "Endpoint",
              groupvar2 = "expname",
              xlab = "Time of follow_up",
@@ -191,12 +198,26 @@ ggkmrisktable(data=lung_long,
              status ="DV",
              color_fill = "ph.ecog",
              linetype = "ph.ecog",
-             groupvar1 = "exptile",
+             groupvar1 = "Endpoint",
              groupvar2 = "expname",
+             groupvar3 = "exptile",
              nrisk_filterout0 = FALSE,
              nrisk_table_breaktimeby = 200,
              km_logrank_pvalue = TRUE,
              km_median = "table",
              km_median_pos = "left",
              facet_formula = ~expname+exptile)
+#Example 5
+
+ggkmrisktable(data=lung_long,
+             exposure_metrics = c("ph.karno","age"),
+             exposure_metric_split = "none",
+              color_fill = "facetdum",
+             linetype = "none",
+             nrisk_table_variables = c("n.risk", "pct.risk", "n.event", "cum.n.event", "n.censor"),
+              km_median = "table",
+              nrisk_position_scaler = 0.1
+             )             
+             
+}
 }
