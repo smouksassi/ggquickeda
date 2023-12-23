@@ -76,6 +76,7 @@
 <span>  endpoint <span class="op">=</span> <span class="st">"Endpoint"</span>,</span>
 <span>  groupvar1 <span class="op">=</span> <span class="st">"Endpoint"</span>,</span>
 <span>  groupvar2 <span class="op">=</span> <span class="st">"expname"</span>,</span>
+<span>  groupvar3 <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"ph.karno"</span><span class="op">)</span>,</span>
 <span>  exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"tertile"</span>, <span class="st">"quartile"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span>
@@ -85,7 +86,7 @@
 <span>  xlab <span class="op">=</span> <span class="st">"Time of follow_up"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Overall survival probability"</span>,</span>
 <span>  nrisk_table_plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  nrisk_table_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n.risk"</span><span class="op">)</span>,</span>
+<span>  nrisk_table_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n.risk"</span>, <span class="st">"pct.risk"</span>, <span class="st">"n.event"</span>, <span class="st">"cum.n.event"</span>, <span class="st">"n.censor"</span><span class="op">)</span>,</span>
 <span>  nrisk_table_breaktimeby <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  nrisk_table_textsize <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  nrisk_position_scaler <span class="op">=</span> <span class="fl">0.2</span>,</span>
@@ -93,15 +94,16 @@
 <span>  nrisk_offset <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  nrisk_filterout0 <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  km_logrank_pvalue <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  km_trans <span class="op">=</span> <span class="st">"identity"</span>,</span>
+<span>  km_logrank_pvalue_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
+<span>  km_trans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"event"</span>, <span class="st">"cumhaz"</span>, <span class="st">"cloglog"</span><span class="op">)</span>,</span>
 <span>  km_ticks <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  km_band <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  km_conf_int <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  km_conf_type <span class="op">=</span> <span class="st">"log"</span>,</span>
-<span>  km_conf_lower <span class="op">=</span> <span class="st">"usual"</span>,</span>
-<span>  km_median <span class="op">=</span> <span class="st">"none"</span>,</span>
-<span>  km_median_pos <span class="op">=</span> <span class="st">"left"</span>,</span>
-<span>  km_yaxis_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span><span class="op">)</span>,</span>
+<span>  km_conf_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"log"</span>, <span class="st">"plain"</span>, <span class="st">"log"</span>, <span class="st">"log-log"</span>, <span class="st">"logit"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  km_conf_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"usual"</span>, <span class="st">"peto"</span>, <span class="st">"modified"</span><span class="op">)</span>,</span>
+<span>  km_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"median"</span>, <span class="st">"medianci"</span>, <span class="st">"table"</span><span class="op">)</span>,</span>
+<span>  km_median_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
+<span>  km_yaxis_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
 <span>  facet_formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  facet_ncol <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  facet_strip_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"top"</span>, <span class="st">"top"</span>, <span class="st">"top"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
@@ -112,7 +114,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>data</dt>
-<dd><p>Data to use with multiple endpoints stacked</p></dd>
+<dd><p>Data to use with multiple endpoints stacked into time, status, endpoint name</p></dd>
 
 
 <dt>time</dt>
@@ -128,11 +130,15 @@
 
 
 <dt>groupvar1</dt>
-<dd><p>name of the column to group by default `Endpoint`</p></dd>
+<dd><p>name of the column to group by, default `Endpoint`</p></dd>
 
 
 <dt>groupvar2</dt>
-<dd><p>name of the column to group by in addition to endpoint and `expname`</p></dd>
+<dd><p>name of the column to group by in addition to groupvar1, default `expname`</p></dd>
+
+
+<dt>groupvar3</dt>
+<dd><p>name of the column to group by in addition to groupvar1 and groupvar2, default "none"</p></dd>
 
 
 <dt>exposure_metrics</dt>
@@ -140,7 +146,7 @@
 
 
 <dt>exposure_metric_split</dt>
-<dd><p>Possible values: "median","tertile","quartile","none"</p></dd>
+<dd><p>one of "median", "tertile", "quartile", "none"</p></dd>
 
 
 <dt>exposure_metric_soc_value</dt>
@@ -172,7 +178,7 @@
 
 
 <dt>nrisk_table_variables</dt>
-<dd><p>c("n.risk"),#n.risk pct.risk n.event cum.n.event n.censor</p></dd>
+<dd><p>one or more from: "n.risk", "pct.risk", "n.event, "cum.n.event, "n.censor"</p></dd>
 
 
 <dt>nrisk_table_breaktimeby</dt>
@@ -203,8 +209,12 @@
 <dd><p>FALSE</p></dd>
 
 
+<dt>km_logrank_pvalue_pos</dt>
+<dd><p>"left" or "right"</p></dd>
+
+
 <dt>km_trans</dt>
-<dd><p>#"identity","event","cumhaz","cloglog")</p></dd>
+<dd><p>one of "identity","event","cumhaz","cloglog"</p></dd>
 
 
 <dt>km_ticks</dt>
@@ -220,19 +230,19 @@
 
 
 <dt>km_conf_type</dt>
-<dd><p>"log", #c("none" , "plain", "log" ,"log-log","logit"),</p></dd>
+<dd><p>default one of "log", "plain", "log-log", "logit", "none"</p></dd>
 
 
 <dt>km_conf_lower</dt>
-<dd><p>"usual", #c("peto" , "modified", "usual"),</p></dd>
+<dd><p>one of "usual", "peto", "modified"</p></dd>
 
 
 <dt>km_median</dt>
-<dd><p>add median survival information "none", "median", "medianci", "table"</p></dd>
+<dd><p>add median survival information one of "none", "median", "medianci", "table"</p></dd>
 
 
 <dt>km_median_pos</dt>
-<dd><p>when table is chosen where to put it</p></dd>
+<dd><p>when table is chosen where to put it  "left" or "right</p></dd>
 
 
 <dt>km_yaxis_position</dt>
@@ -240,15 +250,15 @@
 
 
 <dt>facet_formula</dt>
-<dd><p>facet formula</p></dd>
+<dd><p>facet formula to be used otherwise ~ groupvar1 + groupvar2 + groupvar3</p></dd>
 
 
 <dt>facet_ncol</dt>
-<dd><p>NULL</p></dd>
+<dd><p>NULL if not specified the automatic waiver will be used</p></dd>
 
 
 <dt>facet_strip_position</dt>
-<dd><p>c("top","top","top","top")</p></dd>
+<dd><p>position in sequence for the variable used in faceting default to c("top","top","top","top")</p></dd>
 
 
 <dt>theme_certara</dt>
@@ -366,12 +376,13 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `position` argument in `strip_split()` is being recycled to match the length of the facetting variables,  as provided in the `facets`, `rows`, or `cols` arguments in the facet function.</span>
 <span class="r-plt img"><img src="ggkmrisktable-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co">#Example 3</span></span></span>
 <span class="r-in"><span><span class="fu">ggkmrisktable</span><span class="op">(</span>data <span class="op">=</span> <span class="va">lung_long</span>, time <span class="op">=</span> <span class="st">"time"</span>, status <span class="op">=</span> <span class="st">"DV"</span>,</span></span>
 <span class="r-in"><span>             exposure_metrics <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ph.karno"</span>,<span class="st">"pat.karno"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             exposure_metric_split <span class="op">=</span> <span class="st">"median"</span>,</span></span>
 <span class="r-in"><span>             color_fill <span class="op">=</span> <span class="st">"exptile"</span>,</span></span>
-<span class="r-in"><span>             linetype <span class="op">=</span> <span class="st">"none"</span>,</span></span>
+<span class="r-in"><span>             linetype <span class="op">=</span> <span class="st">"exptile"</span>,</span></span>
 <span class="r-in"><span>             groupvar1 <span class="op">=</span> <span class="st">"Endpoint"</span>,</span></span>
 <span class="r-in"><span>             groupvar2 <span class="op">=</span> <span class="st">"expname"</span>,</span></span>
 <span class="r-in"><span>             xlab <span class="op">=</span> <span class="st">"Time of follow_up"</span>,</span></span>
@@ -385,38 +396,6 @@
 <span class="r-in"><span>             nrisk_table_breaktimeby <span class="op">=</span> <span class="fl">200</span>,</span></span>
 <span class="r-in"><span>             facet_ncol <span class="op">=</span> <span class="fl">3</span>,</span></span>
 <span class="r-in"><span>             facet_formula <span class="op">=</span> <span class="op">~</span><span class="va">expname</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `position` argument in `strip_split()` is being recycled to match the length of the facetting variables,  as provided in the `facets`, `rows`, or `cols` arguments in the facet function.</span>
-<span class="r-plt img"><img src="ggkmrisktable-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co">#Example 4</span></span></span>
 <span class="r-in"><span><span class="fu">ggkmrisktable</span><span class="op">(</span>data<span class="op">=</span><span class="va">lung_long</span>,</span></span>
 <span class="r-in"><span>             exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ph.karno"</span>,<span class="st">"age"</span><span class="op">)</span>,</span></span>
@@ -425,76 +404,28 @@
 <span class="r-in"><span>             status <span class="op">=</span><span class="st">"DV"</span>,</span></span>
 <span class="r-in"><span>             color_fill <span class="op">=</span> <span class="st">"ph.ecog"</span>,</span></span>
 <span class="r-in"><span>             linetype <span class="op">=</span> <span class="st">"ph.ecog"</span>,</span></span>
-<span class="r-in"><span>             groupvar1 <span class="op">=</span> <span class="st">"exptile"</span>,</span></span>
+<span class="r-in"><span>             groupvar1 <span class="op">=</span> <span class="st">"Endpoint"</span>,</span></span>
 <span class="r-in"><span>             groupvar2 <span class="op">=</span> <span class="st">"expname"</span>,</span></span>
+<span class="r-in"><span>             groupvar3 <span class="op">=</span> <span class="st">"exptile"</span>,</span></span>
 <span class="r-in"><span>             nrisk_filterout0 <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>             nrisk_table_breaktimeby <span class="op">=</span> <span class="fl">200</span>,</span></span>
 <span class="r-in"><span>             km_logrank_pvalue <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>             km_median <span class="op">=</span> <span class="st">"table"</span>,</span></span>
 <span class="r-in"><span>             km_median_pos <span class="op">=</span> <span class="st">"left"</span>,</span></span>
 <span class="r-in"><span>             facet_formula <span class="op">=</span> <span class="op">~</span><span class="va">expname</span><span class="op">+</span><span class="va">exptile</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The following aesthetics were dropped during statistical transformation: <span style="color: #00BB00;">status</span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> This can happen when ggplot fails to infer the correct grouping structure in</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   the data.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Did you forget to specify a `group` aesthetic or to convert a numerical</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   variable into a factor?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `position` argument in `strip_split()` is being recycled to match the length of the facetting variables,  as provided in the `facets`, `rows`, or `cols` arguments in the facet function.</span>
-<span class="r-plt img"><img src="ggkmrisktable-4.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co">#Example 5</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">ggkmrisktable</span><span class="op">(</span>data<span class="op">=</span><span class="va">lung_long</span>,</span></span>
+<span class="r-in"><span>             exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ph.karno"</span>,<span class="st">"age"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>             exposure_metric_split <span class="op">=</span> <span class="st">"none"</span>,</span></span>
+<span class="r-in"><span>              color_fill <span class="op">=</span> <span class="st">"facetdum"</span>,</span></span>
+<span class="r-in"><span>             linetype <span class="op">=</span> <span class="st">"none"</span>,</span></span>
+<span class="r-in"><span>             nrisk_table_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n.risk"</span>, <span class="st">"pct.risk"</span>, <span class="st">"n.event"</span>, <span class="st">"cum.n.event"</span>, <span class="st">"n.censor"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>              km_median <span class="op">=</span> <span class="st">"table"</span>,</span></span>
+<span class="r-in"><span>              nrisk_position_scaler <span class="op">=</span> <span class="fl">0.1</span></span></span>
+<span class="r-in"><span>             <span class="op">)</span>             </span></span>
+<span class="r-in"><span>             </span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </div>
