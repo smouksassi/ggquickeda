@@ -157,7 +157,7 @@ lung_long$facetdum <- "(all)"
 #' @param nrisk_table_breaktimeby NULL
 #' @param nrisk_table_textsize 4
 #' @param nrisk_position_scaler 0.2
-#' @param nrisk_position_dodge 0.2
+#' @param nrisk_position_dodge 0.2, negative values will reverse the order
 #' @param nrisk_offset 0
 #' @param nrisk_filterout0 FALSE
 #' @param km_logrank_pvalue FALSE
@@ -280,7 +280,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          groupvar2 ="expname", 
                          groupvar3 ="none",
                          exposure_metrics = c("age","ph.karno"),
-                         exposure_metric_split = c("median","tertile","quartile","none")[1],
+                         exposure_metric_split = c("median","tertile","quartile","none"),
                          exposure_metric_soc_value = -99,
                          exposure_metric_plac_value = 0,
                          color_fill = "exptile",
@@ -634,7 +634,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
       ggrepel::geom_label_repel(data = dfmedian, ggplot2::aes(x= x1 , y= y2 ,label =sprintf("%#.3g",x1),
                                               status=NULL,time=NULL),show.legend = FALSE,
                          label.size = NA,direction="both",
-                         nudge_y = -0.1,segment.size = 0.5,
+                         nudge_y = -0.1, segment.size = 0.5,
                          arrow = ggplot2::arrow(length = ggplot2::unit(0.03, "npc"), type = "closed", ends = "first"),
                          alpha = 1,label.padding=.1, force = 5,
                          na.rm=TRUE,
@@ -668,11 +668,12 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     
     plotkm3 <-  plotkm2 +
       ggplot2::geom_text(data=logrank_test_by_endpoint,
-                         ggplot2::aes(x=km_logrank_pvalue_x,
-                                      y=Inf,label=pval.txt),vjust=1,hjust=km_logrank_pvalue_x_hjust,
-                inherit.aes = FALSE)
+                         ggplot2::aes(x = km_logrank_pvalue_x,
+                                      y = Inf,label = pval.txt),
+                         vjust = 1, hjust = km_logrank_pvalue_x_hjust, color = "gray30",
+                         inherit.aes = FALSE)
     plotkm <- plotkm3
-  }
+  } 
   if(!km_logrank_pvalue) {
     plotkm <- plotkm2
   }

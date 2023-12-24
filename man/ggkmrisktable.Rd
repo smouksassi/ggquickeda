@@ -13,7 +13,7 @@ ggkmrisktable(
   groupvar2 = "expname",
   groupvar3 = "none",
   exposure_metrics = c("age", "ph.karno"),
-  exposure_metric_split = c("median", "tertile", "quartile", "none")[1],
+  exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
   color_fill = "exptile",
