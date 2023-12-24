@@ -78,7 +78,7 @@
 <span>  groupvar2 <span class="op">=</span> <span class="st">"expname"</span>,</span>
 <span>  groupvar3 <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"ph.karno"</span><span class="op">)</span>,</span>
-<span>  exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"tertile"</span>, <span class="st">"quartile"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"tertile"</span>, <span class="st">"quartile"</span>, <span class="st">"none"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span>
 <span>  exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  color_fill <span class="op">=</span> <span class="st">"exptile"</span>,</span>
@@ -102,7 +102,8 @@
 <span>  km_conf_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"log"</span>, <span class="st">"plain"</span>, <span class="st">"log"</span>, <span class="st">"log-log"</span>, <span class="st">"logit"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  km_conf_lower <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"usual"</span>, <span class="st">"peto"</span>, <span class="st">"modified"</span><span class="op">)</span>,</span>
 <span>  km_median <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"median"</span>, <span class="st">"medianci"</span>, <span class="st">"table"</span><span class="op">)</span>,</span>
-<span>  km_median_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
+<span>  km_median_table_pos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
+<span>  km_median_table_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"default"</span>, <span class="st">"reverse"</span><span class="op">)</span>,</span>
 <span>  km_yaxis_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
 <span>  facet_formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  facet_ncol <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -241,8 +242,12 @@
 <dd><p>add median survival information one of "none", "median", "medianci", "table"</p></dd>
 
 
-<dt>km_median_pos</dt>
+<dt>km_median_table_pos</dt>
 <dd><p>when table is chosen where to put it  "left" or "right</p></dd>
+
+
+<dt>km_median_table_order</dt>
+<dd><p>when table is chosen the order of the entries "default" or "reverse"</p></dd>
 
 
 <dt>km_yaxis_position</dt>
@@ -328,7 +333,7 @@
 <span class="r-in"><span>             nrisk_table_variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n.event"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>             km_trans <span class="op">=</span> <span class="st">"event"</span>,</span></span>
 <span class="r-in"><span>             km_median <span class="op">=</span> <span class="st">"table"</span>,</span></span>
-<span class="r-in"><span>             km_median_pos <span class="op">=</span> <span class="st">"right"</span>,</span></span>
+<span class="r-in"><span>             km_median_table_pos <span class="op">=</span> <span class="st">"right"</span>,</span></span>
 <span class="r-in"><span>             km_logrank_pvalue <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>             km_band <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>             nrisk_table_breaktimeby <span class="op">=</span> <span class="fl">200</span>,</span></span>
@@ -349,7 +354,7 @@
 <span class="r-in"><span>             nrisk_table_breaktimeby <span class="op">=</span> <span class="fl">200</span>,</span></span>
 <span class="r-in"><span>             km_logrank_pvalue <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>             km_median <span class="op">=</span> <span class="st">"table"</span>,</span></span>
-<span class="r-in"><span>             km_median_pos <span class="op">=</span> <span class="st">"left"</span>,</span></span>
+<span class="r-in"><span>             km_median_table_pos <span class="op">=</span> <span class="st">"left"</span>,</span></span>
 <span class="r-in"><span>             facet_formula <span class="op">=</span> <span class="op">~</span><span class="va">expname</span><span class="op">+</span><span class="va">exptile</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">#Example 5</span></span></span>
 <span class="r-in"><span></span></span>
