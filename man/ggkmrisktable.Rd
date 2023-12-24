@@ -13,7 +13,7 @@ ggkmrisktable(
   groupvar2 = "expname",
   groupvar3 = "none",
   exposure_metrics = c("age", "ph.karno"),
-  exposure_metric_split = c("median", "tertile", "quartile", "none"),
+  exposure_metric_split = c("median", "tertile", "quartile", "none")[1],
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
   color_fill = "exptile",
@@ -37,7 +37,8 @@ ggkmrisktable(
   km_conf_type = c("log", "plain", "log", "log-log", "logit", "none"),
   km_conf_lower = c("usual", "peto", "modified"),
   km_median = c("none", "median", "medianci", "table"),
-  km_median_pos = c("left", "right"),
+  km_median_table_pos = c("left", "right"),
+  km_median_table_order = c("default", "reverse"),
   km_yaxis_position = c("left", "right"),
   facet_formula = NULL,
   facet_ncol = NULL,
@@ -110,7 +111,9 @@ ggkmrisktable(
 
 \item{km_median}{add median survival information one of "none", "median", "medianci", "table"}
 
-\item{km_median_pos}{when table is chosen where to put it  "left" or "right}
+\item{km_median_table_pos}{when table is chosen where to put it  "left" or "right}
+
+\item{km_median_table_order}{when table is chosen the order of the entries "default" or "reverse"}
 
 \item{km_yaxis_position}{where to put y axis on "left" or "right}
 
@@ -184,7 +187,7 @@ ggkmrisktable(data = lung_long, time = "time", status = "DV",
              nrisk_table_variables = c("n.event"),
              km_trans = "event",
              km_median = "table",
-             km_median_pos = "right",
+             km_median_table_pos = "right",
              km_logrank_pvalue = TRUE,
              km_band = TRUE,
              nrisk_table_breaktimeby = 200,
@@ -205,7 +208,7 @@ ggkmrisktable(data=lung_long,
              nrisk_table_breaktimeby = 200,
              km_logrank_pvalue = TRUE,
              km_median = "table",
-             km_median_pos = "left",
+             km_median_table_pos = "left",
              facet_formula = ~expname+exptile)
 #Example 5
 
