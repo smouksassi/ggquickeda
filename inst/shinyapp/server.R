@@ -6058,12 +6058,13 @@ function(input, output, session) {
           
           if(input$addhorizontallines){
             p  <- p +
-              geom_hline(yintercept = -input$nriskpositionscaler *unique(c(1,(as.numeric(as.factor(
-                risktabledatag$key))+1 )) )  + (abs(input$nriskpositiondodge)/2 ) + input$nriskoffset
-                
+              geom_hline(yintercept =  - input$nriskpositionscaler *(
+                  unique(c(seq(min(as.numeric(as.factor(risktabledatag$key))),max(as.numeric(as.factor(risktabledatag$key)))+1,1)))
+                )+input$nriskpositionscaler/2 + input$nriskoffset
                 )
-            
-          }
+          #   -input$nriskpositionscaler *unique(c(1,(as.numeric(as.factor(
+          #     risktabledatag$key))+1 )) )  + (abs(input$nriskpositionscaler)/2 ) + input$nriskoffset
+           }
 
         }#addrisktable input$addrisktable
         

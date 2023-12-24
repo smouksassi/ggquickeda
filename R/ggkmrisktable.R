@@ -169,7 +169,8 @@ lung_long$facetdum <- "(all)"
 #' @param km_conf_type default one of "log", "plain", "log-log", "logit", "none"
 #' @param km_conf_lower one of "usual", "peto", "modified"
 #' @param km_median add median survival information one of "none", "median", "medianci", "table"
-#' @param km_median_pos when table is chosen where to put it  "left" or "right
+#' @param km_median_table_pos when table is chosen where to put it  "left" or "right
+#' @param km_median_table_order when table is chosen the order of the entries "default" or "reverse"
 #' @param km_yaxis_position where to put y axis on "left" or "right
 #' @param facet_formula facet formula to be used otherwise ~ groupvar1 + groupvar2 + groupvar3
 #' @param facet_ncol NULL if not specified the automatic waiver will be used
@@ -234,7 +235,7 @@ lung_long$facetdum <- "(all)"
 #'              nrisk_table_variables = c("n.event"),
 #'              km_trans = "event",
 #'              km_median = "table",
-#'              km_median_pos = "right",
+#'              km_median_table_pos = "right",
 #'              km_logrank_pvalue = TRUE,
 #'              km_band = TRUE,
 #'              nrisk_table_breaktimeby = 200,
@@ -255,7 +256,7 @@ lung_long$facetdum <- "(all)"
 #'              nrisk_table_breaktimeby = 200,
 #'              km_logrank_pvalue = TRUE,
 #'              km_median = "table",
-#'              km_median_pos = "left",
+#'              km_median_table_pos = "left",
 #'              facet_formula = ~expname+exptile)
 #' #Example 5
 #' 
@@ -279,7 +280,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          groupvar2 ="expname", 
                          groupvar3 ="none",
                          exposure_metrics = c("age","ph.karno"),
-                         exposure_metric_split = c("median","tertile","quartile","none"),
+                         exposure_metric_split = c("median","tertile","quartile","none")[1],
                          exposure_metric_soc_value = -99,
                          exposure_metric_plac_value = 0,
                          color_fill = "exptile",
@@ -303,7 +304,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          km_conf_type  = c("log" , "plain", "log" ,"log-log","logit","none"),
                          km_conf_lower = c("usual","peto" , "modified"),
                          km_median = c("none","median","medianci","table"),
-                         km_median_pos = c("left","right"),
+                         km_median_table_pos = c("left","right"),
+                         km_median_table_order = c("default","reverse"),
                          km_yaxis_position = c("left","right"),
                          facet_formula = NULL,
                          facet_ncol = NULL,
@@ -329,7 +331,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   km_conf_type <- match.arg(km_conf_type, several.ok = FALSE)
   km_conf_lower <- match.arg(km_conf_lower, several.ok = FALSE)
   km_median <- match.arg(km_median, several.ok = FALSE)
-  km_median_pos <- match.arg(km_median_pos, several.ok = FALSE)
+  km_median_table_pos <- match.arg(km_median_table_pos, several.ok = FALSE)
+  km_median_table_pkm_median_table_orderos <- match.arg(km_median_table_order, several.ok = FALSE)
   km_yaxis_position <- match.arg(km_yaxis_position, several.ok = FALSE)
   
   pval.txt = expname = expvalue = x1lower = x1upper = x1 = y2 = keynumeric = key = n.risk = value = loopvariable = NULL
@@ -547,9 +550,10 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                 size = nrisk_table_textsize, 
                 position = ggstance::position_dodgev(height =nrisk_position_dodge)
       )+
-        ggplot2::geom_hline(yintercept = -nrisk_position_scaler *unique(c(1,(as.numeric(as.factor(
-          risktabledatag$key))+ nrisk_position_scaler )) )  + (abs(nrisk_position_dodge)/2 ) + nrisk_offset
-        )
+        ggplot2::geom_hline(yintercept = - nrisk_position_scaler *(
+        unique(c(seq(min(as.numeric(as.factor(risktabledatag$key))),max(as.numeric(as.factor(risktabledatag$key)))+1,1)))
+      )+nrisk_position_scaler/2 + nrisk_offset
+      )
     }
 
   if(!nrisk_table_plot) {
@@ -558,31 +562,49 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   
   
   if(km_median=="table"){
-    km_median_pos_x <- ifelse(km_median_pos == "left",-Inf,Inf)
-    km_median_pos_hjust <- ifelse(km_median_pos == "left",0,1)
-    
+    km_median_table_pos_x <- ifelse(km_median_table_pos == "left",-Inf,Inf)
+    km_median_table_pos_hjust <- ifelse(km_median_table_pos == "left",0,1)
+     
     plotkm1m  <-  plotkm1 +
       ggplot2::geom_text(data=dfmedian |> 
                            dplyr::mutate(none="none"), 
-                         ggplot2::aes(x     = km_median_pos_x,
+                         ggplot2::aes(x     = km_median_table_pos_x,
                                       y     = (max(as.numeric(as.factor(get(!!color_fill))))+1)*0.09,
                                       label = "Med. Surv. Time:"), 
-                hjust = km_median_pos_hjust, show.legend = FALSE, 
-                color="gray30",inherit.aes = FALSE) +
-      ggplot2::geom_text(data=dfmedian |>
-                           dplyr::mutate(none = "none",
-                                         "{timevar}" := NA,
-                                         "{statusvar}" := NA), 
-      ggplot2::aes(    x = km_median_pos_x, y = 0.09*as.numeric(as.factor(get(!!color_fill))),
-                   label = paste0(get(!!color_fill), ": ",
-                                sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper)
-                                )), 
-                hjust = km_median_pos_hjust,
-                show.legend = FALSE,inherit.aes = TRUE)
+                hjust = km_median_table_pos_hjust, show.legend = FALSE, 
+                color="gray30",inherit.aes = FALSE)
+    
+    if(km_median_table_order == "reverse"){
+      plotkm1mt  <-  plotkm1m +
+        ggplot2::geom_text(data=dfmedian |>
+                             dplyr::mutate(none = "none",
+                                           "{timevar}" := NA,
+                                           "{statusvar}" := NA), 
+                           ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*rev(as.numeric(as.factor(get(!!color_fill)))),
+                                            label = paste0(get(!!color_fill), ": ",
+                                                           sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper)
+                                            )), 
+                           hjust = km_median_table_pos_hjust,
+                           show.legend = FALSE,inherit.aes = TRUE)
+    }
+    
+    if(km_median_table_order == "default"){
+      plotkm1mt  <-  plotkm1m +
+        ggplot2::geom_text(data=dfmedian |>
+                             dplyr::mutate(none = "none",
+                                           "{timevar}" := NA,
+                                           "{statusvar}" := NA), 
+                           ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*(as.numeric(as.factor(get(!!color_fill)))),
+                                            label = paste0(get(!!color_fill), ": ",
+                                                           sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper)
+                                            )), 
+                           hjust = km_median_table_pos_hjust,
+                           show.legend = FALSE,inherit.aes = TRUE)
+    }
 
   }     
   if(km_median=="medianci"){
-    plotkm1m  <-  plotkm1 +
+    plotkm1mt  <-  plotkm1 +
       ggrepel::geom_label_repel(data = dfmedian, ggplot2::aes(x= x1 , y= y2 ,
                                                               label =sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper),
                                             status=NULL,time=NULL),show.legend = FALSE,
@@ -602,7 +624,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                        seed = 1234)
   }
   if(km_median=="median"){
-    plotkm1m  <-  plotkm1 +
+    plotkm1mt  <-  plotkm1 +
       ggrepel::geom_label_repel(data = dfmedian, ggplot2::aes(x= x1 , y= y2 ,label = sprintf("%#.3g",x1), status=NULL,time=NULL),show.legend = FALSE,
                          label.size = NA, direction="both",fill="white",
                          segment.color="black",nudge_y = -0.1,segment.size = 0.5,
@@ -620,10 +642,10 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          seed = 1234)
   }
   if(km_median=="none"){
-    plotkm1m <- plotkm1
+    plotkm1mt <- plotkm1
   }
   
-  plotkm2 <- plotkm1m +
+  plotkm2 <- plotkm1mt +
     ggh4x::facet_nested_wrap(facet_formula,ncol= facet_ncol ,
                       strip = ggh4x::strip_split(position=facet_strip_position))+
     ggplot2::scale_y_continuous(position = km_yaxis_position,
