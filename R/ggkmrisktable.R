@@ -332,7 +332,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   km_conf_lower <- match.arg(km_conf_lower, several.ok = FALSE)
   km_median <- match.arg(km_median, several.ok = FALSE)
   km_median_table_pos <- match.arg(km_median_table_pos, several.ok = FALSE)
-  km_median_table_pkm_median_table_orderos <- match.arg(km_median_table_order, several.ok = FALSE)
+  km_median_table_order <- match.arg(km_median_table_order, several.ok = FALSE)
   km_yaxis_position <- match.arg(km_yaxis_position, several.ok = FALSE)
   
   pval.txt = expname = expvalue = x1lower = x1upper = x1 = y2 = keynumeric = key = n.risk = value = loopvariable = NULL
@@ -349,7 +349,9 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
 
   exposure_metric_split <- match.arg(exposure_metric_split)
   data <- data |> 
-    dplyr::mutate(none = "none") # needed when no metric are chosen
+    dplyr::mutate(none = "(all)")  # needed when no metric are chosen
+    #dplyr::mutate(`(all)` = "(all)") # needed when no metric are chosen
+  
   data.long <- data |> 
     tidyr::gather(expname,expvalue,!!!exposure_metrics) |> 
     dplyr::group_by(expname,!!endpoint) 
@@ -567,7 +569,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
      
     plotkm1m  <-  plotkm1 +
       ggplot2::geom_text(data=dfmedian |> 
-                           dplyr::mutate(none="none"), 
+                           dplyr::mutate(none="(all)"), 
                          ggplot2::aes(x     = km_median_table_pos_x,
                                       y     = (max(as.numeric(as.factor(get(!!color_fill))))+1)*0.09,
                                       label = "Med. Surv. Time:"), 

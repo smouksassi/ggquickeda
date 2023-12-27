@@ -87,7 +87,7 @@ ggkmrisktable(
 
 \item{nrisk_position_scaler}{0.2}
 
-\item{nrisk_position_dodge}{0.2}
+\item{nrisk_position_dodge}{0.2, negative values will reverse the order}
 
 \item{nrisk_offset}{0}
 
