@@ -568,8 +568,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     km_median_table_pos_hjust <- ifelse(km_median_table_pos == "left",0,1)
      
     plotkm1m  <-  plotkm1 +
-      ggplot2::geom_text(data=dfmedian |> 
-                           dplyr::mutate(none="(all)"), 
+      ggplot2::geom_text(data = dfmedian |> 
+                           dplyr::mutate(none = "(all)"), 
                          ggplot2::aes(x     = km_median_table_pos_x,
                                       y     = (max(as.numeric(as.factor(get(!!color_fill))))+1)*0.09,
                                       label = "Med. Surv. Time:"), 
@@ -578,8 +578,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     
     if(km_median_table_order == "reverse"){
       plotkm1mt  <-  plotkm1m +
-        ggplot2::geom_text(data=dfmedian |>
-                             dplyr::mutate(none = "none",
+        ggplot2::geom_text(data = dfmedian |>
+                             dplyr::mutate(none = "(all)",
                                            "{timevar}" := NA,
                                            "{statusvar}" := NA), 
                            ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*rev(as.numeric(as.factor(get(!!color_fill)))),
@@ -593,7 +593,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     if(km_median_table_order == "default"){
       plotkm1mt  <-  plotkm1m +
         ggplot2::geom_text(data=dfmedian |>
-                             dplyr::mutate(none = "none",
+                             dplyr::mutate(none = "(all)",
                                            "{timevar}" := NA,
                                            "{statusvar}" := NA), 
                            ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*(as.numeric(as.factor(get(!!color_fill)))),
