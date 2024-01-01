@@ -654,7 +654,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                        breaks =c(unique(risktabledatag$keynumeric),
                                  c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
                        labels= c(as.vector(unique(risktabledatag$key)),
-                                 c("0","10","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                                 c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
                        expand = ggplot2::expansion(mult=c(0.01,0.01),
                                           add =c(0, 0)))+
     ggplot2::scale_x_continuous( breaks =c(unique(risktabledatag$time))) +
