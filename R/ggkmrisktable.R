@@ -371,7 +371,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
         Q50 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
                                                  exposure_metric_plac_value)], 0.50, na.rm=TRUE), 
         Q75 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 0.70, na.rm=TRUE)) |> 
+                                                 exposure_metric_plac_value)], 0.75, na.rm=TRUE)) |> 
        dplyr::mutate(exptile = dplyr::case_when(
          expvalue == exposure_metric_soc_value  ~ "SOC",
          expvalue == exposure_metric_plac_value ~ "Placebo",
