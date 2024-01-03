@@ -4574,7 +4574,7 @@ function(input, output, session) {
               p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
                                  method=smoothmethodargument,
                                  method.args = methodsargument,
-                                 size=smoothlinesize,se=F,span=spanplot,aes(group=NULL,weight=!!aesweight))
+                                 size=smoothlinesize,se=FALSE,span=spanplot,aes(group=NULL,weight=!!aesweight))
             }
             
             if (input$Smooth=="Smooth and SE"){
@@ -4582,11 +4582,11 @@ function(input, output, session) {
                 geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                             method=smoothmethodargument,level=levelsmooth,
                             method.args = methodsargument,
-                            size=smoothlinesize,se=T,span=spanplot,aes(group=NULL,weight=!!aesweight))+
+                            size=smoothlinesize,se=TRUE,span=spanplot,aes(group=NULL,weight=!!aesweight))+
                 geom_line(stat="smooth",alpha=smoothlinealpha,
                           method=smoothmethodargument,level=levelsmooth,
                           method.args = methodsargument,
-                          size=smoothlinesize,se=T,span=spanplot,aes(group=NULL,weight=!!aesweight))
+                          size=smoothlinesize,se=TRUE,span=spanplot,aes(group=NULL,weight=!!aesweight))
             }
              if (input$smoothmethod=="lm"&&input$showadjrsquared){
                p <- p+
@@ -4635,7 +4635,7 @@ function(input, output, session) {
               p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
                                  method.args = methodsargument,
-                                 size=smoothlinesize,se=F,aes(group=NULL,weight=!!aesweight))
+                                 size=smoothlinesize,se=FALSE,aes(group=NULL,weight=!!aesweight))
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls",size=input$smoothtextsize, 
@@ -4675,17 +4675,17 @@ function(input, output, session) {
               p <- p +  geom_line(stat="smooth",alpha=smoothlinealpha,
                                   method=smoothmethodargument,
                                   method.args = methodsargument,
-                                  size=smoothlinesize,se=F,span=spanplot,col=colsmooth,aes(group=NULL,weight=!!aesweight))
+                                  size=smoothlinesize,se=FALSE,span=spanplot,col=colsmooth,aes(group=NULL,weight=!!aesweight))
             
             if (input$Smooth=="Smooth and SE")
               p <- p + geom_ribbon(stat="smooth",alpha=smoothCItransparency,linetype=0,
                                    method=smoothmethodargument,level=levelsmooth,
                                    method.args = methodsargument,
-                                   size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL,weight=!!aesweight))+
+                                   size=smoothlinesize,se=TRUE,span=spanplot,col=colsmooth,aes(group=NULL,weight=!!aesweight))+
                 geom_line(stat="smooth",alpha=smoothlinealpha,
                           method=smoothmethodargument,level=levelsmooth,
                           method.args = methodsargument,
-                          size=smoothlinesize,se=T,span=spanplot,col=colsmooth,aes(group=NULL,weight=!!aesweight))
+                          size=smoothlinesize,se=TRUE,span=spanplot,col=colsmooth,aes(group=NULL,weight=!!aesweight))
 
             if (input$smoothmethod=="lm"&&input$showadjrsquared){
               p <- p+
@@ -4732,7 +4732,7 @@ function(input, output, session) {
               p <- p + geom_line(stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
                                  method.args = methodsargument,
-                                 size=smoothlinesize,se=F,col=colsmooth,aes(group=NULL,weight=!!aesweight))
+                                 size=smoothlinesize,se=FALSE,col=colsmooth,aes(group=NULL,weight=!!aesweight))
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
@@ -4775,17 +4775,17 @@ function(input, output, session) {
               p <- p +  geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                                   method=smoothmethodargument,
                                   method.args = methodsargument,
-                                  size=smoothlinesize,se=F,span=spanplot)
+                                  size=smoothlinesize,se=FALSE,span=spanplot)
             
             if (input$Smooth=="Smooth and SE")
               p <- p + geom_ribbon(aes(weight=!!aesweight),stat="smooth",alpha=smoothCItransparency,linetype=0,
                                    method=smoothmethodargument,level=levelsmooth,
                                    method.args = methodsargument,
-                                   size=smoothlinesize,se=T,span=spanplot)+  
+                                   size=smoothlinesize,se=TRUE,span=spanplot)+  
                 geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                           method=smoothmethodargument,level=levelsmooth,
                           method.args = methodsargument,
-                          size=smoothlinesize,se=T,span=spanplot)
+                          size=smoothlinesize,se=TRUE,span=spanplot)
         
           
             if (input$smoothmethod=="lm"&&input$showadjrsquared){
@@ -4835,7 +4835,7 @@ function(input, output, session) {
               p <- p + geom_line(aes(weight=!!aesweight), stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
                                  method.args = methodsargument,
-                                 size=smoothlinesize,se=F)
+                                 size=smoothlinesize,se=FALSE)
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +
@@ -4877,17 +4877,17 @@ function(input, output, session) {
               p <- p +  geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                                   method=smoothmethodargument,
                                   method.args = methodsargument,
-                                  size=smoothlinesize,se=F,span=spanplot,col=colsmooth)
+                                  size=smoothlinesize,se=FALSE,span=spanplot,col=colsmooth)
             
             if (input$Smooth=="Smooth and SE" )
               p <- p + geom_ribbon(aes(weight=!!aesweight),stat="smooth",alpha=smoothCItransparency,linetype=0,
                                    method=smoothmethodargument,level=levelsmooth,
                                    method.args = methodsargument,
-                                   size=smoothlinesize,se=T,span=spanplot,col=colsmooth)+
+                                   size=smoothlinesize,se=TRUE,span=spanplot,col=colsmooth)+
                 geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                           method=smoothmethodargument,level=levelsmooth,
                           method.args = methodsargument,
-                          size=smoothlinesize,se=T,span=spanplot,col=colsmooth)
+                          size=smoothlinesize,se=TRUE,span=spanplot,col=colsmooth)
             
 
             if (input$smoothmethod=="lm"&&input$showadjrsquared){
@@ -4935,7 +4935,7 @@ function(input, output, session) {
               p <- p + geom_line(aes(weight=!!aesweight),stat="smooth",alpha=smoothlinealpha,
                                  method='nls',
                                  method.args = methodsargument,
-                                 size=smoothlinesize,se=F,col=colsmooth)
+                                 size=smoothlinesize,se=FALSE,col=colsmooth)
               
               if(input$shownlsparams && !input$e0fit){
                 p <- p +ggpmisc::stat_fit_tidy(method = "nls", size=input$smoothtextsize, col=colsmooth,
