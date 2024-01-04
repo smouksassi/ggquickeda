@@ -6,6 +6,7 @@
 * fixing other regression with ggpairs color and group
 * added support of pasting values of two/three variables
 * added function `ggkmrisktable` to add facettable risk tables, km and split exposures to ntiles
+* added function `gglogisticexpdist`
 * TBD reduce package size ! 
 
 # ggquickeda 0.3.0
