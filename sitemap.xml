@@ -61,10 +61,16 @@
     <loc>/reference/ggkmrisktable.html</loc>
   </url>
   <url>
+    <loc>/reference/gglogisticexpdist.html</loc>
+  </url>
+  <url>
     <loc>/reference/ggquickeda-ggproto.html</loc>
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/logistic_data.html</loc>
   </url>
   <url>
     <loc>/reference/merge_steps.html</loc>
