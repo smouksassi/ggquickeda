@@ -39,12 +39,15 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
 #' @param prob_text_size probability text size default to 5
-#' @param prob_obs_bydose TRUE/FALSE
+#' @param prob_obs_bydose observed probability by dose TRUE/FALSE
 #' @param N_text_size N responders/Ntotal by exposure bin text size default to 5
 #' @param binlimits_text_size 5 binlimits text size
+#' @param binlimits_ypos binlimits y position default to 0 
+#' @param binlimits_color binlimits text color default to "gray70"
 #' @param dist_position_scaler space occupied by the distribution default to 0.2 
 #' @param dist_offset offset where the distribution position starts 0
-#' @param lineranges_ypos where to put the lineranges 0.2
+#' @param lineranges_ypos where to put the lineranges -1
+#' @param lineranges_dodge lineranges vertical dodge value 1
 #' @param yproj project the probabilities on y axis TRUE/FALSE
 #' @param yproj_xpos y projection x position 0
 #' @param yproj_dodge  y projection dodge value 0.2
@@ -184,9 +187,12 @@ gglogisticexpdist <- function(data = effICGI,
                               prob_obs_bydose = TRUE,
                               N_text_size = 5,
                               binlimits_text_size = 5,
+                              binlimits_ypos = 0,
+                              binlimits_color= "gray70",
                               dist_position_scaler = 0.2,
                               dist_offset = 0,
                               lineranges_ypos = 0.2,
+                              lineranges_dodge = 0.15,
                               yproj = TRUE,
                               yproj_xpos = 0,
                               yproj_dodge = 0.2,
@@ -427,11 +433,11 @@ gglogisticexpdist <- function(data = effICGI,
       ggplot2::geom_linerange(data = data.long.summaries.dose, size = 2, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_10", xmax = "quant_90",y = lineranges_ypos,
                                                   col = DOSEinputvar, group = DOSEinputvar),
-                              position = ggstance::position_dodgev(height = 0.15),inherit.aes = FALSE)+
+                              position = ggstance::position_dodgev(height = lineranges_dodge),inherit.aes = FALSE)+
       ggplot2::geom_linerange(data = data.long.summaries.dose, size = 2.5, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_25", xmax=  "quant_75", y = lineranges_ypos, 
                                                   col = DOSEinputvar, group = DOSEinputvar),
-                              position = ggstance::position_dodgev(height = 0.15), inherit.aes = FALSE)+
+                              position = ggstance::position_dodgev(height = lineranges_dodge), inherit.aes = FALSE)+
       ggplot2::geom_point(data=data.long.summaries.dose, size = 5, alpha = 0.2,
                           ggplot2::aes_string(x="medexp",y = lineranges_ypos,
                                               col = DOSEinputvar),
@@ -472,9 +478,9 @@ gglogisticexpdist <- function(data = effICGI,
   p2 <- p2d +
     ggplot2::geom_text(data=data.long.summaries.exposure, vjust = 0, size = prob_text_size, show.legend = FALSE,
                        ggplot2::aes(x = medexp, y = prob, label = paste(100*round(prob,2),"%","\n",sep="")))+
-    ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = 0) ,
-                       vjust = 1, size = binlimits_text_size,color = "gray70")+
-    ggplot2::geom_text(data = data.long.summaries.exposure, y = 0, vjust = 0, size = N_text_size, 
+    ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
+                       vjust = 0, size = binlimits_text_size,color = binlimits_color)+
+    ggplot2::geom_text(data = data.long.summaries.exposure, y = Inf, vjust = 1, size = N_text_size, 
                        ggplot2::aes(x = as.double(as.character(medexp)), label=paste(N,"/",Ntot,sep="")))
   
   if(exposure_distribution=="distributions") {
@@ -486,7 +492,7 @@ gglogisticexpdist <- function(data = effICGI,
                                                  group = !!rlang::sym(DOSEinputvar),
                                                  col = !!rlang::sym(DOSEinputvar),
                                         height = ggplot2::after_stat(ndensity)),
-                                    rel_min_height = 0.05,alpha = 0.1, scale = 0.9,
+                                    rel_min_height = 0.05, alpha = 0.1, scale = 0.9,
                                     quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9))+
       ggplot2::geom_label(data = percentineachbreakcategory,
                           ggplot2::aes(color = !!rlang::sym(DOSEinputvar), y = keynumeric, x= xmed, label = round(100*percentage,0) ),

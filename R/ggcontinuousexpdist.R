@@ -63,7 +63,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
 #'effICGI$STUDY <- factor(effICGI$STUDY)    
 #'effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI7,BRLS)
-#' a <- ggcontinuousexpdist(data = effICGI |> filter(Endpoint =="ICGI7"), # long format filter to Endpoint of choice
+#' a <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="ICGI7"),
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
 #'                  exposure_metrics = c("AUC"),
@@ -75,7 +75,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  yproj_dodge = 20 ,
 #'                  exposure_distribution ="distributions")
 #'
-#' b <- ggcontinuousexpdist(data = effICGI |> filter(Endpoint =="BRLS"), # long format filter to Endpoint of choice
+#' b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
 #'                  exposure_metrics = c("AUC"),
@@ -109,6 +109,8 @@ ggcontinuousexpdist <- function(data = effICGI,
                               mean_obs_bydose = TRUE,
                               N_text_size = 5,
                               binlimits_text_size = 5,
+                              binlimits_ypos = -Inf,
+                              binlimits_color= "gray70",
                               dist_position_scaler = 0.2,
                               dist_offset = 0,
                               lineranges_ypos = -1,
@@ -374,7 +376,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                           ymin = mean+1.959*SE,
                                           ymax=mean-1.959*SE),
                              alpha = 0.5)
-  if(prob_obs_bydose){
+  if(mean_obs_bydose){
     data.long.summaries.dose.plot <- data.long.summaries.dose 
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA
@@ -393,14 +395,14 @@ ggcontinuousexpdist <- function(data = effICGI,
                          ))
     
   }
-  if(!prob_obs_bydose){
+  if(!mean_obs_bydose){
     p2d <- p2e
   }
   p2 <- p2d +
     ggplot2::geom_text(data=data.long.summaries.exposure, vjust = 0, size = mean_text_size, show.legend = FALSE,
                        ggplot2::aes(x = medexp, y = mean, label = paste(round(mean,2),"\n",sep="")))+
-    ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = -Inf) ,
-                       vjust = 0, size = binlimits_text_size,color = "gray70")+
+    ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
+                       vjust = 0, size = binlimits_text_size,color = binlimits_color)+
     ggplot2::geom_text(data = data.long.summaries.exposure, y = Inf, vjust = 1, size = N_text_size, 
                        ggplot2::aes(x = as.double(as.character(medexp)), label=paste(Ntot,sep="")))
   

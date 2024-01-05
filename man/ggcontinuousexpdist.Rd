@@ -21,6 +21,8 @@ ggcontinuousexpdist(
   mean_obs_bydose = TRUE,
   N_text_size = 5,
   binlimits_text_size = 5,
+  binlimits_ypos = -Inf,
+  binlimits_color = "gray70",
   dist_position_scaler = 0.2,
   dist_offset = 0,
   lineranges_ypos = -1,
@@ -92,6 +94,7 @@ Produces a logistic fit plot with a facettable exposures/quantiles/distributions
 \examples{
 # Example 1
 library(ggplot2)
+library(patchwork)
 effICGI <- logistic_data |>
 dplyr::filter(!is.na(ICGI7))|>
 dplyr::filter(!is.na(AUC))
@@ -100,16 +103,32 @@ effICGI$DOSE <- factor(effICGI$DOSE,
                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
 effICGI$STUDY <- factor(effICGI$STUDY)    
 effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI7,BRLS)
-ggcontinuousexpdist(data = effICGI |> filter(Endpoint =="ICGI7"), # long format filter to Endpoint of choice
+a <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="ICGI7"),
                  response = "response",
                  endpoint = "Endpoint",
                  exposure_metrics = c("AUC"),
                  exposure_metric_split = c("quartile"),
                  exposure_metric_soc_value = -99,
                  exposure_metric_plac_value = 0,
-                 dist_position_scaler = 1, dist_offset = -2 ,
+                 dist_position_scaler = 1, dist_offset = -1 ,
+                 yproj_xpos =  -20 ,
+                 yproj_dodge = 20 ,
                  exposure_distribution ="distributions")
-                 
+
+b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
+                 response = "response",
+                 endpoint = "Endpoint",
+                 exposure_metrics = c("AUC"),
+                 exposure_metric_split = c("quartile"),
+                 exposure_metric_soc_value = -99,
+                 exposure_metric_plac_value = 0,
+                 dist_position_scaler = 4.2, dist_offset = 5 ,
+                 yproj_xpos =  -20 ,
+                 yproj_dodge = 20 ,
+                 exposure_distribution ="distributions")            
+a / b +
+plot_layout(guides = "collect") &
+ theme(legend.position = "top")
 \dontrun{
 #Example 5
 }

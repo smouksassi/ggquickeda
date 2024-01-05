@@ -21,9 +21,12 @@ gglogisticexpdist(
   prob_obs_bydose = TRUE,
   N_text_size = 5,
   binlimits_text_size = 5,
+  binlimits_ypos = 0,
+  binlimits_color = "gray70",
   dist_position_scaler = 0.2,
   dist_offset = 0,
   lineranges_ypos = 0.2,
+  lineranges_dodge = 0.15,
   yproj = TRUE,
   yproj_xpos = 0,
   yproj_dodge = 0.2,
@@ -59,17 +62,23 @@ gglogisticexpdist(
 
 \item{prob_text_size}{probability text size default to 5}
 
-\item{prob_obs_bydose}{TRUE/FALSE}
+\item{prob_obs_bydose}{observed probability by dose TRUE/FALSE}
 
 \item{N_text_size}{N responders/Ntotal by exposure bin text size default to 5}
 
 \item{binlimits_text_size}{5 binlimits text size}
 
+\item{binlimits_ypos}{binlimits y position default to 0}
+
+\item{binlimits_color}{binlimits text color default to "gray70"}
+
 \item{dist_position_scaler}{space occupied by the distribution default to 0.2}
 
 \item{dist_offset}{offset where the distribution position starts 0}
 
-\item{lineranges_ypos}{where to put the lineranges 0.2}
+\item{lineranges_ypos}{where to put the lineranges -1}
+
+\item{lineranges_dodge}{lineranges vertical dodge value 1}
 
 \item{yproj}{project the probabilities on y axis TRUE/FALSE}
 
