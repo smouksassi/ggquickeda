@@ -5,25 +5,24 @@
 #' @importFrom stats median
 #' @importFrom stats quantile
 
-summary_df <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
+summary_df_cont <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
   N = Ntot = prob = NULL
  tibble::tibble(
     minexp = min(x),
     maxexp = max(x),
     medexp = stats::median(x),
     meanexp = mean(x),
-    N = sum(y,na.rm=TRUE),
     Nmiss = length(x[is.na(x)]),
     Ntot = dplyr::n(),
-    prob = N/Ntot,
-    SE = sqrt(prob*(1-prob)/Ntot ),
+    mean = mean(y,na.rm=TRUE),
+    SE = sd(y,na.rm=TRUE)/sqrt(Ntot) ,
     values = stats::quantile(x, probs, na.rm = TRUE),
     quant = probs
   )
 }
 plogis <- function(x) exp(x)/(1+exp(x))
 
-#' gglogisticexpdist
+#' ggcontinuousexpdist
 #'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 #' @param data Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1
@@ -38,13 +37,14 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param dose_plac_value string identifying placebo in DOSE column
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
-#' @param prob_text_size probability text size default to 5
-#' @param prob_obs_bydose TRUE/FALSE
+#' @param mean_text_size mean text size default to 5
+#' @param mean_obs_bydose observed mean by dose TRUE/FALSE
 #' @param N_text_size N responders/Ntotal by exposure bin text size default to 5
 #' @param binlimits_text_size 5 binlimits text size
 #' @param dist_position_scaler space occupied by the distribution default to 0.2 
 #' @param dist_offset offset where the distribution position starts 0
-#' @param lineranges_ypos where to put the lineranges 0.2
+#' @param lineranges_ypos where to put the lineranges -1
+#' @param lineranges_dodge lineranges vertical dodge value 1
 #' @param yproj project the probabilities on y axis TRUE/FALSE
 #' @param yproj_xpos y projection x position 0
 #' @param yproj_dodge  y projection dodge value 0.2
@@ -54,121 +54,46 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @examples
 #' # Example 1
 #' library(ggplot2)
+#' library(patchwork)
 #' effICGI <- logistic_data |>
-#' dplyr::filter(!is.na(ICGI))|>
+#' dplyr::filter(!is.na(ICGI7))|>
 #' dplyr::filter(!is.na(AUC))
 #'effICGI$DOSE <- factor(effICGI$DOSE,
 #'                       levels=c("0", "600", "1200","1800","2400"),
 #'                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
 #'effICGI$STUDY <- factor(effICGI$STUDY)    
-#'effICGI$ICGI2 <- effICGI$ICGI
-#'effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2)
-#' gglogisticexpdist(data = effICGI, # long format filter to Endpoint of choice
+#'effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI7,BRLS)
+#' a <- ggcontinuousexpdist(data = effICGI |> filter(Endpoint =="ICGI7"), # long format filter to Endpoint of choice
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
-#'                  exposure_metrics = c("AUC","CMAX"),
+#'                  exposure_metrics = c("AUC"),
 #'                  exposure_metric_split = c("quartile"),
 #'                  exposure_metric_soc_value = -99,
 #'                  exposure_metric_plac_value = 0,
+#'                  dist_position_scaler = 1, dist_offset = -1 ,
+#'                  yproj_xpos =  -20 ,
+#'                  yproj_dodge = 20 ,
 #'                  exposure_distribution ="distributions")
-#'                  
-#' # Example 2                
-#'gglogisticexpdist(data = effICGI, # long format filter to Endpoint of choice
-#'response = "response",
-#'endpoint = "Endpoint",
-#'DOSE = "DOSE",
-#'exposure_metrics = c("AUC"),
-#'exposure_metric_split = c("quartile"),
-#'exposure_distribution ="lineranges",
-#'exposure_metric_soc_value = -99,
-#'exposure_metric_plac_value = 0,
-#'lineranges_ypos = -0.2,
-#'prob_obs_bydose = TRUE,
-#'yproj_xpos = -10,
-#'yproj_dodge = 10,
-#'dist_position_scaler = 0.15)     
-#' # Example 3                
-#'library(ggh4x)
-#'gglogisticexpdist(data = effICGI |>
-#'                  dplyr::filter(Endpoint=="ICGI"), 
+#'
+#' b <- ggcontinuousexpdist(data = effICGI |> filter(Endpoint =="BRLS"), # long format filter to Endpoint of choice
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
-#'                  DOSE = "DOSE",
 #'                  exposure_metrics = c("AUC"),
 #'                  exposure_metric_split = c("quartile"),
-#'                  exposure_distribution ="distributions",
 #'                  exposure_metric_soc_value = -99,
 #'                  exposure_metric_plac_value = 0,
-#'                  dist_position_scaler = 0.15)+
-#'  facet_grid2(Endpoint~expname+DOSE2,scales="free",
-#'  margins = "DOSE2",strip = strip_nested())             
-#' # Example 4                 
-#'gglogisticexpdist(data = effICGI, 
-#'                  response = "response",
-#'                  endpoint = "Endpoint",
-#'                  DOSE = "DOSE",
-#'                  exposure_metrics = c("AUC"),
-#'                  exposure_metric_split = c("quartile"),
-#'                  exposure_distribution ="distributions",
-#'                  exposure_metric_soc_value = -99,
-#'                  exposure_metric_plac_value = 0,
-#'                  lineranges_ypos = -0.2,
-#'                  yproj_xpos = -10,
-#'                  yproj_dodge = 20,
-#'                  prob_text_size = 9,
-#'                  binlimits_text_size = 6,
-#'                  N_text_size = 5,
-#'                  dist_position_scaler = 0.15)+
-#'                  ggplot2::scale_x_continuous(breaks = seq(0,350,50),
-#'                  expand = ggplot2::expansion(add= c(0,0),mult=c(0,0)))+
-#'                  ggplot2::coord_cartesian(xlim = c(-30,355))+
-#'                  ggplot2::facet_grid(~Endpoint)
+#'                  dist_position_scaler = 4.2, dist_offset = 5 ,
+#'                  yproj_xpos =  -20 ,
+#'                  yproj_dodge = 20 ,
+#'                  exposure_distribution ="distributions")            
+#' a / b +
+#'plot_layout(guides = "collect") &
+#'  theme(legend.position = "top")
 #'\dontrun{
 #' #Example 5
-#' gglogisticexpdist(data = effICGI |> filter(Endpoint=="ICGI"), 
-#'                   response = "response",
-#'                   endpoint = "Endpoint",
-#'                   DOSE = "DOSE",
-#'                   exposure_metrics = c("AUC"),
-#'                   exposure_metric_split = c("quartile"),
-#'                   exposure_distribution ="distributions",
-#'                   exposure_metric_soc_value = -99,
-#'                   exposure_metric_plac_value = 0,
-#'                   dist_position_scaler = 0.15)+
-#'                  facet_grid(Endpoint~expname+exptile,scales="free",
-#'                  margins = "exptile")
-#' #Example 6
-#' a <- gglogisticexpdist(data = effICGI, # 
-#'                   response = "response",
-#'                   endpoint = "Endpoint",
-#'                   DOSE = "DOSE",yproj_dodge = 36,
-#'                   exposure_metrics = c("AUC"),
-#'                   exposure_metric_split = c("quartile"),
-#'                   exposure_distribution ="lineranges",
-#'                   exposure_metric_soc_value = -99,
-#'                   exposure_metric_plac_value = 0) +
-#'   facet_grid(Endpoint~expname,switch = "both")
-#' b <-   gglogisticexpdist(data = effICGI, # 
-#'                     response = "response",
-#'                     endpoint = "Endpoint",
-#'                     DOSE = "DOSE",yproj_dodge = 2,
-#'                     exposure_metrics = c("CMAX"),
-#'                     exposure_metric_split = c("quartile"),
-#'                     exposure_distribution ="lineranges",
-#'                     exposure_metric_soc_value = -99,
-#'                     exposure_metric_plac_value = 0,
-#'                     yaxis_position = "right")+
-#'   facet_grid(Endpoint~expname,switch = "x")+
-#'   theme(strip.text.y.right = element_blank(),
-#'         strip.background.y = element_blank())
-#' library(patchwork)
-#' (a | b ) +
-#'   plot_layout(guides = "collect")&
-#'   theme(legend.position = "top")
-#'                   
 #'}
 #' @export               
-gglogisticexpdist <- function(data = effICGI, 
+ggcontinuousexpdist <- function(data = effICGI, 
                               response = "response",
                               endpoint = "Endpoint",
                               DOSE = "DOSE",
@@ -180,13 +105,14 @@ gglogisticexpdist <- function(data = effICGI,
                               dose_plac_value = "Placebo",
                               xlab = "Exposure Values",
                               ylab ="Probability of Response",
-                              prob_text_size = 5,
-                              prob_obs_bydose = TRUE,
+                              mean_text_size = 5,
+                              mean_obs_bydose = TRUE,
                               N_text_size = 5,
                               binlimits_text_size = 5,
                               dist_position_scaler = 0.2,
                               dist_offset = 0,
-                              lineranges_ypos = 0.2,
+                              lineranges_ypos = -1,
+                              lineranges_dodge = 1,
                               yproj = TRUE,
                               yproj_xpos = 0,
                               yproj_dodge = 0.2,
@@ -299,7 +225,7 @@ gglogisticexpdist <- function(data = effICGI,
   data.long.summaries.dose <- data.long |>
     dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),DOSE2)|>
     dplyr::reframe(
-      summary_df(expvalue,!!sym(responseinputvar))) |> 
+      summary_df_cont(expvalue,!!sym(responseinputvar))) |> 
     tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
   
   
@@ -307,7 +233,7 @@ gglogisticexpdist <- function(data = effICGI,
   data.long.summaries.dose <- tidyr::unite(data.long.summaries.dose,"loopvariable", !!!loopvariables, remove = FALSE)
   data.long <- tidyr::unite(data.long,"loopvariable", !!!loopvariables, remove = FALSE)
   
-  logisticfit_by_endpoint <- list()
+  olsfit_by_endpoint <- list()
   predict_by_endpoint_expname <- list()
   predict_by_endpoint_expname_dose <- list()
   predict_by_endpoint_expname_dose2 <- list()
@@ -319,28 +245,28 @@ gglogisticexpdist <- function(data = effICGI,
       dplyr::filter(.data[["loopvariable"]] ==i)
     d <- rms::datadist(logisticregdata[, c(endpointinputvar,responseinputvar,DOSEinputvar,"expname","expvalue","exptile")])           
     options(datadist= d)
-    logisticfit_by_endpoint_fit <- eval(bquote( rms::lrm( as.formula(paste(responseinputvar,"~","expvalue")) , data=logisticregdata,x=TRUE,y=TRUE) ))
-    logisticfit_by_endpoint[[i]] <- logisticfit_by_endpoint_fit
+    olsfit_by_endpoint_fit <- eval(bquote( rms::ols( as.formula(paste(responseinputvar,"~","expvalue")) , data=logisticregdata,x=TRUE,y=TRUE) ))
+    olsfit_by_endpoint[[i]] <- olsfit_by_endpoint_fit
     
     data.long.summaries.dose.loop <- data.long.summaries.dose |>
       dplyr::filter(.data[["loopvariable"]] ==i)
-    pred10exp <- as.data.frame(rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+    pred10exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                             expvalue= data.long.summaries.dose.loop$quant_10))
     names(pred10exp)<- c("quant_10" ,  "ymid10",  "ylow10", "yup10")
     pred10exp$loopvariable <- i
-    pred90exp <- as.data.frame(rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+    pred90exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                             expvalue= data.long.summaries.dose.loop$quant_90))
     names(pred90exp)<- c("quant_90" ,  "ymid90",  "ylow90", "yup90")
     pred90exp$loopvariable <- i
-    pred25exp <- as.data.frame(rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+    pred25exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                             expvalue= data.long.summaries.dose.loop$quant_25))
     names(pred25exp)<- c("quant_25" ,  "ymid25",  "ylow25", "yup25")
     pred25exp$loopvariable <- i 
-    pred75exp <- as.data.frame(rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+    pred75exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                             expvalue= data.long.summaries.dose.loop$quant_75))
     names(pred75exp)<- c("quant_75" ,  "ymid75",  "ylow75", "yup75")
     pred75exp$loopvariable <- i 
-    pred50exp<- as.data.frame (rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+    pred50exp<- as.data.frame (rms::Predict(olsfit_by_endpoint_fit,
                                             expvalue=data.long.summaries.dose.loop$medexp))
     names(pred50exp)<- c("medexp" ,  "ymid50",  "ylow50", "yup50")
     pred50exp$loopvariable <- i 
@@ -354,13 +280,13 @@ gglogisticexpdist <- function(data = effICGI,
     
     predictionsbydose<- data.long.summaries.dose.loop |>
       dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
-      dplyr::do(as.data.frame(rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+      dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                       expvalue=seq(.data$quant_10,.data$quant_90,0.1))))
     predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
     
     predictionsbydose2<- data.long.summaries.dose.loop |>
       dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
-      dplyr::do(as.data.frame(rms::Predict(logisticfit_by_endpoint_fit,fun=plogis,
+      dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                       expvalue=seq(.data$quant_25,.data$quant_75,0.1))))
     predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
     
@@ -374,7 +300,7 @@ gglogisticexpdist <- function(data = effICGI,
     dplyr::ungroup()|>
     dplyr::group_by(!!sym(endpointinputvar),expname,exptile)|>
     dplyr::reframe(
-      summary_df(expvalue,!!sym(responseinputvar))) |> 
+      summary_df_cont(expvalue,!!sym(responseinputvar))) |> 
     tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   
   percentineachbreakcategory <- data.long |>
@@ -398,18 +324,18 @@ gglogisticexpdist <- function(data = effICGI,
     #facet_nested(Endpoint~expname+DOSE2,scales="free",margins = "DOSE2")+
     ggplot2::geom_point(ggplot2::aes_string(col = DOSEinputvar),
                         alpha = 0.2, position = ggplot2::position_jitter(width = 0 , height = 0.05))+
-    ggplot2::geom_hline(yintercept = c(0,1))+
+    #ggplot2::geom_hline(yintercept = c(0,1))+
     ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept), color = "gray70" )+
     ggplot2::geom_ribbon(data = data.long |> dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL),
                          stat="smooth",
-                         method = "glm", method.args = list(family = "binomial"),
+                         method = "glm", 
                          color="transparent",linetype=0, alpha = 0.5,
-                         ggplot2::aes(fill = "Logistic Fit 95% CI"))+
+                         ggplot2::aes(fill = "Linear Fit 95% CI"))+
     ggplot2::geom_line(data = data.long |> dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL),
                        stat="smooth",
-                       method = "glm", method.args = list(family = "binomial"),
+                       method = "glm", 
                        color="black", alpha = 0.5,
-                       ggplot2::aes(linetype = "Logistic Fit 95% CI"))+
+                       ggplot2::aes(linetype = "Linear Fit 95% CI"))+
     ggplot2::geom_line(data = predict_by_endpoint_expname_dose,
                        ggplot2::aes_string(y = "yhat", col = DOSEinputvar),
                        alpha = 0.4, size = 2)+
@@ -427,11 +353,11 @@ gglogisticexpdist <- function(data = effICGI,
       ggplot2::geom_linerange(data = data.long.summaries.dose, size = 2, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_10", xmax = "quant_90",y = lineranges_ypos,
                                                   col = DOSEinputvar, group = DOSEinputvar),
-                              position = ggstance::position_dodgev(height = 0.15),inherit.aes = FALSE)+
+                              position = ggstance::position_dodgev(height = lineranges_dodge),inherit.aes = FALSE)+
       ggplot2::geom_linerange(data = data.long.summaries.dose, size = 2.5, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_25", xmax=  "quant_75", y = lineranges_ypos, 
                                                   col = DOSEinputvar, group = DOSEinputvar),
-                              position = ggstance::position_dodgev(height = 0.15), inherit.aes = FALSE)+
+                              position = ggstance::position_dodgev(height = lineranges_dodge), inherit.aes = FALSE)+
       ggplot2::geom_point(data=data.long.summaries.dose, size = 5, alpha = 0.2,
                           ggplot2::aes_string(x="medexp",y = lineranges_ypos,
                                               col = DOSEinputvar),
@@ -444,25 +370,26 @@ gglogisticexpdist <- function(data = effICGI,
   p2e <- p1l +
     ggplot2::geom_pointrange(data = data.long.summaries.exposure, size = 1,
                              ggplot2::aes(shape = "Observed probability by exposure split",
-                                          x = medexp, y = prob, ymin = prob+1.959*SE, ymax=prob-1.959*SE),
+                                          x = medexp, y = mean,
+                                          ymin = mean+1.959*SE,
+                                          ymax=mean-1.959*SE),
                              alpha = 0.5)
   if(prob_obs_bydose){
     data.long.summaries.dose.plot <- data.long.summaries.dose 
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"N"] <- NA
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"prob"] <- NA
+    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA
     
     p2d <- p2e +
       ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
-                               ggplot2::aes(x = medexp, y = prob, col = !!sym(DOSEinputvar),
-                                            ymin = prob+1.959*SE, ymax=prob-1.959*SE,
+                               ggplot2::aes(x = medexp, y = mean, col = !!sym(DOSEinputvar),
+                                            ymin = mean+1.959*SE, ymax=mean-1.959*SE,
                                             shape = "Observed probability by dose split"),
                                show.legend = FALSE) +
-      ggplot2::geom_text(data=data.long.summaries.dose.plot, vjust = 1, size = prob_text_size, show.legend = FALSE,
-                         ggplot2::aes(x = medexp, y = prob, col = !!sym(DOSEinputvar),
+      ggplot2::geom_text(data=data.long.summaries.dose.plot, vjust = 1, size = mean_text_size, show.legend = FALSE,
+                         ggplot2::aes(x = medexp, y = mean, col = !!sym(DOSEinputvar),
                                       label = paste(
-                                        paste("\n",100*round(prob,2),"%",sep=""),
-                                        "\n",N,"/",Ntot,sep="")
+                                        paste("\n",round(mean,2),sep=""),"\n",
+                                        Ntot,sep="")
                          ))
     
   }
@@ -470,12 +397,12 @@ gglogisticexpdist <- function(data = effICGI,
     p2d <- p2e
   }
   p2 <- p2d +
-    ggplot2::geom_text(data=data.long.summaries.exposure, vjust = 0, size = prob_text_size, show.legend = FALSE,
-                       ggplot2::aes(x = medexp, y = prob, label = paste(100*round(prob,2),"%","\n",sep="")))+
-    ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = 0) ,
-                       vjust = 1, size = binlimits_text_size,color = "gray70")+
-    ggplot2::geom_text(data = data.long.summaries.exposure, y = 0, vjust = 0, size = N_text_size, 
-                       ggplot2::aes(x = as.double(as.character(medexp)), label=paste(N,"/",Ntot,sep="")))
+    ggplot2::geom_text(data=data.long.summaries.exposure, vjust = 0, size = mean_text_size, show.legend = FALSE,
+                       ggplot2::aes(x = medexp, y = mean, label = paste(round(mean,2),"\n",sep="")))+
+    ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = -Inf) ,
+                       vjust = 0, size = binlimits_text_size,color = "gray70")+
+    ggplot2::geom_text(data = data.long.summaries.exposure, y = Inf, vjust = 1, size = N_text_size, 
+                       ggplot2::aes(x = as.double(as.character(medexp)), label=paste(Ntot,sep="")))
   
   if(exposure_distribution=="distributions") {
     data.long.ridges <- data.long 
@@ -486,7 +413,7 @@ gglogisticexpdist <- function(data = effICGI,
                                                  group = !!rlang::sym(DOSEinputvar),
                                                  col = !!rlang::sym(DOSEinputvar),
                                         height = ggplot2::after_stat(ndensity)),
-                                    rel_min_height = 0.05,alpha = 0.1, scale = 0.9,
+                                    rel_min_height = 0.05, alpha = 0.1, scale = 0.9,
                                     quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9))+
       ggplot2::geom_label(data = percentineachbreakcategory,
                           ggplot2::aes(color = !!rlang::sym(DOSEinputvar), y = keynumeric, x= xmed, label = round(100*percentage,0) ),
@@ -514,13 +441,21 @@ gglogisticexpdist <- function(data = effICGI,
     p2df <- p2d 
   }
   if(exposure_distribution =="distributions"){
+
+    breaksendpoints<- data.long |> 
+      dplyr::group_by(Endpoint) |>
+      dplyr::reframe(breaks= pretty(response))
+    
     p2df2 <- p2df +
       ggplot2::scale_y_continuous(position = yaxis_position,
-                                  breaks =c(unique(data.long$keynumeric),
-                                            c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                  labels= c(as.vector(unique(data.long$DOSE)),
-                                            c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                                  breaks = (c(breaksendpoints$breaks,unique(data.long$keynumeric))),
+                                  labels = c(breaksendpoints$breaks,as.vector(unique(data.long$DOSE)) ),
                                   expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    # p2df2 <- p2df +
+    #   ggplot2::scale_y_continuous(position = yaxis_position,
+    #                               breaks =c(unique(data.long$keynumeric) ), 
+    #                               labels= c(as.vector(unique(data.long$DOSE)) ),
+    #                               expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
   }
   if(exposure_distribution =="lineranges"){
     p2df2 <- p2df +

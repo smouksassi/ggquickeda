@@ -7,6 +7,7 @@
 * added support of pasting values of two/three variables
 * added function `ggkmrisktable` to add facettable risk tables, km and split exposures to ntiles
 * added function `gglogisticexpdist`
+* added function `ggcontinuousexpdist`
 * TBD reduce package size ! 
 
 # ggquickeda 0.3.0

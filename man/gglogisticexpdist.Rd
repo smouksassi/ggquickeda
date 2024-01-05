@@ -171,6 +171,35 @@ gglogisticexpdist(data = effICGI |> filter(Endpoint=="ICGI"),
                   exposure_metric_plac_value = 0,
                   dist_position_scaler = 0.15)+
                  facet_grid(Endpoint~expname+exptile,scales="free",
-                 margins = "exptile") 
+                 margins = "exptile")
+#Example 6
+a <- gglogisticexpdist(data = effICGI, # 
+                  response = "response",
+                  endpoint = "Endpoint",
+                  DOSE = "DOSE",yproj_dodge = 36,
+                  exposure_metrics = c("AUC"),
+                  exposure_metric_split = c("quartile"),
+                  exposure_distribution ="lineranges",
+                  exposure_metric_soc_value = -99,
+                  exposure_metric_plac_value = 0) +
+  facet_grid(Endpoint~expname,switch = "both")
+b <-   gglogisticexpdist(data = effICGI, # 
+                    response = "response",
+                    endpoint = "Endpoint",
+                    DOSE = "DOSE",yproj_dodge = 2,
+                    exposure_metrics = c("CMAX"),
+                    exposure_metric_split = c("quartile"),
+                    exposure_distribution ="lineranges",
+                    exposure_metric_soc_value = -99,
+                    exposure_metric_plac_value = 0,
+                    yaxis_position = "right")+
+  facet_grid(Endpoint~expname,switch = "x")+
+  theme(strip.text.y.right = element_blank(),
+        strip.background.y = element_blank())
+library(patchwork)
+(a | b ) +
+  plot_layout(guides = "collect")&
+  theme(legend.position = "top")
+                  
 }
 }
