@@ -86,9 +86,12 @@
 <span>  prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  N_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  binlimits_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  binlimits_ypos <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  binlimits_color <span class="op">=</span> <span class="st">"gray70"</span>,</span>
 <span>  dist_position_scaler <span class="op">=</span> <span class="fl">0.2</span>,</span>
 <span>  dist_offset <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  lineranges_ypos <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  lineranges_dodge <span class="op">=</span> <span class="fl">0.15</span>,</span>
 <span>  yproj <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  yproj_xpos <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  yproj_dodge <span class="op">=</span> <span class="fl">0.2</span>,</span>
@@ -153,7 +156,7 @@
 
 
 <dt>prob_obs_bydose</dt>
-<dd><p>TRUE/FALSE</p></dd>
+<dd><p>observed probability by dose TRUE/FALSE</p></dd>
 
 
 <dt>N_text_size</dt>
@@ -162,6 +165,14 @@
 
 <dt>binlimits_text_size</dt>
 <dd><p>5 binlimits text size</p></dd>
+
+
+<dt>binlimits_ypos</dt>
+<dd><p>binlimits y position default to 0</p></dd>
+
+
+<dt>binlimits_color</dt>
+<dd><p>binlimits text color default to "gray70"</p></dd>
 
 
 <dt>dist_position_scaler</dt>
@@ -173,7 +184,11 @@
 
 
 <dt>lineranges_ypos</dt>
-<dd><p>where to put the lineranges 0.2</p></dd>
+<dd><p>where to put the lineranges -1</p></dd>
+
+
+<dt>lineranges_dodge</dt>
+<dd><p>lineranges vertical dodge value 1</p></dd>
 
 
 <dt>yproj</dt>
