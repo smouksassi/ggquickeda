@@ -4,6 +4,7 @@
 #' @import tidyr
 #' @importFrom stats median
 #' @importFrom stats quantile
+#' @importFrom stats sd
 
 summary_df_cont <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
   N = Ntot = prob = NULL
@@ -41,6 +42,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param mean_obs_bydose observed mean by dose TRUE/FALSE
 #' @param N_text_size N responders/Ntotal by exposure bin text size default to 5
 #' @param binlimits_text_size 5 binlimits text size
+#' @param binlimits_ypos binlimits y position default to 0 
+#' @param binlimits_color binlimits text color default to "gray70"
 #' @param dist_position_scaler space occupied by the distribution default to 0.2 
 #' @param dist_offset offset where the distribution position starts 0
 #' @param lineranges_ypos where to put the lineranges -1

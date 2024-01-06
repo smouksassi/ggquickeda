@@ -57,7 +57,8 @@ Imports:
     forcats,
     ggridges,
     rms,
-    tibble
+    tibble,
+    patchwork
 Suggests:
     knitr,
     rmarkdown

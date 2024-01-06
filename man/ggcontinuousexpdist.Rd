@@ -68,6 +68,10 @@ ggcontinuousexpdist(
 
 \item{binlimits_text_size}{5 binlimits text size}
 
+\item{binlimits_ypos}{binlimits y position default to 0}
+
+\item{binlimits_color}{binlimits text color default to "gray70"}
+
 \item{dist_position_scaler}{space occupied by the distribution default to 0.2}
 
 \item{dist_offset}{offset where the distribution position starts 0}
