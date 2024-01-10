@@ -17,7 +17,7 @@ Description: Quickly and easily perform exploratory data analysis by uploading y
      data as a 'csv' file. Start generating insights using 'ggplot2' plots and
      'table1' tables with descriptive stats, all using an easy-to-use point and click 
      'Shiny' interface.
-URL: https://github.com/smouksassi/ggquickeda
+URL: https://github.com/smouksassi/ggquickeda, https://smouksassi.github.io/ggquickeda/
 BugReports: https://github.com/smouksassi/ggquickeda/issues
 Depends:
     R (>= 4.0.0)
