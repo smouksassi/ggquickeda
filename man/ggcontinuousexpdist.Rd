@@ -9,6 +9,7 @@ ggcontinuousexpdist(
   response = "response",
   endpoint = "Endpoint",
   DOSE = "DOSE",
+  color_fill = "DOSE",
   exposure_metrics = c("AUC", "CMAX"),
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
@@ -43,6 +44,8 @@ ggcontinuousexpdist(
 \item{endpoint}{name of the column holding the name/key of the endpoint default to `Endpoint`}
 
 \item{DOSE}{name of the column holding the DOSE values default to `DOSE`}
+
+\item{color_fill}{name of the column to be used for color/fill default to DOSE column}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`}
 
@@ -133,6 +136,21 @@ b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
 a / b +
 plot_layout(guides = "collect") &
  theme(legend.position = "top")
+ #Example 2
+ effICGI$SEX <- as.factor(effICGI$SEX)
+ ggcontinuousexpdist(data = effICGI |>
+  dplyr::filter(Endpoint =="ICGI7"),
+                 response = "response",
+                 endpoint = "Endpoint",
+                 color_fill = "SEX",
+                 exposure_metrics = c("AUC"),
+                 exposure_metric_split = c("quartile"),
+                 exposure_metric_soc_value = -99,
+                 exposure_metric_plac_value = 0,
+                 dist_position_scaler = 1, dist_offset = -1 ,
+                 yproj_xpos =  -20 ,
+                 yproj_dodge = 20 ,
+                 exposure_distribution ="lineranges")
 \dontrun{
 #Example 5
 }

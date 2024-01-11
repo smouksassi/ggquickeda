@@ -128,8 +128,24 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  ggplot2::coord_cartesian(xlim = c(-30,355))+
 #'                  ggplot2::facet_grid(~Endpoint)
 #'\dontrun{
+#' #Example 4b
+#'   effICGI$SEX <- as.factor(effICGI$SEX)
+#'  gglogisticexpdist(data = effICGI |>
+#'   dplyr::filter(Endpoint =="ICGI"),
+#'                  response = "response",
+#'                  endpoint = "Endpoint",
+#'                  color_fill = "SEX",
+#'                  exposure_metrics = c("AUC"),
+#'                  exposure_metric_split = c("quartile"),
+#'                  exposure_metric_soc_value = -99,
+#'                  exposure_metric_plac_value = 0,
+#'                  dist_position_scaler = 1, dist_offset = -1 ,
+#'                  yproj_xpos =  -20 ,
+#'                  yproj_dodge = 20 ,
+#'                  exposure_distribution ="lineranges")
+#'                  
 #' #Example 5
-#' gglogisticexpdist(data = effICGI |> filter(Endpoint=="ICGI"), 
+#' gglogisticexpdist(data = effICGI |> dplyr::filter(Endpoint=="ICGI"), 
 #'                   response = "response",
 #'                   endpoint = "Endpoint",
 #'                   DOSE = "DOSE",
@@ -213,7 +229,7 @@ gglogisticexpdist <- function(data = effICGI,
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
  
   effICGI = expname = expvalue = DOSE2 = quant = values = Ncat = Ntot = xmed = percentage = exptile = keynumeric = NULL
-  intercept = medexp = prob = SE = N = ndensity = Endpoint = NULL
+  intercept = medexp = prob = SE = N = ndensity = Endpoint = color_fill2 = NULL
   
   data <- data |> 
     dplyr::mutate(none = "(all)")  # needed when no metric are chosen

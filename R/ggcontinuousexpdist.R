@@ -93,6 +93,21 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' a / b +
 #'plot_layout(guides = "collect") &
 #'  theme(legend.position = "top")
+#'  #Example 2
+#'  effICGI$SEX <- as.factor(effICGI$SEX)
+#'  ggcontinuousexpdist(data = effICGI |>
+#'   dplyr::filter(Endpoint =="ICGI7"),
+#'                  response = "response",
+#'                  endpoint = "Endpoint",
+#'                  color_fill = "SEX",
+#'                  exposure_metrics = c("AUC"),
+#'                  exposure_metric_split = c("quartile"),
+#'                  exposure_metric_soc_value = -99,
+#'                  exposure_metric_plac_value = 0,
+#'                  dist_position_scaler = 1, dist_offset = -1 ,
+#'                  yproj_xpos =  -20 ,
+#'                  yproj_dodge = 20 ,
+#'                  exposure_distribution ="lineranges")
 #'\dontrun{
 #' #Example 5
 #'}
@@ -138,7 +153,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
  
   effICGI = expname = expvalue = DOSE2 = quant = values = Ncat = Ntot = xmed = percentage = exptile = keynumeric = NULL
-  intercept = medexp = prob = SE = N = ndensity = Endpoint = NULL
+  intercept = medexp = prob = SE = N = ndensity = Endpoint = color_fill2 = NULL
   
   data <- data |> 
     dplyr::mutate(none = "(all)")  # needed when no metric are chosen
@@ -524,10 +539,6 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exposure_distribution =="lineranges"){
     p2df2 <- p2df +
       ggplot2::scale_y_continuous(position = yaxis_position,
-                                  breaks =c(
-                                    c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                  labels= c(
-                                    c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
                                   expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
   }
   p2df2 +

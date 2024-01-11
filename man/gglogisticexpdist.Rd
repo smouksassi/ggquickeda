@@ -9,6 +9,7 @@ gglogisticexpdist(
   response = "response",
   endpoint = "Endpoint",
   DOSE = "DOSE",
+  color_fill = "DOSE",
   exposure_metrics = c("AUC", "CMAX"),
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
@@ -43,6 +44,8 @@ gglogisticexpdist(
 \item{endpoint}{name of the column holding the name/key of the endpoint default to `Endpoint`}
 
 \item{DOSE}{name of the column holding the DOSE values default to `DOSE`}
+
+\item{color_fill}{name of the column to be used for color/fill default to DOSE column}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`}
 
@@ -168,8 +171,24 @@ gglogisticexpdist(data = effICGI,
                  ggplot2::coord_cartesian(xlim = c(-30,355))+
                  ggplot2::facet_grid(~Endpoint)
 \dontrun{
+#Example 4b
+  effICGI$SEX <- as.factor(effICGI$SEX)
+ gglogisticexpdist(data = effICGI |>
+  dplyr::filter(Endpoint =="ICGI"),
+                 response = "response",
+                 endpoint = "Endpoint",
+                 color_fill = "SEX",
+                 exposure_metrics = c("AUC"),
+                 exposure_metric_split = c("quartile"),
+                 exposure_metric_soc_value = -99,
+                 exposure_metric_plac_value = 0,
+                 dist_position_scaler = 1, dist_offset = -1 ,
+                 yproj_xpos =  -20 ,
+                 yproj_dodge = 20 ,
+                 exposure_distribution ="lineranges")
+                 
 #Example 5
-gglogisticexpdist(data = effICGI |> filter(Endpoint=="ICGI"), 
+gglogisticexpdist(data = effICGI |> dplyr::filter(Endpoint=="ICGI"), 
                   response = "response",
                   endpoint = "Endpoint",
                   DOSE = "DOSE",
