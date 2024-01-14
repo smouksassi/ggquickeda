@@ -1,21 +1,23 @@
 # ggquickeda 0.3.1
+
 * rebuilt docs fixed broken link
 * fixing some regressions introduced by bookmarking
 * fixing some errors by the new R rules for logical comparison length with `|` versus `||`
-* fixing error in aspect.ratio not numeric (was also fixed in ggplot2)
-* fixing other regressions with ggpairs color and group
+* fixing error in `aspect.ratio` not numeric (was also fixed in ggplot2)
+* fixing other regressions with `GGally::ggpairs()` color and group
 * added support of pasting values of two/three variables where it was just a placeholder
-* added function `ggkmrisktable` to add facetable risk tables, km and by ntiles split exposures
-* added function `gglogisticexpdist` and `ggcontinuousexpdist` to add facetable logistic/linear regression with exposures split to  ntiles with exposure distributions by dose/group and optional y axis projections
+* added function `ggkmrisktable()` to add facetable risk tables, km and by ntiles split exposures
+* added function `gglogisticexpdist()` and `ggcontinuousexpdist()` to add facetable logistic/linear regression with exposures split to ntiles with exposure distributions by dose/group and optional y axis projections
 * added link to github pages in description thanks to @olivroy
 
 # ggquickeda 0.3.0
+
 * added options to drop levels for user discrete shape and linetype scales
-* fixed ggpairs group input and added ability to combine y variables
+* fixed `GGally::ggpairs()` group input and added ability to combine y variables
 * fixed issue with barplot flip applied to bivariate plots
 * fixed issues with barplot percent labels when position is fill
 * added checkboxes to parse x and y axis labels text
-* added ability to regenerate state of apps to have a better UX workflow in Phoenix (James Craig)
+* added ability to regenerate state of apps to have a better UX workflow in Phoenix (James Craig, #28)
 * removed Welcome message and added padding
 * James Craig added as a co-author
 
@@ -27,7 +29,7 @@
 * restored target window annotations to work with factor/character x axis
 * added the possibility to change the size and linetype of density plots
 * added the possibility to choose the shape of boxplot outlier points
-* added options for x and y scale tick formatting are now visible when pairs plot are active
+* added options for `x` and `y` scale tick formatting are now visible when pairs plot are active
 * added options for identity line and for placement of custom/target text at plot edges
 * added checkbox to recode numeric variables with -99 to missing
 * removed ggstance dependency by adding needed positions to global.r
@@ -142,18 +144,19 @@
 * added possibility to divide multiple columns by a specified one (e.g. dose normalization)
 * "Treat as Categories:" now accepts character variables in addition to numeric.
 * "Treat as Numeric:" added to enable converting columns read as factors.
-* updated the docs for geom and stat_km stat_kmband stat_kmticks.
+* updated the docs for geom and `stat_km()` `stat_kmband()` `stat_kmticks()`.
 
 
 # ggquickeda 0.1.3
+
 * UI and options improvements for KM (line sizes, transparency, ignore group and color), linetype mappping
-* changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na
+* changed default error in `stat_kmbands()`, borrowed stairstepn from ggalt and applying `zoo::na.locf()` to deal with `NA`.
 * added the possibility to add median survival with or without CI
-* Using stat_cor from ggpubr to compute correlations for more flexibility and margin in facets
+* Using `ggpubr::stat_cor()` to compute correlations for more flexibility and margin in facets
 * added ability to ignore grouping and or ignore color mapping for correlation coefficient
 * added possibility to dodge means and medians
 * added possibility to specify means and medians N and Values transparency and a default seed for text_repel
-* geom text,label, withe repel variants and position dodge for median and mean labels
+* geom text,label, with repel variants and position dodge for median and mean labels
 * added transparency control for densities and histograms as well as linetype mappping
 * added binwidth control for histogram (user defined or auto), and position dodge
 * added window adjustment control for densities
@@ -161,12 +164,12 @@
 * added the possibility to add one more therapeutic window and fixed a bug with categorical x axis
 * added possibility to remove x/y axis tick labels
 * fixes for continuous scales logic
-* Added initial support for ggpairs
+* Added initial support for `GGally::ggpairs()`
 
 
 
 # ggquickeda 0.1.2
-* bug fixed where in some cases plotdata did not apply filtering
+* bug fixed where in some cases plot data did not apply filtering
 * updated and expanded merge multiple levels of a factor
 * added mappings by shape for points and linetypes of lines and associated custom legends and possibility to ignore it
 * added the possibility of choosing more linetypes for lines
@@ -176,7 +179,7 @@
 * fixed bug in median line not honoring transparency when Median\PI selected with some UI tweaks
 * added more options for boxplot outliers (size and transparency)
 * separate color control for major and minor gridlines with the possibility to remove them
-* added annotation_logticks
+* added `annotation_logticks()`
 * make faceting less prone to fail when user mistakenly choose the same variable in rows and columns
 * make user defined color/fill scales
 
