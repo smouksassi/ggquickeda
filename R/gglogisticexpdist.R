@@ -602,7 +602,7 @@ gglogisticexpdist <- function(data = effICGI,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)+
-      ggplot2::geom_point(data=predict_by_endpoint_expname, alpha = 0.4, linewidth = 3,
+      ggplot2::geom_point(data=predict_by_endpoint_expname, alpha = 0.4, size = 3,
                           ggplot2::aes_string(x = yproj_xpos, y = "ymid50", color = color_fill,
                                               group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
