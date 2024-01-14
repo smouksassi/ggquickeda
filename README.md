@@ -48,7 +48,7 @@ The best way to learn how to use ggquickeda is to load a data your are familiar 
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.  
 
 The package has also the following vignettes:  
-1. <a href="https://cran.r-project.org/web/packages/ggquickeda/vignettes/introduction_to_ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
+1. <a href="https://cran.r-project.org/web/package=ggquickeda/vignettes/introduction_to_ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
 2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
 3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
 
