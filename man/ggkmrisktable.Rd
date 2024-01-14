@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggkmrisktable.R
 \name{ggkmrisktable}
 \alias{ggkmrisktable}
-\title{ggkmrisktable}
+\title{Create a Kaplan-Meier plot with risk table}
 \usage{
 ggkmrisktable(
   data = lung_long,
@@ -49,19 +49,19 @@ ggkmrisktable(
 \arguments{
 \item{data}{Data to use with multiple endpoints stacked into time, status, endpoint name}
 
-\item{time}{name of the column holding the time to event information default to `time`}
+\item{time}{name of the column holding the time to event information default to \code{time}}
 
-\item{status}{name of the column holding the event information default to `DV`}
+\item{status}{name of the column holding the event information default to \code{DV}}
 
-\item{endpoint}{name of the column holding the name/key of the endpoint default to `Endpoint`}
+\item{endpoint}{name of the column holding the name/key of the endpoint default to \code{Endpoint}}
 
-\item{groupvar1}{name of the column to group by, default `Endpoint`}
+\item{groupvar1}{name of the column to group by, default \code{Endpoint}}
 
-\item{groupvar2}{name of the column to group by in addition to groupvar1, default `expname`}
+\item{groupvar2}{name of the column to group by in addition to groupvar1, default \code{expname}}
 
 \item{groupvar3}{name of the column to group by in addition to groupvar1 and groupvar2, default "none"}
 
-\item{exposure_metrics}{name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`}
+\item{exposure_metrics}{name(s) of the column(s) to be stacked into \code{expname} \code{exptile} and split into \code{exposure_metric_split}}
 
 \item{exposure_metric_split}{one of "median", "tertile", "quartile", "none"}
 
@@ -69,9 +69,9 @@ ggkmrisktable(
 
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
 
-\item{color_fill}{name of the column to be used for color/fill default to `exptile`}
+\item{color_fill}{name of the column to be used for color/fill default to \code{exptile}}
 
-\item{linetype}{name of the column to be used for linetype default to `exptile`}
+\item{linetype}{name of the column to be used for linetype default to \code{exptile}}
 
 \item{xlab}{text to be used as x axis label}
 

@@ -11,7 +11,7 @@
 #' @importFrom scales trans_breaks
 #' @importFrom scales trans_format
 #' @importFrom scales math_format
-#' @importFrom scales percent_format
+#' @importFrom scales label_percent
 #' @importFrom scales parse_format
 #' @importFrom scales percent
 #' @importFrom scales label_parse
@@ -112,9 +112,9 @@ GeomKmticks <- ggplot2::ggproto("GeomKmticks", ggplot2::Geom,
 #' \code{geom_km} understands the following aesthetics (required aesthetics
 #' are in bold):
 #' \itemize{
-#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_km}
-#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_km}
-#'   smallest level in sort order is assumed to be 0, with a warning
+#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by [stat_km()]
+#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by [stat_km()]
+#'   smallest level in sort order is assumed to be 0, with a warning.
 #'   \item \code{alpha}
 #'   \item \code{color}
 #'   \item \code{linetype}
@@ -122,11 +122,12 @@ GeomKmticks <- ggplot2::ggproto("GeomKmticks", ggplot2::Geom,
 #' }
 #'
 #' @inheritParams ggplot2::geom_point
-#' @seealso The default stat for this geom is \code{\link{stat_km}} see
+#' @seealso The default stat for this geom is [stat_km()] see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
 #' @examples
 #' library(ggplot2)
+#' set.seed(123)
 #' sex <- rbinom(250, 1, .5)
 #' df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 #' ggplot(df, aes(time = time, status = status, color = factor(sex))) + geom_km()
@@ -148,8 +149,8 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #' \code{geom_kmband} understands the following aesthetics (required aesthetics
 #' are in bold):
 #' \itemize{
-#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_kmband}
-#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_kmband}
+#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by [stat_kmband()]
+#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by [stat_kmband()]
 #'   smallest level in sort order is assumed to be 0, with a warning
 #'   \item \code{alpha}
 #'   \item \code{color}
@@ -158,7 +159,7 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #' }
 #'
 #' @inheritParams ggplot2::geom_point
-#' @seealso The default stat for this geom is \code{\link{stat_kmband}} see
+#' @seealso The default stat for this geom is [stat_kmband()]. See
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
 #' @examples
@@ -187,8 +188,8 @@ geom_kmband <- function(mapping = NULL, data = NULL, stat = "kmband",
 #' \code{geom_kmticks} understands the following aesthetics (required aesthetics
 #' are in bold):
 #' \itemize{
-#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_km}
-#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_km}
+#'   \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by [stat_kmticks()]
+#'   \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by [stat_kmticks()]
 #'   smallest level in sort order is assumed to be 0, with a warning
 #'   \item \code{alpha}
 #'   \item \code{color}
@@ -197,10 +198,9 @@ geom_kmband <- function(mapping = NULL, data = NULL, stat = "kmband",
 #' }
 #'
 #' @inheritParams ggplot2::geom_point
-#' @seealso The default stat for this geom is \code{\link{stat_kmticks}} see
+#' @seealso The default stat for this geom is [stat_kmticks] see
 #'   that documentation for more options to control the underlying statistical transformation.
 #' @export
-#' @rdname geom_kmticks
 #' @examples
 #' library(ggplot2)
 #' sex <- rbinom(250, 1, .5)
@@ -328,7 +328,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 #'   to "identity". Other options include "event", "cumhaz", "cloglog", or
 #'   define your own using \link{trans_new}.
 #' @param firstx,firsty the starting point for the survival curves. By default,
-#'   the plot program obeys tradition by having the plot start at (0,1).
+#'   the plot program obeys tradition by having the plot start at `(0,1)`.
 #' @param start.time numeric value specifying a time to start calculating survival information.
 #'  The resulting curve is the survival conditional on surviving to start.time.
 #' @param type an older argument that combined stype and ctype, now deprecated. Legal values were
@@ -403,7 +403,7 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #' @inheritParams ggplot2::stat_identity
 #' @param trans Transformation to apply to the survival probabilities. Defaults
 #'   to "identity". Other options include "event", "cumhaz", "cloglog", or
-#'   define your own using \link{trans_new}.
+#'   define your own using [scales::trans_new()].
 #' @param firstx,firsty the starting point for the survival curves. By default,
 #'   the plot program obeys tradition by having the plot start at (0,1).
 #' @inheritParams survival::survfit.formula

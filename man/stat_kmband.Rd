@@ -66,7 +66,7 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{trans}{Transformation to apply to the survival probabilities. Defaults
 to "identity". Other options include "event", "cumhaz", "cloglog", or
-define your own using \link{trans_new}.}
+define your own using \code{\link[scales:new_transform]{scales::trans_new()}}.}
 
 \item{firstx, firsty}{the starting point for the survival curves. By default,
 the plot program obeys tradition by having the plot start at (0,1).}
@@ -82,10 +82,10 @@ the plot program obeys tradition by having the plot start at (0,1).}
 \item{conf.type}{One of "none", "plain", "log" (the default), "log-log" or "logit".}
 
 \item{conf.lower}{a character string to specify modified lower limits to the curve,
- the upper limit remains unchanged. Possible values are
-  "usual" (unmodified),
-  "peto", and
-  "modified".
+the upper limit remains unchanged. Possible values are
+"usual" (unmodified),
+"peto", and
+"modified".
 The modified lower limit is based on an "effective n" argument.
 The confidence bands will agree with the usual calculation at each death time,
 but unlike the usual bands the confidence interval becomes wider at each censored observation.
@@ -94,8 +94,8 @@ where n is the number currently at risk and m is the number at risk at the last 
 (The bands thus agree with the un-modified bands at each death time.)
 This is especially useful for survival curves with a long flat tail.
 The Peto lower limit is based on the same "effective n" argument as the modified limit,
- but also replaces the usual Greenwood variance term with a simple approximation.
- It is known to be conservative.}
+but also replaces the usual Greenwood variance term with a simple approximation.
+It is known to be conservative.}
 
 \item{start.time}{numeric value specifying a time to start calculating survival information.
 The resulting curve is the survival conditional on surviving to start.time.}
@@ -106,9 +106,9 @@ The resulting curve is the survival conditional on surviving to start.time.}
 }
 \value{
 a data.frame with additional columns: \item{x}{x in data}
-  \item{ymin}{Lower confidence
-  limit of KM curve} \item{ymax}{Upper confidence limit
-  of KM curve}
+\item{ymin}{Lower confidence
+limit of KM curve} \item{ymax}{Upper confidence limit
+of KM curve}
 }
 \description{
 Adds confidence bands to a Kaplan Meier Estimate of Survival
@@ -124,12 +124,12 @@ observation times and \code{status} which indicates the event status,
 \code{stat_kmband} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-  \item \strong{\code{time}} The survival times
-  \item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
-  \item \code{alpha}
-  \item \code{color}
-  \item \code{linetype}
-  \item \code{size}
+\item \strong{\code{time}} The survival times
+\item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
+\item \code{alpha}
+\item \code{color}
+\item \code{linetype}
+\item \code{size}
 }
 }
 

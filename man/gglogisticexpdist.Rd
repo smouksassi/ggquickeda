@@ -2,7 +2,7 @@
 % Please edit documentation in R/gglogisticexpdist.R
 \name{gglogisticexpdist}
 \alias{gglogisticexpdist}
-\title{gglogisticexpdist}
+\title{Create a logistic fit plot}
 \usage{
 gglogisticexpdist(
   data = effICGI,
@@ -39,15 +39,15 @@ gglogisticexpdist(
 \arguments{
 \item{data}{Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1}
 
-\item{response}{name of the column holding the valuesresponse 0/1}
+\item{response}{name of the column holding the values response 0/1}
 
-\item{endpoint}{name of the column holding the name/key of the endpoint default to `Endpoint`}
+\item{endpoint}{name of the column holding the name/key of the endpoint default to \code{Endpoint}}
 
-\item{DOSE}{name of the column holding the DOSE values default to `DOSE`}
+\item{DOSE}{name of the column holding the DOSE values default to \code{DOSE}}
 
 \item{color_fill}{name of the column to be used for color/fill default to DOSE column}
 
-\item{exposure_metrics}{name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`}
+\item{exposure_metrics}{name(s) of the column(s) to be stacked into \code{expname} \code{exptile} and split into \code{exposure_metric_split}}
 
 \item{exposure_metric_split}{one of "median", "tertile", "quartile", "none"}
 
@@ -65,7 +65,7 @@ gglogisticexpdist(
 
 \item{prob_text_size}{probability text size default to 5}
 
-\item{prob_obs_bydose}{observed probability by dose TRUE/FALSE}
+\item{prob_obs_bydose}{observed probability by dose \code{TRUE}/\code{FALSE}}
 
 \item{N_text_size}{N responders/Ntotal by exposure bin text size default to 5}
 
@@ -83,7 +83,7 @@ gglogisticexpdist(
 
 \item{lineranges_dodge}{lineranges vertical dodge value 1}
 
-\item{yproj}{project the probabilities on y axis TRUE/FALSE}
+\item{yproj}{project the probabilities on y axis \code{TRUE}/\code{FALSE}}
 
 \item{yproj_xpos}{y projection x position 0}
 
@@ -91,7 +91,7 @@ gglogisticexpdist(
 
 \item{yaxis_position}{where to put y axis "left" or "right"}
 
-\item{facet_formula}{facet formula to be use otherwise endpoint ~ expname}
+\item{facet_formula}{facet formula to be use otherwise \code{endpoint ~ expname}}
 
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
 }

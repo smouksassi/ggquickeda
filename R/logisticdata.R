@@ -21,4 +21,6 @@
 #'   \item{ICGI7}{response 1 to 7}
 #' }
 #' @source inspired from a real data submission
+#' @examples
+#' logistic_data
 "logistic_data"

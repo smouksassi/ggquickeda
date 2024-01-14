@@ -65,7 +65,7 @@ to "identity". Other options include "event", "cumhaz", "cloglog", or
 define your own using \link{trans_new}.}
 
 \item{firstx, firsty}{the starting point for the survival curves. By default,
-the plot program obeys tradition by having the plot start at (0,1).}
+the plot program obeys tradition by having the plot start at \verb{(0,1)}.}
 
 \item{type}{an older argument that combined stype and ctype, now deprecated. Legal values were
 "kaplan-meier" which is equivalent to stype=1, ctype=1,
@@ -79,7 +79,7 @@ The resulting curve is the survival conditional on surviving to start.time.}
 }
 \value{
 a data.frame with additional columns: \item{x}{x in data}
-  \item{y}{Kaplan-Meier Survival Estimate at x}
+\item{y}{Kaplan-Meier Survival Estimate at x}
 }
 \description{
 Adds a Kaplan Meier Estimate of Survival
@@ -95,12 +95,12 @@ observation times and \code{status} which indicates the event status,
 \code{stat_km} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-  \item \strong{\code{time}} The survival times
-  \item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
-  \item \code{alpha}
-  \item \code{color}
-  \item \code{linetype}
-  \item \code{size}
+\item \strong{\code{time}} The survival times
+\item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
+\item \code{alpha}
+\item \code{color}
+\item \code{linetype}
+\item \code{size}
 }
 }
 

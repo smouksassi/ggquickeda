@@ -64,7 +64,7 @@ define your own using \link{trans_new}.}
 }
 \value{
 a data.frame with additional columns: \item{x}{x in data}
-  \item{y}{Kaplan-Meier Survival Estimate at x}
+\item{y}{Kaplan-Meier Survival Estimate at x}
 }
 \description{
 Adds tick marks to a Kaplan Meier Estimate of Survival
@@ -83,12 +83,12 @@ normally 0=alive, 1=dead. Other choices are TRUE/FALSE (TRUE = death) or 1/2
 \code{stat_kmticks} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-  \item \strong{\code{time}} The survival times
-  \item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
-  \item \code{alpha}
-  \item \code{color}
-  \item \code{linetype}
-  \item \code{size}
+\item \strong{\code{time}} The survival times
+\item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
+\item \code{alpha}
+\item \code{color}
+\item \code{linetype}
+\item \code{size}
 }
 }
 
@@ -102,5 +102,5 @@ ggplot(df, aes(time = time, status = status, color = factor(sex))) +
 }
 \seealso{
 \code{\link{stat_km}};
- \code{\link{stat_kmband}}
+\code{\link{stat_kmband}}
 }
