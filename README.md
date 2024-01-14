@@ -47,7 +47,8 @@ run_ggquickeda(myRdataset)
 The best way to learn how to use ggquickeda is to load a data your are familiar with and start experimenting.
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.  
 
-The package has also the following vignettes:  
+The package has also the following vignettes:
+
 1. `vignette("ggquickeda")`
 2. `vignette("AdditionalPlotsStats")`
 3. `vignette("Visualizing_Summary_Data")`
