@@ -4,7 +4,6 @@ author: "Samer Mouksassi"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 resource_files:
-  - img/ggquickedahex.png
   - img/snapshot1.gif
   - img/snapshot3.1.png
   - img/snapshot4.1.png

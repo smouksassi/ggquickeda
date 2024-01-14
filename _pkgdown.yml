@@ -1,9 +1,11 @@
+url: https://smouksassi.github.io/ggquickeda/
 template:
+  bootstrap: 5
   params:
     bootswatch: united
 navbar:
   structure:
-    left:  [home, reference, articles, app]
+    left:  [home, intro, reference, articles, app, news]
     right: [github]
     navbar:
   components:
@@ -11,8 +13,6 @@ navbar:
     articles:
      text: Vignettes
      menu:
-     - text: Introduction to ggquickeda
-       href: articles/introduction_to_ggquickeda.html
      - text: Visualizing Summary Data
        href: articles/Visualizing_Summary_Data.html
      - text: Additional Plot Statisitics
@@ -20,3 +20,7 @@ navbar:
     app:
       text: Shiny App
       href: articles/app.html
+
+redirects:
+  - ["articles/introduction_to_ggquickeda.html", "articles/ggquickeda.html"]
+

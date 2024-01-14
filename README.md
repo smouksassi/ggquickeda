@@ -1,4 +1,4 @@
-# ggquickeda <img src="man/figures/ggquickedahex.png" style = "float:right; height: 200px;" />
+# ggquickeda <img src="man/figures/logo.png" style = "float:right; height: 200px;" />
 
 <!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/ggquickeda)](https://cran.r-project.org/package=ggquickeda)
@@ -47,10 +47,11 @@ run_ggquickeda(myRdataset)
 The best way to learn how to use ggquickeda is to load a data your are familiar with and start experimenting.
 Try to reproduce the steps below using the included sample_df.csv. This will give you an idea about the visuals and summaries that can be generated.  
 
-The package has also the following vignettes:  
-1. <a href="https://cran.r-project.org/web/package=ggquickeda/vignettes/introduction_to_ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
-2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
-3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
+The package has also the following vignettes:
+
+1. `vignette("ggquickeda")`
+2. `vignette("AdditionalPlotsStats")`
+3. `vignette("Visualizing_Summary_Data")`
 
 ### Table Example
 ![Example Descriptive Stats](vignettes/img/snapshot3.1.png)
