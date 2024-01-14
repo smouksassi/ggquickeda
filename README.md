@@ -1,4 +1,4 @@
-# ggquickeda <img src="man/figures/ggquickedahex.png" style = "float:right; height: 200px;" />
+# ggquickeda <img src="man/figures/logo.png" style = "float:right; height: 200px;" />
 
 <!-- badges: start -->
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version-last-release/ggquickeda)](https://cran.r-project.org/package=ggquickeda)
