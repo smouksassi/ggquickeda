@@ -5,9 +5,10 @@
 * fixing error in aspect.ratio not numeric (was also fixed in ggplot2)
 * fixing other regressions with ggpairs color and group
 * added support of pasting values of two/three variables where it was just a placeholder
-* added function `ggkmrisktable` to add facetable risk tables, km and by ntiles split exposures
-* added function `gglogisticexpdist` and `ggcontinuousexpdist` to add facetable logistic/linear regression with exposures split to  ntiles with exposure distributions by dose/group and optional y axis projections
+* added function `ggkmrisktable()` to add facetable risk tables, km and by ntiles split exposures
+* added function `gglogisticexpdist()` and `ggcontinuousexpdist()` to add facetable logistic/linear regression with exposures split to  ntiles with exposure distributions by dose/group and optional y axis projections
 * added link to github pages in description thanks to @olivroy
+* Fix part of ggplot2 3.4.0 deprecation warnings. (#27, @olivroy)
 
 # ggquickeda 0.3.0
 * added options to drop levels for user discrete shape and linetype scales

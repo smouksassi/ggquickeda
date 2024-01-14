@@ -79,7 +79,7 @@ are in bold):
   \item \code{alpha}
   \item \code{color}
   \item \code{linetype}
-  \item \code{size}
+  \item \code{linewidth}
 }
 }
 

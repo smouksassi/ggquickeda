@@ -31,7 +31,7 @@ Imports:
     GGally (>= 2.1.0),
     ggbeeswarm,
     ggh4x,
-    ggplot2 (>= 3.3.4),
+    ggplot2 (>= 3.4.0),
     ggpmisc,
     ggrepel (>= 0.7.0),
     ggpubr,
