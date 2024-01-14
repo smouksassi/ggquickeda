@@ -20,14 +20,13 @@ Description: Quickly and easily perform exploratory data analysis by uploading y
 URL: https://github.com/smouksassi/ggquickeda, https://smouksassi.github.io/ggquickeda/
 BugReports: https://github.com/smouksassi/ggquickeda/issues
 Depends:
-    R (>= 4.0.0)
+    R (>= 4.1.0)
 Imports:
     colourpicker,
     dplyr,
     data.table,
     DT,
     Formula,
-    glue,
     GGally (>= 2.1.0),
     ggbeeswarm,
     ggh4x,
@@ -36,6 +35,7 @@ Imports:
     ggrepel (>= 0.7.0),
     ggpubr,
     ggstance,
+    glue,
     gridExtra,
     Hmisc,
     markdown,
