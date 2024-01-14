@@ -106,11 +106,15 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 0.15)+
 #'  facet_grid2(Endpoint~expname+DOSE2,scales="free",
 #'  margins = "DOSE2",strip = strip_nested())             
-#' # Example 4                 
-#'gglogisticexpdist(data = effICGI, 
+#'\dontrun{
+#' # Example 4  
+#' effICGI$SEX <- as.factor(effICGI$SEX)               
+#' gglogisticexpdist(data = effICGI  |>
+#'                  dplyr::filter(Endpoint=="ICGI"), 
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
 #'                  DOSE = "DOSE",
+#'                  color_fill = "SEX",
 #'                  exposure_metrics = c("AUC"),
 #'                  exposure_metric_split = c("quartile"),
 #'                  exposure_distribution ="distributions",
@@ -119,15 +123,15 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  lineranges_ypos = -0.2,
 #'                  yproj_xpos = -10,
 #'                  yproj_dodge = 20,
-#'                  prob_text_size = 9,
+#'                  prob_text_size = 6,
 #'                  binlimits_text_size = 6,
-#'                  N_text_size = 5,
+#'                  N_text_size = 4,
 #'                  dist_position_scaler = 0.15)+
 #'                  ggplot2::scale_x_continuous(breaks = seq(0,350,50),
 #'                  expand = ggplot2::expansion(add= c(0,0),mult=c(0,0)))+
 #'                  ggplot2::coord_cartesian(xlim = c(-30,355))+
-#'                  ggplot2::facet_grid(~Endpoint)
-#'\dontrun{
+#'                  ggplot2::facet_grid(Endpoint~expname+color_fill2, margins ="color_fill2" )
+#'
 #' #Example 4b
 #'   effICGI$SEX <- as.factor(effICGI$SEX)
 #'  gglogisticexpdist(data = effICGI |>

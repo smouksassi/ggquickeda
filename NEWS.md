@@ -1,14 +1,13 @@
 # ggquickeda 0.3.1
 * rebuilt docs fixed broken link
 * fixing some regressions introduced by bookmarking
-* fixing some errors by the new R rules for logical comparison ||
-* fixing error in aspect.ratio not numeric
-* fixing other regression with ggpairs color and group
-* added support of pasting values of two/three variables
-* added function `ggkmrisktable` to add facettable risk tables, km and split exposures to ntiles
-* added function `gglogisticexpdist`
-* added function `ggcontinuousexpdist`
-* TBD reduce package size ! 
+* fixing some errors by the new R rules for logical comparison length with `|` versus `||`
+* fixing error in aspect.ratio not numeric (was also fixed in ggplot2)
+* fixing other regressions with ggpairs color and group
+* added support of pasting values of two/three variables where it was just a placeholder
+* added function `ggkmrisktable` to add facetable risk tables, km and by ntiles split exposures
+* added function `gglogisticexpdist` and `ggcontinuousexpdist` to add facetable logistic/linear regression with exposures split to  ntiles with exposure distributions by dose/group and optional y axis projections
+* added link to github pages in description thanks to @olivroy
 
 # ggquickeda 0.3.0
 * added options to drop levels for user discrete shape and linetype scales

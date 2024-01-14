@@ -58,7 +58,7 @@ Imports:
     ggridges,
     rms,
     tibble,
-    patchwork
+    patchwork (>= 1.2.0)
 Suggests:
     knitr,
     rmarkdown
@@ -66,6 +66,5 @@ License: MIT + file LICENSE
 SystemRequirements: pandoc with https support
 LazyData: true
 VignetteBuilder: knitr
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0
 Encoding: UTF-8
-

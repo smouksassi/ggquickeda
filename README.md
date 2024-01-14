@@ -17,7 +17,9 @@ It enables you to quickly explore your data and to detect trends on the fly. You
 
 It also has the `km`, `kmband` and `kmticks` geoms/stats to facilitate the plotting of **Kaplan-Meier** Survival curves. 
 
-For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>.
+For a quick overview using an older version of the app head to this <a href="https://www.youtube.com/watch?v=1rBBmJUIZhs" target="_blank"> Youtube Tutorial </a>. A more recent video tutorial can be found here:
+<a href="https://certara.github.io/R-Certara/articles/lesson_3.html" target="_blank">Certara R School Introduction to ggquickeda </a>.
+
 
 ### Installation and Running information
 ```
@@ -49,9 +51,6 @@ The package has also the following vignettes:
 1. <a href="https://cran.r-project.org/web/packages/ggquickeda/vignettes/introduction_to_ggquickeda.html"  target="_blank"> Introduction to ggquickeda </a>.   
 2. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/AdditionalPlotsStats.html"  target="_blank"> Additional Plots and Stats with ggquickeda </a>.  
 3. <a href="https://cran.r-project.org/package=ggquickeda/vignettes/Visualizing_Summary_Data.html"  target="_blank"> Visualizing Summary Data with ggquickeda </a>.  
-
-### Plot Example
-![Example use case 1 with the included sample_df](vignettes/img/snapshot1.gif)
 
 ### Table Example
 ![Example Descriptive Stats](vignettes/img/snapshot3.1.png)
