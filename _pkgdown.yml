@@ -5,22 +5,28 @@ template:
     bootswatch: united
 navbar:
   structure:
-    left:  [home, intro, reference, articles, app, news]
-    right: [github]
-    navbar:
+    left:
+    - home
+    - intro
+    - reference
+    - articles
+    - app
+    - news
+    right: github
+    navbar: ~
   components:
     home: ~
     articles:
-     text: Vignettes
-     menu:
-     - text: Visualizing Summary Data
-       href: articles/Visualizing_Summary_Data.html
-     - text: Additional Plot Statisitics
-       href: articles/AdditionalPlotsStats.html
+      text: Vignettes
+      menu:
+      - text: Visualizing Summary Data
+        href: articles/Visualizing_Summary_Data.html
+      - text: Additional Plot Statisitics
+        href: articles/AdditionalPlotsStats.html
     app:
       text: Shiny App
       href: articles/app.html
-
 redirects:
-  - ["articles/introduction_to_ggquickeda.html", "articles/ggquickeda.html"]
+- - articles/introduction_to_ggquickeda.html
+  - articles/ggquickeda.html
 
