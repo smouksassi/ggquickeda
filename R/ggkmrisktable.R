@@ -1,3 +1,4 @@
+#' @importFrom rlang :=
 #' @importFrom rlang .data
 #' @importFrom survival survfit
 #' @importFrom survival Surv
