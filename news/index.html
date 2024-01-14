@@ -67,16 +67,14 @@
 <h2 class="page-header" data-toc-text="0.3.1" id="ggquickeda-031">ggquickeda 0.3.1<a class="anchor" aria-label="anchor" href="#ggquickeda-031"></a></h2>
 <ul><li>rebuilt docs fixed broken link</li>
 <li>fixing some regressions introduced by bookmarking</li>
-<li>fixing some errors by the new R rules for logical comparison ||</li>
-<li>fixing error in aspect.ratio not numeric</li>
-<li>fixing other regression with ggpairs color and group</li>
-<li>added support of pasting values of two/three variables</li>
-<li>added function <code>ggkmrisktable</code> to add facettable risk tables, km and split exposures to ntiles</li>
-<li>added function <code>gglogisticexpdist</code>
+<li>fixing some errors by the new R rules for logical comparison length with <code>|</code> versus <code>||</code>
 </li>
-<li>added function <code>ggcontinuousexpdist</code>
-</li>
-<li>TBD reduce package size !</li>
+<li>fixing error in aspect.ratio not numeric (was also fixed in ggplot2)</li>
+<li>fixing other regressions with ggpairs color and group</li>
+<li>added support of pasting values of two/three variables where it was just a placeholder</li>
+<li>added function <code>ggkmrisktable</code> to add facetable risk tables, km and by ntiles split exposures</li>
+<li>added function <code>gglogisticexpdist</code> and <code>ggcontinuousexpdist</code> to add facetable logistic/linear regression with exposures split to ntiles with exposure distributions by dose/group and optional y axis projections</li>
+<li>added link to github pages in description thanks to <a href="https://github.com/olivroy" class="external-link">@olivroy</a></li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.0" id="ggquickeda-030">ggquickeda 0.3.0<small>2023-03-26</small><a class="anchor" aria-label="anchor" href="#ggquickeda-030"></a></h2>
@@ -296,7 +294,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Samer Mouksassi, Dean Attali, Benjamin Rich, Michael Sachs, James Craig.</p>
+  <p></p><p>Developed by Samer Mouksassi, Dean Attali, James Craig, Benjamin Rich, Michael Sachs.</p>
 </div>
 
 <div class="pkgdown">
