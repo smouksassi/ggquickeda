@@ -1,9 +1,12 @@
-#' @importFrom rlang `:=`
 #' @importFrom rlang .data
 #' @importFrom rlang sym
 #' @import tidyr
 #' @importFrom stats median
 #' @importFrom stats quantile
+#' 
+#' 
+
+utils::globalVariables(c(':='))
 
 summary_df <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
   N = Ntot = prob = NULL

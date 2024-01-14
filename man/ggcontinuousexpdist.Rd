@@ -136,9 +136,10 @@ b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
 a / b +
 plot_layout(guides = "collect") &
  theme(legend.position = "top")
- #Example 2
- effICGI$SEX <- as.factor(effICGI$SEX)
- ggcontinuousexpdist(data = effICGI |>
+
+#Example 2
+effICGI$SEX <- as.factor(effICGI$SEX)
+ggcontinuousexpdist(data = effICGI |>
   dplyr::filter(Endpoint =="ICGI7"),
                  response = "response",
                  endpoint = "Endpoint",
