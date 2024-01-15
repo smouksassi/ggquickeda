@@ -63,8 +63,8 @@
 <li>fixing some regressions introduced by bookmarking</li>
 <li>fixing some errors by the new R rules for logical comparison length with <code>|</code> versus <code>||</code>
 </li>
-<li>fixing error in aspect.ratio not numeric (was also fixed in ggplot2)</li>
-<li>fixing other regressions with ggpairs color and group</li>
+<li>fixing error in <code>aspect.ratio</code> not numeric (was also fixed in ggplot2)</li>
+<li>fixing other regressions with <code><a href="https://ggobi.github.io/ggally/reference/ggpairs.html" class="external-link">GGally::ggpairs()</a></code> color and group</li>
 <li>added support of pasting values of two/three variables where it was just a placeholder</li>
 <li>added function <code><a href="../reference/ggkmrisktable.html">ggkmrisktable()</a></code> to add facetable risk tables, km and by ntiles split exposures</li>
 <li>added function <code><a href="../reference/gglogisticexpdist.html">gglogisticexpdist()</a></code> and <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code> to add facetable logistic/linear regression with exposures split to ntiles with exposure distributions by dose/group and optional y axis projections</li>
@@ -74,11 +74,11 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="ggquickeda-030">ggquickeda 0.3.0<a class="anchor" aria-label="anchor" href="#ggquickeda-030"></a></h2><p class="text-muted">CRAN release: 2023-03-26</p>
 <ul><li>added options to drop levels for user discrete shape and linetype scales</li>
-<li>fixed ggpairs group input and added ability to combine y variables</li>
+<li>fixed <code><a href="https://ggobi.github.io/ggally/reference/ggpairs.html" class="external-link">GGally::ggpairs()</a></code> group input and added ability to combine y variables</li>
 <li>fixed issue with barplot flip applied to bivariate plots</li>
 <li>fixed issues with barplot percent labels when position is fill</li>
 <li>added checkboxes to parse x and y axis labels text</li>
-<li>added ability to regenerate state of apps to have a better UX workflow in Phoenix (James Craig)</li>
+<li>added ability to regenerate state of apps to have a better UX workflow in Phoenix (James Craig, <a href="https://github.com/smouksassi/ggquickeda/issues/28" class="external-link">#28</a>)</li>
 <li>removed Welcome message and added padding</li>
 <li>James Craig added as a co-author</li>
 </ul></div>
@@ -91,7 +91,7 @@
 <li>restored target window annotations to work with factor/character x axis</li>
 <li>added the possibility to change the size and linetype of density plots</li>
 <li>added the possibility to choose the shape of boxplot outlier points</li>
-<li>added options for x and y scale tick formatting are now visible when pairs plot are active</li>
+<li>added options for <code>x</code> and <code>y</code> scale tick formatting are now visible when pairs plot are active</li>
 <li>added options for identity line and for placement of custom/target text at plot edges</li>
 <li>added checkbox to recode numeric variables with -99 to missing</li>
 <li>removed ggstance dependency by adding needed positions to global.r</li>
@@ -219,18 +219,18 @@
 <li>added possibility to divide multiple columns by a specified one (e.g. dose normalization)</li>
 <li>“Treat as Categories:” now accepts character variables in addition to numeric.</li>
 <li>“Treat as Numeric:” added to enable converting columns read as factors.</li>
-<li>updated the docs for geom and stat_km stat_kmband stat_kmticks.</li>
+<li>updated the docs for geom and <code><a href="../reference/stat_km.html">stat_km()</a></code> <code><a href="../reference/stat_kmband.html">stat_kmband()</a></code> <code><a href="../reference/stat_kmticks.html">stat_kmticks()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.3" id="ggquickeda-013">ggquickeda 0.1.3<a class="anchor" aria-label="anchor" href="#ggquickeda-013"></a></h2><p class="text-muted">CRAN release: 2019-04-10</p>
 <ul><li>UI and options improvements for KM (line sizes, transparency, ignore group and color), linetype mappping</li>
-<li>changed default error in stat_kmbands, borrowed stairstepn from ggalt and applying zoo::na.locf to deal with na</li>
+<li>changed default error in <code>stat_kmbands()</code>, borrowed stairstepn from ggalt and applying <code><a href="https://rdrr.io/pkg/zoo/man/na.locf.html" class="external-link">zoo::na.locf()</a></code> to deal with <code>NA</code>.</li>
 <li>added the possibility to add median survival with or without CI</li>
-<li>Using stat_cor from ggpubr to compute correlations for more flexibility and margin in facets</li>
+<li>Using <code><a href="https://rpkgs.datanovia.com/ggpubr/reference/stat_cor.html" class="external-link">ggpubr::stat_cor()</a></code> to compute correlations for more flexibility and margin in facets</li>
 <li>added ability to ignore grouping and or ignore color mapping for correlation coefficient</li>
 <li>added possibility to dodge means and medians</li>
 <li>added possibility to specify means and medians N and Values transparency and a default seed for text_repel</li>
-<li>geom text,label, withe repel variants and position dodge for median and mean labels</li>
+<li>geom text,label, with repel variants and position dodge for median and mean labels</li>
 <li>added transparency control for densities and histograms as well as linetype mappping</li>
 <li>added binwidth control for histogram (user defined or auto), and position dodge</li>
 <li>added window adjustment control for densities</li>
@@ -238,11 +238,12 @@
 <li>added the possibility to add one more therapeutic window and fixed a bug with categorical x axis</li>
 <li>added possibility to remove x/y axis tick labels</li>
 <li>fixes for continuous scales logic</li>
-<li>Added initial support for ggpairs</li>
+<li>Added initial support for <code><a href="https://ggobi.github.io/ggally/reference/ggpairs.html" class="external-link">GGally::ggpairs()</a></code>
+</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.2" id="ggquickeda-012">ggquickeda 0.1.2<a class="anchor" aria-label="anchor" href="#ggquickeda-012"></a></h2><p class="text-muted">CRAN release: 2019-02-24</p>
-<ul><li>bug fixed where in some cases plotdata did not apply filtering</li>
+<ul><li>bug fixed where in some cases plot data did not apply filtering</li>
 <li>updated and expanded merge multiple levels of a factor</li>
 <li>added mappings by shape for points and linetypes of lines and associated custom legends and possibility to ignore it</li>
 <li>added the possibility of choosing more linetypes for lines</li>
@@ -252,7 +253,8 @@
 <li>fixed bug in median line not honoring transparency when Medianselected with some UI tweaks</li>
 <li>added more options for boxplot outliers (size and transparency)</li>
 <li>separate color control for major and minor gridlines with the possibility to remove them</li>
-<li>added annotation_logticks</li>
+<li>added <code><a href="https://ggplot2.tidyverse.org/reference/annotation_logticks.html" class="external-link">annotation_logticks()</a></code>
+</li>
 <li>make faceting less prone to fail when user mistakenly choose the same variable in rows and columns</li>
 <li>make user defined color/fill scales</li>
 </ul></div>

@@ -72,46 +72,46 @@
     <p>A data frame with 600 rows and 10 variables</p><dl><dt>STUDY</dt>
 <dd><p>Study identifier</p></dd>
 
-  <dt>ID</dt>
+<dt>ID</dt>
 <dd><p>Subject Identifier</p></dd>
 
-  <dt>DOSE</dt>
+<dt>DOSE</dt>
 <dd><p>Dose, in mg</p></dd>
 
-  <dt>GBDS</dt>
+<dt>GBDS</dt>
 <dd><p>Dose, in alternative salt</p></dd>
 
-  <dt>SEX</dt>
+<dt>SEX</dt>
 <dd><p>Sex of the subject</p></dd>
 
-  <dt>AGE</dt>
+<dt>AGE</dt>
 <dd><p>age of the subject, in years</p></dd>
 
-  <dt>WT</dt>
+<dt>WT</dt>
 <dd><p>weight of the subject, in kg</p></dd>
 
-  <dt>RACE</dt>
+<dt>RACE</dt>
 <dd><p>Race of the subject</p></dd>
 
-  <dt>CRCL</dt>
+<dt>CRCL</dt>
 <dd><p>Creatinine clearance</p></dd>
 
-  <dt>BRLS</dt>
+<dt>BRLS</dt>
 <dd><p>RLS score</p></dd>
 
-  <dt>PRLS</dt>
+<dt>PRLS</dt>
 <dd><p>RLS score</p></dd>
 
-  <dt>AUC</dt>
+<dt>AUC</dt>
 <dd><p>Area under the curve exposure</p></dd>
 
-  <dt>CMAX</dt>
+<dt>CMAX</dt>
 <dd><p>Maximun concentration exposure</p></dd>
 
-  <dt>ICGI</dt>
+<dt>ICGI</dt>
 <dd><p>response 0/1</p></dd>
 
-  <dt>ICGI7</dt>
+<dt>ICGI7</dt>
 <dd><p>response 1 to 7</p></dd>
 
 
@@ -121,6 +121,26 @@
     <p>inspired from a real data submission</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">logistic_data</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 749 × 15</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    STUDY    ID  DOSE  GBDS   SEX   AGE    WT  RACE  CRCL  BRLS  PRLS   AUC  CMAX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    52   150  <span style="text-decoration: underline;">1</span>200   625     1    55   105     5   125    19     0  89.1   6  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    52   151  <span style="text-decoration: underline;">1</span>200   625     2    52    74     1    96    29     8 114.    8.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    52   152  <span style="text-decoration: underline;">1</span>200   625     1    50    77     5    97    19     3  75.6   5.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    52   153  <span style="text-decoration: underline;">1</span>200   625     1    38   103     5   209    16     4  69.8   4.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    52   155  <span style="text-decoration: underline;">1</span>200   625     2    51    91     5   159    25     9  74.3   6.8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    52   156  <span style="text-decoration: underline;">1</span>200   625     2    47    83     5   131    23     5  90.1   7.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    52   157  <span style="text-decoration: underline;">1</span>200   625     2    52    69     5    71    20     6  61.6   4.9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    52   158  <span style="text-decoration: underline;">1</span>200   625     1    36    85     5   155    26     8  71.3   5.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    52   159  <span style="text-decoration: underline;">1</span>200   625     1    46    85     5   138    16     5  64.3   5.7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    52   160  <span style="text-decoration: underline;">1</span>200   625     2    58    78     5   108    19     1 101.    8.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 739 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 2 more variables: ICGI &lt;dbl&gt;, ICGI7 &lt;dbl&gt;</span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

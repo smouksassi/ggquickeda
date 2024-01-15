@@ -145,9 +145,9 @@ to the paired geom/stat.</p></dd>
     
 
 <p><code>geom_km</code> understands the following aesthetics (required aesthetics
-are in bold):</p><ul><li><p><strong><code>x</code></strong> The survival/censoring times. This is automatically mapped by <a href="stat_km.html">stat_km</a></p></li>
-<li><p><strong><code>y</code></strong> The survival probability estimates. This is automatically mapped by <a href="stat_km.html">stat_km</a>
-  smallest level in sort order is assumed to be 0, with a warning</p></li>
+are in bold):</p><ul><li><p><strong><code>x</code></strong> The survival/censoring times. This is automatically mapped by <code><a href="stat_km.html">stat_km()</a></code></p></li>
+<li><p><strong><code>y</code></strong> The survival probability estimates. This is automatically mapped by <code><a href="stat_km.html">stat_km()</a></code>
+smallest level in sort order is assumed to be 0, with a warning.</p></li>
 <li><p><code>alpha</code></p></li>
 <li><p><code>color</code></p></li>
 <li><p><code>linetype</code></p></li>
@@ -155,13 +155,14 @@ are in bold):</p><ul><li><p><strong><code>x</code></strong> The survival/censori
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>The default stat for this geom is <code><a href="stat_km.html">stat_km</a></code> see
-  that documentation for more options to control the underlying statistical transformation.</p></div>
+    <div class="dont-index"><p>The default stat for this geom is <code><a href="stat_km.html">stat_km()</a></code> see
+that documentation for more options to control the underlying statistical transformation.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">sex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">1</span>, <span class="fl">.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">250</span>, mean <span class="op">=</span> <span class="va">sex</span><span class="op">)</span><span class="op">)</span>, status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">250</span>, <span class="fl">1</span>, <span class="fl">.75</span><span class="op">)</span>, sex <span class="op">=</span> <span class="va">sex</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">time</span>, status <span class="op">=</span> <span class="va">status</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_km</span><span class="op">(</span><span class="op">)</span></span></span>

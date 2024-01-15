@@ -138,7 +138,7 @@ the default plot specification, e.g. <code><a href="https://ggplot2.tidyverse.or
 <dt>trans</dt>
 <dd><p>Transformation to apply to the survival probabilities. Defaults
 to "identity". Other options include "event", "cumhaz", "cloglog", or
-define your own using trans_new.</p></dd>
+define your own using <code><a href="https://scales.r-lib.org/reference/new_transform.html" class="external-link">scales::trans_new()</a></code>.</p></dd>
 
 
 <dt>firstx, firsty</dt>
@@ -164,10 +164,10 @@ the plot program obeys tradition by having the plot start at (0,1).</p></dd>
 
 <dt>conf.lower</dt>
 <dd><p>a character string to specify modified lower limits to the curve,
- the upper limit remains unchanged. Possible values are
-  "usual" (unmodified),
-  "peto", and
-  "modified".
+the upper limit remains unchanged. Possible values are
+"usual" (unmodified),
+"peto", and
+"modified".
 The modified lower limit is based on an "effective n" argument.
 The confidence bands will agree with the usual calculation at each death time,
 but unlike the usual bands the confidence interval becomes wider at each censored observation.
@@ -176,8 +176,8 @@ where n is the number currently at risk and m is the number at risk at the last 
 (The bands thus agree with the un-modified bands at each death time.)
 This is especially useful for survival curves with a long flat tail.
 The Peto lower limit is based on the same "effective n" argument as the modified limit,
- but also replaces the usual Greenwood variance term with a simple approximation.
- It is known to be conservative.</p></dd>
+but also replaces the usual Greenwood variance term with a simple approximation.
+It is known to be conservative.</p></dd>
 
 
 <dt>start.time</dt>
@@ -201,12 +201,12 @@ The resulting curve is the survival conditional on surviving to start.time.</p><
 <dl><dt>x</dt>
 <dd><p>x in data</p></dd>
 
-  <dt>ymin</dt>
+<dt>ymin</dt>
 <dd><p>Lower confidence
-  limit of KM curve</p></dd>
+limit of KM curve</p></dd>
  <dt>ymax</dt>
 <dd><p>Upper confidence limit
-  of KM curve</p></dd>
+of KM curve</p></dd>
 
 </dl></div>
     <div class="section level2">

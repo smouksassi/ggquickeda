@@ -75,31 +75,31 @@ given dose and some subject characteristics to help in the app exploration.</p>
     <p>A data frame with 600 rows and 10 variables</p><dl><dt>ID</dt>
 <dd><p>Subject Identifier, an integer from 1 to 150</p></dd>
 
-  <dt>Time</dt>
+<dt>Time</dt>
 <dd><p>Time of dose given or drug sample measured, in hours</p></dd>
 
-  <dt>Amt</dt>
+<dt>Amt</dt>
 <dd><p>dose given at the corresponding Time, in milligrams</p></dd>
 
-  <dt>Conc</dt>
+<dt>Conc</dt>
 <dd><p>drug concentrations in the plasma sample, in mg/L</p></dd>
 
-  <dt>Age</dt>
+<dt>Age</dt>
 <dd><p>age of the subject, in years</p></dd>
 
-  <dt>Weight</dt>
+<dt>Weight</dt>
 <dd><p>weight of the subject, in kg</p></dd>
 
-  <dt>Gender</dt>
+<dt>Gender</dt>
 <dd><p>Sex of the subject, a factor with Female and Male levels</p></dd>
 
-  <dt>Race</dt>
+<dt>Race</dt>
 <dd><p>Race of the subject, a factor with Asian, Black, Caucasian, Hispanic and Other levels</p></dd>
 
-  <dt>Dose</dt>
+<dt>Dose</dt>
 <dd><p>dose group of the subject, in milligrams</p></dd>
 
-  <dt>AGECAT</dt>
+<dt>AGECAT</dt>
 <dd><p>age category of the subject, a variable cutting Age into two values 0/1</p></dd>
 
 
@@ -109,6 +109,26 @@ given dose and some subject characteristics to help in the app exploration.</p>
     <p>"sd_oral_richpk" from 'PKPDmisc' R package with an additional AGECAT variable</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">sample_data</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,800 × 10</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       ID  Time   Amt  Conc   Age Weight Gender Race      Dose AGECAT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1  0     <span style="text-decoration: underline;">5</span>000  0       56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1  0.25     0  8.61    56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1  0.5      0 19.4     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1  1        0 34.0     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1  2        0 30.2     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1  3        0 31.3     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1  4        0 25.0     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1  6        0 23.4     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     1  8        0 23.5     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1 12        0 14.7     56     94 Male   Hispanic  <span style="text-decoration: underline;">5</span>000      0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 1,790 more rows</span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
