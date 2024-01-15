@@ -2387,7 +2387,6 @@ function(input, output, session) {
   
   output$userdefinedshape <- renderUI({ 
     req(input$nusershape)
-    req(input$scaleshapeswitcher)
     lev <- 1:input$nusershape
       shapes <- c("circle open",
                   "triangle open",
