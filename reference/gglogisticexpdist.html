@@ -229,29 +229,19 @@
 <span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">STUDY</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">effICGI</span><span class="op">$</span><span class="va">STUDY</span><span class="op">)</span>    </span></span>
 <span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">ICGI2</span> <span class="op">&lt;-</span> <span class="va">effICGI</span><span class="op">$</span><span class="va">ICGI</span></span></span>
 <span class="r-in"><span><span class="va">effICGI</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">gather</a></span><span class="op">(</span><span class="va">effICGI</span>,<span class="va">Endpoint</span>,<span class="va">response</span>,<span class="va">ICGI</span>,<span class="va">ICGI2</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span>, <span class="co"># long format filter to Endpoint of choice</span></span></span>
+<span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>                 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Endpoint</span><span class="op">==</span><span class="st">"ICGI"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 response <span class="op">=</span> <span class="st">"response"</span>,</span></span>
 <span class="r-in"><span>                 endpoint <span class="op">=</span> <span class="st">"Endpoint"</span>,</span></span>
-<span class="r-in"><span>                 exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUC"</span>,<span class="st">"CMAX"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUC"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quartile"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span></span>
 <span class="r-in"><span>                 exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span></span>
-<span class="r-in"><span>                 exposure_distribution <span class="op">=</span><span class="st">"distributions"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_75)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_75)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_75)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
+<span class="r-in"><span>                 exposure_distribution <span class="op">=</span><span class="st">"distributions"</span>,</span></span>
+<span class="r-in"><span>                 yproj_xpos <span class="op">=</span> <span class="op">-</span><span class="fl">15</span>,</span></span>
+<span class="r-in"><span>                 yproj_dodge <span class="op">=</span> <span class="fl">10</span>,</span></span>
+<span class="r-in"><span>                 dist_position_scaler <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>                 dist_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
@@ -260,34 +250,27 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 11.7</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 0.934</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 11.7</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 0.934</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 976 rows containing non-finite values (`stat_density_ridges()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 4 rows containing missing values (`geom_pointrange()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 4 rows containing missing values (`geom_text()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 244 rows containing non-finite values (`stat_density_ridges()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_pointrange()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_text()`).</span>
 <span class="r-plt img"><img src="gglogisticexpdist-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>                 </span></span>
 <span class="r-in"><span><span class="co"># Example 2                </span></span></span>
-<span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span>, <span class="co"># long format filter to Endpoint of choice</span></span></span>
-<span class="r-in"><span>response <span class="op">=</span> <span class="st">"response"</span>,</span></span>
-<span class="r-in"><span>endpoint <span class="op">=</span> <span class="st">"Endpoint"</span>,</span></span>
-<span class="r-in"><span>DOSE <span class="op">=</span> <span class="st">"DOSE"</span>,</span></span>
-<span class="r-in"><span>exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUC"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"quartile"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>exposure_distribution <span class="op">=</span><span class="st">"lineranges"</span>,</span></span>
-<span class="r-in"><span>exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span></span>
-<span class="r-in"><span>exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span></span>
-<span class="r-in"><span>lineranges_ypos <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>,</span></span>
-<span class="r-in"><span>prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>yproj_xpos <span class="op">=</span> <span class="op">-</span><span class="fl">10</span>,</span></span>
-<span class="r-in"><span>yproj_dodge <span class="op">=</span> <span class="fl">10</span>,</span></span>
-<span class="r-in"><span>dist_position_scaler <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span>     </span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_75)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
+<span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>                 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Endpoint</span><span class="op">==</span><span class="st">"ICGI"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 response <span class="op">=</span> <span class="st">"response"</span>,</span></span>
+<span class="r-in"><span>                 endpoint <span class="op">=</span> <span class="st">"Endpoint"</span>,</span></span>
+<span class="r-in"><span>                 exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CMAX"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"tertile"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span></span>
+<span class="r-in"><span>                 exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>                 exposure_distribution <span class="op">=</span><span class="st">"lineranges"</span>,</span></span>
+<span class="r-in"><span>                 lineranges_ypos <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>,</span></span>
+<span class="r-in"><span>                 lineranges_dodge <span class="op">=</span> <span class="fl">0.4</span>,</span></span>
+<span class="r-in"><span>                 prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                 yproj_xpos <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>,</span></span>
+<span class="r-in"><span>                 yproj_dodge <span class="op">=</span> <span class="fl">5</span>,</span></span>
+<span class="r-in"><span>                 dist_position_scaler <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
@@ -295,10 +278,13 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 2 rows containing missing values (`geom_pointrange()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 2 rows containing missing values (`geom_text()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_pointrange()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 rows containing missing values (`geom_text()`).</span>
 <span class="r-plt img"><img src="gglogisticexpdist-2.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="co"># Example 3                </span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co">#' # Example 3                </span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/teunbrand/ggh4x" class="external-link">ggh4x</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>                 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Endpoint</span><span class="op">==</span><span class="st">"ICGI"</span><span class="op">)</span>, </span></span>
@@ -312,32 +298,7 @@
 <span class="r-in"><span>                 exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                 dist_position_scaler <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span><span class="op">+</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://teunbrand.github.io/ggh4x/reference/facet_grid2.html" class="external-link">facet_grid2</a></span><span class="op">(</span><span class="va">Endpoint</span><span class="op">~</span><span class="va">expname</span><span class="op">+</span><span class="va">DOSE2</span>,scales<span class="op">=</span><span class="st">"free"</span>,</span></span>
-<span class="r-in"><span> margins <span class="op">=</span> <span class="st">"DOSE2"</span>,strip <span class="op">=</span> <span class="fu"><a href="https://teunbrand.github.io/ggh4x/reference/strip_nested.html" class="external-link">strip_nested</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>             </span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_75)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of NaN</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 3.06</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 7.44</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 15.1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 21.1</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 11.7</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 488 rows containing non-finite values (`stat_density_ridges()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 2 rows containing missing values (`geom_pointrange()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 2 rows containing missing values (`geom_text()`).</span>
-<span class="r-plt img"><img src="gglogisticexpdist-3.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span> margins <span class="op">=</span> <span class="st">"DOSE2"</span>,strip <span class="op">=</span> <span class="fu"><a href="https://teunbrand.github.io/ggh4x/reference/strip_nested.html" class="external-link">strip_nested</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Example 4  </span></span></span>
 <span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">SEX</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">effICGI</span><span class="op">$</span><span class="va">SEX</span><span class="op">)</span>               </span></span>
 <span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span>  <span class="op">|&gt;</span></span></span>
