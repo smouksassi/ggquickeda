@@ -7,4 +7,4 @@ rsconnect
 revdep
 /revdep/.cache.rds
 .html
-docs
+docs/
