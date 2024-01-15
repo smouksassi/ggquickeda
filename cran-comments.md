@@ -8,7 +8,7 @@
 ## R CMD check results
 
 0 errors | 0 warnings | 3 notes
-
+* This is a re-submission after resolving error about an invalid link tp vignette 
 * This is a significant update fixing several bugs and adding three plotting functions.
 * Notes about unused declared imports from the previous/current builds are false positives since these are used in the shiny app code and are required for it to work properly.
 * Notes about depending on many packages appear and is a choice and a risk I am willing to take, as this package requires all of them to work properly.

@@ -2387,6 +2387,7 @@ function(input, output, session) {
   
   output$userdefinedshape <- renderUI({ 
     req(input$nusershape)
+    req(input$scaleshapeswitcher)
     lev <- 1:input$nusershape
       shapes <- c("circle open",
                   "triangle open",
@@ -2396,11 +2397,8 @@ function(input, output, session) {
                   "asterisk",
                   "circle small" ,"triangle" ,"square")
     shapes <- rep_len(shapes, input$nusershape)
-
-    if(input$scaleshapeswitcher=="themeuser"){
       lapply(seq_along(lev), function(i) {
-        div(
-          selectInput(inputId = paste0("shape", lev[i]),label = paste0('Choose shape:', lev[i]),
+        div(selectInput(inputId = paste0("shape", lev[i]),label = paste0('Choose shape:', lev[i]),
                     c(
                       "square open"           ,
                       "circle open"           ,
@@ -2431,27 +2429,19 @@ function(input, output, session) {
                       "blank"
                     ), selected = shapes[i]
         ), style = "display: inline-block;")  
-        
       })
-    }
-    
   })
-  
+
   output$userdefinedlinetype <- renderUI({ 
     req(input$nuserlinetype)
     lev <- 1:input$nuserlinetype
     linetypes <- c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank")
     linetypes <- rep_len(linetypes, input$nuserlinetype)
-    
-    if(input$scalelinetypeswitcher=="themeuser"){
       lapply(seq_along(lev), function(i) {
         div(selectInput(inputId = paste0("linetype", lev[i]),label = paste0('Choose linetype:', lev[i]),
-                    c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank"), selected = linetypes[i]
+                        c("solid","dashed", "dotted", "dotdash", "longdash", "twodash","blank"), selected = linetypes[i]
         ), style = "display: inline-block;")  
-        
       })
-    }
-    
   })
   
   
