@@ -124,12 +124,12 @@ observation times and \code{status} which indicates the event status,
 \code{stat_kmband} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-  \item \strong{\code{time}} The survival times
-  \item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
-  \item \code{alpha}
-  \item \code{color}
-  \item \code{linetype}
-  \item \code{linewidth}
+\item \strong{\code{time}} The survival times
+\item \strong{\code{status}} The censoring indicator, see \link[survival]{Surv} for more information.
+\item \code{alpha}
+\item \code{color}
+\item \code{linetype}
+\item \code{linewidth}
 }
 }
 
