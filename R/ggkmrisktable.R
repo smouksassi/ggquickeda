@@ -131,7 +131,7 @@ lung_long$facetdum <- "(all)"
 .trim <- function(x){gsub("^\\s+|\\s+$", "", x)}
 # from survminer
 
-#' ggkmrisktable
+#' Create a Kaplan-Meier plot with risk table 
 #'
 #' Produces a km plot with a facettable risk table in ggplot2
 #' 
@@ -183,10 +183,10 @@ lung_long$facetdum <- "(all)"
 #'  dplyr::filter(!is.na(ph.karno))|>
 #'  dplyr::filter(!is.na(pat.karno))|>
 #'  dplyr::filter(!is.na(ph.ecog))
-#'lung_long$ph.ecog <- ifelse(lung_long$ph.ecog>1,2,lung_long$ph.ecog)
-#'lung_long$ph.ecog <- as.factor(lung_long$ph.ecog )
-#'lung_long$ph.ecog <- as.factor(lung_long$ph.ecog )
-#'lung_long$facetdum <- "(all)"
+#' lung_long$ph.ecog <- ifelse(lung_long$ph.ecog>1,2,lung_long$ph.ecog)
+#' lung_long$ph.ecog <- as.factor(lung_long$ph.ecog )
+#' lung_long$ph.ecog <- as.factor(lung_long$ph.ecog )
+#' lung_long$facetdum <- "(all)"
 #' 
 #' ggkmrisktable(data = lung_long, time= "time", status ="DV",
 #'              exposure_metrics =c("age","ph.karno"),

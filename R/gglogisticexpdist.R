@@ -23,11 +23,11 @@ summary_df <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
 }
 plogis <- function(x) exp(x)/(1+exp(x))
 
-#' gglogisticexpdist
+#' Create a logistic fit plot
 #'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 #' @param data Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1
-#' @param response name of the column holding the valuesresponse 0/1
+#' @param response name of the column holding the values response 0/1
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
 #' @param DOSE name of the column holding the DOSE values default to `DOSE`
 #' @param color_fill name of the column to be used for color/fill default to DOSE column
@@ -40,7 +40,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
 #' @param prob_text_size probability text size default to 5
-#' @param prob_obs_bydose observed probability by dose TRUE/FALSE
+#' @param prob_obs_bydose observed probability by dose `TRUE`/`FALSE`
 #' @param N_text_size N responders/Ntotal by exposure bin text size default to 5
 #' @param binlimits_text_size 5 binlimits text size
 #' @param binlimits_ypos binlimits y position default to 0 
@@ -49,11 +49,11 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param dist_offset offset where the distribution position starts 0
 #' @param lineranges_ypos where to put the lineranges -1
 #' @param lineranges_dodge lineranges vertical dodge value 1
-#' @param yproj project the probabilities on y axis TRUE/FALSE
+#' @param yproj project the probabilities on y axis `TRUE`/`FALSE`
 #' @param yproj_xpos y projection x position 0
 #' @param yproj_dodge  y projection dodge value 0.2
 #' @param yaxis_position where to put y axis "left" or "right"
-#' @param facet_formula facet formula to be use otherwise endpoint ~ expname
+#' @param facet_formula facet formula to be use otherwise `endpoint ~ expname`
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
 #' @examples
 #' # Example 1

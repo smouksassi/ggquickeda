@@ -91,6 +91,6 @@ ggplot(df, aes(time = time, status = status, color = factor(sex), fill =factor(s
  geom_km() + geom_kmband()
 }
 \seealso{
-The default stat for this geom is \code{\link{stat_kmband}} see
-  that documentation for more options to control the underlying statistical transformation.
+The default stat for this geom is \code{\link[=stat_kmband]{stat_kmband()}}. See
+that documentation for more options to control the underlying statistical transformation.
 }

@@ -73,13 +73,13 @@ Adds tickmarks at the times when there are censored observations but no events
 \code{geom_kmticks} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-  \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_km}
-  \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_km}
-  smallest level in sort order is assumed to be 0, with a warning
-  \item \code{alpha}
-  \item \code{color}
-  \item \code{linetype}
-  \item \code{size}
+\item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \code{\link[=stat_kmticks]{stat_kmticks()}}
+\item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \code{\link[=stat_kmticks]{stat_kmticks()}}
+smallest level in sort order is assumed to be 0, with a warning
+\item \code{alpha}
+\item \code{color}
+\item \code{linetype}
+\item \code{size}
 }
 }
 
@@ -91,6 +91,6 @@ ggplot(df, aes(time = time, status = status, color = factor(sex), group = factor
  geom_km() + geom_kmticks(col="black")
 }
 \seealso{
-The default stat for this geom is \code{\link{stat_kmticks}} see
-  that documentation for more options to control the underlying statistical transformation.
+The default stat for this geom is \link{stat_kmticks} see
+that documentation for more options to control the underlying statistical transformation.
 }

@@ -7,16 +7,16 @@
 \format{
 A data frame with 600 rows and 10 variables
 \describe{
-  \item{ID}{Subject Identifier, an integer from 1 to 150}
-  \item{Time}{Time of dose given or drug sample measured, in hours}
-  \item{Amt}{dose given at the corresponding Time, in milligrams}
-  \item{Conc}{drug concentrations in the plasma sample, in mg/L}
-  \item{Age}{age of the subject, in years}
-  \item{Weight}{weight of the subject, in kg}
-  \item{Gender}{Sex of the subject, a factor with Female and Male levels}
-  \item{Race}{Race of the subject, a factor with Asian, Black, Caucasian, Hispanic and Other levels}
-  \item{Dose}{dose group of the subject, in milligrams}
-  \item{AGECAT}{age category of the subject, a variable cutting Age into two values 0/1}
+\item{ID}{Subject Identifier, an integer from 1 to 150}
+\item{Time}{Time of dose given or drug sample measured, in hours}
+\item{Amt}{dose given at the corresponding Time, in milligrams}
+\item{Conc}{drug concentrations in the plasma sample, in mg/L}
+\item{Age}{age of the subject, in years}
+\item{Weight}{weight of the subject, in kg}
+\item{Gender}{Sex of the subject, a factor with Female and Male levels}
+\item{Race}{Race of the subject, a factor with Asian, Black, Caucasian, Hispanic and Other levels}
+\item{Dose}{dose group of the subject, in milligrams}
+\item{AGECAT}{age category of the subject, a variable cutting Age into two values 0/1}
 }
 }
 \source{
@@ -28,5 +28,9 @@ sample_data
 \description{
 A dataset containing concentration-time data with the
 given dose and some subject characteristics to help in the app exploration.
+}
+\examples{
+sample_data
+
 }
 \keyword{datasets}

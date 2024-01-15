@@ -73,23 +73,24 @@ Add a Kaplan-Meier survival curve
 \code{geom_km} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-  \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_km}
-  \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_km}
-  smallest level in sort order is assumed to be 0, with a warning
-  \item \code{alpha}
-  \item \code{color}
-  \item \code{linetype}
-  \item \code{size}
+\item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \code{\link[=stat_km]{stat_km()}}
+\item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \code{\link[=stat_km]{stat_km()}}
+smallest level in sort order is assumed to be 0, with a warning.
+\item \code{alpha}
+\item \code{color}
+\item \code{linetype}
+\item \code{size}
 }
 }
 
 \examples{
 library(ggplot2)
+set.seed(123)
 sex <- rbinom(250, 1, .5)
 df <- data.frame(time = exp(rnorm(250, mean = sex)), status = rbinom(250, 1, .75), sex = sex)
 ggplot(df, aes(time = time, status = status, color = factor(sex))) + geom_km()
 }
 \seealso{
-The default stat for this geom is \code{\link{stat_km}} see
-  that documentation for more options to control the underlying statistical transformation.
+The default stat for this geom is \code{\link[=stat_km]{stat_km()}} see
+that documentation for more options to control the underlying statistical transformation.
 }
