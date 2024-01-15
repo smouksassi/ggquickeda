@@ -9,6 +9,7 @@
 * added function `ggkmrisktable()` to add facetable risk tables, km and by ntiles split exposures
 * added function `gglogisticexpdist()` and `ggcontinuousexpdist()` to add facetable logistic/linear regression with exposures split to ntiles with exposure distributions by dose/group and optional y axis projections
 * added link to github pages in description thanks to @olivroy
+* Fix part of ggplot2 3.4.0 deprecation warnings. (#27, @olivroy)
 
 # ggquickeda 0.3.0
 

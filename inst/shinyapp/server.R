@@ -2931,7 +2931,7 @@ function(input, output, session) {
            p <- p + geom_density(aes_string(y=densitytype),
                                  alpha=input$densityalpha,
                                  adjust=input$densityadjust,
-                                 size = input$densitylinesize)
+                                 linewidth = input$densitylinesize)
        }
         if(input$densityignorelinetype && !input$densityaddition%in% c("None","histocount")) {
           p <- p + geom_density(aes_string(binwidth=input$histobinwidth,
@@ -2939,21 +2939,21 @@ function(input, output, session) {
                                 alpha=input$densityalpha,
                                 adjust=input$densityadjust,
                                 linetype = input$densitylinetypes,
-                                size = input$densitylinesize)
+                                linewidth = input$densitylinesize)
         }
 
         if(!input$densityignorelinetype && input$densityaddition == "histocount" ) {
           p <- p + geom_density(aes(binwidth=input$histobinwidth, y=binwidth*..count..),
                                 alpha=input$densityalpha,
                                 adjust=input$densityadjust,
-                                size = input$densitylinesize)
+                                linewidth = input$densitylinesize)
         }
         if(input$densityignorelinetype && input$densityaddition=="histocount") {
           p <- p + geom_density(aes(binwidth=input$histobinwidth, y=binwidth*..count..),
                                 alpha=input$densityalpha,
                                 adjust=input$densityadjust,
                                 linetype = input$densitylinetypes,
-                                size = input$densitylinesize)
+                                linewidth = input$densitylinesize)
         }
 
 
@@ -5921,7 +5921,7 @@ function(input, output, session) {
               geom_line(
                 stat = "km",
                 trans = input$KMtrans ,
-                size = input$kmlinesize,
+                linewidth = input$kmlinesize,
                 alpha = input$kmlinealpha
               )
             
@@ -6698,23 +6698,23 @@ function(input, output, session) {
       
       if (input$customvline1)
         p <-    p +
-        geom_vline(xintercept=input$vline1,color=input$vlinecol1,linetype=input$vlinetype1,size=input$vlinesize1)
+        geom_vline(xintercept=input$vline1,color=input$vlinecol1,linetype=input$vlinetype1,linewidth=input$vlinesize1)
       if (input$customvline2)
         p <-    p +
-        geom_vline(xintercept=input$vline2,color=input$vlinecol2,linetype=input$vlinetype2,size=input$vlinesize2)      
+        geom_vline(xintercept=input$vline2,color=input$vlinecol2,linetype=input$vlinetype2,linewidth=input$vlinesize2)      
       
       if (input$customhline1)
         p <-    p +
-        geom_hline(yintercept=input$hline1,color=input$hlinecol1,linetype=input$hlinetype1,size=input$hlinesize1)
+        geom_hline(yintercept=input$hline1,color=input$hlinecol1,linetype=input$hlinetype1,linewidth=input$hlinesize1)
       
       if (input$customhline2)
         p <-    p +
-        geom_hline(yintercept=input$hline2,color=input$hlinecol2,linetype=input$hlinetype2,size=input$hlinesize2)     
+        geom_hline(yintercept=input$hline2,color=input$hlinecol2,linetype=input$hlinetype2,linewidth=input$hlinesize2)     
       
       if (input$identityline)
         p <-    p + geom_abline(intercept = 0, slope = 1,
                                 col = input$identitylinecol,
-                                size = input$identitylinesize,
+                                linewidth = input$identitylinesize,
                                 linetype = input$identitylinetype)  
 
       

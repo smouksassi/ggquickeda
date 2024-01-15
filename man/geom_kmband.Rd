@@ -73,13 +73,13 @@ Add confidence bands to a Kaplan-Meier survival curve
 \code{geom_kmband} understands the following aesthetics (required aesthetics
 are in bold):
 \itemize{
-\item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \code{\link[=stat_kmband]{stat_kmband()}}
-\item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \code{\link[=stat_kmband]{stat_kmband()}}
-smallest level in sort order is assumed to be 0, with a warning
-\item \code{alpha}
-\item \code{color}
-\item \code{linetype}
-\item \code{size}
+  \item \strong{\code{x}} The survival/censoring times. This is automatically mapped by \link{stat_kmband}
+  \item \strong{\code{y}} The survival probability estimates. This is automatically mapped by \link{stat_kmband}
+  smallest level in sort order is assumed to be 0, with a warning
+  \item \code{alpha}
+  \item \code{color}
+  \item \code{linetype}
+  \item \code{linewidth}
 }
 }
 
