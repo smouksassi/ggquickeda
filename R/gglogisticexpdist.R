@@ -67,31 +67,40 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'effICGI$STUDY <- factor(effICGI$STUDY)    
 #'effICGI$ICGI2 <- effICGI$ICGI
 #'effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2)
-#' gglogisticexpdist(data = effICGI, # long format filter to Endpoint of choice
+#' gglogisticexpdist(data = effICGI |>
+#'                  dplyr::filter(Endpoint=="ICGI"),
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
-#'                  exposure_metrics = c("AUC","CMAX"),
+#'                  exposure_metrics = c("AUC"),
 #'                  exposure_metric_split = c("quartile"),
 #'                  exposure_metric_soc_value = -99,
 #'                  exposure_metric_plac_value = 0,
-#'                  exposure_distribution ="distributions")
+#'                  exposure_distribution ="distributions",
+#'                  yproj_xpos = -15,
+#'                  yproj_dodge = 10,
+#'                  dist_position_scaler = 0.1,
+#'                  dist_offset = -0.1)
 #'                  
 #' # Example 2                
-#'gglogisticexpdist(data = effICGI, # long format filter to Endpoint of choice
-#'response = "response",
-#'endpoint = "Endpoint",
-#'DOSE = "DOSE",
-#'exposure_metrics = c("AUC"),
-#'exposure_metric_split = c("quartile"),
-#'exposure_distribution ="lineranges",
-#'exposure_metric_soc_value = -99,
-#'exposure_metric_plac_value = 0,
-#'lineranges_ypos = -0.2,
-#'prob_obs_bydose = TRUE,
-#'yproj_xpos = -10,
-#'yproj_dodge = 10,
-#'dist_position_scaler = 0.15)     
-#' # Example 3                
+#' gglogisticexpdist(data = effICGI |>
+#'                  dplyr::filter(Endpoint=="ICGI"),
+#'                  response = "response",
+#'                  endpoint = "Endpoint",
+#'                  exposure_metrics = c("CMAX"),
+#'                  exposure_metric_split = c("tertile"),
+#'                  exposure_metric_soc_value = -99,
+#'                  exposure_metric_plac_value = 0,
+#'                  exposure_distribution ="lineranges",
+#'                  lineranges_ypos = -0.2,
+#'                  lineranges_dodge = 0.4,
+#'                  prob_obs_bydose = TRUE,
+#'                  yproj_xpos = -5,
+#'                  yproj_dodge = 5,
+#'                  dist_position_scaler = 0.1)
+#'
+#'
+#'\dontrun{
+#'#' # Example 3                
 #'library(ggh4x)
 #'gglogisticexpdist(data = effICGI |>
 #'                  dplyr::filter(Endpoint=="ICGI"), 
@@ -105,8 +114,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  exposure_metric_plac_value = 0,
 #'                  dist_position_scaler = 0.15)+
 #'  facet_grid2(Endpoint~expname+DOSE2,scales="free",
-#'  margins = "DOSE2",strip = strip_nested())             
-#'\dontrun{
+#'  margins = "DOSE2",strip = strip_nested())
 #' # Example 4  
 #' effICGI$SEX <- as.factor(effICGI$SEX)               
 #' gglogisticexpdist(data = effICGI  |>
