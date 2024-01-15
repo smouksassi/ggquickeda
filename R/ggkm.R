@@ -28,10 +28,14 @@ GeomKm <- ggplot2::ggproto("GeomKm", ggplot2::Geom,
                            },
                            
                            required_aes = c("x", "y"),
-                           default_aes = ggplot2::aes(colour="black", fill="grey60", size=.75,
+                           default_aes = ggplot2::aes(colour="black", fill="grey60", linewidth = .75,
                                                       linetype=1, weight=1, alpha = 1),
-                           draw_key = ggplot2::draw_key_path
-                           
+                           draw_key = ggplot2::draw_key_path,
+                           # To allow using size in ggplot2 < 3.4.0
+                           non_missing_aes = "size",
+
+                           # Tell ggplot2 to perform automatic renaming
+                           rename_size = TRUE                    
                            
 )
 
@@ -55,10 +59,16 @@ GeomKmband <- ggplot2::ggproto("GeomKmband", ggplot2::Geom,
                                },
                                
                                required_aes = c("x", "ymin", "ymax"),
-                               default_aes = ggplot2::aes(colour="black", fill="grey60", size=.75,
+                               default_aes = ggplot2::aes(colour="black", fill="grey60", linewidth=.75,
                                                           linetype=1, weight=1, alpha=0.4),
                                
-                               draw_key = ggplot2::draw_key_smooth
+                               draw_key = ggplot2::draw_key_smooth,
+                               
+                               # To allow using size in ggplot2 < 3.4.0 https://www.tidyverse.org/blog/2022/08/ggplot2-3-4-0-size-to-linewidth/
+                               non_missing_aes = "size",
+                               
+                               # Tell ggplot2 to perform automatic renaming
+                               rename_size = TRUE     
                                
 )
 
@@ -94,7 +104,6 @@ GeomKmticks <- ggplot2::ggproto("GeomKmticks", ggplot2::Geom,
                                   }
                                   
                                 },
-                                
                                 required_aes = c("x", "y"),
                                 non_missing_aes = c("size", "shape"),
                                 default_aes = ggplot2::aes(
@@ -154,7 +163,7 @@ geom_km <- function(mapping = NULL, data = NULL, stat = "km",
 #'   \item \code{alpha}
 #'   \item \code{color}
 #'   \item \code{linetype}
-#'   \item \code{size}
+#'   \item \code{linewidth}
 #' }
 #'
 #' @inheritParams ggplot2::geom_point
@@ -229,7 +238,7 @@ geom_kmticks <- function(mapping = NULL, data = NULL, stat = "kmticks",
 #' @export
 
 StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
-                           
+                           dropped_aes = c("status"),
                            compute_group = function(data, scales, trans = scales::identity_trans(), firstx = 0, firsty = 1,
                                                     type = "kaplan-meier", start.time = 0) {
                              
@@ -269,7 +278,7 @@ StatKm <- ggplot2::ggproto("StatKm", ggplot2::Stat,
 #' @export
 
 StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
-                               
+                               dropped_aes = "status",
                                compute_group = function(data, scales, trans = scales::identity_trans(), firstx = 0, firsty = 1,
                                                         type = "kaplan-meier", error = "greenwood", conf.type = "log",
                                                         conf.lower = "usual", start.time = 0, conf.int = 0.95) {
@@ -397,7 +406,7 @@ stat_km <- function(mapping = NULL, data = NULL, geom = "km",
 #'   \item \code{alpha}
 #'   \item \code{color}
 #'   \item \code{linetype}
-#'   \item \code{size}
+#'   \item \code{linewidth}
 #' }
 #'
 #' @inheritParams ggplot2::stat_identity
@@ -507,7 +516,7 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", ggplot2::Stat,
                                   sf.df
                                   
                                 },
-                                
+                                dropped_aes = "status",
                                 default_aes = ggplot2::aes(y = ..survival.., x = ..time..),
                                 required_aes = c("time", "status")
                                 

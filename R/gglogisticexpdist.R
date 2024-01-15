@@ -491,10 +491,10 @@ gglogisticexpdist <- function(data = effICGI,
                         ggplot2::aes(linetype = "Logistic Fit 95% CI"))+
     ggplot2::geom_line(data = predict_by_endpoint_expname_dose,
                        ggplot2::aes_string(y = "yhat", col = color_fill),
-                       alpha = 0.4, size = 2)+
+                       alpha = 0.4, linewidth = 2)+
     ggplot2::geom_line(data = predict_by_endpoint_expname_dose2,
                        ggplot2::aes_string(y = "yhat", col = color_fill),
-                       alpha = 0.4, size = 2.5)+
+                       alpha = 0.4, linewidth = 2.5)+
     ggplot2::geom_point(data = predict_by_endpoint_expname,
                         ggplot2::aes_string(x = "medexp", y = "ymid50", col = color_fill),
                         alpha = 0.4, size = 5)
@@ -504,13 +504,13 @@ gglogisticexpdist <- function(data = effICGI,
   if(exposure_distribution=="lineranges") {
     lineranges_ypos <- as.character(lineranges_ypos)
     p1l <- p1 +
-      ggplot2::geom_linerange(data = data.long.summaries.dose, size = 2, alpha = 0.4,
+      ggplot2::geom_linerange(data = data.long.summaries.dose, linewidth = 2, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_10", xmax = "quant_90",y = lineranges_ypos,
                                                   col = color_fill,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
       position = ggstance::position_dodgev(height = lineranges_dodge),inherit.aes = FALSE)+
-      ggplot2::geom_linerange(data = data.long.summaries.dose, size = 2.5, alpha = 0.4,
+      ggplot2::geom_linerange(data = data.long.summaries.dose, linewidth = 2.5, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_25", xmax=  "quant_75", y = lineranges_ypos, 
                                                   col = color_fill,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
@@ -588,19 +588,19 @@ gglogisticexpdist <- function(data = effICGI,
     yproj_xpos <- as.character(yproj_xpos)
     
     p2df <- p2d +
-      ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, size = 2,
+      ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, linewidth = 2,
                               ggplot2::aes_string(x = yproj_xpos, ymin = "ymid10", ymax = "ymid90",
                                                   col = color_fill,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)+
-      ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, size = 2.5,
+      ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, linewidth = 2.5,
                               ggplot2::aes_string(x = yproj_xpos, ymin = "ymid25", ymax = "ymid75", col= color_fill,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)+
       ggplot2::geom_point(data=predict_by_endpoint_expname, alpha = 0.4, size = 3,
-                          ggplot2::aes_string(x = yproj_xpos, y = "ymid50", col = color_fill,
+                          ggplot2::aes_string(x = yproj_xpos, y = "ymid50", color = color_fill,
                                               group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)
