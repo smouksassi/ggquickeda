@@ -16,6 +16,9 @@ ggkmrisktable(
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
+  show.exptile_values = FALSE,
+  show.exptile_values_pos = c("left", "right"),
+  show.exptile_values_order = c("default", "reverse"),
   color_fill = "exptile",
   linetype = "exptile",
   xlab = "Time of follow_up",
@@ -68,6 +71,12 @@ ggkmrisktable(
 \item{exposure_metric_soc_value}{special exposure code for standard of care default -99}
 
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
+
+\item{show.exptile_values}{FALSE}
+
+\item{show.exptile_values_pos}{"left" or "right"}
+
+\item{show.exptile_values_order}{the order of the entries "default" or "reverse"}
 
 \item{color_fill}{name of the column to be used for color/fill default to \code{exptile}}
 

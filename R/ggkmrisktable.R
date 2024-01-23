@@ -146,6 +146,9 @@ lung_long$facetdum <- "(all)"
 #' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
+#' @param show.exptile_values FALSE
+#' @param show.exptile_values_pos "left" or "right"
+#' @param show.exptile_values_order the order of the entries "default" or "reverse"
 #' @param color_fill name of the column to be used for color/fill default to `exptile`
 #' @param linetype name of the column to be used for linetype default to `exptile`
 #' @param xlab text to be used as x axis label
@@ -281,6 +284,9 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          exposure_metric_split = c("median","tertile","quartile","none"),
                          exposure_metric_soc_value = -99,
                          exposure_metric_plac_value = 0,
+                         show.exptile_values = FALSE,
+                         show.exptile_values_pos = c("left","right"),
+                         show.exptile_values_order = c("default","reverse"),
                          color_fill = "exptile",
                          linetype = "exptile",
                          xlab = "Time of follow_up",
@@ -332,6 +338,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   km_median_table_pos <- match.arg(km_median_table_pos, several.ok = FALSE)
   km_median_table_order <- match.arg(km_median_table_order, several.ok = FALSE)
   km_yaxis_position <- match.arg(km_yaxis_position, several.ok = FALSE)
+  show.exptile_values_order <- match.arg(show.exptile_values_order, several.ok = FALSE)
+  show.exptile_values_pos <- match.arg(show.exptile_values_pos, several.ok = FALSE)
   
   pval.txt = expname = expvalue = x1lower = x1upper = x1 = y2 = keynumeric = key = n.risk = value = loopvariable = NULL
   
@@ -407,6 +415,11 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   }
   data.long$exptile2 <- data.long$exptile
   
+  data.long.quantiles <- data.long |>
+    dplyr::group_by(!!sym(endpointinputvar),expname,exptile,exptile2)|>
+    dplyr::summarize(exprange = paste0("(",round(min(expvalue),2),"-",round(max(expvalue),2),"]"))
+
+  #sprintf("%#.3g (%#.3g-%#.3g]",min(expvalue),max(expvalue))
   
   #we generate a curve by the combination of all these inputs removing duplicates and none
   listvars <- unique(c(endpointinputvar,colorinputvar,fillinputvar,linetypeinputvar,
@@ -644,8 +657,45 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   if(km_median=="none"){
     plotkm1mt <- plotkm1
   }
+  if(show.exptile_values){
+    
+    exptile_values_pos_x       <- ifelse(show.exptile_values_pos == "left",-Inf,Inf)
+    exptile_values_pos_x_hjust <- ifelse(show.exptile_values_pos == "left",0,1)
+
+    if(show.exptile_values_order=="reverse") {
+      plotkm1mtexp <- plotkm1mt +
+        ggplot2::geom_text(data = data.long.quantiles |>
+                             dplyr::mutate(none = "(all)",
+                                           "{timevar}" := NA,
+                                           "{statusvar}" := NA), 
+                           ggplot2::aes(x = exptile_values_pos_x,
+                                        y = 0.09*rev(as.numeric(as.factor(exptile))),
+                                        label = paste0(exptile, ": ",exprange
+                                        )), 
+                           hjust = exptile_values_pos_x_hjust,
+                           show.legend = FALSE,inherit.aes = TRUE)
+    }
+    if(show.exptile_values_order=="default") {
+      plotkm1mtexp <- plotkm1mt +
+        ggplot2::geom_text(data = data.long.quantiles |>
+                             dplyr::mutate(none = "(all)",
+                                           "{timevar}" := NA,
+                                           "{statusvar}" := NA), 
+                           ggplot2::aes(x = exptile_values_pos_x,
+                                        y = 0.09*(as.numeric(as.factor(exptile))),
+                                        label = paste0(exptile, ": ",exprange
+                                        )), 
+                           hjust = exptile_values_pos_x_hjust,
+                           show.legend = FALSE,inherit.aes = TRUE)
+    }
+   
+  }
+  if(!show.exptile_values){
+    plotkm1mtexp <- plotkm1mt
+  }
   
-  plotkm2 <- plotkm1mt +
+  
+  plotkm2 <- plotkm1mtexp +
     ggh4x::facet_nested_wrap(facet_formula,ncol= facet_ncol ,
                       strip = ggh4x::strip_split(position=facet_strip_position))+
     ggplot2::scale_y_continuous(position = km_yaxis_position,

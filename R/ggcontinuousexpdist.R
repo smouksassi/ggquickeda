@@ -126,7 +126,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                               exposure_distribution = c("distributions","lineranges","none"),
                               dose_plac_value = "Placebo",
                               xlab = "Exposure Values",
-                              ylab ="Probability of Response",
+                              ylab ="Response",
                               mean_text_size = 5,
                               mean_obs_bydose = TRUE,
                               N_text_size = 5,
@@ -445,7 +445,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   
   p2e <- p1l +
     ggplot2::geom_pointrange(data = data.long.summaries.exposure, size = 1,
-                             ggplot2::aes(shape = "Observed probability by exposure split",
+                             ggplot2::aes(shape = "Observed mean by exposure split",
                                           x = medexp, y = mean,
                                           ymin = mean+1.959*SE,
                                           ymax=mean-1.959*SE),
@@ -459,7 +459,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
                                ggplot2::aes(x = medexp, y = mean, col = !!sym(color_fill),
                                             ymin = mean+1.959*SE, ymax=mean-1.959*SE,
-                                            shape = "Observed probability by dose split"),
+                                            shape = "Observed mean by dose split"),
                                show.legend = FALSE) +
       ggplot2::geom_text(data=data.long.summaries.dose.plot, vjust = 1, size = mean_text_size, show.legend = FALSE,
                          ggplot2::aes(x = medexp, y = mean, col = !!sym(color_fill),
@@ -531,17 +531,37 @@ ggcontinuousexpdist <- function(data = effICGI,
       dplyr::group_by(Endpoint) |>
       dplyr::reframe(breaks= pretty(response))
     
-    p2df2 <- p2df +
-      ggplot2::scale_y_continuous(position = yaxis_position,
-                                  breaks = c(sort(unique(data.long$keynumeric)),breaksendpoints$breaks) , 
-                                  labels= c(levels(data.long[DOSEinputvar] |> dplyr::pull() ),breaksendpoints$breaks),
-                                  expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    if( length (levels(data.long[DOSEinputvar] |> dplyr::pull() )) ==
+        length (sort(unique(data.long$keynumeric)))
+    ){
+      p2df2 <- p2df +
+        ggplot2::scale_y_continuous(position = yaxis_position,
+                                    breaks = c(sort(unique(data.long$keynumeric)),
+                                               breaksendpoints$breaks) , 
+                                    labels= c(levels(data.long[DOSEinputvar] |> dplyr::pull() ),
+                                              breaksendpoints$breaks),
+                                    expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    }
+    
+    if( length (levels(data.long[DOSEinputvar] |> dplyr::pull() )) !=
+        length (sort(unique(data.long$keynumeric)))
+    ){
+      p2df2 <- p2df +
+        ggplot2::scale_y_continuous(position = yaxis_position,
+                                    breaks = c(breaksendpoints$breaks) , 
+                                    labels= c(breaksendpoints$breaks),
+                                    expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    }
+  
   }
 
   if(exposure_distribution =="lineranges"){
     p2df2 <- p2df +
       ggplot2::scale_y_continuous(position = yaxis_position,
                                   expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+  }
+  if(exposure_distribution =="none"){
+    p2df2 <- p2df
   }
   p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +

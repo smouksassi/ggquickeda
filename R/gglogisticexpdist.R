@@ -617,13 +617,30 @@ gglogisticexpdist <- function(data = effICGI,
     p2df <- p2d 
   }
   if(exposure_distribution =="distributions"){
-    p2df2 <- p2df +
-      ggplot2::scale_y_continuous(position = yaxis_position,
-                                  breaks =c(sort(unique(data.long$keynumeric)),
-                                            c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
-                                  labels= c(levels(data.long[DOSEinputvar] |> dplyr::pull() ),
-                                            c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
-                                  expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    
+    if( length (levels(data.long[DOSEinputvar] |> dplyr::pull() )) ==
+        length (sort(unique(data.long$keynumeric)))
+    ){
+      p2df2 <- p2df +
+        ggplot2::scale_y_continuous(position = yaxis_position,
+                                    breaks =c(sort(unique(data.long$keynumeric)),
+                                              c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                    labels= c(levels(data.long[DOSEinputvar] |> dplyr::pull() ),
+                                              c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                                    expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    }
+    if( length (levels(data.long[DOSEinputvar] |> dplyr::pull() )) !=
+        length (sort(unique(data.long$keynumeric)))
+    ){
+      p2df2 <- p2df +
+        ggplot2::scale_y_continuous(position = yaxis_position,
+                                    breaks =c(
+                                              c(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1) ), 
+                                    labels= c(
+                                              c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
+                                    expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+    }
+    
   }
   if(exposure_distribution =="lineranges"){
     p2df2 <- p2df +
@@ -633,6 +650,9 @@ gglogisticexpdist <- function(data = effICGI,
                                   labels= c(
                                     c("0","0.1","0.2","0.3","0.4","0.5","0.6","0.7","0.8","0.9","1") ),
                                   expand = ggplot2::expansion(mult=c(0.01,0.01), add =c(0, 0)))
+  }
+  if(exposure_distribution =="none"){
+    p2df2 <- p2df
   }
   p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +

@@ -17,7 +17,7 @@ ggcontinuousexpdist(
   exposure_distribution = c("distributions", "lineranges", "none"),
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
-  ylab = "Probability of Response",
+  ylab = "Response",
   mean_text_size = 5,
   mean_obs_bydose = TRUE,
   N_text_size = 5,
