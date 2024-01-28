@@ -238,7 +238,7 @@ b <-   gglogisticexpdist(data = effICGI, #
         strip.background.y = element_blank())
 library(patchwork)
 (a | b ) +
-  plot_layout(guides = "collect")&
+  plot_layout(guides = "collect", axes = "collect_x")&
   theme(legend.position = "top")
                   
 }

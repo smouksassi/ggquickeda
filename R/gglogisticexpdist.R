@@ -195,7 +195,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'         strip.background.y = element_blank())
 #' library(patchwork)
 #' (a | b ) +
-#'   plot_layout(guides = "collect")&
+#'   plot_layout(guides = "collect", axes = "collect_x")&
 #'   theme(legend.position = "top")
 #'                   
 #'}
@@ -253,9 +253,9 @@ gglogisticexpdist <- function(data = effICGI,
   if(exposure_metric_split=="none") {
     data.long <- data.long |> 
       dplyr::mutate(exptile = dplyr::case_when(
-        expvalue == exposure_metric_soc_value  ~ NA,
-        expvalue == exposure_metric_plac_value ~ NA,
-        expvalue  > exposure_metric_plac_value ~ expvalue))
+        expvalue == exposure_metric_soc_value  ~ "SOC",
+        expvalue == exposure_metric_plac_value ~ "Placebo",
+        expvalue  > exposure_metric_plac_value ~ "(all)"))
     data.long$keynumeric <- - dist_position_scaler*as.numeric(forcats::fct_rev(as.factor(dplyr::pull(data.long[,DOSEinputvar])))) + dist_offset
     xintercepts <- data.long|> 
       dplyr::group_by(expname,!!sym(endpointinputvar) )|> 

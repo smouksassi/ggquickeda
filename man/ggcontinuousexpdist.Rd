@@ -65,9 +65,9 @@ ggcontinuousexpdist(
 
 \item{mean_text_size}{mean text size default to 5}
 
-\item{mean_obs_bydose}{observed mean by dose TRUE/FALSE}
+\item{mean_obs_bydose}{observed mean by dose \code{TRUE}/\code{FALSE}}
 
-\item{N_text_size}{N respondents/Ntotal by exposure bin text size default to 5}
+\item{N_text_size}{N by exposure bin text size default to 5}
 
 \item{binlimits_text_size}{5 binlimits text size}
 

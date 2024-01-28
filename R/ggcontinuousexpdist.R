@@ -41,8 +41,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
 #' @param mean_text_size mean text size default to 5
-#' @param mean_obs_bydose observed mean by dose TRUE/FALSE
-#' @param N_text_size N respondents/Ntotal by exposure bin text size default to 5
+#' @param mean_obs_bydose observed mean by dose `TRUE`/`FALSE`
+#' @param N_text_size N by exposure bin text size default to 5
 #' @param binlimits_text_size 5 binlimits text size
 #' @param binlimits_ypos binlimits y position default to 0 
 #' @param binlimits_color binlimits text color default to "gray70"
@@ -167,9 +167,9 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exposure_metric_split=="none") {
     data.long <- data.long |> 
       dplyr::mutate(exptile = dplyr::case_when(
-        expvalue == exposure_metric_soc_value  ~ NA,
-        expvalue == exposure_metric_plac_value ~ NA,
-        expvalue  > exposure_metric_plac_value ~ expvalue))
+        expvalue == exposure_metric_soc_value  ~ "SOC",
+        expvalue == exposure_metric_plac_value ~ "Placebo",
+        expvalue  > exposure_metric_plac_value ~ "(all)"))
     data.long$keynumeric <- - dist_position_scaler*as.numeric(forcats::fct_rev(as.factor(dplyr::pull(data.long[,DOSEinputvar])))) + dist_offset
     xintercepts <- data.long|> 
       dplyr::group_by(expname,!!sym(endpointinputvar) )|> 
