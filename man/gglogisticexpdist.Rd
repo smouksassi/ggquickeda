@@ -26,6 +26,7 @@ gglogisticexpdist(
   binlimits_color = "gray70",
   dist_position_scaler = 0.2,
   dist_offset = 0,
+  dist_scale = 0.9,
   lineranges_ypos = 0.2,
   lineranges_dodge = 0.15,
   yproj = TRUE,
@@ -33,7 +34,8 @@ gglogisticexpdist(
   yproj_dodge = 0.2,
   yaxis_position = c("left", "right"),
   facet_formula = NULL,
-  theme_certara = TRUE
+  theme_certara = TRUE,
+  return_list = FALSE
 )
 }
 \arguments{
@@ -77,7 +79,9 @@ gglogisticexpdist(
 
 \item{dist_position_scaler}{space occupied by the distribution default to 0.2}
 
-\item{dist_offset}{offset where the distribution position starts 0}
+\item{dist_offset}{offset where the distribution position starts default to 0}
+
+\item{dist_scale}{scaling parameter for ggridges default to 0.9}
 
 \item{lineranges_ypos}{where to put the lineranges -1}
 
@@ -94,6 +98,8 @@ gglogisticexpdist(
 \item{facet_formula}{facet formula to be use otherwise \code{endpoint ~ expname}}
 
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
+
+\item{return_list}{What to return if True a list of the datasets and plot is returned instead of only the plot}
 }
 \description{
 Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2

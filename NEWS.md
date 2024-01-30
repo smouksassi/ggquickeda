@@ -3,6 +3,7 @@
 * added arguments `show.exptile_values`, `show.exptile_values_pos` and `show.exptile_values_order` to
   `ggkmrisktable()` requested by Mathilde
 * fixes for `gglogisticexpdist()` and `ggcontinuousexpdist()` when `exposure_distribution`and `exposure_metric_split` where set to "none"
+* added arguments to `gglogisticexpdist()` and `ggcontinuousexpdist()` `dist_scale` and `return_list`
 
 # ggquickeda 0.3.1
 

@@ -26,6 +26,7 @@ ggcontinuousexpdist(
   binlimits_color = "gray70",
   dist_position_scaler = 0.2,
   dist_offset = 0,
+  dist_scale = 0.9,
   lineranges_ypos = -1,
   lineranges_dodge = 1,
   yproj = TRUE,
@@ -33,7 +34,8 @@ ggcontinuousexpdist(
   yproj_dodge = 0.2,
   yaxis_position = c("left", "right"),
   facet_formula = NULL,
-  theme_certara = TRUE
+  theme_certara = TRUE,
+  return_list = FALSE
 )
 }
 \arguments{
@@ -77,7 +79,9 @@ ggcontinuousexpdist(
 
 \item{dist_position_scaler}{space occupied by the distribution default to 0.2}
 
-\item{dist_offset}{offset where the distribution position starts 0}
+\item{dist_offset}{offset where the distribution position starts default to 0}
+
+\item{dist_scale}{scaling parameter for ggridges default to 0.9}
 
 \item{lineranges_ypos}{where to put the lineranges -1}
 
@@ -94,6 +98,8 @@ ggcontinuousexpdist(
 \item{facet_formula}{facet formula to be use otherwise \code{endpoint ~ expname}}
 
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
+
+\item{return_list}{What to return if True a list of the datasets and plot is returned instead of only the plot}
 }
 \description{
 Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
@@ -132,8 +138,9 @@ b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
                  dist_position_scaler = 4.2, dist_offset = 5 ,
                  yproj_xpos =  -20 ,
                  yproj_dodge = 20 ,
-                 exposure_distribution ="distributions")            
-a / b +
+                 exposure_distribution ="distributions",
+                 return_list = FALSE)            
+(a / b)  +
 plot_layout(guides = "collect") &
  theme(legend.position = "top")
 

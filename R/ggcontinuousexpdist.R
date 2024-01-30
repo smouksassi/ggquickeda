@@ -47,7 +47,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param binlimits_ypos binlimits y position default to 0 
 #' @param binlimits_color binlimits text color default to "gray70"
 #' @param dist_position_scaler space occupied by the distribution default to 0.2 
-#' @param dist_offset offset where the distribution position starts 0
+#' @param dist_offset offset where the distribution position starts default to 0
+#' @param dist_scale scaling parameter for ggridges default to 0.9
 #' @param lineranges_ypos where to put the lineranges -1
 #' @param lineranges_dodge lineranges vertical dodge value 1
 #' @param yproj project the probabilities on y axis `TRUE`/`FALSE`
@@ -56,6 +57,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param yaxis_position where to put y axis "left" or "right"
 #' @param facet_formula facet formula to be use otherwise `endpoint ~ expname`
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
+#' @param return_list What to return if True a list of the datasets and plot is returned instead of only the plot
 #' @examples
 #' # Example 1
 #' library(ggplot2)
@@ -90,8 +92,9 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 4.2, dist_offset = 5 ,
 #'                  yproj_xpos =  -20 ,
 #'                  yproj_dodge = 20 ,
-#'                  exposure_distribution ="distributions")            
-#' a / b +
+#'                  exposure_distribution ="distributions",
+#'                  return_list = FALSE)            
+#' (a / b)  +
 #' plot_layout(guides = "collect") &
 #'  theme(legend.position = "top")
 #' 
@@ -135,6 +138,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                               binlimits_color= "gray70",
                               dist_position_scaler = 0.2,
                               dist_offset = 0,
+                              dist_scale = 0.9,
                               lineranges_ypos = -1,
                               lineranges_dodge = 1,
                               yproj = TRUE,
@@ -142,7 +146,8 @@ ggcontinuousexpdist <- function(data = effICGI,
                               yproj_dodge = 0.2,
                               yaxis_position = c("left","right"),
                               facet_formula = NULL,
-                              theme_certara = TRUE
+                              theme_certara = TRUE,
+                              return_list = FALSE
 ) {
   
   responseinputvar  <-  response
@@ -325,26 +330,26 @@ ggcontinuousexpdist <- function(data = effICGI,
     predictionsbydose<- data.long.summaries.dose.loop |>
       dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,!!sym(color_fill),color_fill2) |>
       dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                      expvalue=seq(.data$quant_10,.data$quant_90,0.1))))
+                                      expvalue=seq(.data$quant_10,.data$quant_90,length.out=100))))
     predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
     
     predictionsbydose2<- data.long.summaries.dose.loop |>
       dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,!!sym(color_fill),color_fill2) |>
       dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                      expvalue=seq(.data$quant_25,.data$quant_75,0.1))))
+                                      expvalue=seq(.data$quant_25,.data$quant_75,length.out=100))))
     predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
     }
     if(color_fill == DOSEinputvar) {
       predictionsbydose<- data.long.summaries.dose.loop |>
         dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
         dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                             expvalue=seq(.data$quant_10,.data$quant_90,0.1))))
+                                             expvalue=seq(.data$quant_10,.data$quant_90,length.out=100))))
       predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
       
       predictionsbydose2<- data.long.summaries.dose.loop |>
         dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
         dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                             expvalue=seq(.data$quant_25,.data$quant_75,0.1))))
+                                             expvalue=seq(.data$quant_25,.data$quant_75,length.out=100))))
       predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
     }
   }
@@ -489,7 +494,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                                  group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
                                                  col = !!sym(color_fill),
                                                 height = ggplot2::after_stat(ndensity)),
-                                    rel_min_height = 0.05, alpha = 0.1, scale = 0.9,
+                                    rel_min_height = 0.05, alpha = 0.1, scale = dist_scale,
                                     quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9))+
       ggrepel::geom_label_repel(data = percentineachbreakcategory,
                           ggplot2::aes(color = !!rlang::sym(color_fill),
@@ -563,7 +568,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exposure_distribution =="none"){
     p2df2 <- p2df
   }
-  p2df2 +
+  pf <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 18)+
     ggplot2::theme(legend.position = "top",strip.placement = "outside",
@@ -575,6 +580,17 @@ ggcontinuousexpdist <- function(data = effICGI,
                                  drop=FALSE,na.value = "grey50")+
     ggplot2::theme(strip.background = ggplot2::element_rect(fill="#475c6b"),
                    strip.text =  ggplot2::element_text(face = "bold",color = "white"))
-  
-}
+  if(!return_list){
+    pf }
+  if(return_list){
+    pf <- list(data.long,xintercepts,
+         data.long.summaries.dose,
+         predict_by_endpoint_expname,
+         predict_by_endpoint_expname_dose,
+         predict_by_endpoint_expname_dose2,
+         data.long.summaries.exposure,
+         percentineachbreakcategory,pf)
+  }
+  pf
+  }
 

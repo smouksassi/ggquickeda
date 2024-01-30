@@ -342,7 +342,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   show.exptile_values_pos <- match.arg(show.exptile_values_pos, several.ok = FALSE)
   
   pval.txt = expname = expvalue = x1lower = x1upper = x1 = y2 = keynumeric = key = n.risk = value = loopvariable = NULL
-  
+  exprange = exptile = exptile2 = NULL
   facetvars <- unique(c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar))
   facetvars <- c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar) [
     c(groupvar1inputvar,groupvar2inputvar,groupvar3inputvar)!= "."]
