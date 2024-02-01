@@ -568,18 +568,28 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exposure_distribution =="none"){
     p2df2 <- p2df
   }
-  pf <- p2df2 +
+  pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 18)+
     ggplot2::theme(legend.position = "top",strip.placement = "outside",
-                   axis.title.y = ggplot2::element_blank())+
-    ggplot2::scale_colour_manual(values = c( "#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
-                                 drop=FALSE,na.value = "grey50")+
-    ggplot2::scale_fill_manual(  values = c("gray80",
-                                            "#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
-                                 drop=FALSE,na.value = "grey50")+
-    ggplot2::theme(strip.background = ggplot2::element_rect(fill="#475c6b"),
-                   strip.text =  ggplot2::element_text(face = "bold",color = "white"))
+                   axis.title.y = ggplot2::element_blank())
+  
+  if(!theme_certara){
+    pf <-  pf1 +
+      ggplot2::scale_colour_manual( values = tableau10,drop=FALSE,na.value = "grey50")+
+      ggplot2::scale_fill_manual(   values = c("gray80",tableau10),drop=FALSE,na.value = "grey50")
+  }
+  if(theme_certara){
+    pf <-  pf1 +
+      ggplot2::scale_colour_manual(values = c( "#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
+                                   drop=FALSE,na.value = "grey50")+
+      ggplot2::scale_fill_manual(  values = c("gray80","#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
+                                   drop=FALSE,na.value = "grey50")+
+      ggplot2::theme(strip.background = ggplot2::element_rect(fill="#475c6b"),
+                     strip.text =  ggplot2::element_text(face = "bold",color = "white"))
+    
+  }
+
   if(!return_list){
     pf }
   if(return_list){

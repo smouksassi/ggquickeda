@@ -146,9 +146,9 @@ lung_long$facetdum <- "(all)"
 #' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
-#' @param show.exptile_values FALSE
-#' @param show.exptile_values_pos "left" or "right"
-#' @param show.exptile_values_order the order of the entries "default" or "reverse"
+#' @param show_exptile_values FALSE
+#' @param show_exptile_values_pos "left" or "right"
+#' @param show_exptile_values_order the order of the entries "default" or "reverse"
 #' @param color_fill name of the column to be used for color/fill default to `exptile`
 #' @param linetype name of the column to be used for linetype default to `exptile`
 #' @param xlab text to be used as x axis label
@@ -177,6 +177,7 @@ lung_long$facetdum <- "(all)"
 #' @param facet_ncol NULL if not specified the automatic waiver will be used
 #' @param facet_strip_position position in sequence for the variable used in faceting default to c("top","top","top","top")
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
+#' @param return_list What to return if True a list of the datasets and plot is returned instead of only the plot
 #' @examples
 #' library(tidyr)
 #' # Example 1
@@ -284,9 +285,9 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          exposure_metric_split = c("median","tertile","quartile","none"),
                          exposure_metric_soc_value = -99,
                          exposure_metric_plac_value = 0,
-                         show.exptile_values = FALSE,
-                         show.exptile_values_pos = c("left","right"),
-                         show.exptile_values_order = c("default","reverse"),
+                         show_exptile_values = FALSE,
+                         show_exptile_values_pos = c("left","right"),
+                         show_exptile_values_order = c("default","reverse"),
                          color_fill = "exptile",
                          linetype = "exptile",
                          xlab = "Time of follow_up",
@@ -314,7 +315,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          facet_formula = NULL,
                          facet_ncol = NULL,
                          facet_strip_position = c("top","top","top","top"),
-                         theme_certara = TRUE
+                         theme_certara = TRUE,
+                         return_list = FALSE
 ) {
   timevar          <- time
   statusvar        <- status
@@ -338,8 +340,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   km_median_table_pos <- match.arg(km_median_table_pos, several.ok = FALSE)
   km_median_table_order <- match.arg(km_median_table_order, several.ok = FALSE)
   km_yaxis_position <- match.arg(km_yaxis_position, several.ok = FALSE)
-  show.exptile_values_order <- match.arg(show.exptile_values_order, several.ok = FALSE)
-  show.exptile_values_pos <- match.arg(show.exptile_values_pos, several.ok = FALSE)
+  show_exptile_values_pos <- match.arg(show_exptile_values_pos, several.ok = FALSE)
+  show_exptile_values_order <- match.arg(show_exptile_values_order, several.ok = FALSE)
   
   pval.txt = expname = expvalue = x1lower = x1upper = x1 = y2 = keynumeric = key = n.risk = value = loopvariable = NULL
   exprange = exptile = exptile2 = NULL
@@ -657,12 +659,12 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   if(km_median=="none"){
     plotkm1mt <- plotkm1
   }
-  if(show.exptile_values){
+  if(show_exptile_values){
     
-    exptile_values_pos_x       <- ifelse(show.exptile_values_pos == "left",-Inf,Inf)
-    exptile_values_pos_x_hjust <- ifelse(show.exptile_values_pos == "left",0,1)
+    exptile_values_pos_x       <- ifelse(show_exptile_values_pos == "left",-Inf,Inf)
+    exptile_values_pos_x_hjust <- ifelse(show_exptile_values_pos == "left",0,1)
 
-    if(show.exptile_values_order=="reverse") {
+    if(show_exptile_values_order=="reverse") {
       plotkm1mtexp <- plotkm1mt +
         ggplot2::geom_text(data = data.long.quantiles |>
                              dplyr::mutate(none = "(all)",
@@ -675,7 +677,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                            hjust = exptile_values_pos_x_hjust,
                            show.legend = FALSE,inherit.aes = TRUE)
     }
-    if(show.exptile_values_order=="default") {
+    if(show_exptile_values_order=="default") {
       plotkm1mtexp <- plotkm1mt +
         ggplot2::geom_text(data = data.long.quantiles |>
                              dplyr::mutate(none = "(all)",
@@ -690,7 +692,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     }
    
   }
-  if(!show.exptile_values){
+  if(!show_exptile_values){
     plotkm1mtexp <- plotkm1mt
   }
   
@@ -728,12 +730,12 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     plotkm <- plotkm2
   }
   if(!theme_certara){
-    plotkm +
+  pf <-  plotkm +
       ggplot2::scale_colour_manual( values = tableau10,drop=FALSE,na.value = "grey50")+
       ggplot2::scale_fill_manual(   values = tableau10,drop=FALSE,na.value = "grey50")
   }
   if(theme_certara){
-    plotkm +
+    pf <-  plotkm +
       ggplot2::scale_colour_manual(values = c( "#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
                                    drop=FALSE,na.value = "grey50")+
       ggplot2::scale_fill_manual(  values = c( "#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
@@ -742,5 +744,20 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                      strip.text =  ggplot2::element_text(face = "bold",color = "white"))
     
   }
+  if(!return_list){
+    pf }
+  if(return_list){
+    pf <- list(data.long,
+               risktabledatag,
+               dfmedian,
+               data.long.quantiles,
+               logrank_test_by_endpoint,
+               - nrisk_position_scaler *(
+                 unique(c(seq(min(as.numeric(as.factor(risktabledatag$key))),
+                              max(as.numeric(as.factor(risktabledatag$key)))+1,1)))
+               )+nrisk_position_scaler/2 + nrisk_offset,
+               pf)
+  }
+  pf
 }
 

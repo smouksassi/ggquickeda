@@ -16,9 +16,9 @@ ggkmrisktable(
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
-  show.exptile_values = FALSE,
-  show.exptile_values_pos = c("left", "right"),
-  show.exptile_values_order = c("default", "reverse"),
+  show_exptile_values = FALSE,
+  show_exptile_values_pos = c("left", "right"),
+  show_exptile_values_order = c("default", "reverse"),
   color_fill = "exptile",
   linetype = "exptile",
   xlab = "Time of follow_up",
@@ -46,7 +46,8 @@ ggkmrisktable(
   facet_formula = NULL,
   facet_ncol = NULL,
   facet_strip_position = c("top", "top", "top", "top"),
-  theme_certara = TRUE
+  theme_certara = TRUE,
+  return_list = FALSE
 )
 }
 \arguments{
@@ -72,11 +73,11 @@ ggkmrisktable(
 
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
 
-\item{show.exptile_values}{FALSE}
+\item{show_exptile_values}{FALSE}
 
-\item{show.exptile_values_pos}{"left" or "right"}
+\item{show_exptile_values_pos}{"left" or "right"}
 
-\item{show.exptile_values_order}{the order of the entries "default" or "reverse"}
+\item{show_exptile_values_order}{the order of the entries "default" or "reverse"}
 
 \item{color_fill}{name of the column to be used for color/fill default to \code{exptile}}
 
@@ -133,6 +134,8 @@ ggkmrisktable(
 \item{facet_strip_position}{position in sequence for the variable used in faceting default to c("top","top","top","top")}
 
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
+
+\item{return_list}{What to return if True a list of the datasets and plot is returned instead of only the plot}
 }
 \description{
 Produces a km plot with a facettable risk table in ggplot2
