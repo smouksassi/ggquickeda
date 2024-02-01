@@ -4582,7 +4582,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm", 
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
+                                         label.x="left" ,label.y="bottom",size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -4595,7 +4595,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm", force = 3,
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
+                                         label.x="left" ,label.y="top",size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -4605,7 +4605,7 @@ function(input, output, session) {
               p <- p+ ggpmisc::stat_fit_tidy(method = "lm",
                                          method.args = list(formula = y ~ x, weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
+                                         label.x = "right" ,label.y = "bottom",size=input$smoothtextsize,
                                          aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
                                                                    "%+-%", signif(..Intercept_se.. , digits = 2),
                                                                    "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
@@ -4681,7 +4681,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
+                                         label.x="left" ,label.y="bottom",size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -4694,7 +4694,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm", col=colsmooth,force = 3,
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
+                                         label.x="left" ,label.y="top",size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              group=NULL,weight=!!aesweight),
@@ -4704,7 +4704,7 @@ function(input, output, session) {
               p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,size=input$smoothtextsize,
                                              method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
-                                             label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
+                                             label.x = "right" ,label.y = "bottom",size=input$smoothtextsize,
                                              aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
                                                                "%+-%", signif(..Intercept_se.. , digits = 2),
                                                                "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
@@ -4782,7 +4782,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf,size=input$smoothtextsize,
+                                         label.x="left" ,label.y="bottom",size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              weight=!!aesweight),
@@ -4795,7 +4795,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm", force = 3,
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf,size=input$smoothtextsize,
+                                         label.x="left" ,label.y="top",size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              weight=!!aesweight),
@@ -4806,7 +4806,7 @@ function(input, output, session) {
               p <- p+ ggpmisc::stat_fit_tidy(method = "lm",
                                              method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
-                                             label.x = Inf ,label.y = -Inf,size=input$smoothtextsize,
+                                             label.x = "right" ,label.y = "bottom",size=input$smoothtextsize,
                                              aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
                                                                "%+-%", signif(..Intercept_se.. , digits = 2),
                                                                "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
@@ -4884,7 +4884,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth,
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=-Inf, size=input$smoothtextsize,
+                                         label.x="left" ,label.y="bottom", size=input$smoothtextsize,
                                          aes(label = paste("R[adj]^2==",
                                                            signif(..adj.r.squared.., digits = 2), sep = ""),
                                              weight=!!aesweight),
@@ -4897,7 +4897,7 @@ function(input, output, session) {
                 ggpmisc::stat_fit_glance(method = "lm",col=colsmooth, force = 3,
                                          method.args = list(formula = y ~ x , weights = quote(weight)),
                                          geom = "text_repel",segment.color=NA,direction="y",
-                                         label.x=-Inf ,label.y=Inf, size=input$smoothtextsize,
+                                         label.x="left" ,label.y="top", size=input$smoothtextsize,
                                          aes(label = paste("Slope P-value = ",
                                                            signif(..p.value.., digits = 3), sep = ""),
                                              weight=!!aesweight),
@@ -4908,7 +4908,7 @@ function(input, output, session) {
               p <- p+ ggpmisc::stat_fit_tidy(method = "lm",col=colsmooth,
                                              method.args = list(formula = y ~ x, weights = quote(weight)),
                                              geom = "text_repel",segment.color=NA,direction="y",
-                                             label.x = Inf ,label.y = -Inf, size=input$smoothtextsize,
+                                             label.x = "right" ,label.y = "bottom", size=input$smoothtextsize,
                                              aes(label = paste("Intercept~`=`~", signif(..Intercept_estimate.. , digits = 3),
                                                                "%+-%", signif(..Intercept_se.. , digits = 2),
                                                                "~Slope~`=`~", signif(..x_estimate.. , digits = 3),
@@ -5562,11 +5562,11 @@ function(input, output, session) {
         cortextxpos <- input$cortextxpos
         cortextypos <- input$cortextypos
 
-        if (is.null(cortextxpos) || is.na(cortextxpos)  ) cortextxpos <- Inf
-        if (is.null(cortextypos) || is.na(cortextypos) ) cortextypos <- Inf
+        if (is.null(cortextxpos) || is.na(cortextxpos)  ) cortextxpos <- "right"
+        if (is.null(cortextypos) || is.na(cortextypos) ) cortextypos <- "top"
         
-        label.x.value <- ifelse(input$geomcorr=="text",cortextxpos,Inf)
-        label.y.value <- ifelse(input$geomcorr=="text",cortextypos,Inf)
+        label.x.value <- ifelse(input$geomcorr=="text",cortextxpos,"right")
+        label.y.value <- ifelse(input$geomcorr=="text",cortextypos,"top")
         
         if(input$addcorrcoeff&&!input$addcorrcoeffignoregroup) {
           
@@ -5633,11 +5633,11 @@ function(input, output, session) {
         cortextxpos <- input$cortextxpos
         cortextypos <- input$cortextypos
         
-        if (is.null(cortextxpos) || is.na(cortextxpos) ) cortextxpos <- Inf
-        if (is.null(cortextypos) || is.na(cortextypos) ) cortextypos <- Inf
+        if (is.null(cortextxpos) || is.na(cortextxpos)  ) cortextxpos <- "right"
+        if (is.null(cortextypos) || is.na(cortextypos) ) cortextypos <- "top"
         
-        label.x.value <- ifelse(input$geomcorr=="text",cortextxpos,Inf)
-        label.y.value <- ifelse(input$geomcorr=="text",cortextypos,Inf)
+        label.x.value <- ifelse(input$geomcorr=="text",cortextxpos,"right")
+        label.y.value <- ifelse(input$geomcorr=="text",cortextypos,"top")
         
         if(input$addcorrcoeff && !input$addcorrcoeffignoregroup) {
           
