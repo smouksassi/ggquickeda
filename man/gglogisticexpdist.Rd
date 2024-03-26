@@ -18,8 +18,10 @@ gglogisticexpdist(
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
   ylab = "Probability of Response",
+  prob_obs_byexptile = TRUE,
   prob_text_size = 5,
   prob_obs_bydose = TRUE,
+  prob_obs_bydose_plac = FALSE,
   N_text_size = 5,
   binlimits_text_size = 5,
   binlimits_ypos = 0,
@@ -29,6 +31,8 @@ gglogisticexpdist(
   dist_scale = 0.9,
   lineranges_ypos = 0.2,
   lineranges_dodge = 0.15,
+  lineranges_doselabel = FALSE,
+  proj_bydose = TRUE,
   yproj = TRUE,
   yproj_xpos = 0,
   yproj_dodge = 0.2,
@@ -65,9 +69,13 @@ gglogisticexpdist(
 
 \item{ylab}{text to be used as y axis label}
 
+\item{prob_obs_byexptile}{observed probability by exptile \code{TRUE}/\code{FALSE}}
+
 \item{prob_text_size}{probability text size default to 5}
 
 \item{prob_obs_bydose}{observed probability by dose \code{TRUE}/\code{FALSE}}
+
+\item{prob_obs_bydose_plac}{observed probability by placebo dose \code{TRUE}/\code{FALSE}}
 
 \item{N_text_size}{N responders/Ntotal by exposure bin text size default to 5}
 
@@ -86,6 +94,10 @@ gglogisticexpdist(
 \item{lineranges_ypos}{where to put the lineranges -1}
 
 \item{lineranges_dodge}{lineranges vertical dodge value 1}
+
+\item{lineranges_doselabel}{\code{TRUE}/\code{FALSE}}
+
+\item{proj_bydose}{project the probabilities on logistic curve \code{TRUE}/\code{FALSE}}
 
 \item{yproj}{project the probabilities on y axis \code{TRUE}/\code{FALSE}}
 
