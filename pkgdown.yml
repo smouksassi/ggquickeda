@@ -1,4 +1,4 @@
-pandoc: 2.19.2
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -6,7 +6,7 @@ articles:
   Visualizing_Summary_Data: Visualizing_Summary_Data.html
   app: app.html
   ggquickeda: ggquickeda.html
-last_built: 2024-02-01T07:57Z
+last_built: 2024-03-26T08:04Z
 urls:
   reference: https://smouksassi.github.io/ggquickeda/reference
   article: https://smouksassi.github.io/ggquickeda/articles
