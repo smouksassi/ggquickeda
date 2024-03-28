@@ -78,8 +78,10 @@
 <span>  dose_plac_value <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Exposure Values"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Response"</span>,</span>
+<span>  mean_obs_byexptile <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  mean_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  mean_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  mean_obs_bydose_plac <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  N_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  binlimits_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  binlimits_ypos <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span>,</span>
@@ -89,6 +91,8 @@
 <span>  dist_scale <span class="op">=</span> <span class="fl">0.9</span>,</span>
 <span>  lineranges_ypos <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span>
 <span>  lineranges_dodge <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  lineranges_doselabel <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  proj_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  yproj <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  yproj_xpos <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  yproj_dodge <span class="op">=</span> <span class="fl">0.2</span>,</span>
@@ -153,12 +157,20 @@
 <dd><p>text to be used as y axis label</p></dd>
 
 
+<dt>mean_obs_byexptile</dt>
+<dd><p>observed probability by exptile <code>TRUE</code>/<code>FALSE</code></p></dd>
+
+
 <dt>mean_text_size</dt>
 <dd><p>mean text size default to 5</p></dd>
 
 
 <dt>mean_obs_bydose</dt>
 <dd><p>observed mean by dose <code>TRUE</code>/<code>FALSE</code></p></dd>
+
+
+<dt>mean_obs_bydose_plac</dt>
+<dd><p>observed probability by placebo dose <code>TRUE</code>/<code>FALSE</code></p></dd>
 
 
 <dt>N_text_size</dt>
@@ -195,6 +207,14 @@
 
 <dt>lineranges_dodge</dt>
 <dd><p>lineranges vertical dodge value 1</p></dd>
+
+
+<dt>lineranges_doselabel</dt>
+<dd><p><code>TRUE</code>/<code>FALSE</code></p></dd>
+
+
+<dt>proj_bydose</dt>
+<dd><p>project the probabilities on logistic curve <code>TRUE</code>/<code>FALSE</code></p></dd>
 
 
 <dt>yproj</dt>
