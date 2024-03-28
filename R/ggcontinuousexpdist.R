@@ -40,8 +40,10 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param dose_plac_value string identifying placebo in DOSE column
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
+#' @param mean_obs_byexptile observed probability by exptile `TRUE`/`FALSE`
 #' @param mean_text_size mean text size default to 5
 #' @param mean_obs_bydose observed mean by dose `TRUE`/`FALSE`
+#' @param mean_obs_bydose_plac observed probability by placebo dose `TRUE`/`FALSE`
 #' @param N_text_size N by exposure bin text size default to 5
 #' @param binlimits_text_size 5 binlimits text size
 #' @param binlimits_ypos binlimits y position default to 0 
@@ -51,6 +53,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param dist_scale scaling parameter for ggridges default to 0.9
 #' @param lineranges_ypos where to put the lineranges -1
 #' @param lineranges_dodge lineranges vertical dodge value 1
+#' @param lineranges_doselabel `TRUE`/`FALSE`
+#' @param proj_bydose project the probabilities on logistic curve `TRUE`/`FALSE`
 #' @param yproj project the probabilities on y axis `TRUE`/`FALSE`
 #' @param yproj_xpos y projection x position 0
 #' @param yproj_dodge  y projection dodge value 0.2
@@ -130,8 +134,10 @@ ggcontinuousexpdist <- function(data = effICGI,
                               dose_plac_value = "Placebo",
                               xlab = "Exposure Values",
                               ylab ="Response",
+                              mean_obs_byexptile = TRUE,
                               mean_text_size = 5,
                               mean_obs_bydose = TRUE,
+                              mean_obs_bydose_plac = FALSE,
                               N_text_size = 5,
                               binlimits_text_size = 5,
                               binlimits_ypos = -Inf,
@@ -141,6 +147,8 @@ ggcontinuousexpdist <- function(data = effICGI,
                               dist_scale = 0.9,
                               lineranges_ypos = -1,
                               lineranges_dodge = 1,
+                              lineranges_doselabel = FALSE,
+                              proj_bydose = TRUE,
                               yproj = TRUE,
                               yproj_xpos = 0,
                               yproj_dodge = 0.2,
@@ -399,7 +407,6 @@ ggcontinuousexpdist <- function(data = effICGI,
     ggplot2::facet_grid(facet_formula, scales = "free")+
     ggplot2::geom_point(ggplot2::aes_string(col = color_fill),
                         alpha = 0.2, position = ggplot2::position_jitter(width = 0 , height = 0.05))+
-    #ggplot2::geom_hline(yintercept = c(0,1))+
     ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept), color = "gray70" )+
     ggplot2::geom_ribbon(data = data.long |> dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
                          stat="smooth",
@@ -410,7 +417,9 @@ ggcontinuousexpdist <- function(data = effICGI,
                         stat="smooth",
                         method = "glm", 
                        color="black", alpha = 0.5,
-                        ggplot2::aes(linetype = "Linear Fit 95% CI"))+
+                        ggplot2::aes(linetype = "Linear Fit 95% CI"))
+  if(proj_bydose){
+    p1proj <- p1 +
     ggplot2::geom_line(data = predict_by_endpoint_expname_dose,
                        ggplot2::aes_string(y = "yhat", col = color_fill),
                        alpha = 0.4, linewidth = 2)+
@@ -420,11 +429,15 @@ ggcontinuousexpdist <- function(data = effICGI,
     ggplot2::geom_point(data = predict_by_endpoint_expname,
                         ggplot2::aes_string(x = "medexp", y = "ymid50", col = color_fill),
                         alpha = 0.4, size = 5)
+   }
+  if(!proj_bydose){
+    p1proj <- p1
+  }
   
   
   if(exposure_distribution=="lineranges") {
     lineranges_ypos <- as.character(lineranges_ypos)
-    p1l <- p1 +
+    p1l <- p1proj +
       ggplot2::geom_linerange(data = data.long.summaries.dose, linewidth = 2, alpha = 0.4,
                               ggplot2::aes_string(xmin = "quant_10", xmax = "quant_90",y = lineranges_ypos,
                                                   col = color_fill,
@@ -443,12 +456,25 @@ ggcontinuousexpdist <- function(data = effICGI,
                                               group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                           ),
                           position = ggstance::position_dodgev(height = lineranges_dodge))
+  if(lineranges_doselabel){
+    p1lt <-  p1l +
+      ggplot2::geom_text(data=data.long.summaries.dose, vjust = 1, size = 5, show.legend = FALSE,
+                         ggplot2::aes_string(x="quant_90",y = lineranges_ypos,
+                                             label = "DOSE",
+                                             col = color_fill,
+                                             group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
+                         ),
+                         position = ggstance::position_dodgev(height = lineranges_dodge))
   }
-  if(exposure_distribution!="lineranges") {
-    p1l <- p1 
+  if(!lineranges_doselabel){
+    p1lt <- p1l
   }
-  
-  p2e <- p1l +
+}
+if(exposure_distribution!="lineranges") {
+  p1lt <- p1proj 
+}
+
+p2e <- p1lt +
     ggplot2::geom_pointrange(data = data.long.summaries.exposure, size = 1,
                              ggplot2::aes(shape = "Observed mean by exposure split",
                                           x = medexp, y = mean,
@@ -457,8 +483,10 @@ ggcontinuousexpdist <- function(data = effICGI,
                              alpha = 0.5)
   if(mean_obs_bydose){
     data.long.summaries.dose.plot <- data.long.summaries.dose 
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"Ntot"] <- NA
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"mean"] <- NA
+    if(!mean_obs_bydose_plac){
+      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"Ntot"] <- NA
+      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"mean"] <- NA 
+      }
     
     p2d <- p2e +
       ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
@@ -474,12 +502,19 @@ ggcontinuousexpdist <- function(data = effICGI,
                          ))
     
   }
-  if(!mean_obs_bydose){
-    p2d <- p2e
-  }
+if(!mean_obs_bydose){
+  p2d <- p2e
+}
+
+if(mean_obs_byexptile) {
   p2 <- p2d +
     ggplot2::geom_text(data=data.long.summaries.exposure, vjust = 0, size = mean_text_size, show.legend = FALSE,
-                       ggplot2::aes(x = medexp, y = mean, label = paste(round(mean,2),"\n",sep="")))+
+                       ggplot2::aes(x = medexp, y = mean, label = paste(round(mean,2),"\n",sep="")))
+}
+if(!mean_obs_byexptile) {
+  p2 <- p2d
+}
+p2t <- p2 +
     ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
                        vjust = 0, size = binlimits_text_size,color = binlimits_color)+
     ggplot2::geom_text(data = data.long.summaries.exposure, y = Inf, vjust = 1, size = N_text_size, 
@@ -488,7 +523,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exposure_distribution=="distributions") {
     data.long.ridges <- data.long 
     data.long.ridges[data.long.ridges[,DOSEinputvar]==dose_plac_value,"expvalue"] <- NA
-    p2d <- p2 +
+    p2d <- p2t +
       ggridges::geom_density_ridges(data = data.long.ridges,
                                     ggplot2::aes(x = expvalue, y = keynumeric,
                                                  group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
@@ -503,7 +538,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                           alpha = 0.5, show.legend = FALSE)
   }
   if(exposure_distribution!="distributions") {
-    p2d <- p2 
+    p2d <- p2t 
   }
   
   if(yproj) {
@@ -571,8 +606,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 18)+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside",
-                   axis.title.y = ggplot2::element_blank())
+    ggplot2::theme(legend.position = "top",strip.placement = "outside")
   
   if(!theme_certara){
     pf <-  pf1 +

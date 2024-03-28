@@ -583,8 +583,7 @@ gglogisticexpdist <- function(data = effICGI,
       ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
                                ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
                                             ymin = prob+1.959*SE, ymax=prob-1.959*SE,
-                                            shape = "Observed probability by dose split"),
-                               show.legend = FALSE) +
+                                            shape = "Observed probability by dose split")) +
       ggplot2::geom_text(data=data.long.summaries.dose.plot, vjust = 1, size = prob_text_size, show.legend = FALSE,
                          ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
                                       label = paste(
@@ -697,8 +696,7 @@ gglogisticexpdist <- function(data = effICGI,
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 18)+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside",
-                   axis.title.y = ggplot2::element_blank())
+    ggplot2::theme(legend.position = "top",strip.placement = "outside")
   
   if(!theme_certara){
     pf <-  pf1 +

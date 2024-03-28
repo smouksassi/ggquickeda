@@ -18,8 +18,10 @@ ggcontinuousexpdist(
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
   ylab = "Response",
+  mean_obs_byexptile = TRUE,
   mean_text_size = 5,
   mean_obs_bydose = TRUE,
+  mean_obs_bydose_plac = FALSE,
   N_text_size = 5,
   binlimits_text_size = 5,
   binlimits_ypos = -Inf,
@@ -29,6 +31,8 @@ ggcontinuousexpdist(
   dist_scale = 0.9,
   lineranges_ypos = -1,
   lineranges_dodge = 1,
+  lineranges_doselabel = FALSE,
+  proj_bydose = TRUE,
   yproj = TRUE,
   yproj_xpos = 0,
   yproj_dodge = 0.2,
@@ -65,9 +69,13 @@ ggcontinuousexpdist(
 
 \item{ylab}{text to be used as y axis label}
 
+\item{mean_obs_byexptile}{observed probability by exptile \code{TRUE}/\code{FALSE}}
+
 \item{mean_text_size}{mean text size default to 5}
 
 \item{mean_obs_bydose}{observed mean by dose \code{TRUE}/\code{FALSE}}
+
+\item{mean_obs_bydose_plac}{observed probability by placebo dose \code{TRUE}/\code{FALSE}}
 
 \item{N_text_size}{N by exposure bin text size default to 5}
 
@@ -86,6 +94,10 @@ ggcontinuousexpdist(
 \item{lineranges_ypos}{where to put the lineranges -1}
 
 \item{lineranges_dodge}{lineranges vertical dodge value 1}
+
+\item{lineranges_doselabel}{\code{TRUE}/\code{FALSE}}
+
+\item{proj_bydose}{project the probabilities on logistic curve \code{TRUE}/\code{FALSE}}
 
 \item{yproj}{project the probabilities on y axis \code{TRUE}/\code{FALSE}}
 
