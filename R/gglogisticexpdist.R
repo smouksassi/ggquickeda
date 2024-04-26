@@ -575,9 +575,9 @@ gglogisticexpdist <- function(data = effICGI,
   if(prob_obs_bydose){
     data.long.summaries.dose.plot <- data.long.summaries.dose 
     if(!prob_obs_bydose_plac){
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"N"] <- NA
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"Ntot"] <- NA
-    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"prob"] <- NA
+    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"N"] <- NA
+    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
+    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"prob"] <- NA
     }
     p2d <- p2e +
       ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
