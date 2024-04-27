@@ -26,8 +26,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' Create a logistic fit plot
 #'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
-#' @param data Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1
-#' @param response name of the column holding the values response 0/1
+#' @param data Data to use with multiple endpoints stacked into response (values 0/1), Endpoint(endpoint name)
+#' @param response name of the column holding the response values  0/1
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
 #' @param DOSE name of the column holding the DOSE values default to `DOSE`
 #' @param color_fill name of the column to be used for color/fill default to DOSE column

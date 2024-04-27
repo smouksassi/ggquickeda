@@ -43,9 +43,9 @@ ggcontinuousexpdist(
 )
 }
 \arguments{
-\item{data}{Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1}
+\item{data}{Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)}
 
-\item{response}{name of the column holding the valuesresponse 0/1}
+\item{response}{name of the column holding the response values}
 
 \item{endpoint}{name of the column holding the name/key of the endpoint default to \code{Endpoint}}
 

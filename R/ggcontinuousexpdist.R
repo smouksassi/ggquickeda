@@ -27,8 +27,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' 
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 #' 
-#' @param data Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1
-#' @param response name of the column holding the valuesresponse 0/1
+#' @param data Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)
+#' @param response name of the column holding the response values
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
 #' @param DOSE name of the column holding the DOSE values default to `DOSE`
 #' @param color_fill name of the column to be used for color/fill default to DOSE column
@@ -484,8 +484,8 @@ p2e <- p1lt +
   if(mean_obs_bydose){
     data.long.summaries.dose.plot <- data.long.summaries.dose 
     if(!mean_obs_bydose_plac){
-      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"Ntot"] <- NA
-      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,color_fill]==dose_plac_value,"mean"] <- NA 
+      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
+      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA 
       }
     
     p2d <- p2e +

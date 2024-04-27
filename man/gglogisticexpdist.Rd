@@ -43,9 +43,9 @@ gglogisticexpdist(
 )
 }
 \arguments{
-\item{data}{Data to use with multiple endpoints stacked into Endpoint(endpoint name), response 0/1}
+\item{data}{Data to use with multiple endpoints stacked into response (values 0/1), Endpoint(endpoint name)}
 
-\item{response}{name of the column holding the values response 0/1}
+\item{response}{name of the column holding the response values  0/1}
 
 \item{endpoint}{name of the column holding the name/key of the endpoint default to \code{Endpoint}}
 
