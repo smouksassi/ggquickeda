@@ -1,5 +1,6 @@
 #' @importFrom rlang :=
 #' @importFrom rlang .data
+#' @importFrom rlang syms
 #' @importFrom survival survfit
 #' @importFrom survival Surv
 #' @import tidyr
@@ -321,6 +322,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          theme_certara = TRUE,
                          return_list = FALSE
 ) {
+  none = NULL
   timevar          <- time
   statusvar        <- status
   endpointinputvar <- endpoint
