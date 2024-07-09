@@ -1,105 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/404.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/articles/AdditionalPlotsStats.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/articles/Visualizing_Summary_Data.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/articles/app.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/articles/ggquickeda.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/index.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/attach_source_dep.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/cloglog_trans.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/cumhaz_trans.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/dostep.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/event_trans.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/geom_km.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/geom_kmband.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/geom_kmticks.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/get_source_code.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/ggcontinuousexpdist.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/ggkmrisktable.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/gglogisticexpdist.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/ggquickeda-ggproto.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/logistic_data.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/merge_steps.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/plus.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/run_ggquickeda.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/sample_data.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/sourceable.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/stairstepn.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/stat_km.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/stat_kmband.html</loc>
-  </url>
-  <url>
-    <loc>https://smouksassi.github.io/ggquickeda/reference/stat_kmticks.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://smouksassi.github.io/ggquickeda/404.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/LICENSE-text.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/articles/AdditionalPlotsStats.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/articles/Visualizing_Summary_Data.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/articles/app.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/articles/ggquickeda.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/articles/index.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/authors.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/index.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/news/index.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/attach_source_dep.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/cloglog_trans.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/cumhaz_trans.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/dostep.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/event_trans.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/geom_km.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/geom_kmband.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/geom_kmticks.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/get_source_code.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/ggcontinuousexpdist.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/ggkmrisktable.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/gglogisticexpdist.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/ggquickeda-ggproto.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/index.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/logistic_data.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/merge_steps.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/plus.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/run_ggquickeda.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/sample_data.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/sourceable.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/stairstepn.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/stat_km.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/stat_kmband.html</loc></url>
+<url><loc>https://smouksassi.github.io/ggquickeda/reference/stat_kmticks.html</loc></url>
 </urlset>
+
