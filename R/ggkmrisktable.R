@@ -66,11 +66,12 @@ lung_long$facetdum <- "(all)"
   }
   data
 }
+
 .get_variable_value <- function(variable, strata, fit, data = NULL){
   res <- sapply(as.vector(strata), function(x){
-    #x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
-    x <- unlist(strsplit(x, "(?<![<>])=|(\\s+)?,\\s+", perl=TRUE))
-    index <- grep(paste0("^", variable, "$"), x)
+    x <- unlist(strsplit(x, "=|(\\s+)?,\\s+", perl=TRUE))
+    # When a factor name is the same as one of its level, index is of length 2
+    index <- grep(paste0("^", variable, "$"), x)[1]
     .trim(x[index+1])
   })
   res <- as.vector(res)
@@ -220,6 +221,8 @@ lung_long$facetdum <- "(all)"
 #'              km_median = "medianci",
 #'              km_band = TRUE,
 #'              km_trans = "event",
+#'              show_exptile_values = TRUE,
+#'              show_exptile_values_pos = "right",
 #'              nrisk_table_breaktimeby = 200,
 #'              facet_ncol = 3,
 #'              facet_formula = ~expname)
@@ -265,7 +268,7 @@ lung_long$facetdum <- "(all)"
 #' ggkmrisktable(data=lung_long,
 #'              exposure_metrics = c("ph.karno","age"),
 #'              exposure_metric_split = "none",
-#'               color_fill = "facetdum",
+#'               color_fill = "none",
 #'              linetype = "none",
 #'              nrisk_table_variables = c("n.risk", "pct.risk", "n.event", "cum.n.event", "n.censor"),
 #'               km_median = "table",
@@ -356,14 +359,28 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
       stats::as.formula(facet_formula)
 
   exposure_metric_split <- match.arg(exposure_metric_split)
-  data <- data |> 
-    dplyr::mutate(none = "(all)")  # needed when no metric are chosen
-    #dplyr::mutate(`(all)` = "(all)") # needed when no metric are chosen
+ 
+
+  if(all(exposure_metrics%in% c("none",""))) {
+    data <- data |> 
+      dplyr::mutate(none = "(all)")  # needed when no metric are chosen
+    exposure_metric_split <- "none"
+    colorinputvar    <-  if (color_fill !="none") color_fill else NULL
+    fillinputvar     <-  if (color_fill !="none") color_fill else NULL
+    linetypeinputvar <-  if (linetype   !="none") linetype   else NULL
+    
+    
+    data.long <- data |>
+      tidyr::gather(expname,expvalue,none) |> 
+      dplyr::group_by(expname,!!endpoint)    
+  }
   
-  data.long <- data |> 
-    tidyr::gather(expname,expvalue,!!!exposure_metrics) |> 
-    dplyr::group_by(expname,!!endpoint) 
-  
+  if(!all(exposure_metrics%in% c("none",""))) {
+    data.long <- data |> 
+      tidyr::gather(expname,expvalue,!!!exposure_metrics) |> 
+      dplyr::group_by(expname,!!endpoint)
+  }
+
   if(exposure_metric_split=="none") {
     data.long <- data.long |> 
       dplyr::mutate(exptile = dplyr::case_when(
@@ -417,10 +434,26 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   }
   data.long$exptile2 <- data.long$exptile
   
-  data.long.quantiles <- data.long |>
-    dplyr::group_by(!!sym(endpointinputvar),expname,exptile,exptile2)|>
-    dplyr::summarize(exprange = paste0("(",round(min(expvalue),2),"-",round(max(expvalue),2),"]"))
+  listvars <- unique(c(endpointinputvar,colorinputvar,fillinputvar,linetypeinputvar))
+  listvars <- listvars[!is.element(listvars,c("none",".")) ]
+  listvars <- c(listvars,"expname","exptile","exptile2")
+  listvars <- listvars[!duplicated(listvars) ]
+  
 
+  if(!all(exposure_metrics%in% c("none",""))) {
+    data.long.quantiles <- data.long |>
+      dplyr::group_by(!!!syms(listvars))|>
+      #dplyr::group_by(Endpoint,exptile,expname,exptile2)|>
+      dplyr::summarize(exprange = paste0("(",round(min(expvalue),2),"-",round(max(expvalue),2),"]"))
+    
+  }
+  if(all(exposure_metrics%in% c("none",""))) {
+    data.long.quantiles <- data.long |>
+      dplyr::group_by(!!!syms(listvars))|>
+      dplyr::summarize(exprange = "none")
+
+  }
+  #print(data.long.quantiles)
   #sprintf("%#.3g (%#.3g-%#.3g]",min(expvalue),max(expvalue))
   
   #we generate a curve by the combination of all these inputs removing duplicates and none
@@ -455,7 +488,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   if(km_logrank_pvalue){ #log rank does not group by color_fill, linetype exptile
     loopvariables <- unique(c(endpointinputvar,"expname",groupvar1inputvar,groupvar2inputvar,groupvar3inputvar))
     #loopvariables <- loopvariables[!loopvariables%in% "exptile"]
-    #loopvariables <- loopvariables[!loopvariables%in% "expname"]
+    loopvariables <- loopvariables[!loopvariables%in% "none"]
     listvars2 <- listvars[!listvars%in% loopvariables]
     if(exposure_metric_split == "none") listvars2 <- c(listvars2,"expvalue")
     if ( length(listvars2) ==0 ){
@@ -467,6 +500,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
    
     survfit_by_endpoint <- list()
     logrank_test_by_endpoint <- list()
+    loopvariables <- loopvariables[loopvariables!="none"]
     data.long <- tidyr::unite(data.long,"loopvariable", !!!loopvariables, remove = FALSE)
     
     for (i in unique(data.long[,"loopvariable"]) |>
@@ -659,8 +693,10 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   if(km_median=="none"){
     plotkm1mt <- plotkm1
   }
+ if (all(exposure_metrics%in% c("none","")) )  show_exptile_values <- FALSE
+ if (all(exposure_metric_split%in% c("none")) )  show_exptile_values <- FALSE
+
   if(show_exptile_values){
-    
     exptile_values_pos_x       <- ifelse(show_exptile_values_pos == "left",-Inf,Inf)
     exptile_values_pos_x_hjust <- ifelse(show_exptile_values_pos == "left",0,1)
 
@@ -709,8 +745,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                           add =c(0, 0)))+
     ggplot2::scale_x_continuous( breaks =c(unique(risktabledatag$time))) +
     ggplot2::theme_bw()+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside",
-          axis.title.y = ggplot2::element_blank())+
+    ggplot2::theme(legend.position = "top",strip.placement = "outside")+
     ggplot2::labs(color="",fill="",linetype="",
          x = xlab,y = ylab) 
   if(km_logrank_pvalue){

@@ -6644,7 +6644,7 @@ function(input, output, session) {
           !inherits(plotdata[,"xvalues"], "POSIXct")
           ) 
         if(!input$x_label_text_parse){
-          p <- p  + scale_x_discrete(labels = label_wrap(input$y_label_text_width),
+          p <- p  + scale_x_discrete(labels = label_wrap(input$x_label_text_width),
                                      expand = expansionobjx)
         }
         if(input$x_label_text_parse){
