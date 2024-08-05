@@ -10,6 +10,7 @@ gglogisticexpdist(
   endpoint = "Endpoint",
   DOSE = "DOSE",
   color_fill = "DOSE",
+  logistic_by_color_fill = FALSE,
   exposure_metrics = c("AUC", "CMAX"),
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
@@ -52,6 +53,8 @@ gglogisticexpdist(
 \item{DOSE}{name of the column holding the DOSE values default to \code{DOSE}}
 
 \item{color_fill}{name of the column to be used for color/fill default to DOSE column}
+
+\item{logistic_by_color_fill}{logistic fit split by color ? default \code{FALSE}}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into \code{expname} \code{exptile} and split into \code{exposure_metric_split}}
 
