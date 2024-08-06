@@ -347,7 +347,7 @@ gglogisticexpdist <- function(data = effICGI,
   }
   data.long$exptile2 <- data.long$exptile
   data.long[,"DOSE2"]    <- data.long[,DOSEinputvar]
-  data.long[,"color_fill2"]    <- data.long[,color_fill]
+  data.long[,"color_fill2"]    <- data.long[,colorinputvar]
 
   if(color_fill != DOSEinputvar) {
     data.long.summaries.dose <- data.long |>
@@ -474,8 +474,7 @@ gglogisticexpdist <- function(data = effICGI,
     dplyr::mutate(percentage=Ncat/Ntot)|> 
     dplyr::distinct(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile,xmed,percentage,keynumeric,DOSE2,color_fill2)|> 
     dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile)
-  print(percentineachbreakcategory)
-  
+
   }
   if(color_fill == DOSEinputvar) {
     percentineachbreakcategory <- data.long |>
@@ -502,10 +501,10 @@ gglogisticexpdist <- function(data = effICGI,
     ggplot2::geom_point(ggplot2::aes_string(col = color_fill),
                         alpha = 0.2, position = ggplot2::position_jitter(width = 0 , height = 0.025))+
     ggplot2::geom_hline(yintercept = c(0,1))+
-    ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept), color = "gray70" )+
+    ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept), color = "gray70" )
     
     if(!logistic_by_color_fill) {
-      p1lo <- p1+
+      p1lo <- p1 +
         ggplot2::geom_ribbon(data = data.long |> dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
                                  stat="smooth",
                                  method = "glm", method.args = list(family = "binomial"),
@@ -518,7 +517,7 @@ gglogisticexpdist <- function(data = effICGI,
                            ggplot2::aes(linetype = "Logistic Fit 95% CI"))
     }
   if(logistic_by_color_fill) {
-    p1lo <- p1+
+    p1lo <- p1 +
       ggplot2::geom_ribbon(data = data.long ,
                            stat="smooth",
                            method = "glm", method.args = list(family = "binomial"),
@@ -600,11 +599,11 @@ gglogisticexpdist <- function(data = effICGI,
   if(logistic_by_color_fill){
     p2e <- p1lt +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure %>% 
-                                 dplyr::mutate(endpointcol= !!sym(endpointinputvar)), size = 1,
-                               ggplot2::aes(shape = "Observed probability by exposure split",
+                                 dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar)), size = 1,
+                                 ggplot2::aes(shape = "Observed probability by exposure split",
                                             x = medexp, y = prob, ymin = prob+1.959*SE,
                                             ymax=prob-1.959*SE,
-                                            col = !!sym(color_fill)),
+                                            col = !!sym(endpointinputvar)),
                                alpha = 0.5)
   }
   
@@ -645,19 +644,19 @@ gglogisticexpdist <- function(data = effICGI,
   if(prob_obs_byexptile && logistic_by_color_fill) {
       p2 <-   p2d +
         ggplot2::geom_text(data=data.long.summaries.exposure%>% 
-                             dplyr::mutate(endpointcol= !!sym(endpointinputvar)),
+                             dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                            vjust = 0,
                            size = prob_text_size, show.legend = FALSE,
-                           ggplot2::aes(x = medexp, y = prob, col= endpointcol,
+                           ggplot2::aes(x = medexp, y = prob, col= .data[[endpointinputvar]],
                                         label = paste(100*round(prob,2),"%","\n",sep=""))
         )+
         ggplot2::geom_text(data = data.long.summaries.exposure %>% 
-                         dplyr::mutate(endpointcol= !!sym(endpointinputvar)),
+                         dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar)),
                        vjust = 1,
                        size = N_text_size, 
                        ggplot2::aes(x = as.double(as.character(medexp)),
                                     y = prob -0.2,
-                                    col= endpointcol,
+                                    col= .data[[endpointinputvar]],
                                     label=paste(N,"/",Ntot,sep="")))
     
     
