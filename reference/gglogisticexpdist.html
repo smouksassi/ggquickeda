@@ -49,6 +49,7 @@
 <span>  endpoint <span class="op">=</span> <span class="st">"Endpoint"</span>,</span>
 <span>  DOSE <span class="op">=</span> <span class="st">"DOSE"</span>,</span>
 <span>  color_fill <span class="op">=</span> <span class="st">"DOSE"</span>,</span>
+<span>  logistic_by_color_fill <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUC"</span>, <span class="st">"CMAX"</span><span class="op">)</span>,</span>
 <span>  exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span>, <span class="st">"tertile"</span>, <span class="st">"quartile"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span>
@@ -104,6 +105,10 @@
 
 <dt id="arg-color-fill">color_fill<a class="anchor" aria-label="anchor" href="#arg-color-fill"></a></dt>
 <dd><p>name of the column to be used for color/fill default to DOSE column</p></dd>
+
+
+<dt id="arg-logistic-by-color-fill">logistic_by_color_fill<a class="anchor" aria-label="anchor" href="#arg-logistic-by-color-fill"></a></dt>
+<dd><p>logistic fit split by color ? default <code>FALSE</code></p></dd>
 
 
 <dt id="arg-exposure-metrics">exposure_metrics<a class="anchor" aria-label="anchor" href="#arg-exposure-metrics"></a></dt>
