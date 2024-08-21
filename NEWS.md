@@ -1,5 +1,5 @@
 # ggquickeda 0.3.1.9000
-
+* added to possible positions on where to put the N of observations in Mean and Median tabs: (fixed, mean, median)
 * added arguments `show.exptile_values`, `show.exptile_values_pos` and `show.exptile_values_order` to
   `ggkmrisktable()` requested by Mathilde
 * fixes for `gglogisticexpdist()` and `ggcontinuousexpdist()` when `exposure_distribution`and `exposure_metric_split` where set to "none"

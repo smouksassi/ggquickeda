@@ -1958,7 +1958,10 @@ function(request) {
                                                    radioButtons("mean_N_position", "N Positioning:",
                                                                 c("min" = "min","max" = "max",
                                                                   "lower/left edge" = "below",
-                                                                  "upper/right edge" = "up"
+                                                                  "upper/right edge" = "up",
+                                                                  "at add adj value" = "fixed",
+                                                                  "at mean value" ="mean",
+                                                                  "at median value" ="median"
                                                                 ), inline = TRUE),
                                                    numericInput("mean_N_add",label = "N Additive adjustment",
                                                                 value = 0, min = NA, max = NA, step = 0.1),
@@ -2135,7 +2138,10 @@ function(request) {
                                         radioButtons("median_N_position", "N Positioning:",
                                                      c("min" = "min","max" = "max",
                                                        "lower/left edge" = "below",
-                                                       "upper/right edge" = "up"
+                                                       "upper/right edge" = "up",
+                                                       "at add adj value" = "fixed",
+                                                       "at mean value" ="mean",
+                                                       "at median value" ="median"
                                                      ), inline = TRUE),
                                         numericInput("median_N_add",label = "N Additive adjustment",
                                                      value = 0, min = NA, max = NA, step = 0.1),
