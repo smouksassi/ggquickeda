@@ -62,7 +62,7 @@
 <span>  prob_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  prob_obs_bydose_plac <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  N_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  Nresp_Ntot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  binlimits_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  binlimits_ypos <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  binlimits_color <span class="op">=</span> <span class="st">"gray70"</span>,</span>
@@ -159,8 +159,8 @@
 <dd><p>observed probability by placebo dose <code>TRUE</code>/<code>FALSE</code></p></dd>
 
 
-<dt id="arg-n-text-size">N_text_size<a class="anchor" aria-label="anchor" href="#arg-n-text-size"></a></dt>
-<dd><p>N responders/Ntotal by exposure bin text size default to 5</p></dd>
+<dt id="arg-nresp-ntot">Nresp_Ntot<a class="anchor" aria-label="anchor" href="#arg-nresp-ntot"></a></dt>
+<dd><p>show N responders/Ntotal ? <code>TRUE</code>/<code>FALSE</code></p></dd>
 
 
 <dt id="arg-binlimits-text-size">binlimits_text_size<a class="anchor" aria-label="anchor" href="#arg-binlimits-text-size"></a></dt>
@@ -338,7 +338,7 @@
 <span class="r-in"><span>                 yproj_dodge <span class="op">=</span> <span class="fl">20</span>,</span></span>
 <span class="r-in"><span>                 prob_text_size <span class="op">=</span> <span class="fl">6</span>,</span></span>
 <span class="r-in"><span>                 binlimits_text_size <span class="op">=</span> <span class="fl">6</span>,</span></span>
-<span class="r-in"><span>                 N_text_size <span class="op">=</span> <span class="fl">4</span>,</span></span>
+<span class="r-in"><span>                 Nresp_Ntot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                 dist_position_scaler <span class="op">=</span> <span class="fl">0.15</span><span class="op">)</span><span class="op">+</span></span></span>
 <span class="r-in"><span>                 <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_x_continuous</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">350</span>,<span class="fl">50</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 expand <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/expansion.html" class="external-link">expansion</a></span><span class="op">(</span>add<span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span>,mult<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">+</span></span></span>
