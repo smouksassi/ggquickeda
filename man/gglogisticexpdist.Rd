@@ -23,7 +23,7 @@ gglogisticexpdist(
   prob_text_size = 5,
   prob_obs_bydose = TRUE,
   prob_obs_bydose_plac = FALSE,
-  N_text_size = 5,
+  Nresp_Ntot = TRUE,
   binlimits_text_size = 5,
   binlimits_ypos = 0,
   binlimits_color = "gray70",
@@ -80,7 +80,7 @@ gglogisticexpdist(
 
 \item{prob_obs_bydose_plac}{observed probability by placebo dose \code{TRUE}/\code{FALSE}}
 
-\item{N_text_size}{N responders/Ntotal by exposure bin text size default to 5}
+\item{Nresp_Ntot}{show N responders/Ntotal ? \code{TRUE}/\code{FALSE}}
 
 \item{binlimits_text_size}{5 binlimits text size}
 
@@ -197,7 +197,7 @@ gglogisticexpdist(data = effICGI  |>
                  yproj_dodge = 20,
                  prob_text_size = 6,
                  binlimits_text_size = 6,
-                 N_text_size = 4,
+                 Nresp_Ntot = TRUE,
                  dist_position_scaler = 0.15)+
                  ggplot2::scale_x_continuous(breaks = seq(0,350,50),
                  expand = ggplot2::expansion(add= c(0,0),mult=c(0,0)))+

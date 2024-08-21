@@ -44,7 +44,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param prob_text_size probability text size default to 5
 #' @param prob_obs_bydose observed probability by dose `TRUE`/`FALSE`
 #' @param prob_obs_bydose_plac observed probability by placebo dose `TRUE`/`FALSE`
-#' @param N_text_size N responders/Ntotal by exposure bin text size default to 5
+#' @param Nresp_Ntot show N responders/Ntotal ? `TRUE`/`FALSE`
 #' @param binlimits_text_size 5 binlimits text size
 #' @param binlimits_ypos binlimits y position default to 0 
 #' @param binlimits_color binlimits text color default to "gray70"
@@ -140,7 +140,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  yproj_dodge = 20,
 #'                  prob_text_size = 6,
 #'                  binlimits_text_size = 6,
-#'                  N_text_size = 4,
+#'                  Nresp_Ntot = TRUE,
 #'                  dist_position_scaler = 0.15)+
 #'                  ggplot2::scale_x_continuous(breaks = seq(0,350,50),
 #'                  expand = ggplot2::expansion(add= c(0,0),mult=c(0,0)))+
@@ -225,7 +225,7 @@ gglogisticexpdist <- function(data = effICGI,
                               prob_text_size = 5,
                               prob_obs_bydose = TRUE,
                               prob_obs_bydose_plac = FALSE,
-                              N_text_size = 5,
+                              Nresp_Ntot = TRUE,
                               binlimits_text_size = 5,
                               binlimits_ypos = 0,
                               binlimits_color= "gray70",
@@ -467,9 +467,9 @@ gglogisticexpdist <- function(data = effICGI,
   percentineachbreakcategory <- data.long |>
     dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2)|>
     dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,expvalue,exptile)|>
-    dplyr::group_by(!!sym(DOSEinputvar),!!sym(color_fill),keynumeric,expname,DOSE2,color_fill2) |> 
+    dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2) |> 
     dplyr::mutate(Ntot = dplyr::n())|> 
-    dplyr::group_by(!!sym(DOSEinputvar),!!sym(color_fill),expname,exptile,keynumeric,DOSE2,color_fill2) |> 
+    dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,exptile) |> 
     dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
     dplyr::mutate(percentage=Ncat/Ntot)|> 
     dplyr::distinct(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile,xmed,percentage,keynumeric,DOSE2,color_fill2)|> 
@@ -521,7 +521,7 @@ gglogisticexpdist <- function(data = effICGI,
       ggplot2::geom_ribbon(data = data.long ,
                            stat="smooth",
                            method = "glm", method.args = list(family = "binomial"),
-                           color="transparent",linetype=0, alpha = 0.5,
+                           color="transparent",linetype=0, alpha = 0.2,
                            ggplot2::aes_string(fill = color_fill))+
       ggplot2::geom_line(data = data.long,
                          stat="smooth",
@@ -615,76 +615,104 @@ gglogisticexpdist <- function(data = effICGI,
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"prob"] <- NA
     }
-    p2d <- p2e +
-      ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
-                               ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
-                                            ymin = prob+1.959*SE, ymax=prob-1.959*SE,
-                                            shape = "Observed probability by dose split")) +
-      ggplot2::geom_text(data=data.long.summaries.dose.plot, vjust = 1,
-                         size = prob_text_size, show.legend = FALSE,
-                         ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
-                                      label = paste(
-                                        paste("\n",100*round(prob,2),"%",sep=""),
-                                        "\n",N,"/",Ntot,sep="")
-                         ))
+    if(Nresp_Ntot){
+      p2d <- p2e +
+        ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
+                                 ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
+                                              ymin = prob+1.959*SE, ymax=prob-1.959*SE,
+                                              shape = "Observed probability by dose split")) +
+        ggplot2::geom_text(data=data.long.summaries.dose.plot,
+                           vjust = 1,
+                           size = prob_text_size, show.legend = FALSE,
+                           ggplot2::aes(x = medexp,
+                                        y = prob*0.9,
+                                        col = !!sym(color_fill),
+                                        label = paste(paste(100*round(prob,2),"%",sep=""),
+                                                      "\n",N,"/",Ntot,sep="")
+                           ))
+    }
+    if(!Nresp_Ntot){
+      p2d <- p2e +
+        ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
+                                 ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
+                                              ymin = prob+1.959*SE, ymax=prob-1.959*SE,
+                                              shape = "Observed probability by dose split")) +
+        ggplot2::geom_text(data=data.long.summaries.dose.plot,
+                           vjust = 1,
+                           size = prob_text_size, show.legend = FALSE,
+                           ggplot2::aes(x = medexp,
+                                        y = prob*0.9,
+                                        col = !!sym(color_fill),
+                                        label = paste(100*round(prob,2),"%",sep="")
+                           ))
+    }
     
   }
+  
   if(!prob_obs_bydose){
     p2d <- p2e
   }
   if(prob_obs_byexptile && !logistic_by_color_fill) {
-    p2 <- p2d +
-      ggplot2::geom_text(data=data.long.summaries.exposure, vjust = 0,
-                         size = prob_text_size, show.legend = FALSE,
-                         ggplot2::aes(x = medexp, y = prob,
-                                      label = paste(100*round(prob,2),"%","\n",sep=""))
-                         )
+    if(Nresp_Ntot){
+      p2 <- p2d +
+        ggplot2::geom_text(data=data.long.summaries.exposure,
+                           vjust = 1,
+                           size = prob_text_size, show.legend = FALSE,
+                           ggplot2::aes(x = as.double(as.character(medexp)),
+                                        y = prob*1.1,
+                                        label = paste(paste(100*round(prob,2),"%",sep=""),
+                                                      "\n",N,"/",Ntot,sep="")
+                           ))
+    }
+    if(!Nresp_Ntot){
+      p2 <- p2d +
+        ggplot2::geom_text(data=data.long.summaries.exposure,
+                           vjust = 1,
+                           size = prob_text_size, show.legend = FALSE,
+                           ggplot2::aes(x = as.double(as.character(medexp)),
+                                        y = prob*1.1,
+                                        label = paste(100*round(prob,2),"%",sep="")
+                           ))
+    }
   }
   
   if(prob_obs_byexptile && logistic_by_color_fill) {
+    if(Nresp_Ntot){
       p2 <-   p2d +
         ggplot2::geom_text(data=data.long.summaries.exposure%>% 
                              dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
-                           vjust = 0,
+                           vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
-                           ggplot2::aes(x = medexp, y = prob, col= .data[[endpointinputvar]],
-                                        label = paste(100*round(prob,2),"%","\n",sep=""))
-        )+
-        ggplot2::geom_text(data = data.long.summaries.exposure %>% 
-                         dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar)),
-                       vjust = 1,
-                       size = N_text_size, 
-                       ggplot2::aes(x = as.double(as.character(medexp)),
-                                    y = prob -0.2,
-                                    col= .data[[endpointinputvar]],
-                                    label=paste(N,"/",Ntot,sep="")))
-    
-    
+                           ggplot2::aes(x = as.double(as.character(medexp)),
+                                        y = prob*1.1,
+                                        col= .data[[endpointinputvar]],
+                                        label = paste(paste(100*round(prob,2),"%",sep=""),
+                                                      "\n",N,"/",Ntot,sep="")
+                           ))
+    }
+    if(!Nresp_Ntot){
+      p2 <-   p2d +
+        ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+                             dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
+                           vjust = 1,
+                           size = prob_text_size, show.legend = FALSE,
+                           ggplot2::aes(x = as.double(as.character(medexp)),
+                                        y = prob*1.1,
+                                        col= .data[[endpointinputvar]],
+                                        label = paste(100*round(prob,2),"%",sep="")
+                           ))
+    }
     
   }
   
   if(!prob_obs_byexptile) {
     p2 <- p2d
   }
-  if(!logistic_by_color_fill){
-    p2t <- p2 +
-      ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
-                         vjust = 0, size = binlimits_text_size,color = binlimits_color)+
-      ggplot2::geom_text(data = data.long.summaries.exposure,
-                         y = Inf, vjust = 1,
-                         size = N_text_size, 
-                         ggplot2::aes(x = as.double(as.character(medexp)),
-                                      label=paste(N,"/",Ntot,sep="")))
-  }
 
-  if(logistic_by_color_fill){
     p2t <- p2 +
       ggplot2::geom_text(data = xintercepts, ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
                          vjust = 0, size = binlimits_text_size,color = binlimits_color)
-  }
 
-  
-  
   if(exposure_distribution=="distributions") {
     data.long.ridges <- data.long 
     data.long.ridges[data.long.ridges[,DOSEinputvar]==dose_plac_value,"expvalue"] <- NA
