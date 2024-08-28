@@ -19,7 +19,9 @@ gglogisticexpdist(
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
   ylab = "Probability of Response",
+  points_alpha = 0.2,
   prob_obs_byexptile = TRUE,
+  prob_obs_byexptile_group = "none",
   prob_text_size = 5,
   prob_obs_bydose = TRUE,
   prob_obs_bydose_plac = FALSE,
@@ -72,7 +74,11 @@ gglogisticexpdist(
 
 \item{ylab}{text to be used as y axis label}
 
+\item{points_alpha}{alpha transparency for points}
+
 \item{prob_obs_byexptile}{observed probability by exptile \code{TRUE}/\code{FALSE}}
+
+\item{prob_obs_byexptile_group}{additional grouping for exptile probabilities default \code{none}}
 
 \item{prob_text_size}{probability text size default to 5}
 
@@ -143,7 +149,8 @@ gglogisticexpdist(data = effICGI |>
                  yproj_xpos = -15,
                  yproj_dodge = 10,
                  dist_position_scaler = 0.1,
-                 dist_offset = -0.1)
+                 dist_offset = -0.1,
+                 points_alpha= 1)
                  
 # Example 2                
 gglogisticexpdist(data = effICGI |>
@@ -261,6 +268,38 @@ library(patchwork)
 (a | b ) +
   plot_layout(guides = "collect", axes = "collect_x")&
   theme(legend.position = "top")
-                  
+
+#Example 7
+effICGI <- logistic_data |>
+dplyr::filter(!is.na(ICGI))|>
+dplyr::filter(!is.na(AUC))
+effICGI$DOSE <- factor(effICGI$DOSE,
+                      levels=c("0", "600", "1200","1800","2400"),
+                      labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+effICGI$STUDY <- factor(effICGI$STUDY)
+effICGI$ICGI2 <- ifelse(effICGI$ICGI7 < 4,1,0)
+effICGI$ICGI3 <- ifelse(effICGI$ICGI7 < 5,1,0)
+
+effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2,ICGI3)
+effICGI$endpointcol2 <- effICGI$Endpoint
+gglogisticexpdist(data = effICGI,
+                  response = "response",
+                 endpoint = "Endpoint",
+                  exposure_metrics = c("AUC"),
+                  exposure_metric_split = c("median"),
+                  exposure_metric_soc_value = -99,
+                  exposure_metric_plac_value = 0,
+                  color_fill = "endpointcol2",
+                  prob_obs_byexptile = FALSE,
+                  logistic_by_color_fill = TRUE,
+                  Nresp_Ntot = TRUE,
+                  exposure_distribution ="distributions",
+                  lineranges_doselabel = TRUE,
+                  prob_obs_bydose = TRUE,
+                  proj_bydose = FALSE,
+                  yproj = FALSE,
+                  dist_position_scaler = 0.1,
+                  dist_offset = -0.1)+
+  facet_grid(expname~.,scales="free_x")
 }
 }

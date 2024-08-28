@@ -40,7 +40,9 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param dose_plac_value string identifying placebo in DOSE column
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
+#' @param points_alpha alpha transparency for points
 #' @param prob_obs_byexptile observed probability by exptile `TRUE`/`FALSE`
+#' @param prob_obs_byexptile_group additional grouping for exptile probabilities default `none`
 #' @param prob_text_size probability text size default to 5
 #' @param prob_obs_bydose observed probability by dose `TRUE`/`FALSE`
 #' @param prob_obs_bydose_plac observed probability by placebo dose `TRUE`/`FALSE`
@@ -86,7 +88,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  yproj_xpos = -15,
 #'                  yproj_dodge = 10,
 #'                  dist_position_scaler = 0.1,
-#'                  dist_offset = -0.1)
+#'                  dist_offset = -0.1,
+#'                  points_alpha= 1)
 #'                  
 #' # Example 2                
 #' gglogisticexpdist(data = effICGI |>
@@ -204,7 +207,39 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' (a | b ) +
 #'   plot_layout(guides = "collect", axes = "collect_x")&
 #'   theme(legend.position = "top")
-#'                   
+#'
+#' #Example 7
+#' effICGI <- logistic_data |>
+#' dplyr::filter(!is.na(ICGI))|>
+#' dplyr::filter(!is.na(AUC))
+#' effICGI$DOSE <- factor(effICGI$DOSE,
+#'                       levels=c("0", "600", "1200","1800","2400"),
+#'                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+#' effICGI$STUDY <- factor(effICGI$STUDY)
+#' effICGI$ICGI2 <- ifelse(effICGI$ICGI7 < 4,1,0)
+#' effICGI$ICGI3 <- ifelse(effICGI$ICGI7 < 5,1,0)
+#' 
+#' effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2,ICGI3)
+#' effICGI$endpointcol2 <- effICGI$Endpoint
+#' gglogisticexpdist(data = effICGI,
+#'                   response = "response",
+#'                  endpoint = "Endpoint",
+#'                   exposure_metrics = c("AUC"),
+#'                   exposure_metric_split = c("median"),
+#'                   exposure_metric_soc_value = -99,
+#'                   exposure_metric_plac_value = 0,
+#'                   color_fill = "endpointcol2",
+#'                   prob_obs_byexptile = FALSE,
+#'                   logistic_by_color_fill = TRUE,
+#'                   Nresp_Ntot = TRUE,
+#'                   exposure_distribution ="distributions",
+#'                   lineranges_doselabel = TRUE,
+#'                   prob_obs_bydose = TRUE,
+#'                   proj_bydose = FALSE,
+#'                   yproj = FALSE,
+#'                   dist_position_scaler = 0.1,
+#'                   dist_offset = -0.1)+
+#'   facet_grid(expname~.,scales="free_x")
 #'}
 #' @export               
 gglogisticexpdist <- function(data = effICGI, 
@@ -221,7 +256,9 @@ gglogisticexpdist <- function(data = effICGI,
                               dose_plac_value = "Placebo",
                               xlab = "Exposure Values",
                               ylab ="Probability of Response",
+                              points_alpha = 0.2,
                               prob_obs_byexptile = TRUE,
+                              prob_obs_byexptile_group = "none",
                               prob_text_size = 5,
                               prob_obs_bydose = TRUE,
                               prob_obs_bydose_plac = FALSE,
@@ -249,7 +286,8 @@ gglogisticexpdist <- function(data = effICGI,
   endpointinputvar  <- endpoint
   DOSEinputvar  <- DOSE
   colorinputvar    <-  if (color_fill !="none") color_fill else NULL
-
+  exptilegroupvar <-  prob_obs_byexptile_group
+  
   exposure_metric_split <- match.arg(exposure_metric_split, several.ok = FALSE)
   exposure_distribution <- match.arg(exposure_distribution, several.ok = FALSE)
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
@@ -364,8 +402,8 @@ gglogisticexpdist <- function(data = effICGI,
       tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}") 
   }
   
-  loopvariables <- unique(c(endpointinputvar,"expname"))
-  #loopvariables <- loopvariables[loopvariables!="none"]
+  loopvariables <- unique(c(endpointinputvar,"expname",prob_obs_byexptile_group))
+  loopvariables <- loopvariables[loopvariables!="none"]
   data.long.summaries.dose <- tidyr::unite(data.long.summaries.dose,"loopvariable", !!!loopvariables, remove = FALSE)
   data.long <- tidyr::unite(data.long,"loopvariable", !!!loopvariables, remove = FALSE)
   
@@ -456,12 +494,24 @@ gglogisticexpdist <- function(data = effICGI,
   predict_by_endpoint_expname_dose <- data.table::rbindlist(predict_by_endpoint_expname_dose)
   predict_by_endpoint_expname_dose2 <- data.table::rbindlist(predict_by_endpoint_expname_dose2)
   
-  data.long.summaries.exposure <- data.long |>
-    dplyr::ungroup()|>
-    dplyr::group_by(!!sym(endpointinputvar),expname,exptile)|>
-    dplyr::reframe(
-      summary_df(expvalue,!!sym(responseinputvar))) |> 
-    tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
+  if (exptilegroupvar ==" none") {
+    data.long.summaries.exposure <- data.long |>
+      dplyr::ungroup()|>
+      dplyr::group_by(!!sym(endpointinputvar),expname,exptile)|>
+      dplyr::reframe(
+        summary_df(expvalue,!!sym(responseinputvar))) |>
+      tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
+    
+  }
+  if (exptilegroupvar !=" none") {
+    data.long.summaries.exposure <- data.long |>
+      dplyr::ungroup()|>
+      dplyr::group_by(!!sym(endpointinputvar),!!sym(exptilegroupvar),expname,exptile)|>
+      dplyr::reframe(
+        summary_df(expvalue,!!sym(responseinputvar))) |>
+      tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
+    
+  }
   
   if(color_fill != DOSEinputvar) {
   percentineachbreakcategory <- data.long |>
@@ -499,7 +549,7 @@ gglogisticexpdist <- function(data = effICGI,
                          ggplot2::aes_string("expvalue", responseinputvar))+
     ggplot2::facet_grid(facet_formula, scales = "free")+
     ggplot2::geom_point(ggplot2::aes_string(col = color_fill),
-                        alpha = 0.2, position = ggplot2::position_jitter(width = 0 , height = 0.025))+
+                        alpha = points_alpha, position = ggplot2::position_jitter(width = 0 , height = 0.025))+
     ggplot2::geom_hline(yintercept = c(0,1))+
     ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept), color = "gray70" )
     
