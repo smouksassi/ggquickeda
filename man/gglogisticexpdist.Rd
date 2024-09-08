@@ -20,12 +20,16 @@ gglogisticexpdist(
   xlab = "Exposure Values",
   ylab = "Probability of Response",
   points_alpha = 0.2,
+  points_show = TRUE,
   prob_obs_byexptile = TRUE,
   prob_obs_byexptile_group = "none",
   prob_text_size = 5,
   prob_obs_bydose = TRUE,
   prob_obs_bydose_plac = FALSE,
   Nresp_Ntot = TRUE,
+  Nresp_Ntot_ypos = c("with percentages", "top"),
+  Nresp_Ntot_sep = "/",
+  binlimits_show = TRUE,
   binlimits_text_size = 5,
   binlimits_ypos = 0,
   binlimits_color = "gray70",
@@ -76,6 +80,8 @@ gglogisticexpdist(
 
 \item{points_alpha}{alpha transparency for points}
 
+\item{points_show}{show the 0/1 observations \code{TRUE}/\code{FALSE}}
+
 \item{prob_obs_byexptile}{observed probability by exptile \code{TRUE}/\code{FALSE}}
 
 \item{prob_obs_byexptile_group}{additional grouping for exptile probabilities default \code{none}}
@@ -87,6 +93,13 @@ gglogisticexpdist(
 \item{prob_obs_bydose_plac}{observed probability by placebo dose \code{TRUE}/\code{FALSE}}
 
 \item{Nresp_Ntot}{show N responders/Ntotal ? \code{TRUE}/\code{FALSE}}
+
+\item{Nresp_Ntot_ypos}{y position for N responders/Ntotal two text elements the first for by exptile and the second
+for by dose/color options include \verb{with percentages} \code{top} \code{bottom}}
+
+\item{Nresp_Ntot_sep}{character string to separat N responders/ Ntotal default \code{/}}
+
+\item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
 
 \item{binlimits_text_size}{5 binlimits text size}
 
@@ -150,6 +163,10 @@ gglogisticexpdist(data = effICGI |>
                  yproj_dodge = 10,
                  dist_position_scaler = 0.1,
                  dist_offset = -0.1,
+                 Nresp_Ntot_ypos = c("with percentages","bottom"),
+                 prob_obs_bydose_plac = TRUE,
+                 prob_obs_byexptile_group = "none",
+                 binlimits_ypos = -0.08,
                  points_alpha= 1)
                  
 # Example 2                
@@ -163,10 +180,10 @@ gglogisticexpdist(data = effICGI |>
                  exposure_metric_plac_value = 0,
                  exposure_distribution ="lineranges",
                  lineranges_ypos = -0.2,
-                 lineranges_dodge = 0.4,
+                 lineranges_dodge = 0.2,
                  prob_obs_bydose = TRUE,
-                 yproj_xpos = -5,
-                 yproj_dodge = 5,
+                 yproj_xpos = -1,
+                 yproj_dodge = 2,
                  dist_position_scaler = 0.1)
 
 
