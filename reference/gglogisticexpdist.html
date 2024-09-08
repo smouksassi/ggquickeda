@@ -58,11 +58,17 @@
 <span>  dose_plac_value <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Exposure Values"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Probability of Response"</span>,</span>
+<span>  points_alpha <span class="op">=</span> <span class="fl">0.2</span>,</span>
+<span>  points_show <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  prob_obs_byexptile <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  prob_obs_byexptile_group <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  prob_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  prob_obs_bydose_plac <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  Nresp_Ntot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  Nresp_Ntot_ypos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"with percentages"</span>, <span class="st">"top"</span><span class="op">)</span>,</span>
+<span>  Nresp_Ntot_sep <span class="op">=</span> <span class="st">"/"</span>,</span>
+<span>  binlimits_show <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  binlimits_text_size <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>  binlimits_ypos <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  binlimits_color <span class="op">=</span> <span class="st">"gray70"</span>,</span>
@@ -143,8 +149,20 @@
 <dd><p>text to be used as y axis label</p></dd>
 
 
+<dt id="arg-points-alpha">points_alpha<a class="anchor" aria-label="anchor" href="#arg-points-alpha"></a></dt>
+<dd><p>alpha transparency for points</p></dd>
+
+
+<dt id="arg-points-show">points_show<a class="anchor" aria-label="anchor" href="#arg-points-show"></a></dt>
+<dd><p>show the 0/1 observations <code>TRUE</code>/<code>FALSE</code></p></dd>
+
+
 <dt id="arg-prob-obs-byexptile">prob_obs_byexptile<a class="anchor" aria-label="anchor" href="#arg-prob-obs-byexptile"></a></dt>
 <dd><p>observed probability by exptile <code>TRUE</code>/<code>FALSE</code></p></dd>
+
+
+<dt id="arg-prob-obs-byexptile-group">prob_obs_byexptile_group<a class="anchor" aria-label="anchor" href="#arg-prob-obs-byexptile-group"></a></dt>
+<dd><p>additional grouping for exptile probabilities default <code>none</code></p></dd>
 
 
 <dt id="arg-prob-text-size">prob_text_size<a class="anchor" aria-label="anchor" href="#arg-prob-text-size"></a></dt>
@@ -161,6 +179,19 @@
 
 <dt id="arg-nresp-ntot">Nresp_Ntot<a class="anchor" aria-label="anchor" href="#arg-nresp-ntot"></a></dt>
 <dd><p>show N responders/Ntotal ? <code>TRUE</code>/<code>FALSE</code></p></dd>
+
+
+<dt id="arg-nresp-ntot-ypos">Nresp_Ntot_ypos<a class="anchor" aria-label="anchor" href="#arg-nresp-ntot-ypos"></a></dt>
+<dd><p>y position for N responders/Ntotal two text elements the first for by exptile and the second
+for by dose/color options include <code>with percentages</code> <code>top</code> <code>bottom</code></p></dd>
+
+
+<dt id="arg-nresp-ntot-sep">Nresp_Ntot_sep<a class="anchor" aria-label="anchor" href="#arg-nresp-ntot-sep"></a></dt>
+<dd><p>character string to separat N responders/ Ntotal default <code>/</code></p></dd>
+
+
+<dt id="arg-binlimits-show">binlimits_show<a class="anchor" aria-label="anchor" href="#arg-binlimits-show"></a></dt>
+<dd><p>show the binlimits vertical lines <code>TRUE</code>/<code>FALSE</code></p></dd>
 
 
 <dt id="arg-binlimits-text-size">binlimits_text_size<a class="anchor" aria-label="anchor" href="#arg-binlimits-text-size"></a></dt>
@@ -257,7 +288,12 @@
 <span class="r-in"><span>                 yproj_xpos <span class="op">=</span> <span class="op">-</span><span class="fl">15</span>,</span></span>
 <span class="r-in"><span>                 yproj_dodge <span class="op">=</span> <span class="fl">10</span>,</span></span>
 <span class="r-in"><span>                 dist_position_scaler <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
-<span class="r-in"><span>                 dist_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                 dist_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>                 Nresp_Ntot_ypos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"with percentages"</span>,<span class="st">"bottom"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                 prob_obs_bydose_plac <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                 prob_obs_byexptile_group <span class="op">=</span> <span class="st">"none"</span>,</span></span>
+<span class="r-in"><span>                 binlimits_ypos <span class="op">=</span> <span class="op">-</span><span class="fl">0.08</span>,</span></span>
+<span class="r-in"><span>                 points_alpha<span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
@@ -268,10 +304,6 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Picking joint bandwidth of 11.7</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 244 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_density_ridges()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 row containing missing values or values outside the scale range</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_pointrange()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 row containing missing values or values outside the scale range</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_text()`).</span>
 <span class="r-plt img"><img src="gglogisticexpdist-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span>                 </span></span>
 <span class="r-in"><span><span class="co"># Example 2                </span></span></span>
@@ -285,10 +317,10 @@
 <span class="r-in"><span>                 exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                 exposure_distribution <span class="op">=</span><span class="st">"lineranges"</span>,</span></span>
 <span class="r-in"><span>                 lineranges_ypos <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>,</span></span>
-<span class="r-in"><span>                 lineranges_dodge <span class="op">=</span> <span class="fl">0.4</span>,</span></span>
+<span class="r-in"><span>                 lineranges_dodge <span class="op">=</span> <span class="fl">0.2</span>,</span></span>
 <span class="r-in"><span>                 prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                 yproj_xpos <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>,</span></span>
-<span class="r-in"><span>                 yproj_dodge <span class="op">=</span> <span class="fl">5</span>,</span></span>
+<span class="r-in"><span>                 yproj_xpos <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>,</span></span>
+<span class="r-in"><span>                 yproj_dodge <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>                 dist_position_scaler <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_10)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_90)`</span>
@@ -299,8 +331,6 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 row containing missing values or values outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_pointrange()`).</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1 row containing missing values or values outside the scale range</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_text()`).</span>
 <span class="r-plt img"><img src="gglogisticexpdist-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
@@ -402,7 +432,39 @@
 <span class="r-in"><span><span class="op">(</span><span class="va">a</span> <span class="op">|</span> <span class="va">b</span> <span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://patchwork.data-imaginist.com/reference/plot_layout.html" class="external-link">plot_layout</a></span><span class="op">(</span>guides <span class="op">=</span> <span class="st">"collect"</span>, axes <span class="op">=</span> <span class="st">"collect_x"</span><span class="op">)</span><span class="op">&amp;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>                  </span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Example 7</span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span> <span class="op">&lt;-</span> <span class="va">logistic_data</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">ICGI</span><span class="op">)</span><span class="op">)</span><span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">AUC</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">DOSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">effICGI</span><span class="op">$</span><span class="va">DOSE</span>,</span></span>
+<span class="r-in"><span>                      levels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>, <span class="st">"600"</span>, <span class="st">"1200"</span>,<span class="st">"1800"</span>,<span class="st">"2400"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      labels<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Placebo"</span>, <span class="st">"600 mg"</span>, <span class="st">"1200 mg"</span>,<span class="st">"1800 mg"</span>,<span class="st">"2400 mg"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">STUDY</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">effICGI</span><span class="op">$</span><span class="va">STUDY</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">ICGI2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">effICGI</span><span class="op">$</span><span class="va">ICGI7</span> <span class="op">&lt;</span> <span class="fl">4</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">ICGI3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">effICGI</span><span class="op">$</span><span class="va">ICGI7</span> <span class="op">&lt;</span> <span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span> <span class="op">&lt;-</span> <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html" class="external-link">gather</a></span><span class="op">(</span><span class="va">effICGI</span>,<span class="va">Endpoint</span>,<span class="va">response</span>,<span class="va">ICGI</span>,<span class="va">ICGI2</span>,<span class="va">ICGI3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">effICGI</span><span class="op">$</span><span class="va">endpointcol2</span> <span class="op">&lt;-</span> <span class="va">effICGI</span><span class="op">$</span><span class="va">Endpoint</span></span></span>
+<span class="r-in"><span><span class="fu">gglogisticexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span>,</span></span>
+<span class="r-in"><span>                  response <span class="op">=</span> <span class="st">"response"</span>,</span></span>
+<span class="r-in"><span>                 endpoint <span class="op">=</span> <span class="st">"Endpoint"</span>,</span></span>
+<span class="r-in"><span>                  exposure_metrics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AUC"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  exposure_metric_split <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"median"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                  exposure_metric_soc_value <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>,</span></span>
+<span class="r-in"><span>                  exposure_metric_plac_value <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>                  color_fill <span class="op">=</span> <span class="st">"endpointcol2"</span>,</span></span>
+<span class="r-in"><span>                  prob_obs_byexptile <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                  logistic_by_color_fill <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                  Nresp_Ntot <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                  exposure_distribution <span class="op">=</span><span class="st">"distributions"</span>,</span></span>
+<span class="r-in"><span>                  lineranges_doselabel <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                  prob_obs_bydose <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>                  proj_bydose <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                  yproj <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
+<span class="r-in"><span>                  dist_position_scaler <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
+<span class="r-in"><span>                  dist_offset <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span><span class="op">)</span><span class="op">+</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">expname</span><span class="op">~</span><span class="va">.</span>,scales<span class="op">=</span><span class="st">"free_x"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
