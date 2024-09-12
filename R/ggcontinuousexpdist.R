@@ -492,8 +492,7 @@ p2e <- p1lt +
       ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
                                ggplot2::aes(x = medexp, y = mean, col = !!sym(color_fill),
                                             ymin = mean+1.959*SE, ymax=mean-1.959*SE,
-                                            shape = "Observed mean by dose split"),
-                               show.legend = FALSE) +
+                                            shape =  paste("Observed mean by",colorinputvar,"split")))+
       ggplot2::geom_text(data=data.long.summaries.dose.plot, vjust = 1, size = mean_text_size, show.legend = FALSE,
                          ggplot2::aes(x = medexp, y = mean, col = !!sym(color_fill),
                                       label = paste(

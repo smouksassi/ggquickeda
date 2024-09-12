@@ -18,6 +18,7 @@ ggkmrisktable(
   exposure_metric_plac_value = 0,
   show_exptile_values = FALSE,
   show_exptile_values_pos = c("left", "right"),
+  show_exptile_values_textsize = 5,
   show_exptile_values_order = c("default", "reverse"),
   color_fill = "exptile",
   linetype = "exptile",
@@ -33,6 +34,7 @@ ggkmrisktable(
   nrisk_filterout0 = FALSE,
   km_logrank_pvalue = FALSE,
   km_logrank_pvalue_pos = c("left", "right"),
+  km_logrank_pvalue_textsize = 5,
   km_trans = c("identity", "event", "cumhaz", "cloglog"),
   km_ticks = TRUE,
   km_band = TRUE,
@@ -77,6 +79,8 @@ ggkmrisktable(
 
 \item{show_exptile_values_pos}{"left" or "right"}
 
+\item{show_exptile_values_textsize}{default to 5}
+
 \item{show_exptile_values_order}{the order of the entries "default" or "reverse"}
 
 \item{color_fill}{name of the column to be used for color/fill default to \code{exptile}}
@@ -106,6 +110,8 @@ ggkmrisktable(
 \item{km_logrank_pvalue}{FALSE}
 
 \item{km_logrank_pvalue_pos}{"left" or "right"}
+
+\item{km_logrank_pvalue_textsize}{pvalue text size default to 5}
 
 \item{km_trans}{one of "identity","event","cumhaz","cloglog"}
 

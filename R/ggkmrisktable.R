@@ -150,6 +150,7 @@ lung_long$facetdum <- "(all)"
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
 #' @param show_exptile_values FALSE
 #' @param show_exptile_values_pos "left" or "right"
+#' @param show_exptile_values_textsize default to 5
 #' @param show_exptile_values_order the order of the entries "default" or "reverse"
 #' @param color_fill name of the column to be used for color/fill default to `exptile`
 #' @param linetype name of the column to be used for linetype default to `exptile`
@@ -165,6 +166,7 @@ lung_long$facetdum <- "(all)"
 #' @param nrisk_filterout0 FALSE
 #' @param km_logrank_pvalue FALSE
 #' @param km_logrank_pvalue_pos "left" or "right"
+#' @param km_logrank_pvalue_textsize pvalue text size default to 5
 #' @param km_trans one of "identity","event","cumhaz","cloglog"
 #' @param km_ticks TRUE
 #' @param km_band TRUE
@@ -291,6 +293,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          exposure_metric_plac_value = 0,
                          show_exptile_values = FALSE,
                          show_exptile_values_pos = c("left","right"),
+                         show_exptile_values_textsize = 5,
                          show_exptile_values_order = c("default","reverse"),
                          color_fill = "exptile",
                          linetype = "exptile",
@@ -306,6 +309,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          nrisk_filterout0 = FALSE,
                          km_logrank_pvalue = FALSE,
                          km_logrank_pvalue_pos = c("left","right"),
+                         km_logrank_pvalue_textsize = 5,
                          km_trans = c("identity","event","cumhaz","cloglog"),
                          km_ticks = TRUE,
                          km_band  = TRUE,
@@ -713,6 +717,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                         label = paste0(exptile, ": ",exprange
                                         )), 
                            hjust = exptile_values_pos_x_hjust,
+                           size = show_exptile_values_textsize,
                            show.legend = FALSE,inherit.aes = TRUE)
     }
     if(show_exptile_values_order=="default") {
@@ -760,7 +765,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          ggplot2::aes(x = km_logrank_pvalue_x,
                                       y = Inf,label = pval.txt),
                          vjust = 1, hjust = km_logrank_pvalue_x_hjust, color = "gray30",
-                         inherit.aes = FALSE)
+                         inherit.aes = FALSE,
+                         size = km_logrank_pvalue_textsize)
     plotkm <- plotkm3
   } 
   if(!km_logrank_pvalue) {

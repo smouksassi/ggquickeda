@@ -95,7 +95,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 0.1,
 #'                  dist_offset = -0.1,
 #'                  Nresp_Ntot_ypos = c("with percentages","bottom"),
-#'                  prob_obs_bydose_plac = TRUE,
+#'                  prob_obs_bydose_plac = FALSE,
 #'                  prob_obs_byexptile_group = "none",
 #'                  binlimits_ypos = -0.08,
 #'                  points_alpha= 1)
@@ -300,8 +300,9 @@ gglogisticexpdist <- function(data = effICGI,
   DOSEinputvar  <- DOSE
   colorinputvar    <-  if (color_fill !="none") color_fill else NULL
   exptilegroupvar <-  prob_obs_byexptile_group
-  if(exposure_metrics == "none") stop("exposure_metrics should specify at least one exposure", call. = FALSE)
-  
+  if( all(exposure_metrics == "none") )   stop("exposure_metrics should specify at least one exposure", call. = FALSE)
+  exposure_metrics <-  exposure_metrics[exposure_metrics!="none"]
+
   exposure_metric_split <- match.arg(exposure_metric_split, several.ok = FALSE)
   exposure_distribution <- match.arg(exposure_distribution, several.ok = FALSE)
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
@@ -586,61 +587,61 @@ gglogisticexpdist <- function(data = effICGI,
       tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   }
 
-  if(color_fill != DOSEinputvar) {
-    if (exptilegroupvar =="none") {
-  percentineachbreakcategory <- data.long |>
-    dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
-    dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,expvalue,exptile)|>
-    dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2) |> 
-    dplyr::mutate(Ntot = dplyr::n())|> 
-    dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,exptile) |> 
-    dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
-    dplyr::mutate(percentage=Ncat/Ntot)|> 
-    dplyr::distinct(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile,xmed,percentage,keynumeric,DOSE2,color_fill2)|> 
-    dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile)
-    }
-    if (exptilegroupvar !="none") {
-      percentineachbreakcategory <- data.long |>
-        dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
-        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,
-                        !!sym(exptilegroupvar))|>
-        dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,expvalue,exptile)|>
-        dplyr::mutate(Ntot = dplyr::n())|> 
-        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,keynumeric,DOSE2,exptile,
-                        !!sym(exptilegroupvar)) |> 
-        dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
-        dplyr::mutate(percentage=Ncat/Ntot)|> 
-        dplyr::distinct(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile,xmed,percentage,keynumeric,DOSE2,color_fill2)|> 
-        dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),exptile)
-    }
-  }
-  
   if(color_fill == DOSEinputvar) {
     if (exptilegroupvar =="none") {
-    percentineachbreakcategory <- data.long |>
-      dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
-      dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2)|>
-      dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,expvalue,exptile)|>
-      dplyr::group_by(!!sym(DOSEinputvar),keynumeric,expname,DOSE2) |> 
-      dplyr::mutate(Ntot = dplyr::n())|> 
-      dplyr::group_by(!!sym(DOSEinputvar),expname,exptile,keynumeric,DOSE2) |> 
-      dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
-      dplyr::mutate(percentage=Ncat/Ntot)|> 
-      dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2)|> 
-      dplyr::arrange(expname,!!sym(DOSEinputvar),exptile)
-  }
-    if (exptilegroupvar !="none") {
       percentineachbreakcategory <- data.long |>
         dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
-        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(exptilegroupvar))|>
-        dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,expvalue,exptile)|>
-        dplyr::group_by(!!sym(DOSEinputvar),keynumeric,expname,DOSE2,!!sym(exptilegroupvar)) |> 
+        dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,
+                        expvalue,exptile)|>
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2) |> 
         dplyr::mutate(Ntot = dplyr::n())|> 
-        dplyr::group_by(!!sym(DOSEinputvar),expname,exptile,keynumeric,DOSE2) |> 
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile) |> 
         dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
         dplyr::mutate(percentage=Ncat/Ntot)|> 
         dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2)|> 
         dplyr::arrange(expname,!!sym(DOSEinputvar),exptile)
+    }
+    if (exptilegroupvar !="none") {
+      percentineachbreakcategory <- data.long |>
+        dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
+        dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(exptilegroupvar),
+                        expvalue,exptile)|>
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(exptilegroupvar)) |> 
+        dplyr::mutate(Ntot = dplyr::n())|>
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile,!!sym(exptilegroupvar)) |>  
+        dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
+        dplyr::mutate(percentage=Ncat/Ntot)|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2,!!sym(exptilegroupvar))|> 
+        dplyr::arrange(expname,!!sym(DOSEinputvar),exptile)
+    }
+  }
+  
+  if(color_fill != DOSEinputvar) {
+    if (exptilegroupvar =="none") {
+      percentineachbreakcategory <- data.long |>
+        dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
+        dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(color_fill),color_fill2,
+                        expvalue,exptile)|>
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(color_fill),color_fill2) |> 
+        dplyr::mutate(Ntot = dplyr::n())|> 
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile,!!sym(color_fill),color_fill2) |> 
+        dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
+        dplyr::mutate(percentage=Ncat/Ntot)|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2,!!sym(color_fill),color_fill2)|> 
+        dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,exptile)
+    }
+    if (exptilegroupvar !="none") {
+      percentineachbreakcategory <- data.long |>
+        dplyr::filter(!!sym(DOSEinputvar)!= dose_plac_value) |>
+        dplyr::select(  !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar),
+                        expvalue,exptile)|>
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar)) |> 
+        dplyr::mutate(Ntot = dplyr::n())|>
+        dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar)) |>  
+        dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
+        dplyr::mutate(percentage=Ncat/Ntot)|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar))|> 
+        dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,exptile)
     }
   }
   
@@ -761,7 +762,8 @@ gglogisticexpdist <- function(data = effICGI,
     p2e <- p1lt +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                size = 1, alpha = 0.5,
-                               ggplot2::aes(shape = "Observed probability by exposure split",
+                               ggplot2::aes(shape = paste("Observed probability by exposure split:",
+                                                          exposure_metric_split),
                                             x = medexp, y = prob, ymin = prob+1.959*SE,
                                             ymax=prob-1.959*SE))
   }
@@ -805,7 +807,7 @@ gglogisticexpdist <- function(data = effICGI,
                                               shape = paste("Observed probability by",colorinputvar,"split")))
       if(Nresp_Ntot_ypos[2] == "with percentages"){
         p2dntot<- p2d +
-          ggplot2::geom_text(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
                                dplyr::filter(!is.na(N)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -880,7 +882,7 @@ gglogisticexpdist <- function(data = effICGI,
     if(Nresp_Ntot){
       if(Nresp_Ntot_ypos[1] == "with percentages"){
       p2 <- p2dntot +
-        ggplot2::geom_text(data=data.long.summaries.exposure,
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure,
                            vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
                            ggplot2::aes(x = medexp,
@@ -937,7 +939,7 @@ gglogisticexpdist <- function(data = effICGI,
     if(Nresp_Ntot){
       if(Nresp_Ntot_ypos[1] == "with percentages"){
       p2 <-   p2dntot +
-        ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure%>% 
                              dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                            vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
@@ -984,7 +986,7 @@ gglogisticexpdist <- function(data = effICGI,
     }
     if(!Nresp_Ntot){
       p2 <-   p2dntot +
-        ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+        ggplot2::geom_text(data=data.long.summaries.exposure %>% 
                              dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                            vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
