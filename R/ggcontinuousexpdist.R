@@ -476,7 +476,7 @@ if(exposure_distribution!="lineranges") {
 
 p2e <- p1lt +
     ggplot2::geom_pointrange(data = data.long.summaries.exposure, size = 1,
-                             ggplot2::aes(shape = "Observed mean by exposure split",
+                             ggplot2::aes(shape = paste0("Observed mean by exposure split: ",exposure_metric_split),
                                           x = medexp, y = mean,
                                           ymin = mean+1.959*SE,
                                           ymax=mean-1.959*SE),
