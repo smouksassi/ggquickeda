@@ -625,7 +625,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                            dplyr::mutate(none = "(all)"), 
                          ggplot2::aes(x     = km_median_table_pos_x,
                                       y     = (max(as.numeric(as.factor(get(!!color_fill))))+1)*0.09,
-                                      label = "Med. Surv. Time:"), 
+                                      label = "Median Event Time:"), 
                 hjust = km_median_table_pos_hjust, show.legend = FALSE, 
                 color="gray30",inherit.aes = FALSE)
     
