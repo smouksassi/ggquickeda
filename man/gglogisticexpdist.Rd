@@ -16,6 +16,8 @@ gglogisticexpdist(
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
   exposure_distribution = c("distributions", "lineranges", "none"),
+  exposure_distribution_percent = TRUE,
+  exposure_distribution_percent_text_size = 5,
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
   ylab = "Probability of Response",
@@ -71,6 +73,10 @@ gglogisticexpdist(
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
 
 \item{exposure_distribution}{one of distributions, lineranges or none}
+
+\item{exposure_distribution_percent}{show percent of distribution between binlimits \code{TRUE}/\code{FALSE}}
+
+\item{exposure_distribution_percent_text_size}{distribution percentages text size default to 5}
 
 \item{dose_plac_value}{string identifying placebo in DOSE column}
 
@@ -134,10 +140,6 @@ for by dose/color options include \verb{with percentages} \code{top} \code{botto
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
 
 \item{return_list}{What to return if True a list of the datasets and plot is returned instead of only the plot}
-
-\item{exposure_distribution_percent}{show percent of distribution between binlimits \code{TRUE}/\code{FALSE}}
-
-\item{exposure_distribution_percent_text_size}{distribution percentages text size default to 5}
 }
 \description{
 Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
