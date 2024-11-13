@@ -37,6 +37,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
 #' @param exposure_distribution one of distributions, lineranges or none
+#' @param exposure_distribution_percent show percent of distribution between binlimits `TRUE`/`FALSE`
+#' @param exposure_distribution_percent_text_size  distribution percentages text size default to 5
 #' @param dose_plac_value string identifying placebo in DOSE column
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
@@ -52,7 +54,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'  for by dose/color options include `with percentages` `top` `bottom`
 #' @param Nresp_Ntot_sep character string to separat N responders/ Ntotal default `/`
 #' @param binlimits_show show the binlimits vertical lines `TRUE`/`FALSE`
-#' @param binlimits_text_size 5 binlimits text size
+#' @param binlimits_text_size binlimits text size default to 5
 #' @param binlimits_ypos binlimits y position default to 0 
 #' @param binlimits_color binlimits text color default to "gray70"
 #' @param dist_position_scaler space occupied by the distribution default to 0.2 
@@ -819,7 +821,7 @@ gglogisticexpdist <- function(data = effICGI,
       }
       if(Nresp_Ntot_ypos[2] == "top"){
         p2dntot<- p2d +
-          ggplot2::geom_text(data=data.long.summaries.dose.plot%>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
                                dplyr::filter(!is.na(N)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -827,7 +829,7 @@ gglogisticexpdist <- function(data = effICGI,
                                           col = !!sym(color_fill),
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.dose.plot%>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
                                dplyr::filter(!is.na(N)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -838,7 +840,7 @@ gglogisticexpdist <- function(data = effICGI,
       }
         if(Nresp_Ntot_ypos[2] == "bottom"){
           p2dntot <- p2d +
-            ggplot2::geom_text(data=data.long.summaries.dose.plot%>% 
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
                                  dplyr::filter(!is.na(N)),
                                vjust = 1,
                                size = prob_text_size, show.legend = FALSE,
@@ -846,7 +848,7 @@ gglogisticexpdist <- function(data = effICGI,
                                             col = !!sym(color_fill),
                                             label = paste(100*round(prob,2),"%",sep="")
                                ))+
-            ggplot2::geom_text(data=data.long.summaries.dose.plot%>% 
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
                                  dplyr::filter(!is.na(N)),
                                vjust = 1,
                                size = prob_text_size, show.legend = FALSE,
@@ -1022,21 +1024,27 @@ gglogisticexpdist <- function(data = effICGI,
                                                  col = !!sym(color_fill),
                                                 height = ggplot2::after_stat(ndensity)),
                                     rel_min_height = 0.05, alpha = 0.1, scale = dist_scale,
-                                    quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9))+
-      ggrepel::geom_label_repel(data = percentineachbreakcategory,
-                          ggplot2::aes(color = !!rlang::sym(color_fill),
-                                       group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
-                                       y = keynumeric, x= xmed, label = round(100*percentage,0) ),
-                          alpha = 0.5, show.legend = FALSE)
+                                    quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9))
+if(!exposure_distribution_percent){
+    p2dn <- p2d
+    }
+    if(exposure_distribution_percent){
+    p2dn <- p2d +
+        ggrepel::geom_label_repel(data = percentineachbreakcategory,
+                                  ggplot2::aes(color = !!rlang::sym(color_fill),
+                                               group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                               y = keynumeric, x= xmed, label = round(100*percentage,0) ),
+                                  size= exposure_distribution_percent_text_size,
+                                  alpha = 0.5, show.legend = FALSE)
+    }
   }
   if(exposure_distribution!="distributions") {
-    p2d <- p2t 
+    p2dn <- p2t
   }
-  
   if(yproj) {
     yproj_xpos <- as.character(yproj_xpos)
     
-    p2df <- p2d +
+    p2df <- p2dn +
       ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, linewidth = 2,
                               ggplot2::aes_string(x = yproj_xpos, ymin = "ymid10", ymax = "ymid90",
                                                   col = color_fill,
@@ -1055,7 +1063,7 @@ gglogisticexpdist <- function(data = effICGI,
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)
   }
   if(!yproj) {
-    p2df <- p2d 
+    p2df <- p2dn 
   }
   if(exposure_distribution =="distributions"){
     
