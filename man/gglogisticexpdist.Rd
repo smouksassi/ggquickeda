@@ -101,7 +101,7 @@ for by dose/color options include \verb{with percentages} \code{top} \code{botto
 
 \item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
 
-\item{binlimits_text_size}{5 binlimits text size}
+\item{binlimits_text_size}{binlimits text size default to 5}
 
 \item{binlimits_ypos}{binlimits y position default to 0}
 
@@ -134,6 +134,10 @@ for by dose/color options include \verb{with percentages} \code{top} \code{botto
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
 
 \item{return_list}{What to return if True a list of the datasets and plot is returned instead of only the plot}
+
+\item{exposure_distribution_percent}{show percent of distribution between binlimits \code{TRUE}/\code{FALSE}}
+
+\item{exposure_distribution_percent_text_size}{distribution percentages text size default to 5}
 }
 \description{
 Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
