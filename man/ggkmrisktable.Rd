@@ -35,6 +35,8 @@ ggkmrisktable(
   km_logrank_pvalue = FALSE,
   km_logrank_pvalue_pos = c("left", "right"),
   km_logrank_pvalue_textsize = 5,
+  km_logrank_pvalue_cutoff = 0.001,
+  km_logrank_pvalue_digits = 3,
   km_trans = c("identity", "event", "cumhaz", "cloglog"),
   km_ticks = TRUE,
   km_band = TRUE,
@@ -112,6 +114,10 @@ ggkmrisktable(
 \item{km_logrank_pvalue_pos}{"left" or "right"}
 
 \item{km_logrank_pvalue_textsize}{pvalue text size default to 5}
+
+\item{km_logrank_pvalue_cutoff}{pvalue below which to print as p < cutoff}
+
+\item{km_logrank_pvalue_digits}{pvalue ndigits for round function}
 
 \item{km_trans}{one of "identity","event","cumhaz","cloglog"}
 
@@ -209,6 +215,8 @@ ggkmrisktable(data = lung_long, time = "time", status = "DV",
              km_median = "table",
              km_median_table_pos = "right",
              km_logrank_pvalue = TRUE,
+             km_logrank_pvalue_cutoff = 0.0001,
+             km_logrank_pvalue_digits = 3,
              km_band = TRUE,
              nrisk_table_breaktimeby = 200,
              facet_ncol = 3,

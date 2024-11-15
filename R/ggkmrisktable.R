@@ -167,6 +167,8 @@ lung_long$facetdum <- "(all)"
 #' @param km_logrank_pvalue FALSE
 #' @param km_logrank_pvalue_pos "left" or "right"
 #' @param km_logrank_pvalue_textsize pvalue text size default to 5
+#' @param km_logrank_pvalue_cutoff pvalue below which to print as p < cutoff
+#' @param km_logrank_pvalue_digits pvalue ndigits for round function
 #' @param km_trans one of "identity","event","cumhaz","cloglog"
 #' @param km_ticks TRUE
 #' @param km_band TRUE
@@ -245,6 +247,8 @@ lung_long$facetdum <- "(all)"
 #'              km_median = "table",
 #'              km_median_table_pos = "right",
 #'              km_logrank_pvalue = TRUE,
+#'              km_logrank_pvalue_cutoff = 0.0001,
+#'              km_logrank_pvalue_digits = 3,
 #'              km_band = TRUE,
 #'              nrisk_table_breaktimeby = 200,
 #'              facet_ncol = 3,
@@ -310,6 +314,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          km_logrank_pvalue = FALSE,
                          km_logrank_pvalue_pos = c("left","right"),
                          km_logrank_pvalue_textsize = 5,
+                         km_logrank_pvalue_cutoff = 0.001,
+                         km_logrank_pvalue_digits = 3,
                          km_trans = c("identity","event","cumhaz","cloglog"),
                          km_ticks = TRUE,
                          km_band  = TRUE,
@@ -759,11 +765,15 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     
     km_logrank_pvalue_x <- ifelse(km_logrank_pvalue_pos == "left", -Inf,Inf)
     km_logrank_pvalue_x_hjust <- ifelse(km_logrank_pvalue_pos == "left",0,1)
-    
+
     plotkm3 <-  plotkm2 +
       ggplot2::geom_text(data=logrank_test_by_endpoint,
                          ggplot2::aes(x = km_logrank_pvalue_x,
-                                      y = Inf,label = pval.txt),
+                                      y = Inf,label =
+                            ifelse(pval < km_logrank_pvalue_cutoff,
+                                   paste0("p < ",km_logrank_pvalue_cutoff),
+                                   paste0("p = ", round(pval,km_logrank_pvalue_digits)))
+                            ),
                          vjust = 1, hjust = km_logrank_pvalue_x_hjust, color = "gray30",
                          inherit.aes = FALSE,
                          size = km_logrank_pvalue_textsize)
