@@ -1513,12 +1513,14 @@ function(request) {
                           conditionalPanel("input.barplotaddition",
                           checkboxInput('barplotlabel', 'Show Counts/Percentages ?', value = FALSE),
                           conditionalPanel(" input.barplotaddition && input.barplotlabel",
-                                           checkboxInput('barplotpercent',
-                                                         'Compute Percentages instead of Counts ?',
-                                                         value = FALSE)
+                                           radioButtons("barplotlabeltype", "Select Labels:",
+                                                        c("Counts" = "barplotcount",
+                                                          "Percentages" = "barplotpercent",
+                                                          "Counts/Percentages" = "barplotcountpercent"),
+                                                        inline=TRUE )
                           ),
                           conditionalPanel(" input.barplotaddition &&
-                                           input.barplotlabel && input.barplotpercent ",
+                                           input.barplotlabel && input.barplotlabeltype!='barplotcount' ",
                                            numericInput("nroundbarplotpercentdigits",
                                                         label = "Accuracy of Percent Digits",
                                                         value = 1, min=0,max=10) 
@@ -1555,7 +1557,9 @@ function(request) {
                          ),
                   column (12,
                           conditionalPanel('input.barplotaddition &&
-                          input.barplotlabel && input.barplotpercent && input.positionbar == "position_fill(vjust = 0.5)" ',
+                          input.barplotlabel &&
+                          input.barplotpercent &&
+                          input.positionbar == "position_fill(vjust = 0.5)" ',
                   h6("Currently there is ggplot2 text label limitations when Percentages and position 'Sum to 100%' are selected as such `ggally` `stat_prop` computed by the x or y axis values is used.")
                           )
                   )

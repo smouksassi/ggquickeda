@@ -3189,13 +3189,15 @@ function(input, output, session) {
         if (input$groupin != 'None')
           p <- p + aes_string(group=input$groupin)
 
-        if ( input$barplotaddition && !input$barplotpercent){
+        if ( input$barplotaddition &&
+             input$barplotlabeltype=='barplotcount' ){
           p <- p + 
             geom_bar(alpha=input$barplotfillalpha,
                      position = eval(parse(text=input$positionbar)))+
             ylab("Count")
           
-          if ( input$barplotlabel && !input$ignorebarplotlabelcolor){
+          if ( input$barplotlabel && !input$ignorebarplotlabelcolor
+               && input$barplotlabeltype=='barplotcount'){
             p <- p +   geom_text(aes(y = ((..count..)),
                                     label = ((..count..))),
                                 stat = "count",
@@ -3205,7 +3207,8 @@ function(input, output, session) {
                                 position = eval(parse(text=input$positionbar)),
                                 show.legend = input$barplotlabellegend)
           } #input$barplotlabel && !input$ignorebarplotlabelcolor
-            if ( input$barplotlabel && input$ignorebarplotlabelcolor){
+            if ( input$barplotlabel && input$ignorebarplotlabelcolor
+                 && input$barplotlabeltype=='barplotcount'){
               p <- p +   geom_text(aes(y = ((..count..)),
                                        label = ((..count..))),
                                    stat = "count",
@@ -3218,27 +3221,47 @@ function(input, output, session) {
             } #input$barplotlabel && input$ignorebarplotlabelcolor 
           
         }
-        if ( input$barplotaddition && input$barplotpercent){
+        if ( input$barplotaddition &&
+             input$barplotlabeltype!='barplotcount'){
           p <- p +  
             geom_bar(alpha=input$barplotfillalpha,
                      aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,
-                     position = eval(parse(text=input$positionbar)))+
-            ylab("Percentage")    
+                     position = eval(parse(text=input$positionbar)))
           
           if ( input$barplotlabel && !input$ignorebarplotlabelcolor){
             if(input$positionbar!="position_fill(vjust = 0.5)"){
-              p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
-                                      label = scales::percent(
-                                        ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
-                                     accuracy = 10^-(input$nroundbarplotpercentdigits))),
-                                  stat = "count",
-                                  vjust = input$barplotlabelvjust,
-                                  hjust = input$barplotlabelhjust,
-                                  size = input$barplotlabelsize,
-                                  position = eval(parse(text=input$positionbar)),
-                                  show.legend = input$barplotlabellegend)
+              if(input$barplotlabeltype=='barplotpercent'){
+                p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                       label = scales::percent(
+                                         ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                         accuracy = 10^-(input$nroundbarplotpercentdigits))),
+                                   stat = "count",
+                                   vjust = input$barplotlabelvjust,
+                                   hjust = input$barplotlabelhjust,
+                                   size = input$barplotlabelsize,
+                                   position = eval(parse(text=input$positionbar)),
+                                   show.legend = input$barplotlabellegend)+
+                  ylab("Percentages")
+              }
+              if(input$barplotlabeltype=='barplotcountpercent'){
+                p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                   label = paste0(..count..,"\n",
+                                                  scales::percent(
+                                                    ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                                    accuracy = 10^-(input$nroundbarplotpercentdigits)))),
+                                   stat = "count",
+                                   vjust = input$barplotlabelvjust,
+                                   hjust = input$barplotlabelhjust,
+                                   size = input$barplotlabelsize,
+                                   position = eval(parse(text=input$positionbar)),
+                                   show.legend = input$barplotlabellegend)+
+                  ylab("Counts/Percentages")
+              }
             }
+            
+            
             if(input$positionbar=="position_fill(vjust = 0.5)"){
+              if(input$barplotlabeltype=='barplotpercent'){
               p <- p + geom_text(aes(by=xvalues,
                                      label = scales::percent(..prop..,
                                        accuracy = 10^-(input$nroundbarplotpercentdigits))
@@ -3248,40 +3271,95 @@ function(input, output, session) {
                                   hjust = input$barplotlabelhjust,
                                   size = input$barplotlabelsize,
                                   position = eval(parse(text=input$positionbar)),
-                                  show.legend = input$barplotlabellegend)
+                                  show.legend = input$barplotlabellegend)+
+                ylab("Percentages out of 100%")
+              }
+              if(input$barplotlabeltype=='barplotcountpercent'){
+                p <- p + geom_text(aes(by=xvalues,
+                                       label = paste0(..count..,"\n",
+                                                      scales::percent(..prop..,
+                                                               accuracy = 10^-(input$nroundbarplotpercentdigits))
+                                       )
+                ),
+                stat = "prop",
+                vjust = input$barplotlabelvjust,
+                hjust = input$barplotlabelhjust,
+                size = input$barplotlabelsize,
+                position = eval(parse(text=input$positionbar)),
+                show.legend = input$barplotlabellegend)+
+                  ylab("Counts/Percentages out of 100%")
+              }
             }
-            
           }
+          
           if ( input$barplotlabel && input$ignorebarplotlabelcolor){
             if(input$positionbar!="position_fill(vjust = 0.5)"){
-              p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
-                                     label = scales::percent(
-                                       ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
-                                       accuracy = 10^-(input$nroundbarplotpercentdigits))),
-                                 stat = "count",
-                                 vjust = input$barplotlabelvjust,
-                                 hjust = input$barplotlabelhjust,
-                                 size = input$barplotlabelsize,
-                                 position = eval(parse(text=input$positionbar)),
-                                 show.legend = input$barplotlabellegend,
-                                 colour = input$barplotlabelcolor)
+              if(input$barplotlabeltype=='barplotpercent'){
+                p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                       label = scales::percent(
+                                         ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                         accuracy = 10^-(input$nroundbarplotpercentdigits))),
+                                   stat = "count",
+                                   vjust = input$barplotlabelvjust,
+                                   hjust = input$barplotlabelhjust,
+                                   size = input$barplotlabelsize,
+                                   position = eval(parse(text=input$positionbar)),
+                                   show.legend = input$barplotlabellegend,
+                                   colour = input$barplotlabelcolor)+
+                  ylab("Percentages")
+              }
+              if(input$barplotlabeltype=='barplotcountpercent'){
+                p <- p + geom_text(aes(y = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                       label = paste0(..count..,"\n",
+                                                      scales::percent(
+                                                        ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..]),
+                                                        accuracy = 10^-(input$nroundbarplotpercentdigits)))),
+                                   stat = "count",
+                                   vjust = input$barplotlabelvjust,
+                                   hjust = input$barplotlabelhjust,
+                                   size = input$barplotlabelsize,
+                                   position = eval(parse(text=input$positionbar)),
+                                   show.legend = input$barplotlabellegend,
+                                   colour = input$barplotlabelcolor)+
+                  ylab("Counts/Percentages")
+              }
             }
+            
+            
             if(input$positionbar=="position_fill(vjust = 0.5)"){
-              p <- p + geom_text(aes(by=xvalues,
-                                     label = scales::percent(..prop..,
-                                     accuracy = 10^-(input$nroundbarplotpercentdigits))
-                                     ),
-                                 stat = "prop",
-                                 vjust = input$barplotlabelvjust,
-                                 hjust = input$barplotlabelhjust,
-                                 size = input$barplotlabelsize,
-                                 position = eval(parse(text=input$positionbar)),
-                                 show.legend = input$barplotlabellegend,
-                                 colour = input$barplotlabelcolor)
+              if(input$barplotlabeltype=='barplotpercent'){
+                p <- p + geom_text(aes(by=xvalues,
+                                       label = scales::percent(..prop..,
+                                                               accuracy = 10^-(input$nroundbarplotpercentdigits))
+                ),
+                stat = "prop",
+                vjust = input$barplotlabelvjust,
+                hjust = input$barplotlabelhjust,
+                size = input$barplotlabelsize,
+                position = eval(parse(text=input$positionbar)),
+                show.legend = input$barplotlabellegend,
+                colour = input$barplotlabelcolor)+
+                  ylab("Percentages out of 100%")
+              }
+              if(input$barplotlabeltype=='barplotcountpercent'){
+                p <- p + geom_text(aes(by=xvalues,
+                                       label = paste0(..count..,"\n",
+                                                      scales::percent(..prop..,
+                                                                      accuracy = 10^-(input$nroundbarplotpercentdigits))
+                                       )
+                ),
+                stat = "prop",
+                vjust = input$barplotlabelvjust,
+                hjust = input$barplotlabelhjust,
+                size = input$barplotlabelsize,
+                position = eval(parse(text=input$positionbar)),
+                show.legend = input$barplotlabellegend,
+                colour = input$barplotlabelcolor)+
+                  ylab("Counts/Percentages out of 100%")
+              }
             }
           }
-
-        }
+}
       }# not numericx
        }#null y
       if(is.null(input$x)){
@@ -3307,7 +3385,7 @@ function(input, output, session) {
           if (input$groupin != 'None')
             p <- p + aes_string(group=input$groupin)
           
-          if ( input$barplotaddition && !input$barplotpercent){
+          if ( input$barplotaddition ){ #&& !input$barplotpercent
             p <- p + 
               geom_bar(alpha=input$barplotfillalpha,
                        position = eval(parse(text=input$positionbar))) +
@@ -3336,7 +3414,7 @@ function(input, output, session) {
             }
 
           }
-          if ( input$barplotaddition && input$barplotpercent){
+          if ( input$barplotaddition ){ #&& input$barplotpercent
             p <- p+  
               geom_bar(alpha=input$barplotfillalpha,
                        aes(x = ((..count..)/tapply(..count..,..PANEL..,sum)[..PANEL..])) ,

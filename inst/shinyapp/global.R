@@ -194,10 +194,10 @@ manual_scale <- function(aesthetic, values = NULL, ...) {
   names(items) <- items
   items <- c("None",items)
   if ( !is.null(x) ){
-    items <- c(items, "yvars","yvalues") 
+    items <- c(items, "xvars","xvalues", "yvars","yvalues") 
   }
   if ( !is.null(y) ){
-    items <- c(items, "xvars","xvalues") 
+    items <- c(items, "xvars","xvalues", "yvars","yvalues") 
   }
   if (!is.null(pastevarin) && length(pastevarin) > 1 ){
     nameofcombinedvariables<- paste(as.character(pastevarin),collapse="_",sep="") 
