@@ -232,14 +232,17 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' 
 #' effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2,ICGI3)
 #' effICGI$endpointcol2 <- effICGI$Endpoint
+#' effICGI$endpointcol3 <- effICGI$Endpoint
+
 #' gglogisticexpdist(data = effICGI,
 #'                   response = "response",
 #'                  endpoint = "Endpoint",
 #'                   exposure_metrics = c("AUC"),
-#'                   exposure_metric_split = c("median"),
+#'                   exposure_metric_split = c("tertile"),
 #'                   exposure_metric_soc_value = -99,
 #'                   exposure_metric_plac_value = 0,
 #'                   color_fill = "endpointcol2",
+#'                   prob_obs_byexptile_group="endpointcol3",
 #'                   prob_obs_byexptile = FALSE,
 #'                   logistic_by_color_fill = TRUE,
 #'                   Nresp_Ntot = TRUE,
@@ -250,7 +253,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                   yproj = FALSE,
 #'                   dist_position_scaler = 0.1,
 #'                   dist_offset = -0.1)+
-#'   facet_grid(expname~.,scales="free_x")
+#'   facet_grid(expname~Endpoint,scales="free_x")
 #'}
 #' @export               
 gglogisticexpdist <- function(data = effICGI, 
@@ -441,7 +444,6 @@ gglogisticexpdist <- function(data = effICGI,
         tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
     }
   }
-  
   
   loopvariables <- unique(c(endpointinputvar,"expname",exptilegroupvar))
   loopvariables <- loopvariables[loopvariables!="none"]
@@ -671,7 +673,7 @@ gglogisticexpdist <- function(data = effICGI,
   if(binlimits_show){
     p1pl <- p1p  +
     ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept),
-                        color = binlimits_color )
+                        color = binlimits_color, alpha = 0.5 )
   }
   if(!binlimits_show){
     p1pl <- p1p 
@@ -761,7 +763,7 @@ gglogisticexpdist <- function(data = effICGI,
   if(exposure_distribution!="lineranges") {
     p1lt <- p1proj 
   }
-  
+
   if(!logistic_by_color_fill){
     p2e <- p1lt +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
@@ -772,25 +774,29 @@ gglogisticexpdist <- function(data = effICGI,
                                             ymax=prob-1.959*SE))
   }
   if(logistic_by_color_fill){
+    data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+      dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
+    
     if(exptilegroupvar!="none"){
       p2e <- p1lt +
-        ggplot2::geom_pointrange(data = data.long.summaries.exposure %>% 
-                                   dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar)),
+        ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
-                                 ggplot2::aes(shape = "Observed probability by exposure split",
+                                 ggplot2::aes(shape = paste("Observed probability by exposure split:",
+                                                            exposure_metric_split),
                                               x = medexp, y = prob, ymin = prob+1.959*SE,
                                               ymax=prob-1.959*SE,
                                               col = !!sym(exptilegroupvar)))
     }
     if(exptilegroupvar=="none"){
+      data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+        dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
       p2e <- p1lt +
-        ggplot2::geom_pointrange(data = data.long.summaries.exposure %>% 
-                                   dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar)),
+        ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
                                  ggplot2::aes(shape = "Observed probability by exposure split",
                                               x = medexp, y = prob, ymin = prob+1.959*SE,
                                               ymax=prob-1.959*SE,
-                                              col = !!sym(color_fill)))
+                                              col = !!sym(endpointinputvar)))
     }
   }
   
@@ -1008,9 +1014,10 @@ gglogisticexpdist <- function(data = effICGI,
   }
    if(binlimits_show){
      p2t <- p2 +
-       ggplot2::geom_text(data = xintercepts,
+       ggrepel::geom_text_repel(data = xintercepts,
                           ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
-                          vjust = 0, size = binlimits_text_size,color = binlimits_color)
+                          vjust = 0, size = binlimits_text_size,color = binlimits_color,
+                          direction = "y")
    }
     if(!binlimits_show){
       p2t <- p2 
