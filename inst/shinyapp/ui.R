@@ -1275,6 +1275,7 @@ function(request) {
                     3,
                     conditionalPanel(
                       " input.line== 'Lines' ",
+                      checkboxInput('linepath', 'Respect data order?'),
                       checkboxInput('lineignorecol', 'Ignore Mapped Color'),
                       
                       conditionalPanel(

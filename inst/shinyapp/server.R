@@ -3710,25 +3710,16 @@ function(input, output, session) {
             p <- p + geom_point(size=input$pointsizes,alpha=input$pointstransparency,colour=input$colpoint,
                                 shape=translate_shape_string(input$pointshapes),
                                 position=eval(parse(text=positionpoints)))
-          
-          
         }
-        
-        
-        
       }
-      
-      if (input$line=="Lines"){
-        
+      if (input$line=="Lines"&& !input$linepath){
         if (input$linetypein != 'None' && !input$lineignorelinetype){
-          
           if (input$pointsizein == 'None'&& !input$lineignorecol)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency)
           if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
             p <- p + geom_line(alpha=input$linestransparency)
           if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency)
-          
           if (input$pointsizein == 'None'&&input$lineignorecol)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,colour=input$colline)
           if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
@@ -3736,9 +3727,7 @@ function(input, output, session) {
           if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,colour=input$colline)
         }
-        
         if (input$linetypein != 'None' && input$lineignorelinetype){
-          
           if (input$pointsizein == 'None'&& !input$lineignorecol)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
           if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
@@ -3753,7 +3742,6 @@ function(input, output, session) {
           if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
         }
-        
         if(input$linetypein == 'None' ){
           if (input$pointsizein == 'None'&& !input$lineignorecol)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
@@ -3762,17 +3750,60 @@ function(input, output, session) {
           if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
           
-          if (input$pointsizein == 'None'&&input$lineignorecol)
+          if (input$pointsizein == 'None'&& input$lineignorecol)
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
           if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
             p <- p + geom_line(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
           if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
             p <- p + geom_line(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
         }
-        
-        
       }
-      
+      if (input$line=="Lines" && input$linepath){
+        if (input$linetypein != 'None' && !input$lineignorelinetype){
+          if (input$pointsizein == 'None'&& !input$lineignorecol)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_path(alpha=input$linestransparency)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency)
+          if (input$pointsizein == 'None'&&input$lineignorecol)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_path(alpha=input$linestransparency,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,colour=input$colline)
+        }
+        if (input$linetypein != 'None' && input$lineignorelinetype){
+          if (input$pointsizein == 'None'&& !input$lineignorecol)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_path(alpha=input$linestransparency,linetype=input$linetypes)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+          
+          if (input$pointsizein == 'None'&&input$lineignorecol)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_path(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+        }
+        if(input$linetypein == 'None' ){
+          if (input$pointsizein == 'None'&& !input$lineignorecol)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_path(alpha=input$linestransparency,linetype=input$linetypes)
+          if (input$pointsizein != 'None'&& !input$lineignorecol&& input$lineignoresize)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes)
+          
+          if (input$pointsizein == 'None'&&input$lineignorecol)
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol&& !input$lineignoresize)
+            p <- p + geom_path(alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+          if (input$pointsizein != 'None'&& input$lineignorecol && input$lineignoresize )
+            p <- p + geom_path(size=input$linesize,alpha=input$linestransparency,linetype=input$linetypes,colour=input$colline)
+        }
+      }
       #### Boxplot Section START
       
       if (input$boxplotaddition) {
