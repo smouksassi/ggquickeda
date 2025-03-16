@@ -8,24 +8,35 @@ ggcontinuousexpdist(
   data = effICGI,
   response = "response",
   endpoint = "Endpoint",
+  model_type = c("linear", "loess", "none"),
   DOSE = "DOSE",
   color_fill = "DOSE",
+  fit_by_color_fill = FALSE,
   exposure_metrics = c("AUC", "CMAX"),
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
   exposure_distribution = c("distributions", "lineranges", "none"),
+  exposure_distribution_percent = TRUE,
+  exposure_distribution_percent_text_size = 5,
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
   ylab = "Response",
+  points_alpha = 0.2,
+  points_show = TRUE,
   mean_obs_byexptile = TRUE,
+  mean_obs_byexptile_plac = TRUE,
+  mean_obs_byexptile_group = "none",
   mean_text_size = 5,
   mean_obs_bydose = TRUE,
   mean_obs_bydose_plac = FALSE,
+  N_text_show = TRUE,
   N_text_size = 5,
+  N_text_ypos = c("with means", "top"),
+  binlimits_show = TRUE,
   binlimits_text_size = 5,
   binlimits_ypos = -Inf,
-  binlimits_color = "gray70",
+  binlimits_color = "#B3B3B380",
   dist_position_scaler = 0.2,
   dist_offset = 0,
   dist_scale = 0.9,
@@ -49,9 +60,13 @@ ggcontinuousexpdist(
 
 \item{endpoint}{name of the column holding the name/key of the endpoint default to \code{Endpoint}}
 
+\item{model_type}{type of the trend fit one of "linear", "loess", "none"}
+
 \item{DOSE}{name of the column holding the DOSE values default to \code{DOSE}}
 
 \item{color_fill}{name of the column to be used for color/fill default to DOSE column}
+
+\item{fit_by_color_fill}{fit split by color? default \code{FALSE}}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into \code{expname} \code{exptile} and split into \code{exposure_metric_split}}
 
@@ -63,27 +78,46 @@ ggcontinuousexpdist(
 
 \item{exposure_distribution}{one of distributions, lineranges or none}
 
+\item{exposure_distribution_percent}{show percent of distribution between binlimits \code{TRUE}/\code{FALSE}}
+
+\item{exposure_distribution_percent_text_size}{distribution percentages text size default to 5}
+
 \item{dose_plac_value}{string identifying placebo in DOSE column}
 
 \item{xlab}{text to be used as x axis label}
 
 \item{ylab}{text to be used as y axis label}
 
-\item{mean_obs_byexptile}{observed probability by exptile \code{TRUE}/\code{FALSE}}
+\item{points_alpha}{alpha transparency for points}
+
+\item{points_show}{show the observations \code{TRUE}/\code{FALSE}}
+
+\item{mean_obs_byexptile}{observed mean by exptile \code{TRUE}/\code{FALSE}}
+
+\item{mean_obs_byexptile_plac}{observed mean by exptile placebo \code{TRUE}/\code{FALSE}}
+
+\item{mean_obs_byexptile_group}{additional grouping for exptile probabilities default \code{none}}
 
 \item{mean_text_size}{mean text size default to 5}
 
 \item{mean_obs_bydose}{observed mean by dose \code{TRUE}/\code{FALSE}}
 
-\item{mean_obs_bydose_plac}{observed probability by placebo dose \code{TRUE}/\code{FALSE}}
+\item{mean_obs_bydose_plac}{observed mean by placebo dose \code{TRUE}/\code{FALSE}}
 
-\item{N_text_size}{N by exposure bin text size default to 5}
+\item{N_text_show}{show the N by exptile \code{TRUE}/\code{FALSE}}
 
-\item{binlimits_text_size}{5 binlimits text size}
+\item{N_text_size}{N by exposure text size default to 5}
 
-\item{binlimits_ypos}{binlimits y position default to 0}
+\item{N_text_ypos}{y position for N two text elements the first for by exptile and the second
+for by dose/color options include \verb{with means} \code{top} \code{bottom}}
 
-\item{binlimits_color}{binlimits text color default to "gray70"}
+\item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
+
+\item{binlimits_text_size}{binlimits text size default to 5}
+
+\item{binlimits_ypos}{binlimits y position default to -Inf}
+
+\item{binlimits_color}{binlimits text color default to alpha("gray70",0.5)}
 
 \item{dist_position_scaler}{space occupied by the distribution default to 0.2}
 
@@ -172,6 +206,6 @@ ggcontinuousexpdist(data = effICGI |>
                  yproj_dodge = 20 ,
                  exposure_distribution ="lineranges")
 \dontrun{
-#Example 5
+#Example 3
 }
 }

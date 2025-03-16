@@ -129,7 +129,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  yproj_dodge = 20 ,
 #'                  exposure_distribution ="lineranges")
 #'\dontrun{
-#' #Example 5
+#' #Example 3
 #'}
 #' @export               
 ggcontinuousexpdist <- function(data = effICGI, 
@@ -718,6 +718,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
       data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA 
     }
+    print(data.long.summaries.dose.plot)
     
     if(N_text_show){
       p2d <- p2e +
@@ -732,7 +733,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       if(N_text_ypos[2] == "with means"){
       p2dntot<- p2d +
         ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
-                                   dplyr::filter(!is.na(N)),
+                                   dplyr::filter(!is.na(Ntot)),
                                  vjust = 1,
                                  size = mean_text_size, show.legend = FALSE,
                                  ggplot2::aes(x = medexp,
@@ -746,16 +747,16 @@ ggcontinuousexpdist <- function(data = effICGI,
       }
       if(N_text_ypos[2] == "top"){
         p2dntot<- p2d +
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
-                                     dplyr::filter(!is.na(N)),
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+                                    dplyr::filter(!is.na(Ntot)),
                                    vjust = 1,
                                    size = mean_text_size, show.legend = FALSE,
                                    ggplot2::aes(x = medexp, y = mean*0.95,                                        ,
                                                 col = !!sym(color_fill),
                                                 label = paste(round(mean,2),sep="")
                                    ))+
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>%
-                                     dplyr::filter(!is.na(N)),
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>%
+                                    dplyr::filter(!is.na(Ntot)),
                                    vjust = 1,
                                    size = mean_text_size, show.legend = FALSE,
                                    ggplot2::aes(x = medexp, y = Inf,                                        ,
@@ -766,7 +767,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       if(N_text_ypos[2] == "bottom"){
         p2dntot <- p2d +
           ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
-                                     dplyr::filter(!is.na(N)),
+                                    dplyr::filter(!is.na(Ntot)),
                                    vjust = 1,
                                    size = mean_text_size, show.legend = FALSE,
                                    ggplot2::aes(x = medexp, y = mean*0.95,                                        ,
@@ -774,7 +775,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                                 label = paste(round(mean,2),sep="")
                                    ))+
           ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
-                                     dplyr::filter(!is.na(N)),
+                                    dplyr::filter(!is.na(Ntot)),
                                    vjust = 1,
                                    size = mean_text_size, show.legend = FALSE,
                                    ggplot2::aes(x = medexp, y = -Inf,                                        ,
@@ -795,7 +796,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                               shape =  paste("Observed mean by",colorinputvar,"split")
                            ))+
         ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
-                                   dplyr::filter(!is.na(N)),
+                                  dplyr::filter(!is.na(Ntot)),
                                  vjust = 1,
                                  size = mean_text_size, show.legend = FALSE,
                                  ggplot2::aes(x = medexp, y = mean*0.95,                                        ,
@@ -832,7 +833,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                           label = paste(round(mean,2),sep="")
                              ))+
           ggplot2::geom_text(data=data.long.summaries.exposure %>% 
-                                   dplyr::filter(!is.na(N)),
+                                  dplyr::filter(!is.na(Ntot)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = Inf,

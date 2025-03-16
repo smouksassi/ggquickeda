@@ -8,6 +8,7 @@ gglogisticexpdist(
   data = effICGI,
   response = "response",
   endpoint = "Endpoint",
+  model_type = c("logistic"),
   DOSE = "DOSE",
   color_fill = "DOSE",
   logistic_by_color_fill = FALSE,
@@ -24,6 +25,7 @@ gglogisticexpdist(
   points_alpha = 0.2,
   points_show = TRUE,
   prob_obs_byexptile = TRUE,
+  prob_obs_byexptile_plac = TRUE,
   prob_obs_byexptile_group = "none",
   prob_text_size = 5,
   prob_obs_bydose = TRUE,
@@ -34,7 +36,7 @@ gglogisticexpdist(
   binlimits_show = TRUE,
   binlimits_text_size = 5,
   binlimits_ypos = 0,
-  binlimits_color = "gray70",
+  binlimits_color = "#B3B3B380",
   dist_position_scaler = 0.2,
   dist_offset = 0,
   dist_scale = 0.9,
@@ -52,17 +54,19 @@ gglogisticexpdist(
 )
 }
 \arguments{
-\item{data}{Data to use with multiple endpoints stacked into response (values 0/1), Endpoint(endpoint name)}
+\item{data}{Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)}
 
-\item{response}{name of the column holding the response values  0/1}
+\item{response}{name of the column holding the response values}
 
 \item{endpoint}{name of the column holding the name/key of the endpoint default to \code{Endpoint}}
+
+\item{model_type}{type of the trend fit one of "logistic", "none"}
 
 \item{DOSE}{name of the column holding the DOSE values default to \code{DOSE}}
 
 \item{color_fill}{name of the column to be used for color/fill default to DOSE column}
 
-\item{logistic_by_color_fill}{logistic fit split by color ? default \code{FALSE}}
+\item{logistic_by_color_fill}{fit split by color? default \code{FALSE}}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into \code{expname} \code{exptile} and split into \code{exposure_metric_split}}
 
@@ -86,9 +90,11 @@ gglogisticexpdist(
 
 \item{points_alpha}{alpha transparency for points}
 
-\item{points_show}{show the 0/1 observations \code{TRUE}/\code{FALSE}}
+\item{points_show}{show the observations \code{TRUE}/\code{FALSE}}
 
 \item{prob_obs_byexptile}{observed probability by exptile \code{TRUE}/\code{FALSE}}
+
+\item{prob_obs_byexptile_plac}{observed probability by exptile placebo \code{TRUE}/\code{FALSE}}
 
 \item{prob_obs_byexptile_group}{additional grouping for exptile probabilities default \code{none}}
 
@@ -111,7 +117,7 @@ for by dose/color options include \verb{with percentages} \code{top} \code{botto
 
 \item{binlimits_ypos}{binlimits y position default to 0}
 
-\item{binlimits_color}{binlimits text color default to "gray70"}
+\item{binlimits_color}{binlimits text color default to alpha("gray70",0.5)}
 
 \item{dist_position_scaler}{space occupied by the distribution default to 0.2}
 
@@ -170,10 +176,12 @@ gglogisticexpdist(data = effICGI |>
                  dist_position_scaler = 0.1,
                  dist_offset = -0.1,
                  Nresp_Ntot_ypos = c("with percentages","bottom"),
-                 prob_obs_bydose_plac = FALSE,
+                 prob_obs_bydose_plac = TRUE,
+                 prob_obs_byexptile_plac = FALSE,
                  prob_obs_byexptile_group = "none",
-                 binlimits_ypos = -0.08,
-                 points_alpha= 1)
+                 binlimits_ypos = 0.3,
+                 binlimits_color = "#475c6b",
+                 points_alpha= 0.8)
                  
 # Example 2                
 gglogisticexpdist(data = effICGI |>
@@ -187,9 +195,13 @@ gglogisticexpdist(data = effICGI |>
                  exposure_distribution ="lineranges",
                  lineranges_ypos = -0.2,
                  lineranges_dodge = 0.2,
-                 prob_obs_bydose = TRUE,
-                 yproj_xpos = -1,
+                 lineranges_doselabel = TRUE,
+                 Nresp_Ntot_ypos = c("with percentages","bottom"),
+                 prob_obs_bydose_plac = TRUE,
+                 prob_obs_byexptile_plac = FALSE,
+                 prob_obs_byexptile_group = "none",yproj_xpos = -1,
                  yproj_dodge = 2,
+                 binlimits_color = "#475c6b",
                  dist_position_scaler = 0.1)
 
 
@@ -248,7 +260,8 @@ gglogisticexpdist(data = effICGI  |>
                  dist_position_scaler = 1, dist_offset = -1 ,
                  yproj_xpos =  -20 ,
                  yproj_dodge = 20 ,
-                 exposure_distribution ="lineranges")
+                 exposure_distribution ="lineranges",
+                 lineranges_doselabel = TRUE)
                  
 #Example 5
 gglogisticexpdist(data = effICGI |> dplyr::filter(Endpoint=="ICGI"), 
@@ -305,20 +318,48 @@ effICGI$ICGI3 <- ifelse(effICGI$ICGI7 < 5,1,0)
 
 effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2,ICGI3)
 effICGI$endpointcol2 <- effICGI$Endpoint
+effICGI$endpointcol3 <- effICGI$Endpoint
 gglogisticexpdist(data = effICGI,
                   response = "response",
                  endpoint = "Endpoint",
                   exposure_metrics = c("AUC"),
-                  exposure_metric_split = c("median"),
+                  exposure_metric_split = c("tertile"),
                   exposure_metric_soc_value = -99,
                   exposure_metric_plac_value = 0,
-                  color_fill = "endpointcol2",
-                  prob_obs_byexptile = FALSE,
+                  color_fill = "endpointcol2",                   
                   logistic_by_color_fill = TRUE,
                   Nresp_Ntot = TRUE,
+                  Nresp_Ntot_ypos = c("with percentages","bottom"),
+                  prob_obs_byexptile = FALSE,
+                  prob_obs_byexptile_group="endpointcol3",
+                  prob_obs_byexptile_plac = FALSE,
+                  prob_obs_bydose_plac = TRUE,
+                  binlimits_color = "#475c6b",
                   exposure_distribution ="distributions",
-                  lineranges_doselabel = TRUE,
                   prob_obs_bydose = TRUE,
+                  proj_bydose = FALSE,
+                  yproj = FALSE,
+                  dist_position_scaler = 0.1,
+                  dist_offset = -0.1)+
+  facet_grid(expname~Endpoint,scales="free_x")
+#Example 8  
+gglogisticexpdist(data = effICGI,
+                  response = "response",
+                 endpoint = "endpointcol2",
+                  exposure_metrics = c("AUC"),
+                  exposure_metric_split = c("quartile"),
+                  exposure_metric_soc_value = -99,
+                  exposure_metric_plac_value = 0,
+                  color_fill = "Endpoint",                   
+                  logistic_by_color_fill = TRUE,
+                  Nresp_Ntot = FALSE, points_show = FALSE,
+                  prob_obs_byexptile = TRUE,
+                  prob_obs_byexptile_group="endpointcol3",
+                  prob_obs_byexptile_plac = TRUE,
+                  prob_obs_bydose = FALSE,
+                  prob_obs_bydose_plac = FALSE,
+                  binlimits_color = "#475c6b",
+                  exposure_distribution ="distributions",
                   proj_bydose = FALSE,
                   yproj = FALSE,
                   dist_position_scaler = 0.1,
