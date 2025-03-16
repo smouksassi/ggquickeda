@@ -26,12 +26,13 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' Create a logistic fit plot
 #'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
-#' @param data Data to use with multiple endpoints stacked into response (values 0/1), Endpoint(endpoint name)
-#' @param response name of the column holding the response values  0/1
+#' @param data Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)
+#' @param response name of the column holding the response values
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
+#' @param model_type type of the trend fit one of "logistic", "none" 
 #' @param DOSE name of the column holding the DOSE values default to `DOSE`
 #' @param color_fill name of the column to be used for color/fill default to DOSE column
-#' @param logistic_by_color_fill logistic fit split by color ? default `FALSE`
+#' @param logistic_by_color_fill fit split by color? default `FALSE`
 #' @param exposure_metrics name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`
 #' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
@@ -43,8 +44,9 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param xlab text to be used as x axis label
 #' @param ylab text to be used as y axis label
 #' @param points_alpha alpha transparency for points
-#' @param points_show show the 0/1 observations `TRUE`/`FALSE`
+#' @param points_show show the observations `TRUE`/`FALSE`
 #' @param prob_obs_byexptile observed probability by exptile `TRUE`/`FALSE`
+#' @param prob_obs_byexptile_plac observed probability by exptile placebo `TRUE`/`FALSE` 
 #' @param prob_obs_byexptile_group additional grouping for exptile probabilities default `none`
 #' @param prob_text_size probability text size default to 5
 #' @param prob_obs_bydose observed probability by dose `TRUE`/`FALSE`
@@ -56,7 +58,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param binlimits_show show the binlimits vertical lines `TRUE`/`FALSE`
 #' @param binlimits_text_size binlimits text size default to 5
 #' @param binlimits_ypos binlimits y position default to 0 
-#' @param binlimits_color binlimits text color default to "gray70"
+#' @param binlimits_color binlimits text color default to alpha("gray70",0.5)
 #' @param dist_position_scaler space occupied by the distribution default to 0.2 
 #' @param dist_offset offset where the distribution position starts default to 0
 #' @param dist_scale scaling parameter for ggridges default to 0.9
@@ -97,10 +99,12 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 0.1,
 #'                  dist_offset = -0.1,
 #'                  Nresp_Ntot_ypos = c("with percentages","bottom"),
-#'                  prob_obs_bydose_plac = FALSE,
+#'                  prob_obs_bydose_plac = TRUE,
+#'                  prob_obs_byexptile_plac = FALSE,
 #'                  prob_obs_byexptile_group = "none",
-#'                  binlimits_ypos = -0.08,
-#'                  points_alpha= 1)
+#'                  binlimits_ypos = 0.3,
+#'                  binlimits_color = "#475c6b",
+#'                  points_alpha= 0.8)
 #'                  
 #' # Example 2                
 #' gglogisticexpdist(data = effICGI |>
@@ -114,9 +118,13 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  exposure_distribution ="lineranges",
 #'                  lineranges_ypos = -0.2,
 #'                  lineranges_dodge = 0.2,
-#'                  prob_obs_bydose = TRUE,
-#'                  yproj_xpos = -1,
+#'                  lineranges_doselabel = TRUE,
+#'                  Nresp_Ntot_ypos = c("with percentages","bottom"),
+#'                  prob_obs_bydose_plac = TRUE,
+#'                  prob_obs_byexptile_plac = FALSE,
+#'                  prob_obs_byexptile_group = "none",yproj_xpos = -1,
 #'                  yproj_dodge = 2,
+#'                  binlimits_color = "#475c6b",
 #'                  dist_position_scaler = 0.1)
 #'
 #'
@@ -175,7 +183,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 1, dist_offset = -1 ,
 #'                  yproj_xpos =  -20 ,
 #'                  yproj_dodge = 20 ,
-#'                  exposure_distribution ="lineranges")
+#'                  exposure_distribution ="lineranges",
+#'                  lineranges_doselabel = TRUE)
 #'                  
 #' #Example 5
 #' gglogisticexpdist(data = effICGI |> dplyr::filter(Endpoint=="ICGI"), 
@@ -241,24 +250,51 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                   exposure_metric_split = c("tertile"),
 #'                   exposure_metric_soc_value = -99,
 #'                   exposure_metric_plac_value = 0,
-#'                   color_fill = "endpointcol2",
-#'                   prob_obs_byexptile_group="endpointcol3",
-#'                   prob_obs_byexptile = FALSE,
+#'                   color_fill = "endpointcol2",                   
 #'                   logistic_by_color_fill = TRUE,
 #'                   Nresp_Ntot = TRUE,
+#'                   Nresp_Ntot_ypos = c("with percentages","bottom"),
+#'                   prob_obs_byexptile = FALSE,
+#'                   prob_obs_byexptile_group="endpointcol3",
+#'                   prob_obs_byexptile_plac = FALSE,
+#'                   prob_obs_bydose_plac = TRUE,
+#'                   binlimits_color = "#475c6b",
 #'                   exposure_distribution ="distributions",
-#'                   lineranges_doselabel = TRUE,
 #'                   prob_obs_bydose = TRUE,
 #'                   proj_bydose = FALSE,
 #'                   yproj = FALSE,
 #'                   dist_position_scaler = 0.1,
 #'                   dist_offset = -0.1)+
 #'   facet_grid(expname~Endpoint,scales="free_x")
+#' #Example 8  
+#' gglogisticexpdist(data = effICGI,
+#'                   response = "response",
+#'                  endpoint = "endpointcol2",
+#'                   exposure_metrics = c("AUC"),
+#'                   exposure_metric_split = c("quartile"),
+#'                   exposure_metric_soc_value = -99,
+#'                   exposure_metric_plac_value = 0,
+#'                   color_fill = "Endpoint",                   
+#'                   logistic_by_color_fill = TRUE,
+#'                   Nresp_Ntot = FALSE, points_show = FALSE,
+#'                   prob_obs_byexptile = TRUE,
+#'                   prob_obs_byexptile_group="endpointcol3",
+#'                   prob_obs_byexptile_plac = TRUE,
+#'                   prob_obs_bydose = FALSE,
+#'                   prob_obs_bydose_plac = FALSE,
+#'                   binlimits_color = "#475c6b",
+#'                   exposure_distribution ="distributions",
+#'                   proj_bydose = FALSE,
+#'                   yproj = FALSE,
+#'                   dist_position_scaler = 0.1,
+#'                   dist_offset = -0.1)+
+#'   facet_grid(expname~.,scales="free_x")
 #'}
 #' @export               
 gglogisticexpdist <- function(data = effICGI, 
                               response = "response",
                               endpoint = "Endpoint",
+                              model_type = c("logistic"),
                               DOSE = "DOSE",
                               color_fill = "DOSE",
                               logistic_by_color_fill = FALSE,
@@ -275,6 +311,7 @@ gglogisticexpdist <- function(data = effICGI,
                               points_alpha = 0.2,
                               points_show = TRUE,
                               prob_obs_byexptile = TRUE,
+                              prob_obs_byexptile_plac = TRUE,
                               prob_obs_byexptile_group = "none",
                               prob_text_size = 5,
                               prob_obs_bydose = TRUE,
@@ -285,7 +322,7 @@ gglogisticexpdist <- function(data = effICGI,
                               binlimits_show = TRUE,
                               binlimits_text_size = 5,
                               binlimits_ypos = 0,
-                              binlimits_color= "gray70",
+                               binlimits_color= "#B3B3B380",
                               dist_position_scaler = 0.2,
                               dist_offset = 0,
                               dist_scale = 0.9,
@@ -306,6 +343,7 @@ gglogisticexpdist <- function(data = effICGI,
   endpointinputvar  <- endpoint
   DOSEinputvar  <- DOSE
   colorinputvar    <-  if (color_fill !="none") color_fill else NULL
+  model_type <- match.arg(model_type, several.ok = FALSE)
   exptilegroupvar <-  prob_obs_byexptile_group
   if( all(exposure_metrics == "none") )   stop("exposure_metrics should specify at least one exposure", call. = FALSE)
   exposure_metrics <-  exposure_metrics[exposure_metrics!="none"]
@@ -667,10 +705,15 @@ gglogisticexpdist <- function(data = effICGI,
       ggplot2::geom_hline(yintercept = c(0,1)) 
   }
   if(!points_show){
-    p1p <- p1 
+    p1p <- p1 + 
+      ggplot2::geom_hline(yintercept = c(0,1)) 
     }
     
   if(binlimits_show){
+    if(logistic_by_color_fill){
+      xintercepts <- xintercepts %>% 
+        dplyr::distinct(expname,intercept,quant)
+    }
     p1pl <- p1p  +
     ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept),
                         color = binlimits_color, alpha = 0.5 )
@@ -679,34 +722,45 @@ gglogisticexpdist <- function(data = effICGI,
     p1pl <- p1p 
   }
   
+     if (model_type != "none") {
+  model_type_method <- "glm"
+  filltext    <- "Logistic Fit 95% CI"
+  linetypetext<- "Logistic Fit 95% CI"
+  
     if(!logistic_by_color_fill) {
-      p1lo <- p1pl +
-        ggplot2::geom_ribbon(data = data.long |> dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
-                                 stat="smooth",
-                                 method = "glm", method.args = list(family = "binomial"),
-                                 color="transparent",linetype=0, alpha = 0.5,
-                                 ggplot2::aes(fill = "Logistic Fit 95% CI"))+
-        ggplot2::geom_line(data = data.long |> dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
-                           stat="smooth",
-                           method = "glm", method.args = list(family = "binomial"),
-                           color="black", alpha = 0.5,
-                           ggplot2::aes(linetype = "Logistic Fit 95% CI"))
+     p1lo <- p1pl +
+    ggplot2::geom_ribbon(data = data.long |>
+                         dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
+                         stat="smooth",
+                         method = model_type_method, method.args = list(family = "binomial"), 
+                         color="transparent", linetype = 0, alpha = 0.3,
+                         ggplot2::aes(fill = filltext))+
+    ggplot2::geom_line(data = data.long |>
+                       dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
+                        stat="smooth",
+                        method = model_type_method, method.args = list(family = "binomial"), 
+                        color="black", alpha = 0.5,
+                        ggplot2::aes(linetype = linetypetext))
     }
   if(logistic_by_color_fill) {
     p1lo <- p1pl +
-      ggplot2::geom_ribbon(data = data.long ,
-                           stat="smooth",
-                           method = "glm", method.args = list(family = "binomial"),
-                           color="transparent",linetype=0, alpha = 0.2,
-                           ggplot2::aes_string(fill = color_fill))+
-      ggplot2::geom_line(data = data.long,
+    ggplot2::geom_ribbon(data = data.long,
                          stat="smooth",
-                         method = "glm", method.args = list(family = "binomial"),
-                         color="black", alpha = 0.5,
-                         ggplot2::aes_string(linetype = color_fill,color=color_fill))
+                         method = model_type_method, method.args = list(family = "binomial"), 
+                         color="transparent", linetype = 0, alpha = 0.3,
+                        ggplot2::aes_string(fill = color_fill))+
+    ggplot2::geom_line(data = data.long,
+                        stat="smooth",
+                        method = model_type_method, method.args = list(family = "binomial"), 
+                         alpha = 0.5,
+                         ggplot2::aes_string(linetype = color_fill,
+                                             color=color_fill))
   }
-    
-    
+  }
+  if(model_type == "none"){
+    p1lo <- p1pl 
+  }
+
     if(proj_bydose){
       p1proj <- p1lo +
         ggplot2::geom_line(data = predict_by_endpoint_expname_dose,
@@ -764,19 +818,30 @@ gglogisticexpdist <- function(data = effICGI,
     p1lt <- p1proj 
   }
 
+if(!prob_obs_byexptile_plac){
+    data.long.summaries.exposure[data.long.summaries.exposure[,"meanexp"]==exposure_metric_plac_value,"prob"] <- NA
+    data.long.summaries.exposure[data.long.summaries.exposure[,"meanexp"]==exposure_metric_plac_value,"N"] <- NA
+    data.long.summaries.exposure[data.long.summaries.exposure[,"meanexp"]==exposure_metric_plac_value,"Ntot"] <- NA
+   }  
   if(!logistic_by_color_fill){
-    p2e <- p1lt +
-      ggplot2::geom_pointrange(data = data.long.summaries.exposure,
-                               size = 1, alpha = 0.5,
-                               ggplot2::aes(shape = paste("Observed probability by exposure split:",
-                                                          exposure_metric_split),
-                                            x = medexp, y = prob, ymin = prob+1.959*SE,
-                                            ymax=prob-1.959*SE))
+    if (prob_obs_byexptile){
+      p2e <- p1lt +
+        ggplot2::geom_pointrange(data = data.long.summaries.exposure,
+                                 size = 1, alpha = 0.5,
+                                 ggplot2::aes(shape = paste("Observed probability by exposure split:",
+                                                            exposure_metric_split),
+                                              x = medexp, y = prob, ymin = prob+1.959*SE,
+                                              ymax=prob-1.959*SE))
+    }
+    if (!prob_obs_byexptile){
+      p2e <- p1lt
+    }
   }
   if(logistic_by_color_fill){
     data.long.summaries.exposure <- data.long.summaries.exposure %>% 
       dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
     
+    if (prob_obs_byexptile){
     if(exptilegroupvar!="none"){
       p2e <- p1lt +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
@@ -793,13 +858,17 @@ gglogisticexpdist <- function(data = effICGI,
       p2e <- p1lt +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
-                                 ggplot2::aes(shape = "Observed probability by exposure split",
+                                 ggplot2::aes(shape = paste("Observed probability by exposure split:",
+                                                            exposure_metric_split),
                                               x = medexp, y = prob, ymin = prob+1.959*SE,
                                               ymax=prob-1.959*SE,
                                               col = !!sym(endpointinputvar)))
     }
+    }
+    if (!prob_obs_byexptile){
+      p2e <- p1lt 
+    }
   }
-  
   
   if(prob_obs_bydose){
     data.long.summaries.dose.plot <- as.data.frame(data.long.summaries.dose)
@@ -818,7 +887,7 @@ gglogisticexpdist <- function(data = effICGI,
       if(Nresp_Ntot_ypos[2] == "with percentages"){
         p2dntot<- p2d +
           ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
-                               dplyr::filter(!is.na(N)),
+                                dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = prob*0.85,                                        ,
@@ -829,16 +898,16 @@ gglogisticexpdist <- function(data = effICGI,
       }
       if(Nresp_Ntot_ypos[2] == "top"){
         p2dntot<- p2d +
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
-                               dplyr::filter(!is.na(N)),
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+                                dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = prob*0.85,                                        ,
                                           col = !!sym(color_fill),
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
-                               dplyr::filter(!is.na(N)),
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+                                dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = Inf,                                        ,
@@ -848,16 +917,16 @@ gglogisticexpdist <- function(data = effICGI,
       }
         if(Nresp_Ntot_ypos[2] == "bottom"){
           p2dntot <- p2d +
-            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
-                                 dplyr::filter(!is.na(N)),
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,
                                size = prob_text_size, show.legend = FALSE,
                                ggplot2::aes(x = medexp, y = prob*0.85,                                        ,
                                             col = !!sym(color_fill),
                                             label = paste(100*round(prob,2),"%",sep="")
                                ))+
-            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot%>% 
-                                 dplyr::filter(!is.na(N)),
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,
                                size = prob_text_size, show.legend = FALSE,
                                ggplot2::aes(x = medexp, y = 0.05,                                        ,
@@ -896,9 +965,12 @@ gglogisticexpdist <- function(data = effICGI,
                            vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
                            ggplot2::aes(x = medexp,
-                                        y = prob*1.15,
+                                        y = prob*1.05,
                                         label = paste(paste(100*round(prob,2),"%",sep=""),
-                                                      "\n",N,Nresp_Ntot_sep,Ntot,sep="")
+                                                      "\n",ifelse(is.na(N),"",N),
+                                                      Nresp_Ntot_sep,
+                                                      ifelse(is.na(Ntot),"",Ntot),
+                                                      sep="")
                            ))
       }
       if(Nresp_Ntot_ypos[1] == "top"){
@@ -906,11 +978,12 @@ gglogisticexpdist <- function(data = effICGI,
           ggplot2::geom_text(data=data.long.summaries.exposure,
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
-                             ggplot2::aes(x = medexp, y = prob*1.15,                                        ,
+                             ggplot2::aes(x = medexp, y = prob*1.05,                                        ,
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure,
-                             vjust = 1,
+          ggplot2::geom_text(data=data.long.summaries.exposure %>% 
+                               dplyr::filter(!is.na(N),!is.na(Ntot)),
+                               vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = Inf,
                                           label = paste(N,Nresp_Ntot_sep,Ntot,sep="")
@@ -921,7 +994,7 @@ gglogisticexpdist <- function(data = effICGI,
           ggplot2::geom_text(data=data.long.summaries.exposure,
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
-                             ggplot2::aes(x = medexp, y = prob*1.15,                                        ,
+                             ggplot2::aes(x = medexp, y = prob*1.05,                                        ,
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
           ggplot2::geom_text(data=data.long.summaries.exposure,
@@ -1013,9 +1086,14 @@ gglogisticexpdist <- function(data = effICGI,
     p2 <- p2dntot
   }
    if(binlimits_show){
+     if(logistic_by_color_fill){
+       xintercepts <- xintercepts %>% 
+         dplyr::distinct(expname,intercept,quant)
+     }
      p2t <- p2 +
        ggrepel::geom_text_repel(data = xintercepts,
-                          ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
+                          ggplot2::aes(label=round(intercept,1), 
+                                       x = intercept, y = binlimits_ypos) ,
                           vjust = 0, size = binlimits_text_size,color = binlimits_color,
                           direction = "y")
    }
