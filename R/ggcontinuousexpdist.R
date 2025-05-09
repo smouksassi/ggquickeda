@@ -337,38 +337,100 @@ ggcontinuousexpdist <- function(data = effICGI,
   for (i in unique(data.long[,"loopvariable"]) |>
        dplyr::pull() |>
        as.character() ) {
-
-    logisticregdata<- data.long |>
+    
+    modelregdata<- data.long |>
       dplyr::filter(.data[["loopvariable"]] ==i)
-    d <- rms::datadist(logisticregdata[, c(endpointinputvar,responseinputvar,DOSEinputvar,"expname","expvalue","exptile")])           
+    d <- rms::datadist(modelregdata[, c(endpointinputvar,responseinputvar,DOSEinputvar,"expname","expvalue","exptile")])           
     options(datadist= d)
-    olsfit_by_endpoint_fit <- eval(bquote( rms::ols( as.formula(paste(responseinputvar,"~","expvalue")) ,
-                                                     data=logisticregdata,x=TRUE,y=TRUE) ))
-    olsfit_by_endpoint[[i]] <- olsfit_by_endpoint_fit
     
-    data.long.summaries.dose.loop <- data.long.summaries.dose |>
-      dplyr::filter(.data[["loopvariable"]] ==i)
-    pred10exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                            expvalue= data.long.summaries.dose.loop$quant_10))
-    names(pred10exp)<- c("quant_10" ,  "ymid10",  "ylow10", "yup10")
-    pred10exp$loopvariable <- i
-    pred90exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                            expvalue= data.long.summaries.dose.loop$quant_90))
-    names(pred90exp)<- c("quant_90" ,  "ymid90",  "ylow90", "yup90")
-    pred90exp$loopvariable <- i
-    pred25exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                            expvalue= data.long.summaries.dose.loop$quant_25))
-    names(pred25exp)<- c("quant_25" ,  "ymid25",  "ylow25", "yup25")
-    pred25exp$loopvariable <- i 
-    pred75exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
-                                            expvalue= data.long.summaries.dose.loop$quant_75))
-    names(pred75exp)<- c("quant_75" ,  "ymid75",  "ylow75", "yup75")
-    pred75exp$loopvariable <- i 
-    pred50exp<- as.data.frame (rms::Predict(olsfit_by_endpoint_fit,
-                                            expvalue=data.long.summaries.dose.loop$medexp))
-    names(pred50exp)<- c("medexp" ,  "ymid50",  "ylow50", "yup50")
-    pred50exp$loopvariable <- i 
-    
+    if(model_type=="linear"){
+      olsfit_by_endpoint_fit <- eval(bquote( rms::ols( as.formula(paste(responseinputvar,"~","expvalue")) ,
+                                                       data=modelregdata,x=TRUE,y=TRUE) ))
+      olsfit_by_endpoint[[i]] <- olsfit_by_endpoint_fit
+      
+      data.long.summaries.dose.loop <- data.long.summaries.dose |>
+        dplyr::filter(.data[["loopvariable"]] ==i)
+      pred10exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
+                                              expvalue= data.long.summaries.dose.loop$quant_10))
+      names(pred10exp)<- c("quant_10" ,  "ymid10",  "ylow10", "yup10")
+      pred10exp$loopvariable <- i
+      pred90exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
+                                              expvalue= data.long.summaries.dose.loop$quant_90))
+      names(pred90exp)<- c("quant_90" ,  "ymid90",  "ylow90", "yup90")
+      pred90exp$loopvariable <- i
+      pred25exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
+                                              expvalue= data.long.summaries.dose.loop$quant_25))
+      names(pred25exp)<- c("quant_25" ,  "ymid25",  "ylow25", "yup25")
+      pred25exp$loopvariable <- i 
+      pred75exp <- as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
+                                              expvalue= data.long.summaries.dose.loop$quant_75))
+      names(pred75exp)<- c("quant_75" ,  "ymid75",  "ylow75", "yup75")
+      pred75exp$loopvariable <- i 
+      pred50exp<- as.data.frame (rms::Predict(olsfit_by_endpoint_fit,
+                                              expvalue=data.long.summaries.dose.loop$medexp))
+      names(pred50exp)<- c("medexp" ,  "ymid50",  "ylow50", "yup50")
+      pred50exp$loopvariable <- i 
+    }
+    if(model_type=="loess"){
+      olsfit_by_endpoint_fit <- eval(bquote( loess( as.formula(paste(responseinputvar,"~","expvalue")) ,
+                                                       data=modelregdata) ))
+      olsfit_by_endpoint[[i]] <- olsfit_by_endpoint_fit
+      
+      xseq <- seq(range(modelregdata$expvalue)[1], range(modelregdata$expvalue)[2], length.out = 1000)
+      predmodelloess <- predict(olsfit_by_endpoint_fit,newdata= tibble(expvalue= xseq),se=TRUE)
+      predmodelfitse<- data.frame(x=xseq,predmodelloess$fit,predmodelloess$se.fit)
+      cimultiplier<- stats::qt(0.95 / 2 + 0.5, predmodelloess$df)
+      
+      data.long.summaries.dose.loop <- data.long.summaries.dose |>
+        dplyr::filter(.data[["loopvariable"]] ==i)
+      
+      predictq10<- predict(olsfit_by_endpoint_fit,newdata= data.frame(expvalue= data.long.summaries.dose.loop$quant_10),se=TRUE)
+      predictq90<- predict(olsfit_by_endpoint_fit,newdata= data.frame(expvalue= data.long.summaries.dose.loop$quant_90),se=TRUE)
+      predictq25<- predict(olsfit_by_endpoint_fit,newdata= data.frame(expvalue= data.long.summaries.dose.loop$quant_25),se=TRUE)
+      predictq75<- predict(olsfit_by_endpoint_fit,newdata= data.frame(expvalue= data.long.summaries.dose.loop$quant_75),se=TRUE)
+      predictq50<- predict(olsfit_by_endpoint_fit,newdata= data.frame(expvalue= data.long.summaries.dose.loop$medexp),se=TRUE)
+      
+      pred10exp <-  data.frame(
+                    quant_10 =   data.long.summaries.dose.loop$quant_10,
+                    ymid10   =   predictq10$fit,
+                    ylow10   =   predictq10$fit - cimultiplier*predictq10$se.fit,
+                    yup10    =   predictq10$fit + cimultiplier*predictq10$se.fit
+                    )
+      pred10exp$loopvariable <- i
+      
+      pred90exp <-  data.frame(
+        quant_90 =   data.long.summaries.dose.loop$quant_90,
+        ymid90   =   predictq90$fit,
+        ylow90   =   predictq90$fit - cimultiplier*predictq90$se.fit,
+        yup90    =   predictq90$fit + cimultiplier*predictq90$se.fit
+      )
+      pred90exp$loopvariable <- i
+      
+      pred25exp <-  data.frame(
+        quant_25 =   data.long.summaries.dose.loop$quant_25,
+        ymid25   =   predictq25$fit,
+        ylow25   =   predictq25$fit - cimultiplier*predictq25$se.fit,
+        yup25    =   predictq25$fit + cimultiplier*predictq25$se.fit
+      )
+      pred25exp$loopvariable <- i
+      
+      pred75exp <-  data.frame(
+        quant_75 =   data.long.summaries.dose.loop$quant_75,
+        ymid75   =   predictq75$fit,
+        ylow75   =   predictq75$fit - cimultiplier*predictq75$se.fit,
+        yup75    =   predictq75$fit + cimultiplier*predictq75$se.fit
+      )
+      pred75exp$loopvariable <- i
+
+      pred50exp <-  data.frame(
+        medexp =   data.long.summaries.dose.loop$medexp,
+        ymid50   =   predictq50$fit,
+        ylow50   =   predictq50$fit - cimultiplier*predictq50$se.fit,
+        yup50    =   predictq50$fit + cimultiplier*predictq50$se.fit
+      )
+      pred50exp$loopvariable <- i
+    }
+
     pred10exp[,DOSEinputvar] <- pred90exp[,DOSEinputvar] <- pred25exp[,DOSEinputvar] <- 
     pred75exp[,DOSEinputvar] <- pred50exp[,DOSEinputvar] <- data.long.summaries.dose.loop[,DOSEinputvar]
     if(color_fill != DOSEinputvar) {
@@ -387,10 +449,11 @@ ggcontinuousexpdist <- function(data = effICGI,
     dplyr::ungroup()
     
     if(exptilegroupvar=="none"){
+      if(model_type=="linear"){
       if(color_fill != DOSEinputvar) {
         predictionsbydose<- data.long.summaries.dose.loop |>
           dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,!!sym(color_fill),color_fill2) |>
-          dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,fun=plogis,
+          dplyr::do(as.data.frame(rms::Predict(olsfit_by_endpoint_fit,
                                                expvalue=seq(.data$quant_10,.data$quant_90,length.out=100))))
         predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
         
@@ -400,6 +463,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                                expvalue=seq(.data$quant_25,.data$quant_75,length.out=100))))
         predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
       }
+      
       if(color_fill == DOSEinputvar) {
         predictionsbydose<- data.long.summaries.dose.loop |>
           dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
@@ -413,8 +477,81 @@ ggcontinuousexpdist <- function(data = effICGI,
                                                expvalue=seq(.data$quant_25,.data$quant_75,length.out=100))))
         predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
       }
-    }
+      }
+      if(model_type=="loess"){
+        if(color_fill != DOSEinputvar) {
+          predictionsbydose<- data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,!!sym(color_fill),color_fill2) |>
+            dplyr::do(
+              data.frame(expvalue= seq(.data$quant_10,.data$quant_90,length.out=100),
+                         yhat=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                   se=TRUE)$fit,
+                         se.fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                   se=TRUE)$se.fit
+              )
+            )
+          predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
+          
+          predictionsbydose2<- data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,!!sym(color_fill),color_fill2) |>
+            dplyr::do(
+              data.frame(expvalue = seq(.data$quant_25,.data$quant_75,length.out=100),
+                         yhat=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                   se=TRUE)$fit,
+                         se.fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                   se=TRUE)$se.fit
+              )
+            )
+          predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
+        }
+        
+        if(color_fill == DOSEinputvar) {
+          predictionsbydose <-  data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
+            dplyr::do(
+              data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100),
+                         yhat=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                   se=TRUE)$fit,
+                         se.fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                   se=TRUE)$se.fit
+              )
+            )
+          predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
+          
+          predictionsbydose2 <-  data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2) |>
+            dplyr::do(
+              data.frame(expvalue=
+                           seq(.data$quant_25,.data$quant_75,length.out=100),
+                         yhat=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                   se=TRUE)$fit,
+                         se.fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                   se=TRUE)$se.fit
+              )
+            )
+          predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
+        }
+      }
+      }
+    
     if(exptilegroupvar!="none"){
+      if(model_type=="linear"){
       if(color_fill != DOSEinputvar) {
         predictionsbydose<- data.long.summaries.dose.loop |>
           dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
@@ -447,8 +584,89 @@ ggcontinuousexpdist <- function(data = effICGI,
                                                expvalue=seq(.data$quant_25,.data$quant_75,length.out=100))))
         predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
       }
+      }
+      if(model_type=="loess"){
+        if(color_fill != DOSEinputvar) {
+          predictionsbydose<- data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
+                            !!sym(color_fill),color_fill2,
+                            !!sym(exptilegroupvar)) |>
+          dplyr::do(
+            data.frame(expvalue=
+                         seq(.data$quant_10,.data$quant_90,length.out=100),
+                       yhat=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                 se=TRUE)$fit,
+                       se.fit=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                 se=TRUE)$se.fit
+            )
+          )
+          
+          predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
+          
+          predictionsbydose2<- data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
+                            !!sym(color_fill),color_fill2,
+                            !!sym(exptilegroupvar)) |>
+          dplyr::do(
+            data.frame(expvalue=
+                         seq(.data$quant_25,.data$quant_75,length.out=100),
+                       yhat=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                 se=TRUE)$fit,
+                       se.fit=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                 se=TRUE)$se.fit
+            )
+          )
+          predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
+        }
+        if(color_fill == DOSEinputvar) {
+          predictionsbydose<- data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
+                            !!sym(exptilegroupvar)) |>
+            dplyr::do(
+              data.frame(fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   expvalue=seq(data.long.summaries.dose.loop$quant_10,
+                                                data.long.summaries.dose.loop$quant_90,length.out=100),
+                                   se=TRUE)$fit,
+                         se.fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   expvalue=seq(data.long.summaries.dose.loop$quant_10,
+                                                data.long.summaries.dose.loop$quant_90,length.out=100),
+                                   se=TRUE)$se.fit
+              )
+            )
+          predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
+          
+          predictionsbydose2<- data.long.summaries.dose.loop |>
+            dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
+                            !!sym(exptilegroupvar)) |>
+            dplyr::do(
+              data.frame(fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   expvalue=seq(data.long.summaries.dose.loop$quant_25,
+                                                data.long.summaries.dose.loop$quant_75,length.out=100),
+                                   se=TRUE)$fit,
+                         se.fit=
+                           predict(olsfit_by_endpoint_fit,
+                                   expvalue=seq(data.long.summaries.dose.loop$quant_25,
+                                                data.long.summaries.dose.loop$quant_75,length.out=100),
+                                   se=TRUE)$se.fit
+              )
+            )
+          predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
+        }
+      }
     }
-  }
+    
+  }#end of loops
   predict_by_endpoint_expname <- data.table::rbindlist(predict_by_endpoint_expname)
   predict_by_endpoint_expname_dose <- data.table::rbindlist(predict_by_endpoint_expname_dose)
   predict_by_endpoint_expname_dose2 <- data.table::rbindlist(predict_by_endpoint_expname_dose2)
@@ -598,12 +816,15 @@ ggcontinuousexpdist <- function(data = effICGI,
   }
   
     if(proj_bydose){
+      print(predict_by_endpoint_expname)
       p1proj <- p1lo +
-        ggplot2::geom_line(data = predict_by_endpoint_expname_dose,
-                           ggplot2::aes_string(y = "yhat", col = color_fill),
+        ggplot2::geom_line(data = predict_by_endpoint_expname_dose %>% 
+                             filter(expvalue!=exposure_metric_plac_value),
+                           ggplot2::aes_string(y = "yhat", col = color_fill, group = color_fill),
                            alpha = 0.4, linewidth = 2)+
-        ggplot2::geom_line(data = predict_by_endpoint_expname_dose2,
-                           ggplot2::aes_string(y = "yhat", col = color_fill),
+        ggplot2::geom_line(data = predict_by_endpoint_expname_dose2 %>% 
+                             filter(expvalue!=exposure_metric_plac_value),
+                           ggplot2::aes_string(y = "yhat", col = color_fill, group = color_fill),
                            alpha = 0.4, linewidth = 2.5)+
         ggplot2::geom_point(data = predict_by_endpoint_expname,
                             ggplot2::aes_string(x = "medexp", y = "ymid50", col = color_fill),
@@ -718,7 +939,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
       data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA 
     }
-    print(data.long.summaries.dose.plot)
+    #print(data.long.summaries.dose.plot)
     
     if(N_text_show){
       p2d <- p2e +

@@ -1170,9 +1170,8 @@ function(request) {
                                    ),selected="None"
                                    ,inline=TRUE),
                       conditionalPanel(
-                        " input.jitterdirection== 'quasirandom' |
+                        " input.jitterdirection== 'quasirandom' ||
                           input.jitterdirection== 'beeswarm'",
-                        inline_ui(checkboxInput('groupOnX', 'group on X', value = TRUE, width='120px' )),
                         inline_ui(numericInput("dodge.width",label = "Dodge Width",
                                                value = 0, min = 0, step = 0.1, width='120px'))
                       ),

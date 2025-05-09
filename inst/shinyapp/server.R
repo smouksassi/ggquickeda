@@ -2050,7 +2050,7 @@ function(input, output, session) {
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if ( is.null(df) || is.null(input$x)  ) return(NULL)
-    if (all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] )) ||
+    if (all(is.factor(df[,"xvalues"] ) || is.character(df[,"xvalues"] )) ||
         (length(df[,"xvalues"][!is.na( df[,"xvalues"])] ) <= 0)
     ) return(NULL)
       xvalues <- df[,"xvalues"][!is.na( df[,"xvalues"])]
@@ -2065,20 +2065,20 @@ function(input, output, session) {
   outputOptions(output, "xaxiszoomslider", suspendWhenHidden=FALSE)
   
   output$lowerx <- renderUI({
-    df <-finalplotdata()
+    df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     xmin <- NA
-    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+    if (!all(is.factor(df[,"xvalues"] ) || is.character(df[,"xvalues"] ))){
       xmin <- min(df[,"xvalues"],na.rm = TRUE)}
       if(input$xaxisscale=="logx" && xmin<=0) xmin <- 0.01
       numericInput("lowerxin",label = "Lower X Limit", 
                    value = xmin, min=NA, max=NA, width='50%')
   })
   output$upperx <- renderUI({
-    df <-finalplotdata()
+    df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     xmax <- NA
-    if (!all(is.factor(df[,"xvalues"] ) | is.character(df[,"xvalues"] ))){
+    if (!all(is.factor(df[,"xvalues"] ) || is.character(df[,"xvalues"] ))){
       xmax <- max(df[,"xvalues"],na.rm = TRUE)}
     if(input$xaxisscale=="logx"&& xmax<=0) xmax <- 0.1
     numericInput("upperxin",label = "Upper X Limit",
@@ -2091,7 +2091,7 @@ function(input, output, session) {
     df <- finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     if ( is.null(df) || is.null(input$y)  ) return(NULL)
-    if (all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] )) ||
+    if (all(is.factor(df[,"yvalues"] ) || is.character(df[,"yvalues"] )) ||
         (length(df[,"yvalues"][!is.na( df[,"yvalues"])] ) <= 0)
     ) return(NULL)
     yvalues <- df[,"yvalues"][!is.na( df[,"yvalues"])]
@@ -2110,7 +2110,7 @@ function(input, output, session) {
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     ymin <- NA
-    if (!all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] ))){
+    if (!all(is.factor(df[,"yvalues"] ) || is.character(df[,"yvalues"] ))){
       ymin <- min(df[,"yvalues"],na.rm = TRUE)}
     if(input$yaxisscale=="logy" && ymin<=0) ymin <- 0.01
     numericInput("loweryin",label = "Lower Y Limit",
@@ -2120,7 +2120,7 @@ function(input, output, session) {
     df <-finalplotdata()
     validate(need(!is.null(df), "Please select a data set"))
     ymax <- NA
-    if (!all(is.factor(df[,"yvalues"] ) | is.character(df[,"yvalues"] ))){
+    if (!all(is.factor(df[,"yvalues"] ) || is.character(df[,"yvalues"] ))){
       ymax <- max(df[,"yvalues"],na.rm = TRUE)}
     if(input$yaxisscale=="logy" && ymax<=0) ymax <- 0.1
     numericInput("upperyin",label = "Upper Y Limit",
@@ -2872,19 +2872,19 @@ function(input, output, session) {
         
         if ( input$histogramaddition=="Density") { 
           if ( input$histogrambinwidth =="None") {
-            p <- p + geom_histogram(aes(y=..density..),
+            p <- p + geom_histogram(aes(y=after_stat(density)),
                                     alpha=input$histogramalpha,
                                     bins = input$histonbins,
                                     position =input$positionhistogram)
           }
           if ( input$histogrambinwidth =="userbinwidth") {
-            p <- p + geom_histogram(aes(y=..density..),
+            p <- p + geom_histogram(aes(y=after_stat(density)),
                                     alpha=input$histogramalpha,
                                     binwidth = input$histobinwidth,
                                     position =input$positionhistogram)
           }
           if ( input$histogrambinwidth =="autobinwidth") {
-            p <- p + geom_histogram(aes(y=..density..),
+            p <- p + geom_histogram(aes(y=after_stat(density)),
                                     alpha=input$histogramalpha,
                                     binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )},
                                     position =input$positionhistogram)
@@ -2893,19 +2893,19 @@ function(input, output, session) {
         
         if ( input$histogramaddition=="ncounts") { 
           if ( input$histogrambinwidth =="None") {
-            p <- p + geom_histogram(aes(y=..ncount..),
+            p <- p + geom_histogram(aes(y=after_stat(ncount)),
                                     alpha=input$histogramalpha,
                                     bins = input$histonbins,
                                     position =input$positionhistogram)
           }
           if ( input$histogrambinwidth =="userbinwidth") {
-            p <- p + geom_histogram(aes(y=..ncount..),
+            p <- p + geom_histogram(aes(y=after_stat(ncount)),
                                     alpha=input$histogramalpha,
                                     binwidth = input$histobinwidth,
                                     position =input$positionhistogram)
           }
           if ( input$histogrambinwidth =="autobinwidth") {
-            p <- p + geom_histogram(aes(y=..ncount..),
+            p <- p + geom_histogram(aes(y=after_stat(ncount)),
                                     alpha=input$histogramalpha,
                                     binwidth = function(x) { 2 * IQR(x) / (length(x)^(1/3)  )},
                                     position =input$positionhistogram)
@@ -3579,7 +3579,7 @@ function(input, output, session) {
         p <- p + aes_string(group=input$groupin)
       if(!is.null(plotdata[,"xvalues"])){
       if (input$groupin == 'None' && !is.numeric(plotdata[,"xvalues"]) 
-          && input$colorin == 'None'){
+          && input$colorin == 'None' && input$fillin == 'None'){
         p <- p + aes(group=1L)
       }
       }
@@ -3616,15 +3616,15 @@ function(input, output, session) {
           positionpoints <-  paste0("position_dodgev(height=",input$pointdodgeheight,")")
         }
         if (input$jitterdirection=="quasirandom"){
-          positionpoints <-  paste0("position_quasirandom(groupOnX = ",input$groupOnX,
-                                    ", dodge.width = ",input$dodge.width,
+          positionpoints <-  paste0("position_quasirandom(",
+                                    "dodge.width = ",input$dodge.width,
                                     ", width = ",input$qr.width,
                                     ", varwidth = ",input$qr.varwidth,
                                     ")")
         }
         if (input$jitterdirection=="beeswarm"){
-          positionpoints <-  paste0("position_beeswarm(groupOnX = ",input$groupOnX,
-                                    ", dodge.width = ",input$dodge.width,
+          positionpoints <-  paste0("position_beeswarm(",
+                                    "dodge.width = ",input$dodge.width,
                                     ")")
         }
         

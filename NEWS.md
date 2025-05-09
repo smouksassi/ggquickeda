@@ -1,10 +1,13 @@
 # ggquickeda 0.3.1.9000
 * added to possible positions on where to put the N of observations in Mean and Median tabs: (fixed, mean, median)
 * added arguments `show.exptile_values`, `show.exptile_values_pos` and `show.exptile_values_order` to
-  `ggkmrisktable()` requested by Mathilde
+  `ggkmrisktable()` requested by Mathilde Marchand
+* added check box to use geom_path: Check box for lines: `Respect data order?`  requested by Mark Sale)
 * fixes for `gglogisticexpdist()` and `ggcontinuousexpdist()` when `exposure_distribution`and `exposure_metric_split` where set to "none"
 * added multiple arguments to `gglogisticexpdist()` and `ggcontinuousexpdist()` `dist_scale` and `return_list`
 * added possibility to color by endpoint to `gglogisticexpdist()` and `ggcontinuousexpdist()`
+* added option to model_type ="loess" vs "linear" vs "none" in `ggcontinuousexpdist()` 
+* small fixes in the shiny app  `position_beewwarm` and `position_quasirandom` removing groupOnX
 
 # ggquickeda 0.3.1
 
