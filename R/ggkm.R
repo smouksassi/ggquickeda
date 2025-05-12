@@ -335,7 +335,7 @@ StatKmband <- ggplot2::ggproto("StatKmband", ggplot2::Stat,
 #' @inheritParams ggplot2::stat_identity
 #' @param trans Transformation to apply to the survival probabilities. Defaults
 #'   to "identity". Other options include "event", "cumhaz", "cloglog", or
-#'   define your own using \link{trans_new}.
+#'   define your own using \link[scales]{trans_new}.
 #' @param firstx,firsty the starting point for the survival curves. By default,
 #'   the plot program obeys tradition by having the plot start at `(0,1)`.
 #' @param start.time numeric value specifying a time to start calculating survival information.
@@ -547,7 +547,7 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", ggplot2::Stat,
 #' @inheritParams ggplot2::stat_identity
 #' @param trans Transformation to apply to the survival probabilities. Defaults
 #'   to "identity". Other options include "event", "cumhaz", "cloglog", or
-#'   define your own using \link{trans_new}.
+#'   define your own using \link[scales]{trans_new}
 #' @param ... Other arguments passed to \link[survival]{survfit.formula}
 #' @return a data.frame with additional columns: \item{x}{x in data}
 #'   \item{y}{Kaplan-Meier Survival Estimate at x}
@@ -558,7 +558,7 @@ StatKmticks <- ggplot2::ggproto("StatKmticks", ggplot2::Stat,
 #'
 #' This stat is for computing the tick marks for a Kaplan-Meier survival estimate for
 #' right-censored data. The tick marks will appear at each censoring time which is also
-#' not a death time, which is the default for \link{plot.survfit}.
+#' not a death time, which is the default for \link[survival]{plot.survfit}
 #' It requires the aesthetic mapping \code{x} for the
 #' observation times and \code{status} which indicates the event status,
 #' normally 0=alive, 1=dead. Other choices are TRUE/FALSE (TRUE = death) or 1/2

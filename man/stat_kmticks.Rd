@@ -75,7 +75,7 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{trans}{Transformation to apply to the survival probabilities. Defaults
 to "identity". Other options include "event", "cumhaz", "cloglog", or
-define your own using \link{trans_new}.}
+define your own using \link[scales]{trans_new}}
 
 \item{...}{Other arguments passed to \link[survival]{survfit.formula}}
 }
@@ -89,7 +89,7 @@ Adds tick marks to a Kaplan Meier Estimate of Survival
 \details{
 This stat is for computing the tick marks for a Kaplan-Meier survival estimate for
 right-censored data. The tick marks will appear at each censoring time which is also
-not a death time, which is the default for \link{plot.survfit}.
+not a death time, which is the default for \link[survival]{plot.survfit}
 It requires the aesthetic mapping \code{x} for the
 observation times and \code{status} which indicates the event status,
 normally 0=alive, 1=dead. Other choices are TRUE/FALSE (TRUE = death) or 1/2

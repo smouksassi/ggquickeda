@@ -79,7 +79,7 @@ the default plot specification, e.g. \code{\link[ggplot2:borders]{borders()}}.}
 
 \item{trans}{Transformation to apply to the survival probabilities. Defaults
 to "identity". Other options include "event", "cumhaz", "cloglog", or
-define your own using \link{trans_new}.}
+define your own using \link[scales]{trans_new}.}
 
 \item{firstx, firsty}{the starting point for the survival curves. By default,
 the plot program obeys tradition by having the plot start at \verb{(0,1)}.}
