@@ -2,7 +2,7 @@
 % Please edit documentation in R/gglogisticexpdist.R
 \name{gglogisticexpdist}
 \alias{gglogisticexpdist}
-\title{Create a logistic fit plot}
+\title{Create a logistic fit vs exposure(s)plot}
 \usage{
 gglogisticexpdist(
   data = effICGI,
@@ -30,7 +30,8 @@ gglogisticexpdist(
   prob_text_size = 5,
   prob_obs_bydose = TRUE,
   prob_obs_bydose_plac = FALSE,
-  Nresp_Ntot = TRUE,
+  Nresp_Ntot_show = TRUE,
+  Nresp_Ntot_size = 5,
   Nresp_Ntot_ypos = c("with percentages", "top"),
   Nresp_Ntot_sep = "/",
   binlimits_show = TRUE,
@@ -104,7 +105,9 @@ gglogisticexpdist(
 
 \item{prob_obs_bydose_plac}{observed probability by placebo dose \code{TRUE}/\code{FALSE}}
 
-\item{Nresp_Ntot}{show N responders/Ntotal ? \code{TRUE}/\code{FALSE}}
+\item{Nresp_Ntot_show}{show N responders/Ntotal ? \code{TRUE}/\code{FALSE}}
+
+\item{Nresp_Ntot_size}{N responders/Ntotal text size default to 5}
 
 \item{Nresp_Ntot_ypos}{y position for N responders/Ntotal two text elements the first for by exptile and the second
 for by dose/color options include \verb{with percentages} \code{top} \code{bottom}}
@@ -239,7 +242,7 @@ gglogisticexpdist(data = effICGI  |>
                  yproj_dodge = 20,
                  prob_text_size = 6,
                  binlimits_text_size = 6,
-                 Nresp_Ntot = TRUE,
+                 Nresp_Ntot_show = TRUE,
                  dist_position_scaler = 0.15)+
                  ggplot2::scale_x_continuous(breaks = seq(0,350,50),
                  expand = ggplot2::expansion(add= c(0,0),mult=c(0,0)))+
@@ -328,7 +331,7 @@ gglogisticexpdist(data = effICGI,
                   exposure_metric_plac_value = 0,
                   color_fill = "endpointcol2",                   
                   logistic_by_color_fill = TRUE,
-                  Nresp_Ntot = TRUE,
+                  Nresp_Ntot_show = TRUE,
                   Nresp_Ntot_ypos = c("with percentages","bottom"),
                   prob_obs_byexptile = FALSE,
                   prob_obs_byexptile_group="endpointcol3",
@@ -352,7 +355,7 @@ gglogisticexpdist(data = effICGI,
                   exposure_metric_plac_value = 0,
                   color_fill = "Endpoint",                   
                   logistic_by_color_fill = TRUE,
-                  Nresp_Ntot = FALSE, points_show = FALSE,
+                  Nresp_Ntot_show = FALSE, points_show = FALSE,
                   prob_obs_byexptile = TRUE,
                   prob_obs_byexptile_group="endpointcol3",
                   prob_obs_byexptile_plac = TRUE,

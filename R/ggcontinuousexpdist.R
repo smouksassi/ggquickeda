@@ -5,6 +5,7 @@
 #' @importFrom stats median
 #' @importFrom stats quantile
 #' @importFrom stats sd
+#' @importFrom stats predict
 
 summary_df_cont <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
   N = Ntot = prob = NULL
@@ -857,11 +858,11 @@ ggcontinuousexpdist <- function(data = effICGI,
     if(proj_bydose){
       p1proj <- p1lo +
         ggplot2::geom_line(data = predict_by_endpoint_expname_dose |>
-                             filter(expvalue != exposure_metric_plac_value) ,
+                             dplyr::filter(expvalue != exposure_metric_plac_value) ,
                            ggplot2::aes_string(y = "yhat", col = color_fill, group = color_fill),
                            alpha = 0.4, linewidth = 2)+
         ggplot2::geom_line(data = predict_by_endpoint_expname_dose2 |>
-                             filter(expvalue != exposure_metric_plac_value) ,
+                             dplyr::filter(expvalue != exposure_metric_plac_value) ,
                            ggplot2::aes_string(y = "yhat", col = color_fill, group = color_fill),
                            alpha = 0.4, linewidth = 2.5)+
         ggplot2::geom_point(data = predict_by_endpoint_expname ,

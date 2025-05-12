@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggcontinuousexpdist.R
 \name{ggcontinuousexpdist}
 \alias{ggcontinuousexpdist}
-\title{Create a continuous exposure fit plot}
+\title{Create a continuous fit vs exposure(s) plot}
 \usage{
 ggcontinuousexpdist(
   data = effICGI,
@@ -33,6 +33,7 @@ ggcontinuousexpdist(
   N_text_show = TRUE,
   N_text_size = 5,
   N_text_ypos = c("with means", "top"),
+  N_text_sep = "\\n",
   binlimits_show = TRUE,
   binlimits_text_size = 5,
   binlimits_ypos = -Inf,
@@ -111,6 +112,8 @@ ggcontinuousexpdist(
 \item{N_text_ypos}{y position for N two text elements the first for by exptile and the second
 for by dose/color options include \verb{with means} \code{top} \code{bottom}}
 
+\item{N_text_sep}{character string to separat N from mean default \verb{\\n}}
+
 \item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
 
 \item{binlimits_text_size}{binlimits text size default to 5}
@@ -172,7 +175,11 @@ a <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="ICGI7"),
                  dist_position_scaler = 1, dist_offset = -1 ,
                  yproj_xpos =  -20 ,
                  yproj_dodge = 20 ,
-                 exposure_distribution ="distributions")
+                 exposure_distribution ="distributions",
+                 mean_obs_bydose_plac = TRUE,
+                 mean_obs_byexptile_plac=FALSE,
+                 return_list = FALSE
+                 )
 
 b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
                  response = "response",
@@ -185,15 +192,18 @@ b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
                  yproj_xpos =  -20 ,
                  yproj_dodge = 20 ,
                  exposure_distribution ="distributions",
+                 mean_obs_bydose_plac = TRUE,
+                 mean_obs_byexptile_plac=FALSE,
                  return_list = FALSE)            
 (a / b)  +
 plot_layout(guides = "collect") &
  theme(legend.position = "top")
 
-#Example 2
+#Example 2 loess fit
 effICGI$SEX <- as.factor(effICGI$SEX)
 ggcontinuousexpdist(data = effICGI |>
   dplyr::filter(Endpoint =="ICGI7"),
+                 model_type = "loess",
                  response = "response",
                  endpoint = "Endpoint",
                  color_fill = "SEX",
@@ -204,8 +214,39 @@ ggcontinuousexpdist(data = effICGI |>
                  dist_position_scaler = 1, dist_offset = -1 ,
                  yproj_xpos =  -20 ,
                  yproj_dodge = 20 ,
-                 exposure_distribution ="lineranges")
+                 exposure_distribution ="lineranges",
+                 lineranges_ypos = -0.2,
+                 lineranges_dodge = 0.2,
+                 lineranges_doselabel = TRUE)
 \dontrun{
 #Example 3
+library(ggplot2)
+ library(patchwork)
+  effICGI <- logistic_data |>
+  dplyr::filter(!is.na(ICGI7))|>
+  dplyr::filter(!is.na(AUC))
+  effICGI$DOSE <- factor(effICGI$DOSE,
+                       levels=c("0", "600", "1200","1800","2400"),
+                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+effICGI$STUDY <- factor(effICGI$STUDY)
+effICGI <- tidyr::gather(effICGI,Endpoint,response,PRLS,BRLS)
+effICGI$Endpoint2 <- effICGI$Endpoint
+ggcontinuousexpdist(data = effICGI ,
+                    model_type = "loess",
+                    response = "response",
+                    endpoint = "Endpoint",
+                    color_fill = "Endpoint2",
+                    fit_by_color_fill = TRUE,
+                    exposure_metrics = c("AUC"),
+                    exposure_metric_split = c("quartile"),
+                    exposure_metric_soc_value = -99,
+                    exposure_metric_plac_value = 0,
+                    yproj = FALSE, points_show = FALSE,
+                    exposure_distribution ="none",
+                    N_text_sep = " | N = ",
+                    N_text_ypos = c("bottom","with means"),
+                    binlimits_color = "red",
+                    binlimits_ypos = 10,
+                    facet_formula = ~expname)
 }
 }
