@@ -23,8 +23,8 @@ summary_df_cont <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
 }
 plogis <- function(x) exp(x)/(1+exp(x))
 
-#' Create a continuous exposure fit plot
-#' 
+#' Create a continuous fit vs exposure(s) plot
+#'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 #' @param data Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)
 #' @param response name of the column holding the response values
@@ -55,6 +55,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param N_text_size N by exposure text size default to 5
 #' @param N_text_ypos y position for N two text elements the first for by exptile and the second
 #'  for by dose/color options include `with means` `top` `bottom`
+#' @param N_text_sep character string to separat N from mean default `\n`
 #' @param binlimits_show show the binlimits vertical lines `TRUE`/`FALSE`
 #' @param binlimits_text_size binlimits text size default to 5
 #' @param binlimits_ypos binlimits y position default to -Inf 
@@ -95,7 +96,11 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 1, dist_offset = -1 ,
 #'                  yproj_xpos =  -20 ,
 #'                  yproj_dodge = 20 ,
-#'                  exposure_distribution ="distributions")
+#'                  exposure_distribution ="distributions",
+#'                  mean_obs_bydose_plac = TRUE,
+#'                  mean_obs_byexptile_plac=FALSE,
+#'                  return_list = FALSE
+#'                  )
 #'
 #' b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
 #'                  response = "response",
@@ -108,15 +113,18 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  yproj_xpos =  -20 ,
 #'                  yproj_dodge = 20 ,
 #'                  exposure_distribution ="distributions",
+#'                  mean_obs_bydose_plac = TRUE,
+#'                  mean_obs_byexptile_plac=FALSE,
 #'                  return_list = FALSE)            
 #' (a / b)  +
 #' plot_layout(guides = "collect") &
 #'  theme(legend.position = "top")
 #' 
-#' #Example 2
+#' #Example 2 loess fit
 #' effICGI$SEX <- as.factor(effICGI$SEX)
 #' ggcontinuousexpdist(data = effICGI |>
 #'   dplyr::filter(Endpoint =="ICGI7"),
+#'                  model_type = "loess",
 #'                  response = "response",
 #'                  endpoint = "Endpoint",
 #'                  color_fill = "SEX",
@@ -127,9 +135,40 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  dist_position_scaler = 1, dist_offset = -1 ,
 #'                  yproj_xpos =  -20 ,
 #'                  yproj_dodge = 20 ,
-#'                  exposure_distribution ="lineranges")
+#'                  exposure_distribution ="lineranges",
+#'                  lineranges_ypos = -0.2,
+#'                  lineranges_dodge = 0.2,
+#'                  lineranges_doselabel = TRUE)
 #'\dontrun{
 #' #Example 3
+#' library(ggplot2)
+#'  library(patchwork)
+#'   effICGI <- logistic_data |>
+#'   dplyr::filter(!is.na(ICGI7))|>
+#'   dplyr::filter(!is.na(AUC))
+#'   effICGI$DOSE <- factor(effICGI$DOSE,
+#'                        levels=c("0", "600", "1200","1800","2400"),
+#'                        labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+#' effICGI$STUDY <- factor(effICGI$STUDY)
+#' effICGI <- tidyr::gather(effICGI,Endpoint,response,PRLS,BRLS)
+#' effICGI$Endpoint2 <- effICGI$Endpoint
+#' ggcontinuousexpdist(data = effICGI ,
+#'                     model_type = "loess",
+#'                     response = "response",
+#'                     endpoint = "Endpoint",
+#'                     color_fill = "Endpoint2",
+#'                     fit_by_color_fill = TRUE,
+#'                     exposure_metrics = c("AUC"),
+#'                     exposure_metric_split = c("quartile"),
+#'                     exposure_metric_soc_value = -99,
+#'                     exposure_metric_plac_value = 0,
+#'                     yproj = FALSE, points_show = FALSE,
+#'                     exposure_distribution ="none",
+#'                     N_text_sep = " | N = ",
+#'                     N_text_ypos = c("bottom","with means"),
+#'                     binlimits_color = "red",
+#'                     binlimits_ypos = 10,
+#'                     facet_formula = ~expname)
 #'}
 #' @export               
 ggcontinuousexpdist <- function(data = effICGI, 
@@ -160,6 +199,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                               N_text_show = TRUE,
                               N_text_size = 5,
                               N_text_ypos = c("with means","top"),
+                              N_text_sep = "\n",
                               binlimits_show = TRUE,
                               binlimits_text_size = 5,
                               binlimits_ypos = -Inf,
@@ -191,7 +231,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   exposure_metric_split <- match.arg(exposure_metric_split, several.ok = FALSE)
   exposure_distribution <- match.arg(exposure_distribution, several.ok = FALSE)
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
- 
+
   effICGI = expname = expvalue = DOSE2 = quant = values = Ncat = Ntot = xmed = percentage = exptile = keynumeric = NULL
   intercept = medexp = prob = SE = N = ndensity = Endpoint = color_fill2 = NULL
   
@@ -287,7 +327,7 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exptilegroupvar=="none"){
     if(color_fill != DOSEinputvar) {
       data.long.summaries.dose <- data.long |>
-        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(color_fill),color_fill2,!!sym(DOSEinputvar),DOSE2)|>
+        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),DOSE2,!!sym(color_fill),color_fill2)|>
         dplyr::reframe(
           summary_df_cont(expvalue,!!sym(responseinputvar))) |>
         tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
@@ -377,7 +417,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       olsfit_by_endpoint[[i]] <- olsfit_by_endpoint_fit
       
       xseq <- seq(range(modelregdata$expvalue)[1], range(modelregdata$expvalue)[2], length.out = 1000)
-      predmodelloess <- predict(olsfit_by_endpoint_fit,newdata= tibble(expvalue= xseq),se=TRUE)
+      predmodelloess <- predict(olsfit_by_endpoint_fit,newdata= data.frame(expvalue= xseq),se=TRUE)
       predmodelfitse<- data.frame(x=xseq,predmodelloess$fit,predmodelloess$se.fit)
       cimultiplier<- stats::qt(0.95 / 2 + 0.5, predmodelloess$df)
       
@@ -447,7 +487,7 @@ ggcontinuousexpdist <- function(data = effICGI,
     predict_by_endpoint_expname[[i]] <- data.long.summaries.dose.loop
     data.long.summaries.dose.loop <- data.long.summaries.dose.loop |>
     dplyr::ungroup()
-    
+
     if(exptilegroupvar=="none"){
       if(model_type=="linear"){
       if(color_fill != DOSEinputvar) {
@@ -630,47 +670,46 @@ ggcontinuousexpdist <- function(data = effICGI,
           predictionsbydose<- data.long.summaries.dose.loop |>
             dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
                             !!sym(exptilegroupvar)) |>
-            dplyr::do(
-              data.frame(fit=
-                           predict(olsfit_by_endpoint_fit,
-                                   expvalue=seq(data.long.summaries.dose.loop$quant_10,
-                                                data.long.summaries.dose.loop$quant_90,length.out=100),
-                                   se=TRUE)$fit,
-                         se.fit=
-                           predict(olsfit_by_endpoint_fit,
-                                   expvalue=seq(data.long.summaries.dose.loop$quant_10,
-                                                data.long.summaries.dose.loop$quant_90,length.out=100),
-                                   se=TRUE)$se.fit
-              )
+          dplyr::do(
+            data.frame(expvalue=
+                         seq(.data$quant_10,.data$quant_90,length.out=100),
+                       yhat=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                 se=TRUE)$fit,
+                       se.fit=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_10,.data$quant_90,length.out=100)),
+                                 se=TRUE)$se.fit
             )
+          )
           predict_by_endpoint_expname_dose[[i]] <- predictionsbydose
           
           predictionsbydose2<- data.long.summaries.dose.loop |>
             dplyr::group_by(!!sym(DOSEinputvar),!!sym(endpointinputvar),expname,DOSE2,
                             !!sym(exptilegroupvar)) |>
-            dplyr::do(
-              data.frame(fit=
-                           predict(olsfit_by_endpoint_fit,
-                                   expvalue=seq(data.long.summaries.dose.loop$quant_25,
-                                                data.long.summaries.dose.loop$quant_75,length.out=100),
-                                   se=TRUE)$fit,
-                         se.fit=
-                           predict(olsfit_by_endpoint_fit,
-                                   expvalue=seq(data.long.summaries.dose.loop$quant_25,
-                                                data.long.summaries.dose.loop$quant_75,length.out=100),
-                                   se=TRUE)$se.fit
-              )
+             dplyr::do(
+            data.frame(expvalue=
+                         seq(.data$quant_25,.data$quant_75,length.out=100),
+                       yhat=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                 se=TRUE)$fit,
+                       se.fit=
+                         predict(olsfit_by_endpoint_fit,
+                                 newdata= data.frame(expvalue=seq(.data$quant_25,.data$quant_75,length.out=100)),
+                                 se=TRUE)$se.fit
             )
+          )
           predict_by_endpoint_expname_dose2[[i]] <- predictionsbydose2
         }
       }
     }
-    
-  }#end of loops
+  }
   predict_by_endpoint_expname <- data.table::rbindlist(predict_by_endpoint_expname)
   predict_by_endpoint_expname_dose <- data.table::rbindlist(predict_by_endpoint_expname_dose)
   predict_by_endpoint_expname_dose2 <- data.table::rbindlist(predict_by_endpoint_expname_dose2)
-  
+
   if (exptilegroupvar=="none") {
     data.long.summaries.exposure <- data.long |>
       dplyr::ungroup()|>
@@ -749,15 +788,14 @@ ggcontinuousexpdist <- function(data = effICGI,
   
   facet_formula <- if (is.null(facet_formula) ) stats::as.formula( paste(endpointinputvar,"~","expname")) else
     stats::as.formula(facet_formula)
-  #facet_formula <- Endpoint ~ expname 
-  
+
   p1 <-  ggplot2::ggplot(data.long,
                          ggplot2::aes_string("expvalue", responseinputvar))+
     ggplot2::facet_grid(facet_formula, scales = "free")
-  
-    if(points_show){
-      p1p <- p1 + 
-        ggplot2::geom_point(ggplot2::aes_string(col = color_fill),
+
+  if(points_show){
+    p1p <- p1 + 
+       ggplot2::geom_point(ggplot2::aes_string(col = color_fill),
                             alpha = points_alpha)
     }
   if(!points_show){
@@ -770,8 +808,8 @@ ggcontinuousexpdist <- function(data = effICGI,
         dplyr::distinct(expname,intercept,quant)
     }
     p1pl <- p1p  +
-      ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept),
-                          color = binlimits_color, alpha = 0.5 )
+    ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept),
+                        color = binlimits_color, alpha = 0.5 )
   }
   if(!binlimits_show){
     p1pl <- p1p 
@@ -787,8 +825,8 @@ ggcontinuousexpdist <- function(data = effICGI,
     ggplot2::geom_ribbon(data = data.long |>
                          dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
                          stat="smooth",
-                         method = model_type_method, 
-                         color="transparent",linetype=0, alpha = 0.3,
+                         method = model_type_method,
+                         color="transparent", linetype = 0, alpha = 0.3,
                          ggplot2::aes(fill = filltext))+
     ggplot2::geom_line(data = data.long |>
                        dplyr::mutate( DOSEinputvar := NULL, DOSE2 = NULL, exptile = NULL, color_fill := NULL, color_fill2 = NULL),
@@ -803,10 +841,11 @@ ggcontinuousexpdist <- function(data = effICGI,
                          stat="smooth",
                          method = model_type_method, 
                          color="transparent", linetype = 0, alpha = 0.3,
-                         ggplot2::aes_string(fill = color_fill))+
+                        ggplot2::aes_string(fill = color_fill))+
     ggplot2::geom_line(data = data.long,
                         stat="smooth",
-                        method = model_type_method, alpha = 0.5,
+                        method = model_type_method,
+                         alpha = 0.5,
                        ggplot2::aes_string(linetype = color_fill,
                                            color=color_fill))
   }
@@ -814,26 +853,24 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(model_type == "none"){
     p1lo <- p1pl 
   }
-  
+ 
     if(proj_bydose){
-      print(predict_by_endpoint_expname)
       p1proj <- p1lo +
-        ggplot2::geom_line(data = predict_by_endpoint_expname_dose %>% 
-                             filter(expvalue!=exposure_metric_plac_value),
+        ggplot2::geom_line(data = predict_by_endpoint_expname_dose |>
+                             filter(expvalue != exposure_metric_plac_value) ,
                            ggplot2::aes_string(y = "yhat", col = color_fill, group = color_fill),
                            alpha = 0.4, linewidth = 2)+
-        ggplot2::geom_line(data = predict_by_endpoint_expname_dose2 %>% 
-                             filter(expvalue!=exposure_metric_plac_value),
+        ggplot2::geom_line(data = predict_by_endpoint_expname_dose2 |>
+                             filter(expvalue != exposure_metric_plac_value) ,
                            ggplot2::aes_string(y = "yhat", col = color_fill, group = color_fill),
                            alpha = 0.4, linewidth = 2.5)+
-        ggplot2::geom_point(data = predict_by_endpoint_expname,
+        ggplot2::geom_point(data = predict_by_endpoint_expname ,
                             ggplot2::aes_string(x = "medexp", y = "ymid50", col = color_fill),
                             alpha = 0.4, size = 5)
     }
   if(!proj_bydose){
     p1proj <- p1lo
   }
-  
   
   if(exposure_distribution=="lineranges") {
     lineranges_ypos <- as.character(lineranges_ypos)
@@ -877,12 +914,12 @@ ggcontinuousexpdist <- function(data = effICGI,
   }
 
  if(!mean_obs_byexptile_plac){
+    data.long.summaries.exposure[data.long.summaries.exposure[,"meanexp"]==exposure_metric_plac_value,"mean"] <- NA
     data.long.summaries.exposure[data.long.summaries.exposure[,"meanexp"]==exposure_metric_plac_value,"Ntot"] <- NA
-    data.long.summaries.exposure[data.long.summaries.exposure[,"meanexp"]==exposure_metric_plac_value,"mean"] <- NA 
   }  
   if(!fit_by_color_fill){
-  if (mean_obs_byexptile){
-    p2e <- p1lt +
+    if (mean_obs_byexptile){
+      p2e <- p1lt +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                size = 1, alpha = 0.5,
                                ggplot2::aes(shape = paste("Observed mean by exposure split:",
@@ -936,32 +973,34 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(mean_obs_bydose){
     data.long.summaries.dose.plot <- data.long.summaries.dose 
     if(!mean_obs_bydose_plac){
-      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
-      data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA 
+    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
+    data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"mean"] <- NA
     }
-    #print(data.long.summaries.dose.plot)
-    
+
     if(N_text_show){
       p2d <- p2e +
-        ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
-                                 ggplot2::aes(x = medexp,
-                                              y = mean,
-                                              ymin = mean+1.959*SE,
-                                              ymax = mean-1.959*SE,
-                                              col = !!sym(color_fill),
-                                              shape =  paste("Observed mean by",colorinputvar,"split")))
+        ggplot2::geom_pointrange(data = data.long.summaries.dose.plot %>% dplyr::filter(!is.na(Ntot)),
+         alpha = 0.5, size = 1,
+         ggplot2::aes(
+         x = medexp,
+         y = mean,
+         ymin = mean+1.959*SE,
+         ymax = mean-1.959*SE,
+         col = !!sym(color_fill),
+         shape =  paste("Observed mean by",colorinputvar,"split")))
       
       if(N_text_ypos[2] == "with means"){
       p2dntot<- p2d +
         ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
-                                   dplyr::filter(!is.na(Ntot)),
+                                dplyr::filter(!is.na(Ntot)),
                                  vjust = 1,
-                                 size = mean_text_size, show.legend = FALSE,
+                                 size = mean_text_size,
+                                 show.legend = FALSE,
                                  ggplot2::aes(x = medexp,
                                               y = mean*0.95,                                        ,
                                               col = !!sym(color_fill),
                                               label = paste(
-                                                paste("\n",round(mean,2),sep=""),"\n",
+                                                paste("\n",round(mean,2),sep=""),N_text_sep,
                                                 Ntot,sep="")
                                  )) 
       
@@ -1006,7 +1045,6 @@ ggcontinuousexpdist <- function(data = effICGI,
       }
     }
     if(!N_text_show){
-      
       p2dntot <- p2e +
         ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
                                  ggplot2::aes(x = medexp,
@@ -1036,18 +1074,20 @@ ggcontinuousexpdist <- function(data = effICGI,
     if(N_text_show){
       if(N_text_ypos[1] == "with means"){
         p2 <- p2dntot +
-          ggrepel::geom_text_repel(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+                                     dplyr::filter(!is.na(Ntot)),
                                    vjust = 1,
                                    size = mean_text_size, show.legend = FALSE,
                                    ggplot2::aes(x = medexp,
                                                 y = mean*1.05,
                                                 label = paste(paste(round(mean,2),sep=""),
-                                                              "\n",Ntot,sep="")
+                                                              N_text_sep,Ntot,sep="")
                                    ))
       }
       if(N_text_ypos[1] == "top"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggplot2::geom_text(data=data.long.summaries.exposure %>% 
+                               dplyr::filter(!is.na(Ntot)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = mean*1.05,                                        ,
@@ -1063,13 +1103,15 @@ ggcontinuousexpdist <- function(data = effICGI,
       }
       if(N_text_ypos[1] == "bottom"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+                                     dplyr::filter(!is.na(Ntot)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = mean*1.05,                                        ,
                                           label = paste(round(mean,2),sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+                                     dplyr::filter(!is.na(Ntot)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = -Inf,
@@ -1079,7 +1121,7 @@ ggcontinuousexpdist <- function(data = effICGI,
     }  
     if(!N_text_show){
       p2 <- p2dntot +
-        ggplot2::geom_text(data=data.long.summaries.exposure,
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure,
                            vjust = 0,
                            size = mean_text_size, show.legend = FALSE,
                            ggplot2::aes(x = as.double(as.character(medexp)),
@@ -1094,6 +1136,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       if(N_text_ypos[1] == "with means"){
         p2 <- p2dntot +
           ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+                                     dplyr::filter(!is.na(Ntot)) %>% 
                                      dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                                    vjust = 1,
                                    size = mean_text_size, show.legend = FALSE,
@@ -1101,12 +1144,14 @@ ggcontinuousexpdist <- function(data = effICGI,
                                                 x = medexp,
                                                 y = mean*1.15,
                                                 label = paste(paste(round(mean,2),sep=""),
-                                                              "\n",Ntot,sep="")
+                                                              N_text_sep,Ntot,sep="")
                                    ))
       }
       if(N_text_ypos[1] == "top"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+                               dplyr::filter(!is.na(Ntot))%>% 
+                               dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(col= .data[[endpointinputvar]],
@@ -1114,7 +1159,9 @@ ggcontinuousexpdist <- function(data = effICGI,
                                           y = mean*1.15,                                        ,
                                           label = paste(round(mean,2),sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+                               dplyr::filter(!is.na(Ntot))%>% 
+                               dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(col= .data[[endpointinputvar]],
@@ -1125,7 +1172,8 @@ ggcontinuousexpdist <- function(data = effICGI,
       }
       if(N_text_ypos[1] == "bottom"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure%>% 
+                                     dplyr::filter(!is.na(Ntot)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
                              ggplot2::aes(col= .data[[endpointinputvar]],
@@ -1133,19 +1181,22 @@ ggcontinuousexpdist <- function(data = effICGI,
                                           y = mean*1.15,                                        ,
                                           label = paste(round(mean,2),sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+                                     dplyr::filter(!is.na(Ntot)),
                              vjust = 1,
                              size = mean_text_size, show.legend = FALSE,
-                             ggplot2::aes(col= .data[[endpointinputvar]],
-                                          x = medexp,
-                                          y = -Inf,
+                             ggplot2::aes(x   = medexp, y = -Inf,
+                                          col = .data[[endpointinputvar]],
+
                                           label = paste(Ntot,sep="")
                              ))
       }
-    }  
+    } 
     if(!N_text_show){
       p2 <- p2dntot +
-        ggplot2::geom_text(data=data.long.summaries.exposure,
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+                             dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar))%>% 
+                             dplyr::filter(!is.na(Ntot)),
                            vjust = 0,
                            size = mean_text_size, show.legend = FALSE,
                            ggplot2::aes(col= .data[[endpointinputvar]],
@@ -1164,7 +1215,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       xintercepts <- xintercepts %>% 
         dplyr::distinct(expname,intercept,quant)
     }
-         p2t <- p2 +
+     p2t <- p2 +
        ggrepel::geom_text_repel(data = xintercepts,
                           ggplot2::aes(label=round(intercept,1), x = intercept, y = binlimits_ypos) ,
                           vjust = 0, size = binlimits_text_size,color = binlimits_color,
@@ -1201,7 +1252,6 @@ ggcontinuousexpdist <- function(data = effICGI,
   if(exposure_distribution!="distributions") {
     p2dn <- p2t
   }
-
   if(yproj) {
     yproj_xpos <- as.character(yproj_xpos)
     
@@ -1313,5 +1363,5 @@ ggcontinuousexpdist <- function(data = effICGI,
          percentineachbreakcategory,pf)
   }
   pf
-  }
+ }
 
