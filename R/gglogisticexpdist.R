@@ -303,7 +303,7 @@ gglogisticexpdist <- function(data = effICGI,
                               exposure_metric_split = c("median","tertile","quartile","none"),
                               exposure_metric_soc_value = -99,
                               exposure_metric_plac_value = 0,
-                              exposure_distribution = c("distributions","lineranges","none"),
+                              exposure_distribution = c("distributions","lineranges","boxplots","none"),
                               exposure_distribution_percent = TRUE,
                               exposure_distribution_percent_text_size = 5,
                               dose_plac_value = "Placebo",
@@ -1117,17 +1117,28 @@ if(!prob_obs_byexptile_plac){
       p2t <- p2 
     }
 
-  if(exposure_distribution=="distributions") {
+  if(exposure_distribution%in%c("distributions","boxplots")) {
     data.long.ridges <- data.long 
     data.long.ridges[data.long.ridges[,DOSEinputvar]==dose_plac_value,"expvalue"] <- NA
-    p2d <- p2t +
-      ggridges::geom_density_ridges(data = data.long.ridges,
-                                    ggplot2::aes(x = expvalue, y = keynumeric,
-                                                 group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
-                                                 col = !!sym(color_fill),
-                                                height = ggplot2::after_stat(ndensity)),
-                                    rel_min_height = 0.05, alpha = 0.1, scale = dist_scale,
-                                    quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9))
+    if(exposure_distribution%in%c("distributions")){
+      p2d <- p2t +
+        ggridges::geom_density_ridges(data = data.long.ridges,
+                                      ggplot2::aes(x = expvalue, y = keynumeric,
+                                                   group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                                   col = !!sym(color_fill),
+                                                   height = ggplot2::after_stat(ndensity)),
+                                      rel_min_height = 0.05, alpha = 0.1, scale = dist_scale,
+                                      quantile_lines = TRUE, quantiles = c(0.1,0.25, 0.5, 0.75,0.9)) 
+    }
+    if(exposure_distribution%in%c("boxplots")){
+      p2d <- p2t +
+        geom_boxplot(data = data.long.ridges,
+                                      ggplot2::aes(x = expvalue, y = keynumeric,
+                                                   group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                                   col = !!sym(color_fill)),
+                                       alpha = 0.1, orientation="y") 
+    }
+    
 if(!exposure_distribution_percent){
     p2dn <- p2d
     }
@@ -1141,7 +1152,7 @@ if(!exposure_distribution_percent){
                                   alpha = 0.5, show.legend = FALSE)
     }
   }
-  if(exposure_distribution!="distributions") {
+  if(!exposure_distribution%in%c("distributions","boxplots")) {
     p2dn <- p2t
   }
   if(yproj) {
@@ -1168,7 +1179,7 @@ if(!exposure_distribution_percent){
   if(!yproj) {
     p2df <- p2dn 
   }
-  if(exposure_distribution =="distributions"){
+  if(exposure_distribution %in%c("distributions","boxplots")){
     
     if( length (levels(data.long[DOSEinputvar] |> dplyr::pull() )) ==
         length (sort(unique(data.long$keynumeric)))
