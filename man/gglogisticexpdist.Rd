@@ -16,7 +16,7 @@ gglogisticexpdist(
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
-  exposure_distribution = c("distributions", "lineranges", "none"),
+  exposure_distribution = c("distributions", "lineranges", "boxplots", "none"),
   exposure_distribution_percent = TRUE,
   exposure_distribution_percent_text_size = 5,
   dose_plac_value = "Placebo",
@@ -77,7 +77,7 @@ gglogisticexpdist(
 
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
 
-\item{exposure_distribution}{one of distributions, lineranges or none}
+\item{exposure_distribution}{one of distributions, lineranges, boxplots or none}
 
 \item{exposure_distribution_percent}{show percent of distribution between binlimits \code{TRUE}/\code{FALSE}}
 

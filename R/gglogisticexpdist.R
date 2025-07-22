@@ -37,7 +37,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
-#' @param exposure_distribution one of distributions, lineranges or none
+#' @param exposure_distribution one of distributions, lineranges, boxplots or none
 #' @param exposure_distribution_percent show percent of distribution between binlimits `TRUE`/`FALSE`
 #' @param exposure_distribution_percent_text_size  distribution percentages text size default to 5
 #' @param dose_plac_value string identifying placebo in DOSE column
