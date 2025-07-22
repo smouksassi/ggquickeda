@@ -1136,7 +1136,7 @@ if(!prob_obs_byexptile_plac){
                                       ggplot2::aes(x = expvalue, y = keynumeric,
                                                    group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
                                                    col = !!sym(color_fill)),
-                                       alpha = 0.1, orientation="y") 
+                     alpha = 0.1, orientation="y", width = dist_position_scaler*0.90) 
     }
     
 if(!exposure_distribution_percent){

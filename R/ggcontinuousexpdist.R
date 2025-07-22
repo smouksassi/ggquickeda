@@ -1150,7 +1150,7 @@ ggcontinuousexpdist <- function(data = effICGI,
       }
       if(N_text_ypos[1] == "top"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure%>% 
                                dplyr::filter(!is.na(Ntot))%>% 
                                dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                              vjust = 1,
@@ -1160,7 +1160,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                                           y = mean*1.15,                                        ,
                                           label = paste(round(mean,2),sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure%>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure%>% 
                                dplyr::filter(!is.na(Ntot))%>% 
                                dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                              vjust = 1,
@@ -1245,7 +1245,7 @@ ggcontinuousexpdist <- function(data = effICGI,
                      ggplot2::aes(x = expvalue, y = keynumeric,
                                   group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
                                   col = !!sym(color_fill)),
-                     alpha = 0.1, orientation="y") 
+                     alpha = 0.1, orientation="y", width = dist_position_scaler*0.90) 
     }
     if(!exposure_distribution_percent){
       p2dn <- p2d
