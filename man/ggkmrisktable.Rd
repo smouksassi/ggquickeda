@@ -16,6 +16,8 @@ ggkmrisktable(
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
+  exposure_metric_soc_name = "SOC",
+  exposure_metric_plac_name = "Placebo",
   show_exptile_values = FALSE,
   show_exptile_values_pos = c("left", "right"),
   show_exptile_values_textsize = 5,
@@ -76,6 +78,10 @@ ggkmrisktable(
 \item{exposure_metric_soc_value}{special exposure code for standard of care default -99}
 
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
+
+\item{exposure_metric_soc_name}{soc name default to "soc"}
+
+\item{exposure_metric_plac_name}{placebo name default to "placebo"}
 
 \item{show_exptile_values}{FALSE}
 

@@ -5,7 +5,7 @@
 \title{Create a fit vs exposure(s)plot}
 \usage{
 ggresponseexpdist(
-  data = effICGI,
+  data = dplyr::filter(logistic_data, !is.na(ICGI)),
   response = "response",
   endpoint = "Endpoint",
   model_type = c("loess", "linear", "logistic", "none"),
@@ -16,8 +16,11 @@ ggresponseexpdist(
   exposure_metric_split = c("median", "tertile", "quartile", "none"),
   exposure_metric_soc_value = -99,
   exposure_metric_plac_value = 0,
+  exposure_metric_soc_name = "SOC",
+  exposure_metric_plac_name = "Placebo",
   exposure_distribution = c("distributions", "lineranges", "boxplots", "none"),
-  exposure_distribution_percent = TRUE,
+  exposure_distribution_percent = c("\%", "N (\%)", "N", "none"),
+  exposure_distribution_Ntotal = c("left", "right", "none"),
   exposure_distribution_percent_text_size = 5,
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
@@ -27,13 +30,13 @@ ggresponseexpdist(
   mean_obs_byexptile = TRUE,
   mean_obs_byexptile_plac = TRUE,
   mean_obs_byexptile_group = "none",
-  mean_obs_bydose = TRUE,
+  mean_obs_bydose = FALSE,
   mean_obs_bydose_plac = FALSE,
   mean_obs_text_size = 5,
   N_byexptile_ypos = c("with means", "top", "bottom", "none"),
   N_bydose_ypos = c("with means", "top", "bottom", "none"),
   N_text_size = 5,
-  N_text_sep = "\\n",
+  N_text_sep = NULL,
   binlimits_show = TRUE,
   binlimits_text_size = 5,
   binlimits_ypos = 0,
@@ -41,11 +44,12 @@ ggresponseexpdist(
   dist_position_scaler = 0.2,
   dist_offset = 0,
   dist_scale = 0.9,
-  lineranges_ypos = -1,
-  lineranges_dodge = 1,
+  lineranges_ypos = NULL,
+  lineranges_dodge = NULL,
   lineranges_doselabel = FALSE,
-  proj_bydose = TRUE,
-  yproj = TRUE,
+  lineranges_N = FALSE,
+  proj_bydose = FALSE,
+  yproj = FALSE,
   yproj_xpos = 0,
   yproj_dodge = 0.2,
   yaxis_position = c("left", "right"),
@@ -63,11 +67,11 @@ ggresponseexpdist(
 
 \item{model_type}{type of the trend fit one of "loess", "linear", "logistic", "none"}
 
-\item{DOSE}{name of the column holding the DOSE values default to \code{DOSE}}
+\item{DOSE}{name of the column holding the DOSE/regimen values default to \code{DOSE}}
 
 \item{color_fill}{name of the column to be used for color/fill default to DOSE column}
 
-\item{fit_by_color_fill}{fit split by color? default \code{FALSE}}
+\item{fit_by_color_fill}{split fit by color/fill? default \code{FALSE}}
 
 \item{exposure_metrics}{name(s) of the column(s) to be stacked into \code{expname} \code{exptile} and split into \code{exposure_metric_split}}
 
@@ -77,9 +81,15 @@ ggresponseexpdist(
 
 \item{exposure_metric_plac_value}{special exposure code for placebo default 0}
 
+\item{exposure_metric_soc_name}{soc name default to "soc"}
+
+\item{exposure_metric_plac_name}{placebo name default to "placebo"}
+
 \item{exposure_distribution}{one of distributions, lineranges, boxplots or none}
 
-\item{exposure_distribution_percent}{show percent of distribution between binlimits \code{TRUE}/\code{FALSE}}
+\item{exposure_distribution_percent}{show N/percent of distribution between binlimits one of "\%", "N (\%)","N","none"}
+
+\item{exposure_distribution_Ntotal}{show Ntotal by dose level next to the distribution one of "left","right","none"}
 
 \item{exposure_distribution_percent_text_size}{distribution percentages text size default to 5}
 
@@ -105,13 +115,13 @@ ggresponseexpdist(
 
 \item{mean_obs_text_size}{mean text size default to 5}
 
-\item{N_byexptile_ypos}{y position for N responders/Ntotal for by exptile one of \verb{with means} \code{top} \code{bottom} \code{none}}
+\item{N_byexptile_ypos}{N responders/Ntotal y position by exptile one of \verb{with means} \code{top} \code{bottom} \code{none}}
 
-\item{N_bydose_ypos}{y position for N responders/Ntotal for by dose/color one of \verb{with means} \code{top} \code{bottom} \code{none}}
+\item{N_bydose_ypos}{N responders/Ntotal y position by dose/color one of \verb{with means} \code{top} \code{bottom} \code{none}}
 
-\item{N_text_size}{N responders (logistic) and or Ntotal text size default to 5}
+\item{N_text_size}{N responders/Ntotal text size default to 5}
 
-\item{N_text_sep}{character string to separate N from mean for logistic fit defaults to \code{/} otherwise \verb{\\n}}
+\item{N_text_sep}{character string to separate N responders/Ntotal or N/mean defaults to \code{/} otherwise \verb{\\n}}
 
 \item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
 
@@ -120,6 +130,20 @@ ggresponseexpdist(
 \item{binlimits_ypos}{binlimits y position default to -Inf}
 
 \item{binlimits_color}{binlimits text color default to alpha("gray70",0.5)}
+
+\item{dist_position_scaler}{space occupied by the distribution default to 0.2}
+
+\item{dist_offset}{offset where the distribution position starts default to 0}
+
+\item{dist_scale}{scaling parameter for ggridges default to 0.9}
+
+\item{lineranges_ypos}{where to put the lineranges -1}
+
+\item{lineranges_dodge}{lineranges vertical dodge value 1}
+
+\item{lineranges_doselabel}{\code{TRUE}/\code{FALSE}}
+
+\item{lineranges_N}{\code{TRUE}/\code{FALSE}}
 
 \item{proj_bydose}{project the predictions on the fit curve \code{TRUE}/\code{FALSE}}
 
@@ -142,6 +166,34 @@ Produces a fit as per model_type plot with a facettable exposures/quantiles/dist
 }
 \examples{
 # Example 1
+library(ggplot2)
+effICGI <- logistic_data |>
+dplyr::filter(!is.na(ICGI))|>
+dplyr::filter(!is.na(AUC))
+effICGI$DOSE <- factor(effICGI$DOSE,
+                      levels=c("0", "600", "1200","1800","2400"),
+                      labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+effICGI$STUDY <- factor(effICGI$STUDY)    
+effICGI$ICGI2 <- effICGI$ICGI
+effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2)
+ggresponseexpdist(data = effICGI |>
+                 dplyr::filter(Endpoint=="ICGI"),
+                 response = "response",
+                 endpoint = "Endpoint",
+                 model_type = "loess",
+                 DOSE = "DOSE",
+                 color_fill = "DOSE",
+                 exposure_metrics = c("AUC","CMAX"),
+                 exposure_metric_split = c("quartile"),
+                 exposure_metric_soc_value = -99,
+                 exposure_metric_plac_value = 0,
+                 exposure_distribution ="distributions",
+                 mean_obs_bydose = TRUE,
+                 N_bydose_ypos = "top",
+                 N_text_sep = "/",
+                 binlimits_color = "#475c6b",
+                 points_alpha= 0.1)
+                 
 \dontrun{
 #' # Example 3                
 }

@@ -40,15 +40,18 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param response name of the column holding the response values
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
 #' @param model_type type of the trend fit one of "loess", "linear", "logistic", "none" 
-#' @param DOSE name of the column holding the DOSE values default to `DOSE`
+#' @param DOSE name of the column holding the DOSE/regimen values default to `DOSE`
 #' @param color_fill name of the column to be used for color/fill default to DOSE column
-#' @param fit_by_color_fill fit split by color? default `FALSE`
+#' @param fit_by_color_fill split fit by color/fill? default `FALSE`
 #' @param exposure_metrics name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`
 #' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
 #' @param exposure_metric_soc_value  special exposure code for standard of care default -99 
 #' @param exposure_metric_plac_value special exposure code for placebo default 0
+#' @param exposure_metric_soc_name  soc name default to "soc" 
+#' @param exposure_metric_plac_name placebo name default to "placebo"
 #' @param exposure_distribution one of distributions, lineranges, boxplots or none
-#' @param exposure_distribution_percent show percent of distribution between binlimits `TRUE`/`FALSE`
+#' @param exposure_distribution_percent show N/percent of distribution between binlimits one of "%", "N (%)","N","none"
+#' @param exposure_distribution_Ntotal  show Ntotal by dose level next to the distribution one of "left","right","none"
 #' @param exposure_distribution_percent_text_size  distribution percentages text size default to 5
 #' @param dose_plac_value string identifying placebo in DOSE column
 #' @param xlab text to be used as x axis label
@@ -61,14 +64,21 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param mean_obs_bydose observed mean by dose `TRUE`/`FALSE`
 #' @param mean_obs_bydose_plac observed mean by placebo dose `TRUE`/`FALSE`
 #' @param mean_obs_text_size mean text size default to 5
-#' @param N_byexptile_ypos y position for N responders/Ntotal for by exptile one of `with means` `top` `bottom` `none`
-#' @param N_bydose_ypos y position for N responders/Ntotal for by dose/color one of `with means` `top` `bottom` `none`
-#' @param N_text_size N responders (logistic) and or Ntotal text size default to 5
-#' @param N_text_sep character string to separate N from mean for logistic fit defaults to `/` otherwise `\n`
+#' @param N_byexptile_ypos N responders/Ntotal y position by exptile one of `with means` `top` `bottom` `none`
+#' @param N_bydose_ypos N responders/Ntotal y position by dose/color one of `with means` `top` `bottom` `none`
+#' @param N_text_size N responders/Ntotal text size default to 5
+#' @param N_text_sep character string to separate N responders/Ntotal or N/mean defaults to `/` otherwise `\n`
 #' @param binlimits_show show the binlimits vertical lines `TRUE`/`FALSE`
 #' @param binlimits_text_size binlimits text size default to 5
 #' @param binlimits_ypos binlimits y position default to -Inf 
 #' @param binlimits_color binlimits text color default to alpha("gray70",0.5)
+#' @param dist_position_scaler space occupied by the distribution default to 0.2 
+#' @param dist_offset offset where the distribution position starts default to 0
+#' @param dist_scale scaling parameter for ggridges default to 0.9
+#' @param lineranges_ypos where to put the lineranges -1
+#' @param lineranges_dodge lineranges vertical dodge value 1
+#' @param lineranges_doselabel `TRUE`/`FALSE`
+#' @param lineranges_N `TRUE`/`FALSE`
 #' @param proj_bydose project the predictions on the fit curve `TRUE`/`FALSE`
 #' @param yproj project the predictions on y axis `TRUE`/`FALSE`
 #' @param yproj_xpos y projection x position 0
@@ -79,11 +89,40 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param return_list What to return if True a list of the datasets and plot is returned instead of only the plot
 #' @examples
 #' # Example 1
+#' library(ggplot2)
+#' effICGI <- logistic_data |>
+#' dplyr::filter(!is.na(ICGI))|>
+#' dplyr::filter(!is.na(AUC))
+#'effICGI$DOSE <- factor(effICGI$DOSE,
+#'                       levels=c("0", "600", "1200","1800","2400"),
+#'                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+#'effICGI$STUDY <- factor(effICGI$STUDY)    
+#'effICGI$ICGI2 <- effICGI$ICGI
+#'effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2)
+#' ggresponseexpdist(data = effICGI |>
+#'                  dplyr::filter(Endpoint=="ICGI"),
+#'                  response = "response",
+#'                  endpoint = "Endpoint",
+#'                  model_type = "loess",
+#'                  DOSE = "DOSE",
+#'                  color_fill = "DOSE",
+#'                  exposure_metrics = c("AUC","CMAX"),
+#'                  exposure_metric_split = c("quartile"),
+#'                  exposure_metric_soc_value = -99,
+#'                  exposure_metric_plac_value = 0,
+#'                  exposure_distribution ="distributions",
+#'                  mean_obs_bydose = TRUE,
+#'                  N_bydose_ypos = "top",
+#'                  N_text_sep = "/",
+#'                  binlimits_color = "#475c6b",
+#'                  points_alpha= 0.1)
+#'                  
 #'\dontrun{
 #'#' # Example 3                
 #'}
 #' @export               
-ggresponseexpdist <- function(data = effICGI, 
+ggresponseexpdist <- function(data = logistic_data |>
+                                     dplyr::filter(!is.na(ICGI)), 
                               response = "response",
                               endpoint = "Endpoint",
                               model_type = c("loess","linear","logistic","none"),
@@ -94,8 +133,11 @@ ggresponseexpdist <- function(data = effICGI,
                               exposure_metric_split = c("median","tertile","quartile","none"),
                               exposure_metric_soc_value = -99,
                               exposure_metric_plac_value = 0,
+                              exposure_metric_soc_name = "SOC",
+                              exposure_metric_plac_name = "Placebo",
                               exposure_distribution = c("distributions","lineranges","boxplots","none"),
-                              exposure_distribution_percent = TRUE,
+                              exposure_distribution_percent = c("%","N (%)","N","none"),
+                              exposure_distribution_Ntotal = c("left","right","none"),
                               exposure_distribution_percent_text_size = 5,
                               dose_plac_value = "Placebo",
                               xlab = "Exposure Values",
@@ -105,13 +147,13 @@ ggresponseexpdist <- function(data = effICGI,
                               mean_obs_byexptile = TRUE,
                               mean_obs_byexptile_plac = TRUE,
                               mean_obs_byexptile_group = "none",
-                              mean_obs_bydose = TRUE,
+                              mean_obs_bydose = FALSE,
                               mean_obs_bydose_plac = FALSE,
                               mean_obs_text_size = 5,
                               N_byexptile_ypos = c("with means","top","bottom","none"),
-                              N_bydose_ypos =  c("with means","top","bottom","none"),
+                              N_bydose_ypos = c("with means","top","bottom","none"),
                               N_text_size = 5,
-                              N_text_sep = "\n",
+                              N_text_sep = NULL,
                               binlimits_show = TRUE,
                               binlimits_text_size = 5,
                               binlimits_ypos = 0,
@@ -119,11 +161,12 @@ ggresponseexpdist <- function(data = effICGI,
                               dist_position_scaler = 0.2,
                               dist_offset = 0,
                               dist_scale = 0.9,
-                              lineranges_ypos = -1,
-                              lineranges_dodge = 1,
+                              lineranges_ypos = NULL,
+                              lineranges_dodge = NULL,
                               lineranges_doselabel = FALSE,
-                              proj_bydose = TRUE,
-                              yproj = TRUE,
+                              lineranges_N = FALSE,
+                              proj_bydose = FALSE,
+                              yproj = FALSE,
                               yproj_xpos = 0,
                               yproj_dodge = 0.2,
                               yaxis_position = c("left","right"),
@@ -132,6 +175,7 @@ ggresponseexpdist <- function(data = effICGI,
                               return_list = FALSE
 ) {
 
+  
   responseinputvar  <-  response
   endpointinputvar  <- endpoint
   DOSEinputvar  <- DOSE
@@ -141,13 +185,21 @@ ggresponseexpdist <- function(data = effICGI,
 
   N_byexptile_ypos <- match.arg(N_byexptile_ypos, several.ok = FALSE)
   N_bydose_ypos    <- match.arg(N_bydose_ypos, several.ok = FALSE)
-  
+  exposure_distribution_percent    <- match.arg(exposure_distribution_percent, several.ok = FALSE)
+  exposure_distribution_Ntotal    <- match.arg(exposure_distribution_Ntotal, several.ok = FALSE)
   
   exptilegroupvar <-  mean_obs_byexptile_group
   if( all(exposure_metrics == "none") )   stop("exposure_metrics should specify at least one exposure", call. = FALSE)
   exposure_metrics <-  exposure_metrics[exposure_metrics!="none"]
-  exposure_metrics <- ifelse(identical(exposure_metrics, character(0)),"none",exposure_metrics )
+ # exposure_metrics <- ifelse(identical(exposure_metrics, character(0)),"none",exposure_metrics )
   
+  if (is.null(N_text_sep) & model_type=="logistic") N_text_sep             <- "/"
+  if (is.null(N_text_sep) & model_type!="logistic") N_text_sep             <- "\n"
+  if (is.null(lineranges_ypos) & model_type=="logistic") lineranges_ypos   <-  0.2
+  if (is.null(lineranges_ypos) & model_type!="logistic") lineranges_ypos   <- -1
+  if (is.null(lineranges_dodge) & model_type=="logistic") lineranges_dodge <-  0.15
+  if (is.null(lineranges_dodge) & model_type!="logistic") lineranges_dodge <- 1
+
   exposure_metric_split <- match.arg(exposure_metric_split, several.ok = FALSE)
   exposure_distribution <- match.arg(exposure_distribution, several.ok = FALSE)
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
@@ -184,8 +236,8 @@ ggresponseexpdist <- function(data = effICGI,
         Q75 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
                                                         exposure_metric_plac_value)], 0.75, na.rm=TRUE)) |> 
       dplyr::mutate(exptile = dplyr::case_when(
-        expvalue == exposure_metric_soc_value  ~ "SOC",
-        expvalue == exposure_metric_plac_value ~ "Placebo",
+        expvalue == exposure_metric_soc_value  ~ exposure_metric_soc_name,
+        expvalue == exposure_metric_plac_value ~ exposure_metric_plac_name,
         expvalue  > exposure_metric_plac_value &
           expvalue <= Q25      ~ "Q1",
         expvalue > Q25  & expvalue <= Q50      ~ "Q2",
@@ -208,8 +260,8 @@ ggresponseexpdist <- function(data = effICGI,
         Q66 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
                                                         exposure_metric_plac_value)], 2/3, na.rm=TRUE)) |> 
       dplyr::mutate(exptile = dplyr::case_when(
-        expvalue == exposure_metric_soc_value  ~ "SOC",
-        expvalue == exposure_metric_plac_value ~" Placebo",
+        expvalue == exposure_metric_soc_value  ~ exposure_metric_soc_name,
+        expvalue == exposure_metric_plac_value ~ exposure_metric_plac_name,
         expvalue  > exposure_metric_plac_value &
           expvalue <= Q33      ~ "T1",
         expvalue > Q33  & expvalue <= Q66      ~ "T2",
@@ -228,8 +280,8 @@ ggresponseexpdist <- function(data = effICGI,
         Q50 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
                                                         exposure_metric_plac_value)], 0.5, na.rm=TRUE)) |> 
       dplyr::mutate(exptile = dplyr::case_when(
-        expvalue == exposure_metric_soc_value  ~"SOC",
-        expvalue == exposure_metric_plac_value ~"Placebo",
+        expvalue == exposure_metric_soc_value  ~ exposure_metric_soc_name,
+        expvalue == exposure_metric_plac_value ~ exposure_metric_plac_name,
         expvalue > 0   &  expvalue <= Q50      ~ "M1",
         expvalue > Q50                         ~ "M2"))
     data.long$keynumeric <- - dist_position_scaler*as.numeric(forcats::fct_rev(as.factor(dplyr::pull(data.long[,DOSEinputvar])))) + dist_offset
@@ -247,7 +299,10 @@ ggresponseexpdist <- function(data = effICGI,
   if(exptilegroupvar=="none"){
     if(color_fill != DOSEinputvar) {
       data.long.summaries.dose <- data.long |>
-        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(color_fill),color_fill2,!!sym(DOSEinputvar),DOSE2)|>
+        dplyr::group_by(!!sym(endpointinputvar),expname,
+                        !!sym(color_fill),color_fill2,
+                        !!sym(DOSEinputvar),DOSE2,
+                        keynumeric)|>
         dplyr::reframe(
           summary_df(expvalue,!!sym(responseinputvar),
                      continuous = ifelse(response_type=="logistic",FALSE,TRUE)
@@ -257,7 +312,9 @@ ggresponseexpdist <- function(data = effICGI,
     
     if(color_fill == DOSEinputvar) {
       data.long.summaries.dose <- data.long |>
-        dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),DOSE2)|>
+        dplyr::group_by(!!sym(endpointinputvar),expname,
+                        !!sym(DOSEinputvar),DOSE2,
+                        keynumeric)|>
         dplyr::reframe(
           summary_df(expvalue,!!sym(responseinputvar),
                      continuous = ifelse(response_type=="logistic",FALSE,TRUE)
@@ -270,7 +327,7 @@ ggresponseexpdist <- function(data = effICGI,
       data.long.summaries.dose <- data.long |>
         dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(color_fill),color_fill2,
                         !!sym(DOSEinputvar),DOSE2,
-                        !!sym(exptilegroupvar))|>
+                        !!sym(exptilegroupvar),keynumeric)|>
         dplyr::reframe(
           summary_df(expvalue,!!sym(responseinputvar),
                      continuous = ifelse(response_type=="logistic",FALSE,TRUE)
@@ -281,7 +338,7 @@ ggresponseexpdist <- function(data = effICGI,
       data.long.summaries.dose <- data.long |>
         dplyr::group_by(!!sym(endpointinputvar),expname,
                         !!sym(DOSEinputvar),DOSE2,
-                        !!sym(exptilegroupvar))|>
+                        !!sym(exptilegroupvar),keynumeric)|>
         dplyr::reframe(
           summary_df(expvalue,!!sym(responseinputvar),
                      continuous = ifelse(response_type=="logistic",FALSE,TRUE)
@@ -766,7 +823,7 @@ ggresponseexpdist <- function(data = effICGI,
         dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile) |> 
         dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
         dplyr::mutate(percentage=Ncat/Ntot)|> 
-        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2)|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,Ncat,percentage,keynumeric,DOSE2)|> 
         dplyr::arrange(expname,!!sym(DOSEinputvar),exptile)
     }
     if (exptilegroupvar !="none") {
@@ -779,7 +836,7 @@ ggresponseexpdist <- function(data = effICGI,
         dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile,!!sym(exptilegroupvar)) |>  
         dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
         dplyr::mutate(percentage=Ncat/Ntot)|> 
-        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2,!!sym(exptilegroupvar))|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,Ncat,percentage,keynumeric,DOSE2,!!sym(exptilegroupvar))|> 
         dplyr::arrange(expname,!!sym(DOSEinputvar),exptile)
     }
   }
@@ -795,7 +852,7 @@ ggresponseexpdist <- function(data = effICGI,
         dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile,!!sym(color_fill),color_fill2) |> 
         dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
         dplyr::mutate(percentage=Ncat/Ntot)|> 
-        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2,!!sym(color_fill),color_fill2)|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,Ncat,percentage,keynumeric,DOSE2,!!sym(color_fill),color_fill2)|> 
         dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,exptile)
     }
     if (exptilegroupvar !="none") {
@@ -808,11 +865,10 @@ ggresponseexpdist <- function(data = effICGI,
         dplyr::group_by( !!sym(endpointinputvar),expname,!!sym(DOSEinputvar),keynumeric,DOSE2,exptile,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar)) |>  
         dplyr::mutate(Ncat = dplyr::n(),xmed=median(expvalue))|> 
         dplyr::mutate(percentage=Ncat/Ntot)|> 
-        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,percentage,keynumeric,DOSE2,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar))|> 
+        dplyr::distinct(expname,!!sym(DOSEinputvar),exptile,xmed,Ncat,percentage,keynumeric,DOSE2,!!sym(color_fill),color_fill2,!!sym(exptilegroupvar))|> 
         dplyr::arrange(expname,!!sym(DOSEinputvar),!!sym(color_fill),color_fill2,exptile)
     }
   }
-  
   facet_formula <- if (is.null(facet_formula) ) stats::as.formula( paste(endpointinputvar,"~","expname")) else
     stats::as.formula(facet_formula)
 
@@ -916,8 +972,6 @@ ggresponseexpdist <- function(data = effICGI,
     p1proj <- p1lo
   }
 
-
-  
   if(exposure_distribution=="lineranges") {
     lineranges_ypos <- as.character(lineranges_ypos)
     p1l <- p1proj +
@@ -942,7 +996,7 @@ ggresponseexpdist <- function(data = effICGI,
 
     if(lineranges_doselabel){
       p1lt <-  p1l +
-        ggplot2::geom_text(data=data.long.summaries.dose, vjust = 1, size = 5, show.legend = FALSE,
+        ggplot2::geom_text(data=data.long.summaries.dose, vjust = 0, size = 5, show.legend = FALSE,
                            ggplot2::aes_string(x="quant_90",y = lineranges_ypos,
                                                label = "DOSE",
                                                col = color_fill,
@@ -953,10 +1007,23 @@ ggresponseexpdist <- function(data = effICGI,
     if(!lineranges_doselabel){
       p1lt <- p1l
     }
+    if(lineranges_N){
+      p1lt2 <-  p1lt +
+        ggplot2::geom_text(data=data.long.summaries.dose, vjust = 1, size = 5, show.legend = FALSE,
+                           ggplot2::aes_string(x="quant_90",y = lineranges_ypos,
+                                               label = "N",
+                                               col = color_fill,
+                                               group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
+                           ),
+                           position = ggstance::position_dodgev(height = lineranges_dodge))
+    }
+    if(!lineranges_N){
+      p1lt2 <- p1lt
+    }
       
   }
   if(exposure_distribution!="lineranges") {
-    p1lt <- p1proj 
+    p1lt2 <- p1proj 
   }
 
 if(!mean_obs_byexptile_plac){
@@ -967,10 +1034,10 @@ if(!mean_obs_byexptile_plac){
   if(!fit_by_color_fill){
     if (mean_obs_byexptile){
       shapetxt <- ifelse(model_type=="logistic",
-                         paste("Observed probability by exposure split:"),
-                         paste("Observed mean by exposure split:")
+                         paste("Observed probability\nby exposure split:"),
+                         paste("Observed mean\nby exposure split:")
       )
-      p2e <- p1lt +
+      p2e <- p1lt2 +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                size = 1, alpha = 0.5,
                                ggplot2::aes(shape = paste(shapetxt,
@@ -990,8 +1057,8 @@ if(!mean_obs_byexptile_plac){
     
   if (mean_obs_byexptile){
     shapetxt <- ifelse(model_type=="logistic",
-                       "Observed probability by exposure split:",
-                       "Observed mean by exposure split:")
+                       "Observed probability\nby exposure split:",
+                       "Observed mean\nby exposure split:")
     if(exptilegroupvar!="none"){
       p2e <- p1lt +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
@@ -1032,8 +1099,8 @@ if(!mean_obs_byexptile_plac){
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"meanresp"] <- NA
     }
     shapetxt <- ifelse(model_type=="logistic",
-                         paste("Observed probability by",colorinputvar,"split"),
-                         paste("Observed mean by",colorinputvar,"split")
+                         paste("Observed probability\nby",colorinputvar,"split"),
+                         paste("Observed mean\nby",colorinputvar,"split")
                          )
       p2d <- p2e +
         ggplot2::geom_pointrange(data = data.long.summaries.dose.plot %>% 
@@ -1051,7 +1118,7 @@ if(!mean_obs_byexptile_plac){
         labeldata <- data.long.summaries.dose.plot %>% 
           dplyr::mutate(model_type = model_type,
                         labeltex= 
-                          case_when(
+                          dplyr::case_when(
                             model_type=="logistic"~ paste(
                               paste(100*round(meanresp,2),"%",sep=""),
                               "\n",N,N_text_sep,Ntot,sep=""),
@@ -1147,12 +1214,10 @@ if(!mean_obs_byexptile_plac){
   }
     
   if(mean_obs_byexptile && !fit_by_color_fill) {
-    print(data.long.summaries.exposure)
-
       if(N_byexptile_ypos == "with means"){
       p2 <- p2dntot +
         ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
-                                   filter(!is.na(N)),
+                                   dplyr::filter(!is.na(N)),
                            vjust = 1,lineheight = 0.8,
                            size = mean_obs_text_size, show.legend = FALSE,
                            ggplot2::aes(x = medexp,
@@ -1215,7 +1280,7 @@ if(!mean_obs_byexptile_plac){
                       labeltextnotlogistic= paste("\n",round(meanresp,2),sep=""),
                       model_type = model_type,
                       labeltex= 
-                        case_when(
+                        dplyr::case_when(
                           model_type=="logistic"~ labeltextlogistic,
                           model_type!="logistic"~ labeltextnotlogistic,
                          TRUE ~ "no model"))
@@ -1359,26 +1424,75 @@ if(!mean_obs_byexptile_plac){
                      alpha = 0.1, orientation="y", width = dist_position_scaler*0.90) 
     }
     
-if(!exposure_distribution_percent){
+if(!exposure_distribution_percent=="none"){
     p2dn <- p2d
     }
-    if(exposure_distribution_percent){
+    if(exposure_distribution_percent=="%"){
     p2dn <- p2d +
         ggrepel::geom_label_repel(data = percentineachbreakcategory,
                                   ggplot2::aes(color = !!rlang::sym(color_fill),
                                                group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
-                                               y = keynumeric, x= xmed, label = round(100*percentage,0) ),
+                                               y = keynumeric, x= xmed, 
+                                               label = paste0(round(100*percentage,0),"%")),
                                   size= exposure_distribution_percent_text_size,
                                   alpha = 0.5, show.legend = FALSE)
     }
+    if(exposure_distribution_percent=="N (%)"){
+      p2dn <- p2d +
+        ggrepel::geom_label_repel(data = percentineachbreakcategory,
+                                  ggplot2::aes(color = !!rlang::sym(color_fill),
+                                               group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                               y = keynumeric, x= xmed, 
+                                               label = paste0(Ncat," (",round(100*percentage,0),"%)" )),
+                                  size= exposure_distribution_percent_text_size,
+                                  alpha = 0.5, show.legend = FALSE)
+    }
+    if(exposure_distribution_percent=="N"){
+      p2dn <- p2d +
+        ggrepel::geom_label_repel(data = percentineachbreakcategory,
+                                  ggplot2::aes(color = !!rlang::sym(color_fill),
+                                               group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                               y = keynumeric, x= xmed, 
+                                               label = Ncat),
+                                  size= exposure_distribution_percent_text_size,
+                                  alpha = 0.5, show.legend = FALSE)
+    }
+    if(exposure_distribution_percent=="none"){
+      p2dn <- p2d
+    }
+    if(exposure_distribution_Ntotal=="left"){
+      p2dnntotdose <- p2dn +
+        ggrepel::geom_label_repel(data = data.long.summaries.dose,
+                                  ggplot2::aes(color = !!rlang::sym(color_fill),
+                                               group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                               y = keynumeric, x = -Inf, 
+                                               label = N),
+                                  size= exposure_distribution_percent_text_size,
+                                  alpha = 0.5, show.legend = FALSE)
+      
+    }
+    if(exposure_distribution_Ntotal=="right"){
+      p2dnntotdose <- p2dn +
+        ggrepel::geom_label_repel(data = data.long.summaries.dose,
+                                  ggplot2::aes(color = !!rlang::sym(color_fill),
+                                               group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
+                                               y = keynumeric, x = Inf, 
+                                               label = N),
+                                  size= exposure_distribution_percent_text_size,
+                                  alpha = 0.5, show.legend = FALSE)
+      
+    }
+    if(exposure_distribution_Ntotal=="none"){
+      p2dnntotdose <- p2dn 
+    } 
   }
   if(!exposure_distribution%in%c("distributions","boxplots")) {
-    p2dn <- p2t
+    p2dnntotdose <- p2t
   }
   if(yproj) {
     yproj_xpos <- as.character(yproj_xpos)
     
-    p2df <- p2dn +
+    p2df <- p2dnntotdose +
       ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, linewidth = 2,
                               ggplot2::aes_string(x = yproj_xpos, ymin = "ymid10", ymax = "ymid90",
                                                   col = color_fill,
@@ -1397,7 +1511,7 @@ if(!exposure_distribution_percent){
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)
   }
   if(!yproj) {
-    p2df <- p2dn 
+    p2df <- p2dnntotdose 
   }
   if(exposure_distribution %in%c("distributions","boxplots")){
     
@@ -1447,7 +1561,7 @@ if(!exposure_distribution_percent){
 
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
-    ggplot2::theme_bw(base_size = 18)+
+    ggplot2::theme_bw(base_size = 14)+
     ggplot2::theme(legend.position = "top",strip.placement = "outside")
   
   if(!theme_certara && !fit_by_color_fill){
