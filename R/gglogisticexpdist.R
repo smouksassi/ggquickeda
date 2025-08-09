@@ -991,13 +991,13 @@ if(!prob_obs_byexptile_plac){
       }
       if(Nresp_Ntot_ypos[1] == "top"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure,
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = prob*1.05,                                        ,
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
                                dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -1007,13 +1007,13 @@ if(!prob_obs_byexptile_plac){
       }
       if(Nresp_Ntot_ypos[1] == "bottom"){
         p2 <- p2dntot +
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure,
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = prob*1.05,                                        ,
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggplot2::geom_text(data=data.long.summaries.exposure,
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure,
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = 0.05,

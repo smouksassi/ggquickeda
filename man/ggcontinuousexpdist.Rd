@@ -97,7 +97,7 @@ ggcontinuousexpdist(
 
 \item{mean_obs_byexptile_plac}{observed mean by exptile placebo \code{TRUE}/\code{FALSE}}
 
-\item{mean_obs_byexptile_group}{additional grouping for exptile probabilities default \code{none}}
+\item{mean_obs_byexptile_group}{additional grouping for exptile means default \code{none}}
 
 \item{mean_text_size}{mean text size default to 5}
 
@@ -112,7 +112,7 @@ ggcontinuousexpdist(
 \item{N_text_ypos}{y position for N two text elements the first for by exptile and the second
 for by dose/color options include \verb{with means} \code{top} \code{bottom}}
 
-\item{N_text_sep}{character string to separat N from mean default \verb{\\n}}
+\item{N_text_sep}{character string to separate N from mean default \verb{\\n}}
 
 \item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
 
@@ -134,9 +134,9 @@ for by dose/color options include \verb{with means} \code{top} \code{bottom}}
 
 \item{lineranges_doselabel}{\code{TRUE}/\code{FALSE}}
 
-\item{proj_bydose}{project the probabilities on logistic curve \code{TRUE}/\code{FALSE}}
+\item{proj_bydose}{project the predictions on logistic curve \code{TRUE}/\code{FALSE}}
 
-\item{yproj}{project the probabilities on y axis \code{TRUE}/\code{FALSE}}
+\item{yproj}{project the predictions on y axis \code{TRUE}/\code{FALSE}}
 
 \item{yproj_xpos}{y projection x position 0}
 
