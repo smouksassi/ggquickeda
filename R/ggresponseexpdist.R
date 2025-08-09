@@ -33,6 +33,19 @@ summary_df <- function(x,y, probs = c(0.10,0.25,0.75,0.90),
 
 plogis <- function(x) exp(x)/(1+exp(x))
 
+gglogisticexpdist <- function(model_type="logistic",...) {
+  ggresponseexpdist(model_type = model_type,...)
+}
+ggcontinuousexpdist <- function(model_type="linear",...) {
+  ggresponseexpdist(model_type = model_type,...)
+}
+gglinearexpdist <- function(model_type="linear",...) {
+  ggresponseexpdist(model_type = model_type,...)
+}
+ggloessexpdist <- function(model_type="loess",...) {
+  ggresponseexpdist(model_type = model_type,...)
+}
+
 #' Create a fit vs exposure(s)plot
 #'
 #' Produces a fit as per model_type plot with a facettable exposures/quantiles/distributions in ggplot2
@@ -78,7 +91,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param lineranges_ypos where to put the lineranges -1
 #' @param lineranges_dodge lineranges vertical dodge value 1
 #' @param lineranges_doselabel `TRUE`/`FALSE`
-#' @param lineranges_N `TRUE`/`FALSE`
+#' @param lineranges_Ntotal show Ntotal by dose level next to the lineranges one of "left","right","none"
 #' @param proj_bydose project the predictions on the fit curve `TRUE`/`FALSE`
 #' @param yproj project the predictions on y axis `TRUE`/`FALSE`
 #' @param yproj_xpos y projection x position 0
@@ -93,7 +106,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' effICGI <- logistic_data |>
 #' dplyr::filter(!is.na(ICGI))|>
 #' dplyr::filter(!is.na(AUC))
-#'effICGI$DOSE <- factor(effICGI$DOSE,
+#' effICGI$DOSE <- factor(effICGI$DOSE,
 #'                       levels=c("0", "600", "1200","1800","2400"),
 #'                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
 #'effICGI$STUDY <- factor(effICGI$STUDY)    
@@ -136,8 +149,8 @@ ggresponseexpdist <- function(data = logistic_data |>
                               exposure_metric_soc_name = "SOC",
                               exposure_metric_plac_name = "Placebo",
                               exposure_distribution = c("distributions","lineranges","boxplots","none"),
-                              exposure_distribution_percent = c("%","N (%)","N","none"),
-                              exposure_distribution_Ntotal = c("left","right","none"),
+                              exposure_distribution_percent = c("none", "%","N (%)","N"),
+                              exposure_distribution_Ntotal = c("none","left","right"),
                               exposure_distribution_percent_text_size = 5,
                               dose_plac_value = "Placebo",
                               xlab = "Exposure Values",
@@ -164,7 +177,7 @@ ggresponseexpdist <- function(data = logistic_data |>
                               lineranges_ypos = NULL,
                               lineranges_dodge = NULL,
                               lineranges_doselabel = FALSE,
-                              lineranges_N = FALSE,
+                              lineranges_Ntotal = c("none","left","right"),
                               proj_bydose = FALSE,
                               yproj = FALSE,
                               yproj_xpos = 0,
@@ -221,8 +234,8 @@ ggresponseexpdist <- function(data = logistic_data |>
     xintercepts <- data.long|> 
       dplyr::group_by(expname,!!sym(endpointinputvar) )|> 
       dplyr::reframe(intercept = stats::quantile(expvalue[!expvalue %in%
-                                                            c(exposure_metric_soc_value, exposure_metric_plac_value)],
-                                                 c(0,1), na.rm=TRUE),
+                     c(exposure_metric_soc_value, exposure_metric_plac_value)],
+                     c(0,1), na.rm=TRUE),
                      quant = c(0,1) ) 
     
   }
@@ -248,8 +261,9 @@ ggresponseexpdist <- function(data = logistic_data |>
     xintercepts <- data.long|> 
       dplyr::group_by(expname,!!sym(endpointinputvar) )|> 
       dplyr::reframe(intercept = stats::quantile(expvalue[!expvalue %in%
-                                                            c(exposure_metric_soc_value, exposure_metric_plac_value)],
-                                                 c(0,0.25,0.5,0.75,1), na.rm=TRUE), quant = c(0,0.25,0.5,0.75,1) ) 
+                                 c(exposure_metric_soc_value, exposure_metric_plac_value)],
+                                 c(0,0.25,0.5,0.75,1), na.rm=TRUE),
+                                 quant = c(0,0.25,0.5,0.75,1) ) 
   }
   
   if(exposure_metric_split=="tertile") {
@@ -270,8 +284,9 @@ ggresponseexpdist <- function(data = logistic_data |>
     xintercepts <- data.long|> 
       dplyr::group_by(expname,!!sym(endpointinputvar) )|> 
       dplyr::reframe(intercept = stats::quantile(expvalue[!expvalue %in%
-                                                            c(exposure_metric_soc_value, exposure_metric_plac_value)],
-                                                 c(0,1/3,2/3,1), na.rm=TRUE), quant = c(0,1/3,2/3,1)) 
+                                 c(exposure_metric_soc_value, exposure_metric_plac_value)],
+                                 c(0,1/3,2/3,1), na.rm=TRUE),
+                                 quant = c(0,1/3,2/3,1) )
     
   }
   if(exposure_metric_split=="median") {
@@ -285,17 +300,18 @@ ggresponseexpdist <- function(data = logistic_data |>
         expvalue > 0   &  expvalue <= Q50      ~ "M1",
         expvalue > Q50                         ~ "M2"))
     data.long$keynumeric <- - dist_position_scaler*as.numeric(forcats::fct_rev(as.factor(dplyr::pull(data.long[,DOSEinputvar])))) + dist_offset
+    
     xintercepts <- data.long|> 
       dplyr::group_by(expname,!!sym(endpointinputvar) )|> 
       dplyr::reframe(intercept = stats::quantile(expvalue[!expvalue %in%
-                                                            c(exposure_metric_soc_value, exposure_metric_plac_value)],
-                                                 c(0,0.5,1), na.rm=TRUE), quant = c(0,0.5,1) ) 
+                                 c(exposure_metric_soc_value, exposure_metric_plac_value)],
+                                 c(0,0.5,1), na.rm=TRUE),
+                                 quant = c(0,0.5,1) ) 
     
   }
   data.long$exptile2 <- data.long$exptile
   data.long[,"DOSE2"]    <- data.long[,DOSEinputvar]
   data.long[,"color_fill2"]    <- data.long[,colorinputvar]
-
   if(exptilegroupvar=="none"){
     if(color_fill != DOSEinputvar) {
       data.long.summaries.dose <- data.long |>
@@ -900,9 +916,11 @@ ggresponseexpdist <- function(data = logistic_data |>
     if(fit_by_color_fill){
       xintercepts <- xintercepts %>% 
         dplyr::distinct(expname,intercept,quant)
+      xintercepts$binlimits_ypos <- binlimits_ypos
     }
     p1pl <- p1ph  +
-    ggplot2::geom_vline(data = xintercepts, ggplot2::aes(xintercept = intercept),
+    ggplot2::geom_vline(data = xintercepts,
+                        ggplot2::aes(xintercept = intercept),
                         color = binlimits_color, alpha = 0.5 )
   }
   if(!binlimits_show){
@@ -1007,17 +1025,19 @@ ggresponseexpdist <- function(data = logistic_data |>
     if(!lineranges_doselabel){
       p1lt <- p1l
     }
-    if(lineranges_N){
+    if(lineranges_Ntotal!="none"){
+      lineranges_Ntotal_value<- ifelse(lineranges_Ntotal=="right",Inf,-Inf)
       p1lt2 <-  p1lt +
-        ggplot2::geom_text(data=data.long.summaries.dose, vjust = 1, size = 5, show.legend = FALSE,
-                           ggplot2::aes_string(x="quant_90",y = lineranges_ypos,
+        ggrepel::geom_text_repel(data=data.long.summaries.dose, vjust = 1, size = 5, show.legend = FALSE,
+                           ggplot2::aes_string(x = "lineranges_Ntotal_value",
+                                               y = lineranges_ypos,
                                                label = "N",
                                                col = color_fill,
                                                group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                            ),
                            position = ggstance::position_dodgev(height = lineranges_dodge))
     }
-    if(!lineranges_N){
+    if(lineranges_Ntotal=="none"){
       p1lt2 <- p1lt
     }
       
@@ -1048,19 +1068,20 @@ if(!mean_obs_byexptile_plac){
                                               ymax = meanresp-1.959*SE))
     }
     if (!mean_obs_byexptile){
-      p2e <- p1lt
+      p2e <- p1lt2
     }
   }
   if(fit_by_color_fill){
     data.long.summaries.exposure <- data.long.summaries.exposure %>% 
       dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
-    
+
   if (mean_obs_byexptile){
-    shapetxt <- ifelse(model_type=="logistic",
-                       "Observed probability\nby exposure split:",
-                       "Observed mean\nby exposure split:")
     if(exptilegroupvar!="none"){
-      p2e <- p1lt +
+      shapetxt <- ifelse(model_type=="logistic",
+                         paste("Observed probability\nby color split:"),
+                         paste("Observed mean\nby",exptilegroupvar,"split:")
+      )
+      p2e <- p1lt2 +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
                                  ggplot2::aes(shape = paste(shapetxt,
@@ -1072,9 +1093,11 @@ if(!mean_obs_byexptile_plac){
                                             col = !!sym(exptilegroupvar)))
     }
     if(exptilegroupvar=="none"){
-      data.long.summaries.exposure <- data.long.summaries.exposure %>% 
-        dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
-      p2e <- p1lt +
+      shapetxt <- ifelse(model_type=="logistic",
+                         "Observed probability\nby exposure split:",
+                         "Observed mean\nby exposure split:")
+      
+      p2e <- p1lt2 +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
                                  ggplot2::aes(shape = paste(shapetxt,
@@ -1087,7 +1110,7 @@ if(!mean_obs_byexptile_plac){
     }
   }
     if (!mean_obs_byexptile){
-      p2e <- p1lt 
+      p2e <- p1lt2 
     }
   }
   
@@ -1298,14 +1321,16 @@ if(!mean_obs_byexptile_plac){
   }
   
   if(mean_obs_byexptile && fit_by_color_fill) {
+    data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+      dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar))
+    
       if(N_byexptile_ypos == "with means"){
       p2 <-   p2dntot +
-        ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
-                             dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
+        ggrepel::geom_text_repel(data.long.summaries.exposure,
                            vjust = 1,lineheight = 0.8,
                            size = mean_obs_text_size, show.legend = FALSE,
                            ggplot2::aes(x = medexp,y = meanresp*1.15,
-                                        col= .data[[endpointinputvar]],
+                                        col= .data[[exptilegroupvar]],
                                         label = 
                                         ifelse(model_type=="logistic",
                                                paste(
@@ -1328,7 +1353,7 @@ if(!mean_obs_byexptile_plac){
                              vjust = 1,lineheight = 0.8,
                              size = mean_obs_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = meanresp*1.15,  
-                                          col= .data[[endpointinputvar]],
+                                          col= .data[[exptilegroupvar]],
                                           label = ifelse(model_type=="logistic",
                                                          paste(100*round(meanresp,2),"%",sep=""),
                                                          paste("\n",round(meanresp,2),sep="")
@@ -1338,7 +1363,7 @@ if(!mean_obs_byexptile_plac){
                              vjust = 1,lineheight = 0.8,
                              size = N_text_size, show.legend = FALSE,
                              ggplot2::aes(x = medexp, y = Inf,
-                                          col= .data[[endpointinputvar]],
+                                          col= .data[[exptilegroupvar]],
                                           label = ifelse(model_type=="logistic",
                                                          paste(N,N_text_sep,Ntot,sep=""),
                                                          paste(Ntot,sep=""))
@@ -1349,9 +1374,8 @@ if(!mean_obs_byexptile_plac){
           ggrepel::geom_text_repel(data=data.long.summaries.exposure,
                              vjust = 1,lineheight = 0.8,
                              size = mean_obs_text_size, show.legend = FALSE,
-                             ggplot2::aes(col= .data[[endpointinputvar]],
-                                          x = medexp,
-                                          y = meanresp*1.15,  
+                             ggplot2::aes(x = medexp,y = meanresp*1.15,  
+                                          col= .data[[exptilegroupvar]],
                                           label = ifelse(model_type=="logistic",
                                                          paste(100*round(meanresp,2),"%",sep=""),
                                                          paste("\n",round(meanresp,2),sep=""))
@@ -1360,7 +1384,7 @@ if(!mean_obs_byexptile_plac){
                              vjust = 1,lineheight = 0.8,
                              size = N_text_size, show.legend = FALSE,
                              ggplot2::aes(x   = medexp, y = 0.05,
-                                          col = .data[[endpointinputvar]],
+                                          col= .data[[exptilegroupvar]],
                                           label = ifelse(model_type=="logistic",
                                                          paste(N,N_text_sep,Ntot,sep=""),
                                                          paste(Ntot,sep=""))
@@ -1375,7 +1399,7 @@ if(!mean_obs_byexptile_plac){
                                  size = mean_obs_text_size, show.legend = FALSE,
                                  ggplot2::aes(x = as.double(as.character(medexp)),
                                               y = meanresp*1.1,
-                                              col= .data[[endpointinputvar]],
+                                              col= .data[[exptilegroupvar]],
                                               label = paste(100*round(meanresp,2),"%",sep="")
                                  ))
       }
@@ -1390,6 +1414,7 @@ if(!mean_obs_byexptile_plac){
      if(fit_by_color_fill){
        xintercepts <- xintercepts %>% 
          dplyr::distinct(expname,intercept,quant)
+       xintercepts$binlimits_ypos <- binlimits_ypos
      }
      p2t <- p2 +
        ggrepel::geom_text_repel(data = xintercepts,
@@ -1562,7 +1587,13 @@ if(!exposure_distribution_percent=="none"){
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 14)+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside")
+    ggplot2::theme(legend.position = "top",strip.placement = "outside")+
+    ggplot2::guides(
+      fill    =guide_legend(nrow=2 ,order=1),
+      linetype=guide_legend(nrow=2 ,order=1),
+      shape=guide_legend(nrow=2,order=2),
+      color=guide_legend(nrow=2,order=3)
+                    )
   
   if(!theme_certara && !fit_by_color_fill){
     pf <-  pf1 +
