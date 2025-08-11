@@ -355,6 +355,7 @@ gglogisticexpdist <- function(data = effICGI,
 
   effICGI = expname = expvalue = DOSE2 = quant = values = Ncat = Ntot = xmed = percentage = exptile = keynumeric = NULL
   intercept = medexp = prob = SE = N = ndensity = Endpoint = color_fill2 = NULL
+  meanresprlower = meanresprupper = NULL
   
   data.long <- data |> 
     tidyr::gather(expname,expvalue,!!!exposure_metrics, factor_key = TRUE) |> 

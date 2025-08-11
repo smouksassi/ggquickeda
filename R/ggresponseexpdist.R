@@ -114,6 +114,27 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'effICGI$STUDY <- factor(effICGI$STUDY)    
 #'effICGI$ICGI2 <- effICGI$ICGI
 #'effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2)
+#'
+#'ggresponseexpdist(data = effICGI |>
+#'dplyr::filter(Endpoint=="ICGI"),
+#'model_type = "loess",
+#'exposure_metrics = c("AUC","CMAX"))
+#'
+#'Example 2
+#'ggresponseexpdist(data = effICGI |>
+#'dplyr::filter(Endpoint=="ICGI"),
+#'model_type = "logistic",
+#'exposure_metrics = c("AUC","CMAX"),
+#'exposure_distribution ="boxplots")
+#'
+#'Example 3
+#'ggresponseexpdist(data = effICGI|>
+#'dplyr::filter(Endpoint=="ICGI"),
+#'model_type = "linear",
+#'exposure_metrics = c("AUC","WT"),
+#'exposure_distribution ="lineranges")
+#'
+#'Example 4
 #' ggresponseexpdist(data = effICGI |>
 #'                  dplyr::filter(Endpoint=="ICGI"),
 #'                  response = "response",
@@ -202,6 +223,8 @@ ggresponseexpdist <- function(data = logistic_data |>
   DOSEinputvar  <- DOSE
   colorinputvar    <-  if (color_fill !="none") color_fill else NULL
   model_type <- match.arg(model_type, several.ok = FALSE)
+  lineranges_Ntotal <- match.arg(lineranges_Ntotal, several.ok = FALSE)
+
   response_type <- ifelse(model_type=="logistic","logistic","continuous")
 
   N_byexptile_ypos <- match.arg(N_byexptile_ypos, several.ok = FALSE)
