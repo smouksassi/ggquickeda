@@ -19,8 +19,8 @@ ggresponseexpdist(
   exposure_metric_soc_name = "SOC",
   exposure_metric_plac_name = "Placebo",
   exposure_distribution = c("distributions", "lineranges", "boxplots", "none"),
-  exposure_distribution_percent = c("\%", "N (\%)", "N", "none"),
-  exposure_distribution_Ntotal = c("left", "right", "none"),
+  exposure_distribution_percent = c("none", "\%", "N (\%)", "N"),
+  exposure_distribution_Ntotal = c("none", "left", "right"),
   exposure_distribution_percent_text_size = 5,
   dose_plac_value = "Placebo",
   xlab = "Exposure Values",
@@ -47,7 +47,7 @@ ggresponseexpdist(
   lineranges_ypos = NULL,
   lineranges_dodge = NULL,
   lineranges_doselabel = FALSE,
-  lineranges_N = FALSE,
+  lineranges_Ntotal = c("none", "left", "right"),
   proj_bydose = FALSE,
   yproj = FALSE,
   yproj_xpos = 0,
@@ -143,7 +143,7 @@ ggresponseexpdist(
 
 \item{lineranges_doselabel}{\code{TRUE}/\code{FALSE}}
 
-\item{lineranges_N}{\code{TRUE}/\code{FALSE}}
+\item{lineranges_Ntotal}{show Ntotal by dose level next to the lineranges one of "left","right","none"}
 
 \item{proj_bydose}{project the predictions on the fit curve \code{TRUE}/\code{FALSE}}
 

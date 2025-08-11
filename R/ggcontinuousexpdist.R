@@ -1241,7 +1241,7 @@ ggcontinuousexpdist <- function(data = effICGI,
     }
     if(exposure_distribution%in%c("boxplots")){
       p2d <- p2t +
-        geom_boxplot(data = data.long.ridges,
+        ggplot2::geom_boxplot(data = data.long.ridges,
                      ggplot2::aes(x = expvalue, y = keynumeric,
                                   group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
                                   col = !!sym(color_fill)),

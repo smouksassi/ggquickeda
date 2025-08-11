@@ -2,6 +2,7 @@
 #' @importFrom rlang .data
 #' @importFrom rlang sym
 #' @import tidyr
+#' @import dplyr
 #' @importFrom stats median
 #' @importFrom stats quantile
 
@@ -33,18 +34,18 @@ summary_df <- function(x,y, probs = c(0.10,0.25,0.75,0.90),
 
 plogis <- function(x) exp(x)/(1+exp(x))
 
-gglogisticexpdist <- function(model_type="logistic",...) {
-  ggresponseexpdist(model_type = model_type,...)
-}
-ggcontinuousexpdist <- function(model_type="linear",...) {
-  ggresponseexpdist(model_type = model_type,...)
-}
-gglinearexpdist <- function(model_type="linear",...) {
-  ggresponseexpdist(model_type = model_type,...)
-}
-ggloessexpdist <- function(model_type="loess",...) {
-  ggresponseexpdist(model_type = model_type,...)
-}
+# gglogisticexpdist <- function(model_type="logistic",...) {
+#   ggresponseexpdist(model_type = model_type,...)
+# }
+# ggcontinuousexpdist <- function(model_type="linear",...) {
+#   ggresponseexpdist(model_type = model_type,...)
+# }
+# gglinearexpdist <- function(model_type="linear",...) {
+#   ggresponseexpdist(model_type = model_type,...)
+# }
+# ggloessexpdist <- function(model_type="loess",...) {
+#   ggresponseexpdist(model_type = model_type,...)
+# }
 
 #' Create a fit vs exposure(s)plot
 #'
@@ -218,7 +219,9 @@ ggresponseexpdist <- function(data = logistic_data |>
   yaxis_position <- match.arg(yaxis_position, several.ok = FALSE)
 
   effICGI = expname = expvalue = DOSE2 = quant = values = Ncat = Ntot = xmed = meanresp = exptile = keynumeric = NULL
-  intercept = medexp = prob = SE = N = ndensity = Endpoint = color_fill2 = NULL
+  intercept = medexp = prob = SE = N = ndensity = Endpoint = color_fill2 = percentage = logistic_data  = NULL
+  meanresprlower = meanresprupper = labeltex = ICGI = NULL
+  
   
   data.long <- data |> 
     tidyr::gather(expname,expvalue,!!!exposure_metrics, factor_key = TRUE) |> 
@@ -827,6 +830,13 @@ ggresponseexpdist <- function(data = logistic_data |>
       tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   }
   data.long.summaries.exposure$model_type <- model_type
+  data.long.summaries.exposure$meanresprlower <- data.long.summaries.exposure$meanresp-
+    1.959*data.long.summaries.exposure$SE
+  data.long.summaries.exposure$meanresprupper <- data.long.summaries.exposure$meanresp+
+    1.959*data.long.summaries.exposure$SE
+  
+  
+  
   
   if(color_fill == DOSEinputvar) {
     if (exptilegroupvar =="none") {
@@ -1061,11 +1071,11 @@ if(!mean_obs_byexptile_plac){
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                size = 1, alpha = 0.5,
                                ggplot2::aes(shape = paste(shapetxt,
-                                                            exposure_metric_split),
+                                            exposure_metric_split),
                                               x = medexp,
                                               y = meanresp,
-                                              ymin = meanresp+1.959*SE,
-                                              ymax = meanresp-1.959*SE))
+                                              ymin = meanresprlower,
+                                              ymax = meanresprupper))
     }
     if (!mean_obs_byexptile){
       p2e <- p1lt2
@@ -1088,8 +1098,8 @@ if(!mean_obs_byexptile_plac){
                                                             exposure_metric_split),
                                             x = medexp,
                                             y = meanresp,
-                                            ymin = meanresp+1.959*SE,
-                                            ymax = meanresp-1.959*SE,
+                                            ymin = meanresprlower,
+                                            ymax = meanresprupper,
                                             col = !!sym(exptilegroupvar)))
     }
     if(exptilegroupvar=="none"){
@@ -1104,8 +1114,8 @@ if(!mean_obs_byexptile_plac){
                                                             exposure_metric_split),
                                             x = medexp,
                                             y = meanresp,
-                                            ymin = meanresp+1.959*SE,
-                                            ymax = meanresp-1.959*SE,
+                                            ymin = meanresprlower,
+                                            ymax = meanresprupper,
                                             col = !!sym(endpointinputvar)))
     }
   }
@@ -1116,6 +1126,12 @@ if(!mean_obs_byexptile_plac){
   
   if(mean_obs_bydose){
     data.long.summaries.dose.plot <- as.data.frame(data.long.summaries.dose)
+    data.long.summaries.dose.plot$meanresprlower <- data.long.summaries.dose.plot$meanresp-
+      1.959*data.long.summaries.dose.plot$SE
+    data.long.summaries.dose.plot$meanresprupper <- data.long.summaries.dose.plot$meanresp+
+      1.959*data.long.summaries.dose.plot$SE
+
+    
     if(!mean_obs_bydose_plac){
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"N"] <- NA
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
@@ -1132,8 +1148,8 @@ if(!mean_obs_byexptile_plac){
          ggplot2::aes(
          x = medexp,
          y = meanresp,
-         ymin = meanresp+1.959*SE,
-         ymax = meanresp-1.959*SE,
+         ymin = meanresprlower,
+         ymax = meanresprupper,
          col = !!sym(color_fill),
          shape = paste(shapetxt,colorinputvar,"split")))
 
@@ -1442,7 +1458,7 @@ if(!mean_obs_byexptile_plac){
     }
     if(exposure_distribution%in%c("boxplots")){
       p2d <- p2t +
-        geom_boxplot(data = data.long.ridges,
+        ggplot2::geom_boxplot(data = data.long.ridges,
                                       ggplot2::aes(x = expvalue, y = keynumeric,
                                                    group = interaction(!!sym(color_fill),!!sym(DOSEinputvar)),
                                                    col = !!sym(color_fill)),
@@ -1519,13 +1535,18 @@ if(!exposure_distribution_percent=="none"){
     
     p2df <- p2dnntotdose +
       ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, linewidth = 2,
-                              ggplot2::aes_string(x = yproj_xpos, ymin = "ymid10", ymax = "ymid90",
+                              ggplot2::aes_string(x = yproj_xpos,
+                                                  ymin = "ymid10",
+                                                  ymax = "ymid90",
                                                   col = color_fill,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)+
       ggplot2::geom_linerange(data = predict_by_endpoint_expname, alpha = 0.4, linewidth = 2.5,
-                              ggplot2::aes_string(x = yproj_xpos, ymin = "ymid25", ymax = "ymid75", col= color_fill,
+                              ggplot2::aes_string(x = yproj_xpos,
+                                                  ymin = "ymid25",
+                                                  ymax = "ymid75",
+                                                  col= color_fill,
                                                   group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                               ),
                               position = ggplot2::position_dodge(width = yproj_dodge), inherit.aes = FALSE)+
@@ -1589,10 +1610,10 @@ if(!exposure_distribution_percent=="none"){
     ggplot2::theme_bw(base_size = 14)+
     ggplot2::theme(legend.position = "top",strip.placement = "outside")+
     ggplot2::guides(
-      fill    =guide_legend(nrow=2 ,order=1),
-      linetype=guide_legend(nrow=2 ,order=1),
-      shape=guide_legend(nrow=2,order=2),
-      color=guide_legend(nrow=2,order=3)
+      fill    = ggplot::guide_legend(nrow=2 ,order=1),
+      linetype= ggplot::guide_legend(nrow=2 ,order=1),
+      shape   = ggplot::guide_legend(nrow=2,order=2),
+      color   = ggplot::guide_legend(nrow=2,order=3)
                     )
   
   if(!theme_certara && !fit_by_color_fill){
