@@ -185,21 +185,21 @@ dplyr::filter(Endpoint=="ICGI"),
 model_type = "loess",
 exposure_metrics = c("AUC","CMAX"))
 
-Example 2
+# Example 2
 ggresponseexpdist(data = effICGI |>
 dplyr::filter(Endpoint=="ICGI"),
 model_type = "logistic",
 exposure_metrics = c("AUC","CMAX"),
 exposure_distribution ="boxplots")
 
-Example 3
+# Example 3
 ggresponseexpdist(data = effICGI|>
 dplyr::filter(Endpoint=="ICGI"),
 model_type = "linear",
 exposure_metrics = c("AUC","WT"),
 exposure_distribution ="lineranges")
 
-Example 4
+# Example 4
 ggresponseexpdist(data = effICGI |>
                  dplyr::filter(Endpoint=="ICGI"),
                  response = "response",
@@ -224,6 +224,6 @@ ggresponseexpdist(data = effICGI |>
                  points_alpha= 0.1)
                  
 \dontrun{
-#' # Example 3                
+#' # Example x               
 }
 }
