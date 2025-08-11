@@ -488,6 +488,12 @@ gglogisticexpdist <- function(data = effICGI,
   loopvariables <- loopvariables[loopvariables!="none"]
   data.long.summaries.dose <- tidyr::unite(data.long.summaries.dose,"loopvariable",
                                            !!!loopvariables, remove = FALSE)
+  data.long.summaries.dose$meanresprlower <- data.long.summaries.dose$meanresp-
+    1.959*data.long.summaries.dose$SE
+  data.long.summaries.dose$meanresprupper <- data.long.summaries.dose$meanresp+
+    1.959*data.long.summaries.dose$SE
+  
+  
   data.long <- tidyr::unite(data.long,"loopvariable", !!!loopvariables, remove = FALSE)
   
   logisticfit_by_endpoint <- list()
@@ -631,6 +637,12 @@ gglogisticexpdist <- function(data = effICGI,
         summary_df(expvalue,!!sym(responseinputvar))) |>
       tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   }
+  
+  data.long.summaries.exposure$meanresprlower <- data.long.summaries.exposure$meanresp-
+    1.959*data.long.summaries.exposure$SE
+  data.long.summaries.exposure$meanresprupper <- data.long.summaries.exposure$meanresp+
+    1.959*data.long.summaries.exposure$SE
+  
 
   if(color_fill == DOSEinputvar) {
     if (exptilegroupvar =="none") {
@@ -833,8 +845,8 @@ if(!prob_obs_byexptile_plac){
                                                             exposure_metric_split),
                                               x = medexp,
                                               y = prob,
-                                              ymin = prob+1.959*SE,
-                                              ymax = prob-1.959*SE))
+                                            ymin = meanresprlower,
+                                            ymax = meanresprupper))
     }
     if (!prob_obs_byexptile){
       p2e <- p1lt
@@ -853,8 +865,8 @@ if(!prob_obs_byexptile_plac){
                                                             exposure_metric_split),
                                             x = medexp,
                                             y = prob,
-                                            ymin = prob+1.959*SE,
-                                            ymax = prob-1.959*SE,
+                                            ymin = meanresprlower,
+                                            ymax = meanresprupper,
                                             col = !!sym(exptilegroupvar)))
     }
     if(exptilegroupvar=="none"){
@@ -867,8 +879,8 @@ if(!prob_obs_byexptile_plac){
                                                             exposure_metric_split),
                                             x = medexp,
                                             y = prob,
-                                            ymin = prob+1.959*SE,
-                                            ymax = prob-1.959*SE,
+                                            ymin = meanresprlower,
+                                            ymax = meanresprupper,
                                             col = !!sym(endpointinputvar)))
     }
   }
@@ -892,8 +904,8 @@ if(!prob_obs_byexptile_plac){
          ggplot2::aes(
          x = medexp,
          y = prob,
-         ymin = prob+1.959*SE,
-         ymax = prob-1.959*SE,
+         ymin = meanresprlower,
+         ymax = meanresprupper,
          col = !!sym(color_fill),
          shape = paste("Observed probability by",colorinputvar,"split")))
       
@@ -956,7 +968,8 @@ if(!prob_obs_byexptile_plac){
       p2dntot <- p2e +
         ggplot2::geom_pointrange(data = data.long.summaries.dose.plot, alpha = 0.5, size = 1,
                                  ggplot2::aes(x = medexp, y = prob, col = !!sym(color_fill),
-                                              ymin = prob+1.959*SE, ymax=prob-1.959*SE,
+                                              ymin = meanresprlower,
+                                              ymax = meanresprupper,
                                               shape = paste("Observed probability by",colorinputvar,"split")))+
         ggplot2::geom_text(data=data.long.summaries.dose.plot,
                            vjust = 1,

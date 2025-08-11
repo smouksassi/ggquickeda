@@ -379,6 +379,13 @@ ggresponseexpdist <- function(data = logistic_data |>
                                            !!!loopvariables, remove = FALSE)
   
   data.long.summaries.dose$model_type <- model_type
+  
+  data.long.summaries.dose$meanresprlower <- data.long.summaries.dose$meanresp-
+    1.959*data.long.summaries.dose$SE
+  data.long.summaries.dose$meanresprupper <- data.long.summaries.dose$meanresp+
+    1.959*data.long.summaries.dose$SE
+  
+  
   data.long <- tidyr::unite(data.long,"loopvariable", !!!loopvariables, remove = FALSE)
   
   fit_by_endpoint <- list()
@@ -1133,12 +1140,6 @@ if(!mean_obs_byexptile_plac){
   
   if(mean_obs_bydose){
     data.long.summaries.dose.plot <- as.data.frame(data.long.summaries.dose)
-    data.long.summaries.dose.plot$meanresprlower <- data.long.summaries.dose.plot$meanresp-
-      1.959*data.long.summaries.dose.plot$SE
-    data.long.summaries.dose.plot$meanresprupper <- data.long.summaries.dose.plot$meanresp+
-      1.959*data.long.summaries.dose.plot$SE
-
-    
     if(!mean_obs_bydose_plac){
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"N"] <- NA
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
@@ -1659,13 +1660,16 @@ if(!exposure_distribution_percent=="none"){
     pf }
   
   if(return_list){
-    pf <-   list(data.long,xintercepts,
+    pf <-   list(
+         data.long,
+         xintercepts,
          data.long.summaries.dose,
          predict_by_endpoint_expname,
          predict_by_endpoint_expname_dose,
          predict_by_endpoint_expname_dose2,
          data.long.summaries.exposure,
-         percentineachbreakcategory,pf)
+         percentineachbreakcategory,
+         pf)
   }
   pf
 }
