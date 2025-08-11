@@ -29,10 +29,11 @@ ggresponseexpdist(
   points_show = TRUE,
   mean_obs_byexptile = TRUE,
   mean_obs_byexptile_plac = TRUE,
+  mean_obs_byexptile_text_size = 5,
   mean_obs_byexptile_group = "none",
   mean_obs_bydose = FALSE,
   mean_obs_bydose_plac = FALSE,
-  mean_obs_text_size = 5,
+  mean_obs_bydose_text_size = 5,
   N_byexptile_ypos = c("with means", "top", "bottom", "none"),
   N_bydose_ypos = c("with means", "top", "bottom", "none"),
   N_text_size = 5,
@@ -107,13 +108,15 @@ ggresponseexpdist(
 
 \item{mean_obs_byexptile_plac}{observed mean by exptile placebo \code{TRUE}/\code{FALSE}}
 
+\item{mean_obs_byexptile_text_size}{by exptile mean text size default to 5}
+
 \item{mean_obs_byexptile_group}{additional grouping for exptile means default \code{none}}
 
 \item{mean_obs_bydose}{observed mean by dose \code{TRUE}/\code{FALSE}}
 
 \item{mean_obs_bydose_plac}{observed mean by placebo dose \code{TRUE}/\code{FALSE}}
 
-\item{mean_obs_text_size}{mean text size default to 5}
+\item{mean_obs_bydose_text_size}{by dose mean text size default to 5}
 
 \item{N_byexptile_ypos}{N responders/Ntotal y position by exptile one of \verb{with means} \code{top} \code{bottom} \code{none}}
 
@@ -184,14 +187,19 @@ ggresponseexpdist(data = effICGI |>
                  DOSE = "DOSE",
                  color_fill = "DOSE",
                  exposure_metrics = c("AUC","CMAX"),
-                 exposure_metric_split = c("quartile"),
+                 exposure_metric_split = c("tertile"),
                  exposure_metric_soc_value = -99,
                  exposure_metric_plac_value = 0,
                  exposure_distribution ="distributions",
+                 exposure_distribution_Ntotal="right",
+                 N_byexptile_ypos = "top",
                  mean_obs_bydose = TRUE,
-                 N_bydose_ypos = "top",
+                 mean_obs_bydose_text_size = 0,
+                 mean_obs_byexptile_text_size = 5,
+                 N_bydose_ypos = "none",
                  N_text_sep = "/",
                  binlimits_color = "#475c6b",
+                 binlimits_ypos = 0.2,
                  points_alpha= 0.1)
                  
 \dontrun{
