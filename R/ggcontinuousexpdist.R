@@ -1328,7 +1328,13 @@ ggcontinuousexpdist <- function(data = effICGI,
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 18)+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside")
+    ggplot2::theme(legend.position = "top", strip.placement = "outside")+
+    ggplot2::guides(
+      fill    = ggplot2::guide_legend(nrow=2, order=1),
+      linetype= ggplot2::guide_legend(nrow=2, order=1),
+      shape   = ggplot2::guide_legend(nrow=2, order=2),
+      color   = ggplot2::guide_legend(nrow=2, order=3)
+    )
   
   if(!theme_certara && !fit_by_color_fill){
     pf <-  pf1 +

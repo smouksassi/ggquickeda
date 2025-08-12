@@ -24,6 +24,7 @@ summary_df <- function(x,y, probs = c(0.10,0.25,0.75,0.90),
                N/Ntot,
                mean(y,na.rm=TRUE)
     ),
+    prob = meanresp,
     SE =  ifelse(!continuous,
                  sqrt(meanresp*(1-meanresp)/Ntot ),
                  sd(y,na.rm=TRUE)/sqrt(Ntot)),
@@ -1639,12 +1640,12 @@ if(!exposure_distribution_percent=="none"){
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 14)+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside")+
+    ggplot2::theme(legend.position = "top", strip.placement = "outside")+
     ggplot2::guides(
-      fill    = ggplot2::guide_legend(nrow=2 ,order=1),
-      linetype= ggplot2::guide_legend(nrow=2 ,order=1),
-      shape   = ggplot2::guide_legend(nrow=2,order=2),
-      color   = ggplot2::guide_legend(nrow=2,order=3)
+      fill    = ggplot2::guide_legend(nrow=2, order=1),
+      linetype= ggplot2::guide_legend(nrow=2, order=1),
+      shape   = ggplot2::guide_legend(nrow=2, order=2),
+      color   = ggplot2::guide_legend(nrow=2, order=3)
                     )
   
   if(!theme_certara && !fit_by_color_fill){

@@ -5,18 +5,28 @@
 #' @importFrom stats median
 #' @importFrom stats quantile
 
-summary_df <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
-  N = Ntot = prob = NULL
- tibble::tibble(
+summary_df <- function(x,y, probs = c(0.10,0.25,0.75,0.90),
+                       continuous = FALSE) {
+  N = Ntot = meanresp = NULL
+  tibble::tibble(
     minexp = min(x),
     maxexp = max(x),
     medexp = stats::median(x),
     meanexp = mean(x),
-    N = sum(y,na.rm=TRUE),
+    N = ifelse(!continuous,
+               sum(y,na.rm=TRUE),
+               dplyr::n()
+    ),
     Nmiss = length(x[is.na(x)]),
     Ntot = dplyr::n(),
-    prob = N/Ntot,
-    SE = sqrt(prob*(1-prob)/Ntot ),
+    meanresp = ifelse(!continuous,
+                      N/Ntot,
+                      mean(y,na.rm=TRUE)
+    ),
+    prob = meanresp,
+    SE =  ifelse(!continuous,
+                 sqrt(meanresp*(1-meanresp)/Ntot ),
+                 sd(y,na.rm=TRUE)/sqrt(Ntot)),
     values = stats::quantile(x, probs, na.rm = TRUE),
     quant = probs
   )
@@ -451,7 +461,9 @@ gglogisticexpdist <- function(data = effICGI,
       data.long.summaries.dose <- data.long |>
         dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(color_fill),color_fill2,!!sym(DOSEinputvar),DOSE2)|>
         dplyr::reframe(
-          summary_df(expvalue,!!sym(responseinputvar))) |>
+          summary_df(expvalue,!!sym(responseinputvar),
+                     continuous = FALSE)
+          ) |>
         tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
     }
     
@@ -459,7 +471,9 @@ gglogisticexpdist <- function(data = effICGI,
       data.long.summaries.dose <- data.long |>
         dplyr::group_by(!!sym(endpointinputvar),expname,!!sym(DOSEinputvar),DOSE2)|>
         dplyr::reframe(
-          summary_df(expvalue,!!sym(responseinputvar))) |>
+          summary_df(expvalue,!!sym(responseinputvar),
+                     continuous = FALSE)
+          ) |>
         tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
     }
   }
@@ -471,7 +485,8 @@ gglogisticexpdist <- function(data = effICGI,
                         !!sym(DOSEinputvar),DOSE2,
                         !!sym(exptilegroupvar))|>
         dplyr::reframe(
-          summary_df(expvalue,!!sym(responseinputvar))) |>
+          summary_df(expvalue,!!sym(responseinputvar),
+                     continuous = FALSE)) |>
         tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
     }
     if(color_fill == DOSEinputvar) {
@@ -480,7 +495,8 @@ gglogisticexpdist <- function(data = effICGI,
                         !!sym(DOSEinputvar),DOSE2,
                         !!sym(exptilegroupvar))|>
         dplyr::reframe(
-          summary_df(expvalue,!!sym(responseinputvar))) |>
+          summary_df(expvalue,!!sym(responseinputvar),
+                     continuous = FALSE)) |>
         tidyr::pivot_wider(names_from= quant,values_from = values,names_glue = "quant_{100*quant}")
     }
   }
@@ -489,8 +505,7 @@ gglogisticexpdist <- function(data = effICGI,
   loopvariables <- loopvariables[loopvariables!="none"]
   data.long.summaries.dose <- tidyr::unite(data.long.summaries.dose,"loopvariable",
                                            !!!loopvariables, remove = FALSE)
-  #print(data.long.summaries.dose)
-  
+ 
   data.long.summaries.dose$meanresprlower <- 
     data.long.summaries.dose$prob - 1.959*data.long.summaries.dose$SE
   data.long.summaries.dose$meanresprupper <-
@@ -627,7 +642,8 @@ gglogisticexpdist <- function(data = effICGI,
       dplyr::ungroup()|>
       dplyr::group_by(!!sym(endpointinputvar),expname,exptile)|>
       dplyr::reframe(
-        summary_df(expvalue,!!sym(responseinputvar))) |>
+        summary_df(expvalue,!!sym(responseinputvar),
+                   continuous = FALSE)) |>
       tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   }
   if (exptilegroupvar !="none") {
@@ -636,7 +652,8 @@ gglogisticexpdist <- function(data = effICGI,
       dplyr::group_by(!!sym(endpointinputvar),expname,exptile,
                       !!sym(exptilegroupvar))|>
       dplyr::reframe(
-        summary_df(expvalue,!!sym(responseinputvar))) |>
+        summary_df(expvalue,!!sym(responseinputvar),
+                   continuous = FALSE)) |>
       tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   }
   
@@ -1236,7 +1253,13 @@ if(!exposure_distribution_percent){
   pf1 <- p2df2 +
     ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 18)+
-    ggplot2::theme(legend.position = "top",strip.placement = "outside")
+    ggplot2::theme(legend.position = "top", strip.placement = "outside")+
+    ggplot2::guides(
+      fill    = ggplot2::guide_legend(nrow=2, order=1),
+      linetype= ggplot2::guide_legend(nrow=2, order=1),
+      shape   = ggplot2::guide_legend(nrow=2, order=2),
+      color   = ggplot2::guide_legend(nrow=2, order=3)
+    )
   
   if(!theme_certara && !logistic_by_color_fill){
     pf <-  pf1 +
