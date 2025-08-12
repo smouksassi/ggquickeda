@@ -622,7 +622,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     }
 
   if(!nrisk_table_plot) {
-    plotkm1 <-  plotkm0 
+    plotkm1 <-  plotkm000 
   }
   
   

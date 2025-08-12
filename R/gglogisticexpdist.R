@@ -489,11 +489,12 @@ gglogisticexpdist <- function(data = effICGI,
   loopvariables <- loopvariables[loopvariables!="none"]
   data.long.summaries.dose <- tidyr::unite(data.long.summaries.dose,"loopvariable",
                                            !!!loopvariables, remove = FALSE)
-  data.long.summaries.dose$meanresprlower <- data.long.summaries.dose$meanresp-
-    1.959*data.long.summaries.dose$SE
-  data.long.summaries.dose$meanresprupper <- data.long.summaries.dose$meanresp+
-    1.959*data.long.summaries.dose$SE
+  #print(data.long.summaries.dose)
   
+  data.long.summaries.dose$meanresprlower <- 
+    data.long.summaries.dose$prob - 1.959*data.long.summaries.dose$SE
+  data.long.summaries.dose$meanresprupper <-
+    data.long.summaries.dose$prob + 1.959*data.long.summaries.dose$SE
   
   data.long <- tidyr::unite(data.long,"loopvariable", !!!loopvariables, remove = FALSE)
   
@@ -639,9 +640,9 @@ gglogisticexpdist <- function(data = effICGI,
       tidyr::pivot_wider(names_from= quant,values_from =values,names_glue = "quant_{100*quant}")
   }
   
-  data.long.summaries.exposure$meanresprlower <- data.long.summaries.exposure$meanresp-
+  data.long.summaries.exposure$meanresprlower <- data.long.summaries.exposure$prob-
     1.959*data.long.summaries.exposure$SE
-  data.long.summaries.exposure$meanresprupper <- data.long.summaries.exposure$meanresp+
+  data.long.summaries.exposure$meanresprupper <- data.long.summaries.exposure$prob+
     1.959*data.long.summaries.exposure$SE
   
 
@@ -724,7 +725,7 @@ gglogisticexpdist <- function(data = effICGI,
     
   if(binlimits_show){
     if(logistic_by_color_fill){
-      xintercepts <- xintercepts %>% 
+      xintercepts <- xintercepts |>
         dplyr::distinct(expname,intercept,quant)
     }
     p1pl <- p1p  +
@@ -854,7 +855,7 @@ if(!prob_obs_byexptile_plac){
     }
   }
   if(logistic_by_color_fill){
-    data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+    data.long.summaries.exposure <- data.long.summaries.exposure |>
       dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
     
   if (prob_obs_byexptile){
@@ -871,7 +872,7 @@ if(!prob_obs_byexptile_plac){
                                             col = !!sym(exptilegroupvar)))
     }
     if(exptilegroupvar=="none"){
-      data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+      data.long.summaries.exposure <- data.long.summaries.exposure |>
         dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
       p2e <- p1lt +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
@@ -912,7 +913,7 @@ if(!prob_obs_byexptile_plac){
       
       if(Nresp_Ntot_ypos[2] == "with percentages"){
         p2dntot<- p2d +
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |> 
                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                                 vjust = 1,
                                 size = prob_text_size,
@@ -927,7 +928,7 @@ if(!prob_obs_byexptile_plac){
       }
       if(Nresp_Ntot_ypos[2] == "top"){
         p2dntot<- p2d +
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |>
                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -935,7 +936,7 @@ if(!prob_obs_byexptile_plac){
                                           col = !!sym(color_fill),
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |>
                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -946,7 +947,7 @@ if(!prob_obs_byexptile_plac){
       }
         if(Nresp_Ntot_ypos[2] == "bottom"){
           p2dntot <- p2d +
-            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |>
                                  dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,
                                size = prob_text_size, show.legend = FALSE,
@@ -954,7 +955,7 @@ if(!prob_obs_byexptile_plac){
                                             col = !!sym(color_fill),
                                             label = paste(100*round(prob,2),"%",sep="")
                                ))+
-            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |>
                                  dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,
                                size = prob_text_size, show.legend = FALSE,
@@ -1011,7 +1012,7 @@ if(!prob_obs_byexptile_plac){
                              ggplot2::aes(x = medexp, y = prob*1.05,                                        ,
                                           label = paste(100*round(prob,2),"%",sep="")
                              ))+
-          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure |>
                                dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,
                              size = prob_text_size, show.legend = FALSE,
@@ -1052,7 +1053,7 @@ if(!prob_obs_byexptile_plac){
     if(Nresp_Ntot_show){
       if(Nresp_Ntot_ypos[1] == "with percentages"){
       p2 <-   p2dntot +
-        ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure |>
                              dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                            vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
@@ -1100,7 +1101,7 @@ if(!prob_obs_byexptile_plac){
     }
     if(!Nresp_Ntot_show){
       p2 <-   p2dntot +
-        ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure |>
                              dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                            vjust = 1,
                            size = prob_text_size, show.legend = FALSE,
@@ -1117,7 +1118,7 @@ if(!prob_obs_byexptile_plac){
   }
    if(binlimits_show){
      if(logistic_by_color_fill){
-       xintercepts <- xintercepts %>% 
+       xintercepts <- xintercepts |>
          dplyr::distinct(expname,intercept,quant)
      }
      p2t <- p2 +
