@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">ggquickeda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,18 +37,30 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.1.9000" id="ggquickeda-0319000">ggquickeda 0.3.1.9000<a class="anchor" aria-label="anchor" href="#ggquickeda-0319000"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.2" id="ggquickeda-032">ggquickeda 0.3.2<a class="anchor" aria-label="anchor" href="#ggquickeda-032"></a></h2>
 <ul><li>added to possible positions on where to put the N of observations in Mean and Median tabs: (fixed, mean, median)</li>
-<li>added arguments <code>show.exptile_values</code>, <code>show.exptile_values_pos</code> and <code>show.exptile_values_order</code> to <code><a href="../reference/ggkmrisktable.html">ggkmrisktable()</a></code> requested by Mathilde Marchand</li>
 <li>added check box to use geom_path: Check box for lines: <code>Respect data order?</code> requested by Mark Sale)</li>
-<li>fixes for <code><a href="../reference/gglogisticexpdist.html">gglogisticexpdist()</a></code> and <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code> when <code>exposure_distribution</code>and <code>exposure_metric_split</code> where set to “none”</li>
-<li>added multiple arguments to <code><a href="../reference/gglogisticexpdist.html">gglogisticexpdist()</a></code> and <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code> <code>dist_scale</code> and <code>return_list</code>
-</li>
-<li>added possibility to color by endpoint to <code><a href="../reference/gglogisticexpdist.html">gglogisticexpdist()</a></code> and <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code>
-</li>
-<li>added option to model_type =“loess” vs “linear” vs “none” in <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code>
-</li>
 <li>small fixes in the shiny app <code>position_beewwarm</code> and <code>position_quasirandom</code> removing groupOnX</li>
+<li>added arguments <code>show.exptile_values</code>, <code>show.exptile_values_pos</code> and <code>show.exptile_values_order</code> to <code><a href="../reference/ggkmrisktable.html">ggkmrisktable()</a></code> requested by Mathilde Marchand</li>
+<li>deprecated <code><a href="../reference/gglogisticexpdist.html">gglogisticexpdist()</a></code> and <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code> in favor of <code><a href="../reference/ggresponseexpdist.html">ggresponseexpdist()</a></code> with model_type =“logistic” vs “loess” vs “linear” vs “none”</li>
+<li>several ER functions bugs were fixed e.g. when <code>exposure_distribution</code>and <code>exposure_metric_split</code> where set to “none”</li>
+<li>several additional features to color by endpoint using <code>fit_by_color_fill</code> TRUE FALSE</li>
+<li>several arguments to better control distribution y position e.g. <code>dist_scale</code>, <code>dist_position_scaler</code> , <code>dist_offset</code>
+</li>
+<li>possibility to specify provide custom names for placebo and standard of care via <code>exposure_metric_soc_name</code> and <code>exposure_metric_plac_value</code>
+</li>
+<li>possibility to specify “boxplots” for <code>exposure_distribution</code>
+</li>
+<li>possibility to specify “none”, “%”,“N (%)”,“N” for <code>exposure_distribution_percent</code>
+</li>
+<li>possibility to specify “none”,“left”,“right” for <code>exposure_distribution_Ntotal</code>
+</li>
+<li>separately control by dose and by exptile mean size <code>mean_obs_bydose_text_size</code> and <code>mean_obs_byexptile_text_size</code><br></li>
+<li>separately control where to put the N by dose or by exptile using <code>N_byexptile_ypos</code> or <code>N_bydose_ypos</code> with options “with means”,“top”,“bottom”,“none”, text size is controlled by <code>N_text_size</code>
+</li>
+<li>added option to add N total by dose for lineanges via <code>lineranges_Ntotal</code> with options “none”,“left”,“right”</li>
+<li>possibility to return the plot and a list of all datasets needed to redo all layers from scratch via <code>return_list</code>
+</li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.1" id="ggquickeda-031">ggquickeda 0.3.1<a class="anchor" aria-label="anchor" href="#ggquickeda-031"></a></h2><p class="text-muted">CRAN release: 2024-01-15</p>
