@@ -1102,14 +1102,13 @@ if(!mean_obs_byexptile_plac){
   if(!fit_by_color_fill){
     if (mean_obs_byexptile){
       shapetxt <- ifelse(model_type=="logistic",
-                         paste("Observed probability\nby exposure split:"),
-                         paste("Observed mean\nby exposure split:")
+                         paste("Observed probability\nby exposure split:",exposure_metric_split),
+                         paste("Observed mean\nby exposure split:",exposure_metric_split)
       )
       p2e <- p1lt2 +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                size = 1, alpha = 0.5,
-                               ggplot2::aes(shape = paste(shapetxt,
-                                            exposure_metric_split),
+                               ggplot2::aes(shape = shapetxt,
                                               x = medexp,
                                               y = meanresp,
                                               ymin = meanresprlower,
@@ -1126,14 +1125,14 @@ if(!mean_obs_byexptile_plac){
   if (mean_obs_byexptile){
     if(exptilegroupvar!="none"){
       shapetxt <- ifelse(model_type=="logistic",
-                         paste("Observed probability\nby color split:"),
-                         paste("Observed mean\nby",exptilegroupvar,"split:")
-      )
+                         "Observed probability\nby exposure and group split:",
+                         "Observed mean\nby exposure and group split:")
+      shapetxtexp <- paste(shapetxt, exposure_metric_split)
+      
       p2e <- p1lt2 +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
-                                 ggplot2::aes(shape = paste(shapetxt,
-                                                            exposure_metric_split),
+                                 ggplot2::aes(shape = shapetxtexp,
                                             x = medexp,
                                             y = meanresp,
                                             ymin = meanresprlower,
@@ -1144,12 +1143,12 @@ if(!mean_obs_byexptile_plac){
       shapetxt <- ifelse(model_type=="logistic",
                          "Observed probability\nby exposure split:",
                          "Observed mean\nby exposure split:")
+      shapetxtexp <- paste(shapetxt, exposure_metric_split)
       
       p2e <- p1lt2 +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
                                  size = 1, alpha = 0.5,
-                                 ggplot2::aes(shape = paste(shapetxt,
-                                                            exposure_metric_split),
+                                 ggplot2::aes(shape = shapetxtexp,
                                             x = medexp,
                                             y = meanresp,
                                             ymin = meanresprlower,
@@ -1170,9 +1169,11 @@ if(!mean_obs_byexptile_plac){
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"meanresp"] <- NA
     }
     shapetxt <- ifelse(model_type=="logistic",
-                         paste("Observed probability\nby",colorinputvar,"split"),
-                         paste("Observed mean\nby",colorinputvar,"split")
+                         paste("Observed probability\nby","color","split:"),
+                         paste("Observed mean\nby","color","split:")
                          )
+    shapetxtdose <- paste(shapetxt, colorinputvar)
+    
       p2d <- p2e +
         ggplot2::geom_pointrange(data = data.long.summaries.dose.plot %>% 
                                    dplyr::filter(!is.na(N),!is.na(Ntot)),
@@ -1183,7 +1184,7 @@ if(!mean_obs_byexptile_plac){
          ymin = meanresprlower,
          ymax = meanresprupper,
          col = !!sym(color_fill),
-         shape = paste(shapetxt,colorinputvar,"split")))
+         shape = shapetxtdose))
 
       if(N_bydose_ypos == "with means"){
         labeldata <- data.long.summaries.dose.plot %>% 
@@ -1373,27 +1374,30 @@ if(!mean_obs_byexptile_plac){
       dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar))
     
       if(N_byexptile_ypos == "with means"){
+ 
+        data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+          dplyr::mutate(label= ifelse(model_type=="logistic",
+               paste(
+                 paste(100*round(meanresp,2),"%",sep=""),
+                 "\n",
+                 ifelse(is.na(N),"",N),
+                 N_text_sep,
+                 ifelse(is.na(Ntot),"",Ntot),
+                 sep=""),
+               paste(
+                 paste("\n",round(meanresp,2),sep=""),N_text_sep,
+                 ifelse(is.na(Ntot),"",Ntot),
+                 sep=""))
+          )
+        
       p2 <-   p2dntot +
-        ggrepel::geom_text_repel(data.long.summaries.exposure,
+        ggplot2::geom_text(data.long.summaries.exposure,
                            vjust = 1,lineheight = 0.8,
                            size = mean_obs_byexptile_text_size, show.legend = FALSE,
-                           ggplot2::aes(x = medexp,y = meanresp*1.15,
-                                        col= .data[[exptilegroupvar]],
-                                        label = 
-                                        ifelse(model_type=="logistic",
-                                               paste(
-                                                 paste(100*round(meanresp,2),"%",sep=""),
-                                                 "\n",
-                                                 ifelse(is.na(N),"",N),
-                                                 N_text_sep,
-                                                 ifelse(is.na(Ntot),"",Ntot),
-                                                 sep=""),
-                                               paste(
-                                                 paste("\n",round(meanresp,2),sep=""),N_text_sep,
-                                                 ifelse(is.na(Ntot),"",Ntot),
-                                                 sep=""))
-                                        )
-                           )
+                           mapping = ggplot2::aes(x = medexp, y = meanresp*1.15,  
+                   col= .data[[exptilegroupvar]],
+                   label = label
+      ))
       }
       if(N_byexptile_ypos == "top"){
         p2 <- p2dntot +
