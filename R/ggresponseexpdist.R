@@ -55,8 +55,8 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param response name of the column holding the response values
 #' @param endpoint name of the column holding the name/key of the endpoint default to `Endpoint`
 #' @param model_type type of the trend fit one of "loess", "linear", "logistic", "none" 
-#' @param DOSE name of the column holding the DOSE/regimen values default to `DOSE`
-#' @param color_fill name of the column to be used for color/fill default to DOSE column
+#' @param DOSE name of the column holding the DOSE/regimen values default to `DOSE` should be a factor
+#' @param color_fill name of the column to be used for color/fill default to DOSE column should be a factor
 #' @param fit_by_color_fill split fit by color/fill? default `FALSE`
 #' @param exposure_metrics name(s) of the column(s) to be stacked into `expname` `exptile` and split into `exposure_metric_split`
 #' @param exposure_metric_split one of "median", "tertile", "quartile", "none"
@@ -160,7 +160,35 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  points_alpha= 0.1)
 #'                  
 #'\dontrun{
-#'#' # Example x               
+#'# Example 5 
+#' effICGI <- logistic_data |>
+#' dplyr::filter(!is.na(ICGI))|>
+#' dplyr::filter(!is.na(AUC))
+#' effICGI$DOSE <- factor(effICGI$DOSE,
+#'                       levels=c("0", "600", "1200","1800","2400"),
+#'                       labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+#' effICGI$STUDY <- factor(effICGI$STUDY)
+#' effICGI$ICGI2 <- ifelse(effICGI$ICGI7 < 4,1,0)
+#' effICGI$ICGI3 <- ifelse(effICGI$ICGI7 < 5,1,0)
+#' 
+#' effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2,ICGI3)
+#' effICGI$endpointcol2 <- effICGI$Endpoint
+#' effICGI$endpointcol3 <- effICGI$Endpoint
+#' 
+#' ggresponseexpdist(data = effICGI,
+#'                   points_show = FALSE,
+#'                   exposure_metrics = c("AUC"),
+#'                   exposure_distribution ="lineranges",
+#'                   color_fill = "endpointcol2",
+#'                   model_type = "logistic",                   
+#'                   fit_by_color_fill = TRUE,
+#'                   mean_obs_byexptile_text_size = 0,
+#'                   mean_obs_byexptile_group="endpointcol3",
+#'                   facet_formula = Endpoint~expname,
+#'                   N_byexptile_ypos = "none",
+#'                   binlimits_text_size = 0
+#'                  )+
+#'                   ggplot2::facet_grid(expname~Endpoint,margin="Endpoint")
 #'}
 #' @export               
 ggresponseexpdist <- function(data = logistic_data |>
@@ -1642,7 +1670,7 @@ if(!exposure_distribution_percent=="none"){
   }
 
   pf1 <- p2df2 +
-    ggplot2::labs(fill="", linetype="", shape="", x = xlab, y = ylab) +
+    ggplot2::labs(color="",fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 14)+
     ggplot2::theme(legend.position = "top", strip.placement = "outside")+
     ggplot2::guides(
