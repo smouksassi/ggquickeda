@@ -68,9 +68,9 @@ ggresponseexpdist(
 
 \item{model_type}{type of the trend fit one of "loess", "linear", "logistic", "none"}
 
-\item{DOSE}{name of the column holding the DOSE/regimen values default to \code{DOSE}}
+\item{DOSE}{name of the column holding the DOSE/regimen values default to \code{DOSE} should be a factor}
 
-\item{color_fill}{name of the column to be used for color/fill default to DOSE column}
+\item{color_fill}{name of the column to be used for color/fill default to DOSE column should be a factor}
 
 \item{fit_by_color_fill}{split fit by color/fill? default \code{FALSE}}
 
@@ -224,6 +224,34 @@ ggresponseexpdist(data = effICGI |>
                  points_alpha= 0.1)
                  
 \dontrun{
-#' # Example x               
+# Example 5 
+effICGI <- logistic_data |>
+dplyr::filter(!is.na(ICGI))|>
+dplyr::filter(!is.na(AUC))
+effICGI$DOSE <- factor(effICGI$DOSE,
+                      levels=c("0", "600", "1200","1800","2400"),
+                      labels=c("Placebo", "600 mg", "1200 mg","1800 mg","2400 mg"))
+effICGI$STUDY <- factor(effICGI$STUDY)
+effICGI$ICGI2 <- ifelse(effICGI$ICGI7 < 4,1,0)
+effICGI$ICGI3 <- ifelse(effICGI$ICGI7 < 5,1,0)
+
+effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2,ICGI3)
+effICGI$endpointcol2 <- effICGI$Endpoint
+effICGI$endpointcol3 <- effICGI$Endpoint
+
+ggresponseexpdist(data = effICGI,
+                  points_show = FALSE,
+                  exposure_metrics = c("AUC"),
+                  exposure_distribution ="lineranges",
+                  color_fill = "endpointcol2",
+                  model_type = "logistic",                   
+                  fit_by_color_fill = TRUE,
+                  mean_obs_byexptile_text_size = 0,
+                  mean_obs_byexptile_group="endpointcol3",
+                  facet_formula = Endpoint~expname,
+                  N_byexptile_ypos = "none",
+                  binlimits_text_size = 0
+                 )+
+                  ggplot2::facet_grid(expname~Endpoint,margin="Endpoint")
 }
 }

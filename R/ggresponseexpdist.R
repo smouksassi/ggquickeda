@@ -1196,11 +1196,11 @@ if(!mean_obs_byexptile_plac){
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"Ntot"] <- NA
     data.long.summaries.dose.plot[data.long.summaries.dose.plot[,DOSEinputvar]==dose_plac_value,"meanresp"] <- NA
     }
-    shapetxt <- ifelse(model_type=="logistic",
+    shapetxtdose <- ifelse(model_type=="logistic",
                          paste("Observed probability\nby","color","split:"),
                          paste("Observed mean\nby","color","split:")
                          )
-    shapetxtdose <- paste(shapetxt, colorinputvar)
+    shapetxtdose <- paste(shapetxtdose, colorinputvar)
     
       p2d <- p2e +
         ggplot2::geom_pointrange(data = data.long.summaries.dose.plot %>% 
