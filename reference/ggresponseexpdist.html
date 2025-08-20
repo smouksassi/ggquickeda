@@ -95,6 +95,12 @@
 <span>  yaxis_position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"right"</span><span class="op">)</span>,</span>
 <span>  facet_formula <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  theme_certara <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  color_legend_title <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  fill_legend_title <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  linetype_legend_title <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  shape_legend_title <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  combine_fill_linetype_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  legend_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"model"</span>, <span class="st">"color"</span>, <span class="st">"linetype"</span>, <span class="st">"shape"</span><span class="op">)</span>,</span>
 <span>  return_list <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -305,6 +311,32 @@
 
 <dt id="arg-theme-certara">theme_certara<a class="anchor" aria-label="anchor" href="#arg-theme-certara"></a></dt>
 <dd><p>apply certara colors and format for strips and default colour/fill</p></dd>
+
+
+<dt id="arg-color-legend-title">color_legend_title<a class="anchor" aria-label="anchor" href="#arg-color-legend-title"></a></dt>
+<dd><p>text for colour legend title</p></dd>
+
+
+<dt id="arg-fill-legend-title">fill_legend_title<a class="anchor" aria-label="anchor" href="#arg-fill-legend-title"></a></dt>
+<dd><p>text for fill legend title</p></dd>
+
+
+<dt id="arg-linetype-legend-title">linetype_legend_title<a class="anchor" aria-label="anchor" href="#arg-linetype-legend-title"></a></dt>
+<dd><p>text for linetype legend title</p></dd>
+
+
+<dt id="arg-shape-legend-title">shape_legend_title<a class="anchor" aria-label="anchor" href="#arg-shape-legend-title"></a></dt>
+<dd><p>text for shape legend title</p></dd>
+
+
+<dt id="arg-combine-fill-linetype-legend">combine_fill_linetype_legend<a class="anchor" aria-label="anchor" href="#arg-combine-fill-linetype-legend"></a></dt>
+<dd><p>defaults to true</p></dd>
+
+
+<dt id="arg-legend-order">legend_order<a class="anchor" aria-label="anchor" href="#arg-legend-order"></a></dt>
+<dd><p>Legend order. A four-element vector with the following
+items ordered in your desired order: "model", "color", "linetype", "shape".
+if an item is absent the legend will be omitted.</p></dd>
 
 
 <dt id="arg-return-list">return_list<a class="anchor" aria-label="anchor" href="#arg-return-list"></a></dt>
