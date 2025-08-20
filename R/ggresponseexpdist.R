@@ -33,6 +33,14 @@ summary_df <- function(x,y, probs = c(0.10,0.25,0.75,0.90),
   )
 }
 
+which0 <- function(x) {
+  result <- which(x)
+  if (length(result) == 0) {
+    result <- 0
+  }
+  result
+}
+
 plogis <- function(x) exp(x)/(1+exp(x))
 
 # gglogisticexpdist <- function(model_type="logistic",...) {
@@ -102,6 +110,14 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param yaxis_position where to put y axis "left" or "right"
 #' @param facet_formula facet formula to be use otherwise `endpoint ~ expname`
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
+#' @param color_legend_title    text for colour legend title
+#' @param fill_legend_title     text for fill legend title
+#' @param linetype_legend_title text for linetype legend title
+#' @param shape_legend_title    text for shape legend title
+#' @param combine_fill_linetype_legend defaults to true
+#' @param legend_order Legend order. A four-element vector with the following
+#' items ordered in your desired order: "model", "color", "linetype", "shape".
+#' if an item is absent the legend will be omitted.
 #' @param return_list What to return if True a list of the datasets and plot is returned instead of only the plot
 #' @examples
 #' # Example 1
@@ -119,7 +135,9 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'ggresponseexpdist(data = effICGI |>
 #'dplyr::filter(Endpoint=="ICGI"),
 #'model_type = "loess",
-#'exposure_metrics = c("AUC","CMAX"))
+#'exposure_metrics = c("AUC","CMAX"),
+#'legend_order = c("color","shape","model"),
+#'color_legend_title ="Dose\nLevels"))
 #'
 #'# Example 2
 #'ggresponseexpdist(data = effICGI |>
@@ -243,9 +261,30 @@ ggresponseexpdist <- function(data = logistic_data |>
                               yaxis_position = c("left","right"),
                               facet_formula = NULL,
                               theme_certara = TRUE,
+                              color_legend_title    = "",
+                              fill_legend_title     = "",
+                              linetype_legend_title = "",
+                              shape_legend_title    = "",
+                              combine_fill_linetype_legend = TRUE,
+                              legend_order = c("model", "color", "linetype", "shape"),
                               return_list = FALSE
 ) {
-
+  
+  color_pos <- which0(legend_order == "color")[1]
+  fill_pos <- which0(legend_order == "model")[1]
+  linetype_pos <- which0(legend_order == "linetype")[1]
+  shape_pos <- which0(legend_order == "shape")[1]
+   if (combine_fill_linetype_legend) {
+     linetype_pos  <- fill_pos
+   }
+  guide_color    <- ggplot2::guide_legend(color_legend_title   , order = color_pos, nrow = 2)
+  guide_fill     <- ggplot2::guide_legend(fill_legend_title    , order = fill_pos, nrow = 2)
+  guide_linetype <- ggplot2::guide_legend(linetype_legend_title, order = linetype_pos, nrow = 2)
+  guide_shape    <- ggplot2::guide_legend(shape_legend_title   , order = shape_pos, nrow = 2)
+  if( color_pos==0)    guide_color = FALSE
+  if( fill_pos==0)     guide_fill = FALSE
+  if( linetype_pos==0) guide_linetype = FALSE
+  if( shape_pos==0)    guide_shape = FALSE
   
   responseinputvar  <-  response
   endpointinputvar  <- endpoint
@@ -1673,12 +1712,10 @@ if(!exposure_distribution_percent=="none"){
     ggplot2::labs(color="",fill="", linetype="", shape="", x = xlab, y = ylab) +
     ggplot2::theme_bw(base_size = 14)+
     ggplot2::theme(legend.position = "top", strip.placement = "outside")+
-    ggplot2::guides(
-      fill    = ggplot2::guide_legend(nrow=2, order=1),
-      linetype= ggplot2::guide_legend(nrow=2, order=1),
-      shape   = ggplot2::guide_legend(nrow=2, order=2),
-      color   = ggplot2::guide_legend(nrow=2, order=3)
-                    )
+    ggplot2::guides(colour  = guide_color,
+                   linetype = guide_linetype,
+                   fill     = guide_fill,
+                  shape     = guide_shape )
   
   if(!theme_certara && !fit_by_color_fill){
     pf <-  pf1 +

@@ -56,6 +56,12 @@ ggresponseexpdist(
   yaxis_position = c("left", "right"),
   facet_formula = NULL,
   theme_certara = TRUE,
+  color_legend_title = "",
+  fill_legend_title = "",
+  linetype_legend_title = "",
+  shape_legend_title = "",
+  combine_fill_linetype_legend = TRUE,
+  legend_order = c("model", "color", "linetype", "shape"),
   return_list = FALSE
 )
 }
@@ -161,6 +167,20 @@ ggresponseexpdist(
 \item{facet_formula}{facet formula to be use otherwise \code{endpoint ~ expname}}
 
 \item{theme_certara}{apply certara colors and format for strips and default colour/fill}
+
+\item{color_legend_title}{text for colour legend title}
+
+\item{fill_legend_title}{text for fill legend title}
+
+\item{linetype_legend_title}{text for linetype legend title}
+
+\item{shape_legend_title}{text for shape legend title}
+
+\item{combine_fill_linetype_legend}{defaults to true}
+
+\item{legend_order}{Legend order. A four-element vector with the following
+items ordered in your desired order: "model", "color", "linetype", "shape".
+if an item is absent the legend will be omitted.}
 
 \item{return_list}{What to return if True a list of the datasets and plot is returned instead of only the plot}
 }

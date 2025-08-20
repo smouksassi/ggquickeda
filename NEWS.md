@@ -20,6 +20,8 @@
   with options "with means","top","bottom","none", text size is controlled by `N_text_size`
 * added option to add N total by dose for lineanges via `lineranges_Ntotal` with options "none","left","right" 
 * possibility to return the plot  and a list of all datasets needed to redo all layers from scratch via `return_list`
+* give user more controls on legends when using `ggresponseexpdist()` with arguments: `color_legend_title`,
+  `fill_legend_title`, `linetype_legend_title`, `shape_legend_title`, `linetype_legend_title`, and `legend_order`
 
 # ggquickeda 0.3.1
 
