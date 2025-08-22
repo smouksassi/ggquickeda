@@ -137,7 +137,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'model_type = "loess",
 #'exposure_metrics = c("AUC","CMAX"),
 #'legend_order = c("color","shape","model"),
-#'color_legend_title ="Dose\nLevels"))
+#'color_legend_title ="Dose\nLevels")
 #'
 #'# Example 2
 #'ggresponseexpdist(data = effICGI |>
@@ -207,6 +207,44 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                   binlimits_text_size = 0
 #'                  )+
 #'                   ggplot2::facet_grid(expname~Endpoint,margin="Endpoint")
+#' 
+#' # Example 6 retrun a list and customize
+#' plist <- ggresponseexpdist(data = effICGI |>
+#' dplyr::filter(Endpoint=="ICGI"),
+#' model_type = "logistic",
+#' mean_obs_byexptile = TRUE,
+#' N_byexptile_ypos = "none",
+#' mean_obs_byexptile_text_size = 4,
+#' binlimits_ypos = -Inf,
+#' exposure_metric_split = "tertile",
+#' exposure_metrics = c("AUC"),
+#' return_list = TRUE)
+#' byexptileinformation <- plist[[7]]
+#' plotwihoutlabels <- plist[[9]]
+#' 
+#' #construct text label
+#' byexptileinformation <- byexptileinformation %>%
+#'  dplyr::group_by(exptile,expname)%>%
+#'  dplyr::mutate(meanbin = mean(c(minexp,maxexp))) %>%
+#'  dplyr::mutate(label = ifelse(exptile!="Placebo",
+#'                        paste0(exptile,"\n","[",round(minexp,0),"-",round(maxexp,0),"]",
+#'                               "\n",N,"\n",Ntot),
+#'                        paste0(exptile,"\n","",
+#'                               "\n",N,"\n",Ntot)),
+#'         x_pos = ifelse(exptile=="Placebo",-25,meanbin )
+#'  )
+#'
+#'plotwihoutlabels +
+#'  geom_text(data=byexptileinformation,size = 3,
+#'            aes(x=x_pos ,label=label,y = 0.5),
+#'            inherit.aes = FALSE,
+#'            vjust= 1, hjust = 0.5)+
+#'  geom_text(data=data.frame(
+#'    label="exposure ntile\n[min-max]\nN responders\nN Total"),size = 3,
+#'    x=Inf,y = 0.5,
+#'    aes(label=label),inherit.aes = FALSE,
+#'    vjust= 1, hjust = 1)+
+#'  facet_wrap(~expname,ncol=2,scales = "free_x")
 #'}
 #' @export               
 ggresponseexpdist <- function(data = logistic_data |>
@@ -1029,7 +1067,7 @@ ggresponseexpdist <- function(data = logistic_data |>
   
   if(binlimits_show){
     if(fit_by_color_fill){
-      xintercepts <- xintercepts %>% 
+      xintercepts <- xintercepts |> 
         dplyr::distinct(expname,intercept,quant)
       xintercepts$binlimits_ypos <- binlimits_ypos
     }
@@ -1045,10 +1083,10 @@ ggresponseexpdist <- function(data = logistic_data |>
  if (model_type != "none") {
   model_type_method <- ifelse(model_type=="linear","lm","loess")
   model_type_method <- ifelse(model_type=="logistic","glm",model_type_method)
-  filltext <- ifelse(model_type=="linear","Linear Fit 95% CI","Loess Fit 95% CI")
-  filltext <- ifelse(model_type=="logistic","Logistic Fit 95% CI",filltext)
-  linetypetext <- ifelse(model_type=="linear","Linear Fit 95% CI","Loess Fit 95% CI")
-  linetypetext <- ifelse(model_type=="logistic","Logistic Fit 95% CI",linetypetext)
+  filltext <- ifelse(model_type=="linear","Linear Fit\n95% CI","Loess Fit\n95% CI")
+  filltext <- ifelse(model_type=="logistic","Logistic Fit\n95% CI",filltext)
+  linetypetext <- ifelse(model_type=="linear","Linear Fit\n95% CI","Loess Fit\n95% CI")
+  linetypetext <- ifelse(model_type=="logistic","Logistic Fit\n95% CI",linetypetext)
   familyargument <- ifelse(model_type=="logistic","binomial","gaussian")
 
     if(!fit_by_color_fill) {
@@ -1079,7 +1117,7 @@ ggresponseexpdist <- function(data = logistic_data |>
                         method = model_type_method, method.args = list(family = familyargument), 
                          alpha = 0.5,
                        ggplot2::aes_string(linetype = color_fill,
-                                           color=color_fill))
+                                           color    = color_fill))
   }
   }
   if(model_type == "none"){
@@ -1146,7 +1184,7 @@ ggresponseexpdist <- function(data = logistic_data |>
         ggrepel::geom_text_repel(data=data.long.summaries.dose, vjust = 1, size = 5, show.legend = FALSE,
                            ggplot2::aes_string(x = "lineranges_Ntotal_value",
                                                y = lineranges_ypos,
-                                               label = "N",
+                                               label = "Ntot",
                                                col = color_fill,
                                                group=   paste0("interaction(",paste(as.character(c(DOSEinputvar,color_fill)) ,collapse=",",sep=""),")")
                            ),
@@ -1174,7 +1212,8 @@ if(!mean_obs_byexptile_plac){
       )
       p2e <- p1lt2 +
       ggplot2::geom_pointrange(data = data.long.summaries.exposure,
-                               size = 1, alpha = 0.5,
+                               size = 0.75, alpha = 0.5,
+                               linewidth = 1,
                                ggplot2::aes(shape = shapetxt,
                                               x = medexp,
                                               y = meanresp,
@@ -1186,7 +1225,7 @@ if(!mean_obs_byexptile_plac){
     }
   }
   if(fit_by_color_fill){
-    data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+    data.long.summaries.exposure <- data.long.summaries.exposure |> 
       dplyr::mutate({{endpointinputvar}} := !!sym(endpointinputvar))
 
   if (mean_obs_byexptile){
@@ -1198,7 +1237,8 @@ if(!mean_obs_byexptile_plac){
       
       p2e <- p1lt2 +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
-                                 size = 1, alpha = 0.5,
+                                 size = 0.75, alpha = 0.5,
+                                 linewidth = 1,
                                  ggplot2::aes(shape = shapetxtexp,
                                             x = medexp,
                                             y = meanresp,
@@ -1214,7 +1254,8 @@ if(!mean_obs_byexptile_plac){
       
       p2e <- p1lt2 +
         ggplot2::geom_pointrange(data = data.long.summaries.exposure,
-                                 size = 1, alpha = 0.5,
+                                 size = 0.75, alpha = 0.5,
+                                 linewidth = 1,
                                  ggplot2::aes(shape = shapetxtexp,
                                             x = medexp,
                                             y = meanresp,
@@ -1242,19 +1283,20 @@ if(!mean_obs_byexptile_plac){
     shapetxtdose <- paste(shapetxtdose, colorinputvar)
     
       p2d <- p2e +
-        ggplot2::geom_pointrange(data = data.long.summaries.dose.plot %>% 
+        ggplot2::geom_pointrange(data = data.long.summaries.dose.plot |> 
                                    dplyr::filter(!is.na(N),!is.na(Ntot)),
-         alpha = 0.5, size = 1,
-         ggplot2::aes(
-         x = medexp,
-         y = meanresp,
-         ymin = meanresprlower,
-         ymax = meanresprupper,
-         col = !!sym(color_fill),
-         shape = shapetxtdose))
+                                 size = 0.75, alpha = 0.5,
+                                 linewidth = 1,
+                                 ggplot2::aes(
+                                   x = medexp,
+                                   y = meanresp,
+                                   ymin = meanresprlower,
+                                   ymax = meanresprupper,
+                                   col = !!sym(color_fill),
+                                   shape = shapetxtdose))
 
       if(N_bydose_ypos == "with means"){
-        labeldata <- data.long.summaries.dose.plot %>% 
+        labeldata <- data.long.summaries.dose.plot |> 
           dplyr::mutate(model_type = model_type,
                         labeltex= 
                           dplyr::case_when(
@@ -1267,7 +1309,7 @@ if(!mean_obs_byexptile_plac){
                             TRUE ~ "no model"))
 
         p2dntot<- p2d +
-          ggrepel::geom_text_repel(data = labeldata %>% 
+          ggrepel::geom_text_repel(data = labeldata |> 
                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                                 vjust = 1,lineheight = 0.8,
                                 size = mean_obs_bydose_text_size,
@@ -1283,7 +1325,7 @@ if(!mean_obs_byexptile_plac){
       }
       if(N_bydose_ypos == "top"){
         p2dntot<- p2d +
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |> 
                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,lineheight = 0.8,
                              size = mean_obs_bydose_text_size, show.legend = FALSE,
@@ -1295,7 +1337,7 @@ if(!mean_obs_byexptile_plac){
                                                          )
                                           )
                              )+
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |> 
                                 dplyr::filter(!is.na(N),!is.na(Ntot)),
                              vjust = 1,lineheight = 0.8,
                              size = N_text_size, show.legend = FALSE,
@@ -1309,7 +1351,7 @@ if(!mean_obs_byexptile_plac){
       }
         if(N_bydose_ypos == "bottom"){
           p2dntot <- p2d +
-            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |> 
                                  dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,lineheight = 0.8,
                                size = mean_obs_bydose_text_size, show.legend = FALSE,
@@ -1320,7 +1362,7 @@ if(!mean_obs_byexptile_plac){
                                                            paste("\n",round(meanresp,2),sep="")
                                             )
                                ))+
-            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+            ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |> 
                                        dplyr::filter(!is.na(N),!is.na(Ntot)),
                                      vjust = 1,lineheight = 0.8,
                                      size = N_text_size, show.legend = FALSE,
@@ -1334,7 +1376,7 @@ if(!mean_obs_byexptile_plac){
       }
       if(N_bydose_ypos == "none"){
         p2dntot <- p2d +
-          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.dose.plot |> 
                                      dplyr::filter(!is.na(N),!is.na(Ntot)),
                                    vjust = 1,lineheight = 0.8,
                                    size = mean_obs_bydose_text_size, show.legend = FALSE,
@@ -1355,7 +1397,7 @@ if(!mean_obs_byexptile_plac){
   if(mean_obs_byexptile && !fit_by_color_fill) {
       if(N_byexptile_ypos == "with means"){
       p2 <- p2dntot +
-        ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure |> 
                                    dplyr::filter(!is.na(N)),
                            vjust = 1,lineheight = 0.8,
                            size = mean_obs_byexptile_text_size, show.legend = FALSE,
@@ -1381,7 +1423,7 @@ if(!mean_obs_byexptile_plac){
                                                          paste("\n",round(meanresp,2),sep="")
                                           )
                              ))+
-          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure |> 
                                dplyr::filter(!is.na(N),!is.na(Ntot)),
                                vjust = 1,lineheight = 0.8,
                              size = N_text_size, show.legend = FALSE,
@@ -1402,7 +1444,7 @@ if(!mean_obs_byexptile_plac){
                                                          paste("\n",round(meanresp,2),sep=""))
                                           )
                              )+
-          ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+          ggrepel::geom_text_repel(data=data.long.summaries.exposure |> 
                                      dplyr::filter(!is.na(N),!is.na(Ntot)),
                                    vjust = 1,lineheight = 0.8,
                                    size = N_text_size, show.legend = FALSE,
@@ -1413,8 +1455,8 @@ if(!mean_obs_byexptile_plac){
                                    ))
       }
     if(N_byexptile_ypos == "none"){
-      labeldata <- data.long.summaries.exposure %>% 
-        dplyr::filter(!is.na(Ntot),!is.na(N)) %>% 
+      labeldata <- data.long.summaries.exposure |> 
+        dplyr::filter(!is.na(Ntot),!is.na(N)) |> 
         dplyr::mutate(labeltextlogistic= paste(100*round(meanresp,2),"%",sep=""),
                       labeltextnotlogistic= paste("\n",round(meanresp,2),sep=""),
                       model_type = model_type,
@@ -1437,20 +1479,18 @@ if(!mean_obs_byexptile_plac){
   }
   
   if(mean_obs_byexptile && fit_by_color_fill) {
-    data.long.summaries.exposure <- data.long.summaries.exposure %>% 
+    data.long.summaries.exposure <- data.long.summaries.exposure |> 
       dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar))
     
       if(N_byexptile_ypos == "with means"){
  
-        data.long.summaries.exposure <- data.long.summaries.exposure %>% 
-          dplyr::mutate(label= ifelse(model_type=="logistic",
+        data.long.summaries.exposure <- data.long.summaries.exposure |> 
+          dplyr::mutate(labeltex = ifelse(model_type=="logistic",
                paste(
                  paste(100*round(meanresp,2),"%",sep=""),
                  "\n",
-                 ifelse(is.na(N),"",N),
-                 N_text_sep,
-                 ifelse(is.na(Ntot),"",Ntot),
-                 sep=""),
+                 ifelse(is.na(N),"",N),N_text_sep,
+                 ifelse(is.na(Ntot),"",Ntot), sep=""),
                paste(
                  paste("\n",round(meanresp,2),sep=""),N_text_sep,
                  ifelse(is.na(Ntot),"",Ntot),
@@ -1463,7 +1503,7 @@ if(!mean_obs_byexptile_plac){
                            size = mean_obs_byexptile_text_size, show.legend = FALSE,
                            mapping = ggplot2::aes(x = medexp, y = meanresp*1.15,  
                    col= .data[[exptilegroupvar]],
-                   label = label
+                   label = labeltex
       ))
       }
       if(N_byexptile_ypos == "top"){
@@ -1512,7 +1552,7 @@ if(!mean_obs_byexptile_plac){
       }
     if(N_byexptile_ypos == "none"){
       p2 <-   p2dntot +
-        ggrepel::geom_text_repel(data=data.long.summaries.exposure %>% 
+        ggrepel::geom_text_repel(data=data.long.summaries.exposure |> 
                                    dplyr::mutate({{endpointinputvar}} :=!!sym(endpointinputvar)),
                                  vjust = 1,lineheight = 0.8,
                                  size = mean_obs_byexptile_text_size, show.legend = FALSE,
@@ -1531,7 +1571,7 @@ if(!mean_obs_byexptile_plac){
   }
    if(binlimits_show){
      if(fit_by_color_fill){
-       xintercepts <- xintercepts %>% 
+       xintercepts <- xintercepts |> 
          dplyr::distinct(expname,intercept,quant)
        xintercepts$binlimits_ypos <- binlimits_ypos
      }
