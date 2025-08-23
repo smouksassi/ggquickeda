@@ -613,7 +613,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                            ggplot2::aes(x=time,label=value,y=keynumeric,time=NULL,status=NULL),
                 show.legend = FALSE,
                 size = nrisk_table_textsize, 
-                position = ggstance::position_dodgev(height =nrisk_position_dodge)
+                position = ggplot2::position_dodge(width = nrisk_position_dodge,
+                                                    orientation = "y")
       )+
         ggplot2::geom_hline(yintercept = - nrisk_position_scaler *(
         unique(c(seq(min(as.numeric(as.factor(risktabledatag$key))),max(as.numeric(as.factor(risktabledatag$key)))+1,1)))

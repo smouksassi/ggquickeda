@@ -203,7 +203,9 @@ effICGI <- tidyr::gather(effICGI,Endpoint,response,ICGI,ICGI2)
 ggresponseexpdist(data = effICGI |>
 dplyr::filter(Endpoint=="ICGI"),
 model_type = "loess",
-exposure_metrics = c("AUC","CMAX"))
+exposure_metrics = c("AUC","CMAX"),
+legend_order = c("color","shape","model"),
+color_legend_title ="Dose\nLevels")
 
 # Example 2
 ggresponseexpdist(data = effICGI |>
@@ -273,5 +275,43 @@ ggresponseexpdist(data = effICGI,
                   binlimits_text_size = 0
                  )+
                   ggplot2::facet_grid(expname~Endpoint,margin="Endpoint")
+
+# Example 6 retrun a list and customize
+plist <- ggresponseexpdist(data = effICGI |>
+dplyr::filter(Endpoint=="ICGI"),
+model_type = "logistic",
+mean_obs_byexptile = TRUE,
+N_byexptile_ypos = "none",
+mean_obs_byexptile_text_size = 4,
+binlimits_ypos = -Inf,
+exposure_metric_split = "tertile",
+exposure_metrics = c("AUC"),
+return_list = TRUE)
+byexptileinformation <- plist[[7]]
+plotwihoutlabels <- plist[[9]]
+
+#construct text label
+byexptileinformation <- byexptileinformation \%>\%
+ dplyr::group_by(exptile,expname)\%>\%
+ dplyr::mutate(meanbin = mean(c(minexp,maxexp))) \%>\%
+ dplyr::mutate(label = ifelse(exptile!="Placebo",
+                       paste0(exptile,"\n","[",round(minexp,0),"-",round(maxexp,0),"]",
+                              "\n",N,"\n",Ntot),
+                       paste0(exptile,"\n","",
+                              "\n",N,"\n",Ntot)),
+        x_pos = ifelse(exptile=="Placebo",-25,meanbin )
+ )
+
+plotwihoutlabels +
+ geom_text(data=byexptileinformation,size = 3,
+           aes(x=x_pos ,label=label,y = 0.5),
+           inherit.aes = FALSE,
+           vjust= 1, hjust = 0.5)+
+ geom_text(data=data.frame(
+   label="exposure ntile\n[min-max]\nN responders\nN Total"),size = 3,
+   x=Inf,y = 0.5,
+   aes(label=label),inherit.aes = FALSE,
+   vjust= 1, hjust = 1)+
+ facet_wrap(~expname,ncol=2,scales = "free_x")
 }
 }

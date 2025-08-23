@@ -1794,15 +1794,15 @@ if(!exposure_distribution_percent=="none"){
   
   if(return_list){
     pf <-   list(
-         data.long,
-         xintercepts,
-         data.long.summaries.dose,
-         predict_by_endpoint_expname,
-         predict_by_endpoint_expname_dose,
-         predict_by_endpoint_expname_dose2,
-         data.long.summaries.exposure,
-         percentineachbreakcategory,
-         pf)
+         stackeddata = data.long,
+         xintercepts = xintercepts,
+         by_dose_summary = data.long.summaries.dose,
+         prediction_q10_q90 =  predict_by_endpoint_expname_dose,
+         prediction_q25_q75 = predict_by_endpoint_expname_dose2,
+         prediction_q50 = predict_by_endpoint_expname,
+         by_exptile_summary = data.long.summaries.exposure,
+         distribution_n_percentage = percentineachbreakcategory,
+         erplot = pf)
   }
   pf
 }
