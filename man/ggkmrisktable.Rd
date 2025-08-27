@@ -40,6 +40,7 @@ ggkmrisktable(
   km_logrank_pvalue_cutoff = 0.001,
   km_logrank_pvalue_digits = 3,
   km_trans = c("identity", "event", "cumhaz", "cloglog"),
+  km_linewidth = 1,
   km_ticks = TRUE,
   km_band = TRUE,
   km_conf_int = 0.95,
@@ -126,6 +127,8 @@ ggkmrisktable(
 \item{km_logrank_pvalue_digits}{pvalue ndigits for round function}
 
 \item{km_trans}{one of "identity","event","cumhaz","cloglog"}
+
+\item{km_linewidth}{linewidth for the km curves default to 1}
 
 \item{km_ticks}{TRUE}
 

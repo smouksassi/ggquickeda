@@ -172,6 +172,7 @@ lung_long$facetdum <- "(all)"
 #' @param km_logrank_pvalue_cutoff pvalue below which to print as p < cutoff
 #' @param km_logrank_pvalue_digits pvalue ndigits for round function
 #' @param km_trans one of "identity","event","cumhaz","cloglog"
+#' @param km_linewidth linewidth for the km curves default to 1
 #' @param km_ticks TRUE
 #' @param km_band TRUE
 #' @param km_conf_int 0.95
@@ -321,6 +322,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          km_logrank_pvalue_cutoff = 0.001,
                          km_logrank_pvalue_digits = 3,
                          km_trans = c("identity","event","cumhaz","cloglog"),
+                         km_linewidth = 1,
                          km_ticks = TRUE,
                          km_band  = TRUE,
                          km_conf_int = 0.95,
@@ -586,7 +588,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   plotkm0 <-   ggplot2::ggplot(data.long,ggplot2::aes_string(time = time, status = status,
                                             color = colorinputvar, fill = fillinputvar,
                                             linetype = linetypeinputvar))+
-    ggplot2::geom_line(stat = "km",trans = km_trans)
+    ggplot2::geom_line(stat = "km",trans = km_trans, linewidth = km_linewidth)
   if(km_band){
     plotkm00 <-  plotkm0 +
       ggplot2::geom_ribbon(stat = "kmband", alpha=0.2, color = "transparent",
