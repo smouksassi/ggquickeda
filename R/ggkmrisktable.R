@@ -547,6 +547,13 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
       risktabledata[[variable]] <- .get_variable_value(variable,risktabledata$strata, surv_object, data.long)
     }
   }
+
+  if  (!is.null( levels(data.long[[colorinputvar]]))){
+    collevels <- levels(data.long[[colorinputvar]])
+    risktabledata[[colorinputvar]] <- factor(risktabledata[[colorinputvar]],
+                                             levels = collevels)
+    }
+
   if(nrisk_filterout0){
     risktabledata <- risktabledata |> 
       dplyr::filter(n.risk > 0)
