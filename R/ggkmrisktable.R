@@ -589,6 +589,11 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     for(variable in variables) {
       dfmedian[[variable]] <- .get_variable_value(variable, dfmedian$strata, surv_object, data.long)
     }
+    if  (!is.null( levels(data.long[[colorinputvar]]))){
+      collevels <- levels(data.long[[colorinputvar]])
+      dfmedian[[colorinputvar]] <- factor(dfmedian[[colorinputvar]],
+                                               levels = collevels)
+    }
   }
   }
   
@@ -656,7 +661,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                            "{statusvar}" := NA), 
                            ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*rev(as.numeric(as.factor(get(!!color_fill)))),
                                             label = paste0(get(!!color_fill), ": ",
-                                                           sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper)
+                                                           gsub("NA","-",sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper))
                                             )), 
                            hjust = km_median_table_pos_hjust,
                            show.legend = FALSE,inherit.aes = TRUE)
@@ -670,7 +675,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                            "{statusvar}" := NA), 
                            ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*(as.numeric(as.factor(get(!!color_fill)))),
                                             label = paste0(get(!!color_fill), ": ",
-                                                           sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper)
+                                                           gsub("NA","-",sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper))
                                             )), 
                            hjust = km_median_table_pos_hjust,
                            show.legend = FALSE,inherit.aes = TRUE)
@@ -750,6 +755,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                         label = paste0(exptile, ": ",exprange
                                         )), 
                            hjust = exptile_values_pos_x_hjust,
+                           size = show_exptile_values_textsize,
                            show.legend = FALSE,inherit.aes = TRUE)
     }
    

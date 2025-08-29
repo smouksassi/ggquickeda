@@ -65,7 +65,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param Nresp_Ntot_size N responders/Ntotal text size default to 5
 #' @param Nresp_Ntot_ypos y position for N responders/Ntotal two text elements the first for by exptile and the second
 #'  for by dose/color options include `with percentages` `top` `bottom`
-#' @param Nresp_Ntot_sep character string to separat N responders/ Ntotal default `/`
+#' @param Nresp_Ntot_sep character string to separate N responders/ Ntotal default `/`
 #' @param binlimits_show show the binlimits vertical lines `TRUE`/`FALSE`
 #' @param binlimits_text_size binlimits text size default to 5
 #' @param binlimits_ypos binlimits y position default to 0 

@@ -112,7 +112,7 @@ gglogisticexpdist(
 \item{Nresp_Ntot_ypos}{y position for N responders/Ntotal two text elements the first for by exptile and the second
 for by dose/color options include \verb{with percentages} \code{top} \code{bottom}}
 
-\item{Nresp_Ntot_sep}{character string to separat N responders/ Ntotal default \code{/}}
+\item{Nresp_Ntot_sep}{character string to separate N responders/ Ntotal default \code{/}}
 
 \item{binlimits_show}{show the binlimits vertical lines \code{TRUE}/\code{FALSE}}
 
