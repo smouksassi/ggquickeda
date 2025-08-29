@@ -1268,9 +1268,11 @@ if(!exposure_distribution_percent){
   }
   if( theme_certara && !logistic_by_color_fill){
     pf <-  pf1 +
-      ggplot2::scale_colour_manual(values = c( "#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
+      ggplot2::scale_colour_manual(values = c("#4682AC","#FDBB2F","#EE3124","#336343","#7059a6", "#803333",
+                                              "#2F71FD","#093B6D","#EF761B","#279594"),
                                    drop=FALSE,na.value = "grey50")+
-      ggplot2::scale_fill_manual(  values = c("gray80","#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
+      ggplot2::scale_fill_manual(  values = c("gray80","#4682AC","#FDBB2F","#EE3124","#336343","#7059a6", "#803333",
+                                              "#2F71FD","#093B6D","#EF761B","#279594"),
                                    drop=FALSE,na.value = "grey50")+
       ggplot2::theme(strip.background = ggplot2::element_rect(fill="#475c6b"),
                      strip.text =  ggplot2::element_text(face = "bold",color = "white"))
@@ -1284,9 +1286,11 @@ if(!exposure_distribution_percent){
   }
   if( theme_certara && logistic_by_color_fill){
     pf <-  pf1 +
-      ggplot2::scale_colour_manual(values = c("#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
+      ggplot2::scale_colour_manual(values = c("#4682AC","#FDBB2F","#EE3124","#336343","#7059a6", "#803333",
+                                              "#2F71FD","#093B6D","#EF761B","#279594"),
                                    drop=FALSE,na.value = "grey50")+
-      ggplot2::scale_fill_manual(  values = c("#4682AC","#FDBB2F","#EE3124" ,"#336343","#7059a6", "#803333"),
+      ggplot2::scale_fill_manual(  values = c("#4682AC","#FDBB2F","#EE3124","#336343","#7059a6", "#803333",
+                                              "#2F71FD","#093B6D","#EF761B","#279594"),
                                    drop=FALSE,na.value = "grey50")+
       ggplot2::theme(strip.background = ggplot2::element_rect(fill="#475c6b"),
                      strip.text =  ggplot2::element_text(face = "bold",color = "white"))
