@@ -321,6 +321,11 @@ for by dose/color options include <code>with means</code> <code>top</code> <code
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_25)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, quant_75)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, medexp)`</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`aes_string()` was deprecated in ggplot2 3.0.0.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See also `vignette("ggplot2-in-packages")` for more information.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">ggquickeda</span> package.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue at <span style="color: #0000BB; font-style: italic;">&lt;https://github.com/smouksassi/ggquickeda/issues&gt;</span>.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu">ggcontinuousexpdist</span><span class="op">(</span>data <span class="op">=</span> <span class="va">effICGI</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Endpoint</span> <span class="op">==</span><span class="st">"BRLS"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                 response <span class="op">=</span> <span class="st">"response"</span>,</span></span>
@@ -390,6 +395,9 @@ for by dose/color options include <code>with means</code> <code>top</code> <code
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(loopvariable, DOSE, SEX, color_fill2, medexp)`</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_smooth()` using formula = 'y ~ x'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Registered S3 method overwritten by 'plyr':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   method    from  </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   [.indexed table1</span>
 <span class="r-plt img"><img src="ggcontinuousexpdist-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="co">#Example 3</span></span></span>

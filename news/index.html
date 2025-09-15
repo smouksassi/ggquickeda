@@ -39,9 +39,10 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.2" id="ggquickeda-032">ggquickeda 0.3.2<a class="anchor" aria-label="anchor" href="#ggquickeda-032"></a></h2>
 <ul><li>added to possible positions on where to put the N of observations in Mean and Median tabs: (fixed, mean, median)</li>
-<li>added check box to use geom_path: Check box for lines: <code>Respect data order?</code> requested by Mark Sale)</li>
+<li>added check box to use geom_path: Check box for lines: <code>Respect data order?</code> (requested by Mark Sale, Certara)</li>
 <li>small fixes in the shiny app <code>position_beewwarm</code> and <code>position_quasirandom</code> removing groupOnX</li>
-<li>added arguments <code>show.exptile_values</code>, <code>show.exptile_values_pos</code> and <code>show.exptile_values_order</code> to <code><a href="../reference/ggkmrisktable.html">ggkmrisktable()</a></code> requested by Mathilde Marchand</li>
+<li>added arguments <code>show.exptile_values</code>, <code>show.exptile_values_pos</code> and <code>show.exptile_values_order</code> to <code><a href="../reference/ggkmrisktable.html">ggkmrisktable()</a></code> (requested by Mathilde Marchand, Certara)</li>
+<li>added argument <code>km_linewidth</code> to control km curves linewidths (requested by Sejung Hwang, UCSF)<br></li>
 <li>deprecated <code><a href="../reference/gglogisticexpdist.html">gglogisticexpdist()</a></code> and <code><a href="../reference/ggcontinuousexpdist.html">ggcontinuousexpdist()</a></code> in favor of <code><a href="../reference/ggresponseexpdist.html">ggresponseexpdist()</a></code> with model_type =“logistic” vs “loess” vs “linear” vs “none”</li>
 <li>several ER functions bugs were fixed e.g. when <code>exposure_distribution</code>and <code>exposure_metric_split</code> where set to “none”</li>
 <li>several additional features to color by endpoint using <code>fit_by_color_fill</code> TRUE FALSE</li>
@@ -49,7 +50,7 @@
 </li>
 <li>possibility to specify provide custom names for placebo and standard of care via <code>exposure_metric_soc_name</code> and <code>exposure_metric_plac_value</code>
 </li>
-<li>possibility to specify “boxplots” for <code>exposure_distribution</code>
+<li>possibility to specify “boxplots” for the <code>exposure_distribution</code> argument in <code>ggresponseexpdist</code>
 </li>
 <li>possibility to specify “none”, “%”,“N (%)”,“N” for <code>exposure_distribution_percent</code>
 </li>
@@ -58,7 +59,7 @@
 <li>separately control by dose and by exptile mean size <code>mean_obs_bydose_text_size</code> and <code>mean_obs_byexptile_text_size</code><br></li>
 <li>separately control where to put the N by dose or by exptile using <code>N_byexptile_ypos</code> or <code>N_bydose_ypos</code> with options “with means”,“top”,“bottom”,“none”, text size is controlled by <code>N_text_size</code>
 </li>
-<li>added option to add N total by dose for lineanges via <code>lineranges_Ntotal</code> with options “none”,“left”,“right”</li>
+<li>added option to add N total by dose for lineranges via <code>lineranges_Ntotal</code> with options “none”,“left”,“right”</li>
 <li>possibility to return the plot and a list of all datasets needed to redo all layers from scratch via <code>return_list</code>
 </li>
 <li>give user more controls on legends when using <code><a href="../reference/ggresponseexpdist.html">ggresponseexpdist()</a></code> with arguments: <code>color_legend_title</code>, <code>fill_legend_title</code>, <code>linetype_legend_title</code>, <code>shape_legend_title</code>, <code>linetype_legend_title</code>, and <code>legend_order</code>
