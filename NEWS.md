@@ -1,10 +1,11 @@
 # ggquickeda 0.3.2
 
 * added to possible positions on where to put the N of observations in Mean and Median tabs: (fixed, mean, median)
-* added check box to use geom_path: Check box for lines: `Respect data order?`  requested by Mark Sale)
+* added check box to use geom_path: Check box for lines: `Respect data order?` (requested by Mark Sale, Certara)
 * small fixes in the shiny app  `position_beewwarm` and `position_quasirandom` removing groupOnX
 * added arguments `show.exptile_values`, `show.exptile_values_pos` and `show.exptile_values_order` to
-  `ggkmrisktable()` requested by Mathilde Marchand
+  `ggkmrisktable()` (requested by Mathilde Marchand, Certara)
+* added argument `km_linewidth` to control km curves linewidths (requested by Sejung Hwang, UCSF)  
 * deprecated `gglogisticexpdist()` and `ggcontinuousexpdist()` in favor of `ggresponseexpdist()`
   with model_type ="logistic" vs "loess" vs "linear" vs "none"
 * several ER functions  bugs were fixed e.g. when `exposure_distribution`and `exposure_metric_split` where set to "none"
@@ -12,13 +13,13 @@
 * several arguments to better control distribution y position e.g. `dist_scale`, `dist_position_scaler` , `dist_offset`
 * possibility to specify provide custom names for placebo and standard of care via `exposure_metric_soc_name` and
   `exposure_metric_plac_value`
-* possibility to specify "boxplots" for `exposure_distribution` 
+* possibility to specify "boxplots" for the `exposure_distribution` argument in `ggresponseexpdist`
 * possibility to specify "none", "%","N (%)","N" for `exposure_distribution_percent` 
 * possibility to specify "none","left","right" for `exposure_distribution_Ntotal` 
 * separately control by dose and by exptile mean size `mean_obs_bydose_text_size` and `mean_obs_byexptile_text_size`  
 * separately control where to put the N by dose or by exptile using `N_byexptile_ypos` or `N_bydose_ypos`
   with options "with means","top","bottom","none", text size is controlled by `N_text_size`
-* added option to add N total by dose for lineanges via `lineranges_Ntotal` with options "none","left","right" 
+* added option to add N total by dose for lineranges via `lineranges_Ntotal` with options "none","left","right" 
 * possibility to return the plot  and a list of all datasets needed to redo all layers from scratch via `return_list`
 * give user more controls on legends when using `ggresponseexpdist()` with arguments: `color_legend_title`,
   `fill_legend_title`, `linetype_legend_title`, `shape_legend_title`, `linetype_legend_title`, and `legend_order`
