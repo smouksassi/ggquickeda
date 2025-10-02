@@ -165,7 +165,7 @@ lung_long$facetdum <- "(all)"
 #' @param nrisk_position_scaler 0.2
 #' @param nrisk_position_dodge 0.2, negative values will reverse the order
 #' @param nrisk_offset 0
-#' @param nrisk_filterout0 FALSE
+#' @param nrisk_filterout0 filter out data when number at risk becomes zero default to FALSE
 #' @param km_logrank_pvalue FALSE
 #' @param km_logrank_pvalue_pos "left" or "right"
 #' @param km_logrank_pvalue_textsize pvalue text size default to 5
@@ -181,6 +181,7 @@ lung_long$facetdum <- "(all)"
 #' @param km_median add median survival information one of "none", "median", "medianci", "table"
 #' @param km_median_table_pos when table is chosen where to put it  "left" or "right
 #' @param km_median_table_order when table is chosen the order of the entries "default" or "reverse"
+#' @param km_median_table_y_multiplier enable to control where the median table start default to 0.09 
 #' @param km_yaxis_position where to put y axis on "left" or "right
 #' @param facet_formula facet formula to be used otherwise ~ groupvar1 + groupvar2 + groupvar3
 #' @param facet_ncol NULL if not specified the automatic waiver will be used
@@ -331,6 +332,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                          km_median = c("none","median","medianci","table"),
                          km_median_table_pos = c("left","right"),
                          km_median_table_order = c("default","reverse"),
+                         km_median_table_y_multiplier = 0.09,
                          km_yaxis_position = c("left","right"),
                          facet_formula = NULL,
                          facet_ncol = NULL,
@@ -547,12 +549,13 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
       risktabledata[[variable]] <- .get_variable_value(variable,risktabledata$strata, surv_object, data.long)
     }
   }
-
+  if(!is.null(colorinputvar) ){
   if  (!is.null( levels(data.long[[colorinputvar]]))){
     collevels <- levels(data.long[[colorinputvar]])
     risktabledata[[colorinputvar]] <- factor(risktabledata[[colorinputvar]],
                                              levels = collevels)
     }
+  }
 
   if(nrisk_filterout0){
     risktabledata <- risktabledata |> 
@@ -589,13 +592,15 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     for(variable in variables) {
       dfmedian[[variable]] <- .get_variable_value(variable, dfmedian$strata, surv_object, data.long)
     }
-    if  (!is.null( levels(data.long[[colorinputvar]]))){
+    if(!is.null(colorinputvar) ){
+      if  (!is.null( levels(data.long[[colorinputvar]]))){
       collevels <- levels(data.long[[colorinputvar]])
       dfmedian[[colorinputvar]] <- factor(dfmedian[[colorinputvar]],
                                                levels = collevels)
+      }
     }
   }
-  }
+}
   
   plotkm0 <-   ggplot2::ggplot(data.long,ggplot2::aes_string(time = time, status = status,
                                             color = colorinputvar, fill = fillinputvar,
@@ -648,7 +653,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
       ggplot2::geom_text(data = dfmedian |> 
                            dplyr::mutate(none = "(all)"), 
                          ggplot2::aes(x     = km_median_table_pos_x,
-                                      y     = (max(as.numeric(as.factor(get(!!color_fill))))+1)*0.09,
+                                      y     = (max(as.numeric(as.factor(get(!!color_fill))))+1)*km_median_table_y_multiplier,
                                       label = "Median Event Time:"), 
                 hjust = km_median_table_pos_hjust, show.legend = FALSE, 
                 color="gray30",inherit.aes = FALSE)
@@ -659,7 +664,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                              dplyr::mutate(none = "(all)",
                                            "{timevar}" := NA,
                                            "{statusvar}" := NA), 
-                           ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*rev(as.numeric(as.factor(get(!!color_fill)))),
+                           ggplot2::aes(    x = km_median_table_pos_x,
+                                            y = km_median_table_y_multiplier*rev(as.numeric(as.factor(get(!!color_fill)))),
                                             label = paste0(get(!!color_fill), ": ",
                                                            gsub("NA","-",sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper))
                                             )), 
@@ -673,7 +679,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                              dplyr::mutate(none = "(all)",
                                            "{timevar}" := NA,
                                            "{statusvar}" := NA), 
-                           ggplot2::aes(    x = km_median_table_pos_x, y = 0.09*(as.numeric(as.factor(get(!!color_fill)))),
+                           ggplot2::aes(    x = km_median_table_pos_x,
+                                            y = km_median_table_y_multiplier*(as.numeric(as.factor(get(!!color_fill)))),
                                             label = paste0(get(!!color_fill), ": ",
                                                            gsub("NA","-",sprintf("%#.3g (%#.3g, %#.3g)",x1,x1lower,x1upper))
                                             )), 
@@ -737,7 +744,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                            "{timevar}" := NA,
                                            "{statusvar}" := NA), 
                            ggplot2::aes(x = exptile_values_pos_x,
-                                        y = 0.09*rev(as.numeric(as.factor(exptile))),
+                                        y = km_median_table_y_multiplier*rev(as.numeric(as.factor(exptile))),
                                         label = paste0(exptile, ": ",exprange
                                         )), 
                            hjust = exptile_values_pos_x_hjust,
@@ -751,7 +758,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                            "{timevar}" := NA,
                                            "{statusvar}" := NA), 
                            ggplot2::aes(x = exptile_values_pos_x,
-                                        y = 0.09*(as.numeric(as.factor(exptile))),
+                                        y = km_median_table_y_multiplier*(as.numeric(as.factor(exptile))),
                                         label = paste0(exptile, ": ",exprange
                                         )), 
                            hjust = exptile_values_pos_x_hjust,

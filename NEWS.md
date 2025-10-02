@@ -1,3 +1,8 @@
+# ggquickeda 0.3.2.9999
+* fix issue when color was set to "none" in  `ggkmrisktable`
+* added km_median_table_y_multiplier for better control on where to put the table on y
+* fixed issue with the new ggplot2 geom_violin quantile syntax
+
 # ggquickeda 0.3.2
 
 * added to possible positions on where to put the N of observations in Mean and Median tabs: (fixed, mean, median)

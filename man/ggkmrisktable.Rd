@@ -49,6 +49,7 @@ ggkmrisktable(
   km_median = c("none", "median", "medianci", "table"),
   km_median_table_pos = c("left", "right"),
   km_median_table_order = c("default", "reverse"),
+  km_median_table_y_multiplier = 0.09,
   km_yaxis_position = c("left", "right"),
   facet_formula = NULL,
   facet_ncol = NULL,
@@ -114,7 +115,7 @@ ggkmrisktable(
 
 \item{nrisk_offset}{0}
 
-\item{nrisk_filterout0}{FALSE}
+\item{nrisk_filterout0}{filter out data when number at risk becomes zero default to FALSE}
 
 \item{km_logrank_pvalue}{FALSE}
 
@@ -145,6 +146,8 @@ ggkmrisktable(
 \item{km_median_table_pos}{when table is chosen where to put it  "left" or "right}
 
 \item{km_median_table_order}{when table is chosen the order of the entries "default" or "reverse"}
+
+\item{km_median_table_y_multiplier}{enable to control where the median table start default to 0.09}
 
 \item{km_yaxis_position}{where to put y axis on "left" or "right}
 

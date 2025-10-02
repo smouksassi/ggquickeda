@@ -3891,7 +3891,8 @@ function(input, output, session) {
                 show.legend = input$violinshowlegend,
                 position = eval(parse(text=positionviolin)),
                 scale = input$violinscale,
-                draw_quantiles =  if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+                quantiles =  c(0.25,0.5,0.75),
+                quantile.linetype = ifelse(input$violinshowquantile, 1, 0) 
               )
             }
             if (input$violinignorecol) {
@@ -3902,7 +3903,8 @@ function(input, output, session) {
                 show.legend = input$violinshowlegend,
                 position = eval(parse(text=positionviolin)),
                 scale = input$violinscale,
-                draw_quantiles =  if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+                quantiles  =  c(0.25,0.5,0.75),
+                quantile.linetype = ifelse(input$violinshowquantile, 1, 0) 
               )
             }
           }
@@ -3915,7 +3917,8 @@ function(input, output, session) {
               show.legend = input$violinshowlegend,
               position = eval(parse(text=positionviolin)),
               scale = input$violinscale,
-              draw_quantiles =  if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+              quantiles =  c(0.25,0.5,0.75),
+              quantile.linetype = ifelse(input$violinshowquantile, 1, 0) 
               )
           }
           if (input$violinignorecol) {
@@ -3926,7 +3929,8 @@ function(input, output, session) {
               show.legend = input$violinshowlegend,
               position = eval(parse(text=positionviolin)),
               scale = input$violinscale,
-              draw_quantiles = if(input$violinshowquantile) c(0.25,0.5,0.75) else NULL
+              quantiles = c(0.25,0.5,0.75),
+              quantile.linetype = ifelse(input$violinshowquantile, 1, 0) 
             )
           }
         }
