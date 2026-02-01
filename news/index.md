@@ -1,0 +1,395 @@
+# Changelog
+
+## ggquickeda 0.3.3
+
+- fix issue when color was set to “none” in `ggkmrisktable`
+- added km_median_table_y_multiplier for better control on where to put
+  the table on y
+- added km_linewidth argument
+- fixed issue with the new ggplot2 geom_violin quantile syntax
+
+## ggquickeda 0.3.2
+
+CRAN release: 2025-09-15
+
+- added to possible positions on where to put the N of observations in
+  Mean and Median tabs: (fixed, mean, median)
+- added check box to use geom_path: Check box for lines:
+  `Respect data order?` (requested by Mark Sale, Certara)
+- small fixes in the shiny app `position_beewwarm` and
+  `position_quasirandom` removing groupOnX
+- added arguments `show.exptile_values`, `show.exptile_values_pos` and
+  `show.exptile_values_order` to
+  [`ggkmrisktable()`](https://smouksassi.github.io/ggquickeda/reference/ggkmrisktable.md)
+  (requested by Mathilde Marchand, Certara)
+- added argument `km_linewidth` to control km curves linewidths
+  (requested by Sejung Hwang, UCSF)  
+- deprecated
+  [`gglogisticexpdist()`](https://smouksassi.github.io/ggquickeda/reference/gglogisticexpdist.md)
+  and
+  [`ggcontinuousexpdist()`](https://smouksassi.github.io/ggquickeda/reference/ggcontinuousexpdist.md)
+  in favor of
+  [`ggresponseexpdist()`](https://smouksassi.github.io/ggquickeda/reference/ggresponseexpdist.md)
+  with model_type =“logistic” vs “loess” vs “linear” vs “none”
+- several ER functions bugs were fixed e.g. when
+  `exposure_distribution`and `exposure_metric_split` where set to “none”
+- several additional features to color by endpoint using
+  `fit_by_color_fill` TRUE FALSE
+- several arguments to better control distribution y position
+  e.g. `dist_scale`, `dist_position_scaler` , `dist_offset`
+- possibility to specify provide custom names for placebo and standard
+  of care via `exposure_metric_soc_name` and
+  `exposure_metric_plac_value`
+- possibility to specify “boxplots” for the `exposure_distribution`
+  argument in `ggresponseexpdist`
+- possibility to specify “none”, “%”,“N (%)”,“N” for
+  `exposure_distribution_percent`
+- possibility to specify “none”,“left”,“right” for
+  `exposure_distribution_Ntotal`
+- separately control by dose and by exptile mean size
+  `mean_obs_bydose_text_size` and `mean_obs_byexptile_text_size`  
+- separately control where to put the N by dose or by exptile using
+  `N_byexptile_ypos` or `N_bydose_ypos` with options “with
+  means”,“top”,“bottom”,“none”, text size is controlled by `N_text_size`
+- added option to add N total by dose for lineranges via
+  `lineranges_Ntotal` with options “none”,“left”,“right”
+- possibility to return the plot and a list of all datasets needed to
+  redo all layers from scratch via `return_list`
+- give user more controls on legends when using
+  [`ggresponseexpdist()`](https://smouksassi.github.io/ggquickeda/reference/ggresponseexpdist.md)
+  with arguments: `color_legend_title`, `fill_legend_title`,
+  `linetype_legend_title`, `shape_legend_title`,
+  `linetype_legend_title`, and `legend_order`
+
+## ggquickeda 0.3.1
+
+CRAN release: 2024-01-15
+
+- rebuilt docs fixed broken link
+- fixing some regressions introduced by bookmarking
+- fixing some errors by the new R rules for logical comparison length
+  with `|` versus `||`
+- fixing error in `aspect.ratio` not numeric (was also fixed in ggplot2)
+- fixing other regressions with
+  [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpairs.html)
+  color and group
+- added support of pasting values of two/three variables where it was
+  just a placeholder
+- added function
+  [`ggkmrisktable()`](https://smouksassi.github.io/ggquickeda/reference/ggkmrisktable.md)
+  to add facetable risk tables, km and by ntiles split exposures
+- added function
+  [`gglogisticexpdist()`](https://smouksassi.github.io/ggquickeda/reference/gglogisticexpdist.md)
+  and
+  [`ggcontinuousexpdist()`](https://smouksassi.github.io/ggquickeda/reference/ggcontinuousexpdist.md)
+  to add facetable logistic/linear regression with exposures split to
+  ntiles with exposure distributions by dose/group and optional y axis
+  projections
+- added link to github pages in description thanks to
+  [@olivroy](https://github.com/olivroy)
+- Fix part of ggplot2 3.4.0 deprecation warnings.
+  ([\#27](https://github.com/smouksassi/ggquickeda/issues/27),
+  [@olivroy](https://github.com/olivroy))
+
+## ggquickeda 0.3.0
+
+CRAN release: 2023-03-26
+
+- added options to drop levels for user discrete shape and linetype
+  scales
+- fixed
+  [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpairs.html)
+  group input and added ability to combine y variables
+- fixed issue with barplot flip applied to bivariate plots
+- fixed issues with barplot percent labels when position is fill
+- added checkboxes to parse x and y axis labels text
+- added ability to regenerate state of apps to have a better UX workflow
+  in Phoenix (James Craig,
+  [\#28](https://github.com/smouksassi/ggquickeda/issues/28))
+- removed Welcome message and added padding
+- James Craig added as a co-author
+
+## ggquickeda 0.2.2
+
+CRAN release: 2022-05-16
+
+- fixed bug in linear model equation where slope and intercept values
+  were switched
+- fixed bug where flip barplot was not working (auto flipped barplot
+  already supported)
+- added group aesthetic and other enhancements for pairs plot
+- bug fixes for expansion, zooming with user input (plots with only x
+  variable(s) or only y variable(s))
+- restored target window annotations to work with factor/character x
+  axis
+- added the possibility to change the size and linetype of density plots
+- added the possibility to choose the shape of boxplot outlier points
+- added options for `x` and `y` scale tick formatting are now visible
+  when pairs plot are active
+- added options for identity line and for placement of custom/target
+  text at plot edges
+- added checkbox to recode numeric variables with -99 to missing
+- removed ggstance dependency by adding needed positions to global.r
+- fixed typos in Visualizing Summary Data vignette data labels
+
+## ggquickeda 0.2.1
+
+CRAN release: 2021-06-22
+
+- added a new method for factor reordering min/max difference
+- added the mean +/- multiples of standard deviations summary using the
+  `mean_sdl` function
+- allowed to transform the label for mean and median to 10^ (useful when
+  the x/y axis are logged)
+- fixed a namespace bug with calling the `scales` package functions like
+  `muted` or `trans_xxx` without the package being loaded, now using
+  `::`.
+- fixed a bug with `updateColourInput` which is now only available from
+  the `colourpicker` package
+- reactivating the colorgradient widget after `shinyjqui` bug was
+  updated and fixed
+- added distiller continuous Blues and brewer discrete palettes
+- added possibility to specify palette for viridis discrete and
+  continuous with possibility to reverse the scale
+- added more support for `POSIXct` variables where previously they were
+  being treated as character
+- automatic zoom slider is now working with `POSIXct`
+- automatic Slider or User zoom now is controllable when facets scales
+  are free  
+- discrete scale is no longer applied when the x and or y variable
+  inherits from `POSIXct`
+- modifying X/Y scale expansion is now optional (fixed auto expansion
+  with free facets)
+
+## ggquickeda 0.2.0
+
+CRAN release: 2021-02-15
+
+- Added Violin plots
+- Added options and fixes for histograms, barplots and densities
+- Added options for Median/Mean/N labels (N digits, justification, edge
+  positions.)
+- Added points `position_quasirandom` and `position_beeswarm`
+- Added multiple enhancements for `theme` control like `panel.border`,
+  `plot.tag.position` and X and Y Axes Titles formatting
+- Added multiple enhancements and options for ggpairs
+- logticks and rug marks can now be on the outside of plot panel
+- coordinates cartesian clip can now be set to off
+- x/y axis percent and comma labels format now works for univariate
+  plots
+- x/y zoom now works when more than one x and/or y variables are
+  selected
+- long x/y discrete axes labels can now be wrapped to specified length
+- UI updates and auto hiding for univariate plots, pairs, km
+- Boxplots UI rework
+- Readme updated
+- summary level data vignette updated
+
+## ggquickeda 0.1.9
+
+CRAN release: 2020-12-16
+
+- Made errorbars for Median/PI and Mean/CI ignore mapped size
+- fixed a bug when labels from Median/PI and Mean/CI and data are used
+- table1 enhancements: na.is.category, render.missing, footnote and
+  caption.
+- table1 enhancements: added N missing and Sum to stats.
+- added second field to order and recode variables after stacking
+  e.g. for xvars and yvars
+- added two new by variable factor sorting methods: ‘N Unique’ and ‘Sum’
+- fixed a bug when custom reorder ignored the current order as starting
+  point
+- added ggplot tag field
+- fixed a bug when user was selecting the same variables for x and y now
+  stacking x and y is separate.
+- fixed a bug in x axis label and barplots in some special cases
+- updated UI or barplot and Density and ability to suppress label legend
+- UI updates to only show the relevant options for pairs plot and
+  histogram/barplot
+- Automatic color theme switching to avoid not enough color or fill
+  errors
+- switched to github actions
+
+## ggquickeda 0.1.8
+
+CRAN release: 2020-11-05
+
+- Added possibility to use more than one x variable(s) and or no y
+  variable(s)
+- Added option for an explicit Missing Category with custom cuts
+- Added option to compute the inverse of Numeric variables
+- Moved the rounding to after division/inverse
+- Added possibility to round data labels before plotting
+- Added a blank shape type so we can do multiple y(s) when some layers
+  do not have a point plotted.
+- Added Docker configuration
+
+## ggquickeda 0.1.7
+
+CRAN release: 2020-07-21
+
+- Added support for semicolon separated files and added package version
+  in App Title
+- Added `geom_rug` support for x/y and for additional variable(s)
+- Added `geom_ribbon` for mean/CI and `geom_errorbar` for median/PI
+  (with UI updates)
+- Enable dodge for mean/CI and median/PI to take into account the
+  specified width
+- Updated UI for facets options and added controls for bold, angle and
+  justification
+- Allowing specifying `multi_line=TRUE` for all facet labellers
+- Added theme options for `strip.switch.pad.grid` and
+  `strip.switch.pad.wrap`
+- Added possibility to completely remove the facet strips background and
+  outline
+- Updated UI for legends options and added controls for legend/legend
+  box, justification and margins
+- Added control for `legend.spacing.y`
+- Added continuous x/y scale(s) asymmetrical expansion values
+- Added more position adjustments for points (e.g. dodge)
+- Minor enhancements for correlation coefficients
+- Updated UI for theme options
+- Added support for the `break.time.by` argument for risk table,
+  enhanced the K-M UI and added inputs for `conf.type` and `conf.lower`
+- Fixed code generation issues by adding dependencies
+- Bumped the minimum R version to 3.6.0 and the minimum ggplot version
+  to 3.3.1
+- Refreshed vignettes and readme screenshots
+
+## ggquickeda 0.1.6
+
+CRAN release: 2020-04-17
+
+- withheld gradientInput addition (shinyjqui issue)
+- fixed a bug in risktable when nothing was selected
+- added controls for plot margins
+- added controls for legend margins
+- strip.position for facet_wrap and more labeller options
+- added parsed x and y axis titles
+- custom position for legends and specification of legend and items
+  background fill
+- updated intro vignette
+
+## ggquickeda 0.1.5
+
+CRAN release: 2019-10-07
+
+- let ggpairs plots reflect custom color scales
+- update the emax smoother to add e0
+- apply a fix for the weight aesthetic for emax smoother
+- update code to be compatible with breaking change from tidyr 1.0
+- user defined shape and linetype scales
+- user defined custom labels for custom x and y axes ticks
+- user can divide by a constant not just a column
+
+## ggquickeda 0.1.4
+
+CRAN release: 2019-09-03
+
+- custom labels with text, label, text_repel and label_repel
+- user can now add more custom colors up to 20
+- added user control to specify mid color of continuous color scales
+- added user control to specify strip text colour and more colourpicker
+  background color
+- order stacked data by sd of value
+- added smooth emax model via nls and parameter values
+- added parameter values for lm fit and made text size adjustable
+- viridis and custom continuous color scale
+- added possibility to divide multiple columns by a specified one
+  (e.g. dose normalization)
+- “Treat as Categories:” now accepts character variables in addition to
+  numeric.
+- “Treat as Numeric:” added to enable converting columns read as
+  factors.
+- updated the docs for geom and
+  [`stat_km()`](https://smouksassi.github.io/ggquickeda/reference/stat_km.md)
+  [`stat_kmband()`](https://smouksassi.github.io/ggquickeda/reference/stat_kmband.md)
+  [`stat_kmticks()`](https://smouksassi.github.io/ggquickeda/reference/stat_kmticks.md).
+
+## ggquickeda 0.1.3
+
+CRAN release: 2019-04-10
+
+- UI and options improvements for KM (line sizes, transparency, ignore
+  group and color), linetype mappping
+- changed default error in `stat_kmbands()`, borrowed stairstepn from
+  ggalt and applying
+  [`zoo::na.locf()`](https://rdrr.io/pkg/zoo/man/na.locf.html) to deal
+  with `NA`.
+- added the possibility to add median survival with or without CI
+- Using
+  [`ggpubr::stat_cor()`](https://rpkgs.datanovia.com/ggpubr/reference/stat_cor.html)
+  to compute correlations for more flexibility and margin in facets
+- added ability to ignore grouping and or ignore color mapping for
+  correlation coefficient
+- added possibility to dodge means and medians
+- added possibility to specify means and medians N and Values
+  transparency and a default seed for text_repel
+- geom text,label, with repel variants and position dodge for median and
+  mean labels
+- added transparency control for densities and histograms as well as
+  linetype mappping
+- added binwidth control for histogram (user defined or auto), and
+  position dodge
+- added window adjustment control for densities
+- linetypes for predefined quantiles
+- added the possibility to add one more therapeutic window and fixed a
+  bug with categorical x axis
+- added possibility to remove x/y axis tick labels
+- fixes for continuous scales logic
+- Added initial support for
+  [`GGally::ggpairs()`](https://ggobi.github.io/ggally/reference/ggpairs.html)
+
+## ggquickeda 0.1.2
+
+CRAN release: 2019-02-24
+
+- bug fixed where in some cases plot data did not apply filtering
+- updated and expanded merge multiple levels of a factor
+- added mappings by shape for points and linetypes of lines and
+  associated custom legends and possibility to ignore it
+- added the possibility of choosing more linetypes for lines
+- various UI improvements for points, lines, qr, smooth, median and mean
+- added options to control size and transparency of qr, smooth, median
+  and mean lines and added predefined qr 25 and 75%
+- added options to force mean and median shapes
+- fixed bug in median line not honoring transparency when Medianselected
+  with some UI tweaks
+- added more options for boxplot outliers (size and transparency)
+- separate color control for major and minor gridlines with the
+  possibility to remove them
+- added
+  [`annotation_logticks()`](https://ggplot2.tidyverse.org/reference/annotation_logticks.html)
+- make faceting less prone to fail when user mistakenly choose the same
+  variable in rows and columns
+- make user defined color/fill scales
+
+## ggquickeda 0.1.1
+
+CRAN release: 2018-09-27
+
+- added options to control facets strip background fill and placement
+- added options to control panel spacing
+- reworked barplots to be able to sort by frequency or reverse frequency
+- histograms and densities gain more options and flexibility
+- added possibility to reorder factors by length of of another variable
+- added possibility to keep last row by id
+- added more options to label x and y axes ticks e.g. using
+  [`prettyNum()`](https://rdrr.io/r/base/formatc.html)
+- added styling options for horizontal and vertical reference lines
+- added more methods for the correlation coefficient
+- added p-values for slope(s) and adjusted Rsquare when a linear
+  regression smoother is selected
+- fixed a bug where x and or y axis zoom would not work in some
+  situations
+- added more stats from table1 as well as possibility to cut by
+  quantiles `eqcut()`
+- added possibility to merge multiple levels of a factor
+- fixed bug where commas in label names broke up the factor levels when
+  using “Recode/Reorder Categories”
+
+## ggquickeda 0.1.0
+
+CRAN release: 2018-04-25
+
+Initial CRAN release
