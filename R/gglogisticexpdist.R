@@ -33,7 +33,7 @@ summary_df <- function(x,y, probs = c(0.10,0.25,0.75,0.90),
 }
 plogis <- function(x) exp(x)/(1+exp(x))
 
-#' Create a logistic fit vs exposure(s)plot
+#' Create a logistic fit vs exposure(s)plot replaced by ggresponseexpdist
 #'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 #' @param data Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)
@@ -85,6 +85,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
 #' @param return_list What to return if True a list of the datasets and plot is returned instead of only the plot
 #' @examples
+#'\dontrun{
 #' # Example 1
 #' library(ggplot2)
 #' effICGI <- logistic_data |>
@@ -137,9 +138,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  yproj_dodge = 2,
 #'                  binlimits_color = "#475c6b",
 #'                  dist_position_scaler = 0.1)
-#'
-#'
-#'\dontrun{
+#'                  
 #'#' # Example 3                
 #'library(ggh4x)
 #'gglogisticexpdist(data = effICGI |>

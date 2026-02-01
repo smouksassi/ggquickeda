@@ -2,7 +2,7 @@
 % Please edit documentation in R/gglogisticexpdist.R
 \name{gglogisticexpdist}
 \alias{gglogisticexpdist}
-\title{Create a logistic fit vs exposure(s)plot}
+\title{Create a logistic fit vs exposure(s)plot replaced by ggresponseexpdist}
 \usage{
 gglogisticexpdist(
   data = effICGI,
@@ -154,6 +154,7 @@ for by dose/color options include \verb{with percentages} \code{top} \code{botto
 Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 }
 \examples{
+\dontrun{
 # Example 1
 library(ggplot2)
 effICGI <- logistic_data |>
@@ -206,9 +207,7 @@ gglogisticexpdist(data = effICGI |>
                  yproj_dodge = 2,
                  binlimits_color = "#475c6b",
                  dist_position_scaler = 0.1)
-
-
-\dontrun{
+                 
 #' # Example 3                
 library(ggh4x)
 gglogisticexpdist(data = effICGI |>

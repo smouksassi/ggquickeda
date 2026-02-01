@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggcontinuousexpdist.R
 \name{ggcontinuousexpdist}
 \alias{ggcontinuousexpdist}
-\title{Create a continuous fit vs exposure(s) plot}
+\title{Create a continuous fit vs exposure(s) plot replaced by ggresponseexpdist}
 \usage{
 ggcontinuousexpdist(
   data = effICGI,
@@ -154,6 +154,7 @@ for by dose/color options include \verb{with means} \code{top} \code{bottom}}
 Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 }
 \examples{
+\dontrun{
 # Example 1
 library(ggplot2)
 library(patchwork)
@@ -218,7 +219,6 @@ ggcontinuousexpdist(data = effICGI |>
                  lineranges_ypos = -0.2,
                  lineranges_dodge = 0.2,
                  lineranges_doselabel = TRUE)
-\dontrun{
 #Example 3
 library(ggplot2)
  library(patchwork)

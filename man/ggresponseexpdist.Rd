@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggresponseexpdist.R
 \name{ggresponseexpdist}
 \alias{ggresponseexpdist}
-\title{Create a fit vs exposure(s)plot}
+\title{Create a general fit vs exposure(s) plot}
 \usage{
 ggresponseexpdist(
   data = dplyr::filter(logistic_data, !is.na(ICGI)),

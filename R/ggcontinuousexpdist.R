@@ -24,7 +24,7 @@ summary_df_cont <- function(x,y, probs = c(0.25,0.75,0.90,0.10)) {
 }
 plogis <- function(x) exp(x)/(1+exp(x))
 
-#' Create a continuous fit vs exposure(s) plot
+#' Create a continuous fit vs exposure(s) plot replaced by ggresponseexpdist
 #'
 #' Produces a logistic fit plot with a facettable exposures/quantiles/distributions in ggplot2
 #' @param data Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)
@@ -76,6 +76,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #' @param theme_certara apply certara colors and format for strips and default colour/fill
 #' @param return_list What to return if True a list of the datasets and plot is returned instead of only the plot
 #' @examples
+#'\dontrun{
 #' # Example 1
 #' library(ggplot2)
 #' library(patchwork)
@@ -140,7 +141,6 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #'                  lineranges_ypos = -0.2,
 #'                  lineranges_dodge = 0.2,
 #'                  lineranges_doselabel = TRUE)
-#'\dontrun{
 #' #Example 3
 #' library(ggplot2)
 #'  library(patchwork)

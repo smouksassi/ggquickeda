@@ -1,4 +1,5 @@
 # ggquickeda 0.3.3
+
 * fix issue when color was set to "none" in  `ggkmrisktable`
 * added km_median_table_y_multiplier for better control on where to put the table on y
 * added km_linewidth argument

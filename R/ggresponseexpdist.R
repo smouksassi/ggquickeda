@@ -56,7 +56,7 @@ plogis <- function(x) exp(x)/(1+exp(x))
 #   ggresponseexpdist(model_type = model_type,...)
 # }
 
-#' Create a fit vs exposure(s)plot
+#' Create a general fit vs exposure(s) plot
 #'
 #' Produces a fit as per model_type plot with a facettable exposures/quantiles/distributions in ggplot2
 #' @param data Data to use with multiple endpoints stacked into response (values), Endpoint(endpoint name)
