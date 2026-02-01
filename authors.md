@@ -19,7 +19,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/smouksassi/ggquickeda/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/smouksassi/ggquickeda/blob/v0.3.3/DESCRIPTION)
 
 Mouksassi S, Attali D, Craig J, Rich B, Sachs M (2026). *ggquickeda:
 Quickly Explore Your Data Using 'ggplot2' and 'table1' Summary Tables*.
