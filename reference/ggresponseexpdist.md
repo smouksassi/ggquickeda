@@ -355,27 +355,13 @@ color_legend_title ="Dose\nLevels")
 #> (`stat_density_ridges()`).
 
 
+if (FALSE) { # \dontrun{
 # Example 2
 ggresponseexpdist(data = effICGI |>
 dplyr::filter(Endpoint=="ICGI"),
 model_type = "logistic",
 exposure_metrics = c("AUC","CMAX"),
 exposure_distribution ="boxplots")
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> `geom_smooth()` using formula = 'y ~ x'
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: Removed 488 rows containing non-finite outside the scale range
-#> (`stat_boxplot()`).
-
 
 # Example 3
 ggresponseexpdist(data = effICGI|>
@@ -383,31 +369,6 @@ dplyr::filter(Endpoint=="ICGI"),
 model_type = "linear",
 exposure_metrics = c("AUC","WT"),
 exposure_distribution ="lineranges")
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: In lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
-#>     ...) :
-#>  extra argument ‘family’ will be disregarded
-#> Warning: In lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
-#>     ...) :
-#>  extra argument ‘family’ will be disregarded
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: In lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
-#>     ...) :
-#>  extra argument ‘family’ will be disregarded
-#> Warning: In lm.wfit(x, y, w, offset = offset, singular.ok = singular.ok, 
-#>     ...) :
-#>  extra argument ‘family’ will be disregarded
-
 
 # Example 4
 ggresponseexpdist(data = effICGI |>
@@ -432,25 +393,7 @@ ggresponseexpdist(data = effICGI |>
                  binlimits_color = "#475c6b",
                  binlimits_ypos = 0.2,
                  points_alpha= 0.1)
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> `geom_smooth()` using formula = 'y ~ x'
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Picking joint bandwidth of 11.7
-#> Picking joint bandwidth of 0.934
-#> Warning: Removed 488 rows containing non-finite outside the scale range
-#> (`stat_density_ridges()`).
-
-                 
-if (FALSE) { # \dontrun{
+  
 # Example 5 
 effICGI <- logistic_data |>
 dplyr::filter(!is.na(ICGI))|>
