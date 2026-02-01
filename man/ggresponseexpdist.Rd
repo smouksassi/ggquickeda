@@ -207,6 +207,7 @@ exposure_metrics = c("AUC","CMAX"),
 legend_order = c("color","shape","model"),
 color_legend_title ="Dose\nLevels")
 
+\dontrun{
 # Example 2
 ggresponseexpdist(data = effICGI |>
 dplyr::filter(Endpoint=="ICGI"),
@@ -244,8 +245,7 @@ ggresponseexpdist(data = effICGI |>
                  binlimits_color = "#475c6b",
                  binlimits_ypos = 0.2,
                  points_alpha= 0.1)
-                 
-\dontrun{
+  
 # Example 5 
 effICGI <- logistic_data |>
 dplyr::filter(!is.na(ICGI))|>
