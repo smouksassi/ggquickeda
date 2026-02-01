@@ -1,4 +1,4 @@
-# Create a fit vs exposure(s)plot
+# Create a general fit vs exposure(s) plot
 
 Produces a fit as per model_type plot with a facettable
 exposures/quantiles/distributions in ggplot2

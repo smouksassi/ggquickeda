@@ -310,6 +310,14 @@ ggkmrisktable(data = lung_long, time= "time", status ="DV",
 #> ℹ Please use `linewidth` instead.
 #> ℹ The deprecated feature was likely used in the ggpubr package.
 #>   Please report the issue at <https://github.com/kassambara/ggpubr/issues>.
+#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+#> ℹ Please use tidy evaluation idioms with `aes()`.
+#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
+#> ℹ The deprecated feature was likely used in the ggquickeda package.
+#>   Please report the issue at <https://github.com/smouksassi/ggquickeda/issues>.
+#> Registered S3 method overwritten by 'plyr':
+#>   method    from  
+#>   [.indexed table1
 #> Warning: The `position` argument in `strip_split()` is being recycled to match the length of the facetting variables,  as provided in the `facets`, `rows`, or `cols` arguments in the facet function.
 
 #Example 2

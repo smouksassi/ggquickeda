@@ -1,4 +1,4 @@
-# Create a continuous fit vs exposure(s) plot
+# Create a continuous fit vs exposure(s) plot replaced by ggresponseexpdist
 
 Produces a logistic fit plot with a facettable
 exposures/quantiles/distributions in ggplot2
@@ -255,6 +255,7 @@ ggcontinuousexpdist(
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Example 1
 library(ggplot2)
 library(patchwork)
@@ -281,16 +282,6 @@ a <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="ICGI7"),
                  mean_obs_byexptile_plac=FALSE,
                  return_list = FALSE
                  )
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-#> ℹ Please use tidy evaluation idioms with `aes()`.
-#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
-#> ℹ The deprecated feature was likely used in the ggquickeda package.
-#>   Please report the issue at <https://github.com/smouksassi/ggquickeda/issues>.
 
 b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
                  response = "response",
@@ -306,33 +297,9 @@ b <- ggcontinuousexpdist(data = effICGI |> dplyr::filter(Endpoint =="BRLS"),
                  mean_obs_bydose_plac = TRUE,
                  mean_obs_byexptile_plac=FALSE,
                  return_list = FALSE)            
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
 (a / b)  +
 plot_layout(guides = "collect") &
  theme(legend.position = "top")
-#> `geom_smooth()` using formula = 'y ~ x'
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Picking joint bandwidth of 11.7
-#> Warning: Removed 244 rows containing non-finite outside the scale range
-#> (`stat_density_ridges()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_pointrange()`).
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: Removed 4 rows containing non-finite outside the scale range (`stat_smooth()`).
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: Removed 4 rows containing non-finite outside the scale range (`stat_smooth()`).
-#> Picking joint bandwidth of 11.7
-#> Warning: Removed 244 rows containing non-finite outside the scale range
-#> (`stat_density_ridges()`).
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_point()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_pointrange()`).
-
 
 #Example 2 loess fit
 effICGI$SEX <- as.factor(effICGI$SEX)
@@ -353,18 +320,6 @@ ggcontinuousexpdist(data = effICGI |>
                  lineranges_ypos = -0.2,
                  lineranges_dodge = 0.2,
                  lineranges_doselabel = TRUE)
-#> Joining with `by = join_by(loopvariable, DOSE, SEX, color_fill2, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, SEX, color_fill2, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, SEX, color_fill2, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, SEX, color_fill2, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, SEX, color_fill2, medexp)`
-#> `geom_smooth()` using formula = 'y ~ x'
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Registered S3 method overwritten by 'plyr':
-#>   method    from  
-#>   [.indexed table1
-
-if (FALSE) { # \dontrun{
 #Example 3
 library(ggplot2)
  library(patchwork)

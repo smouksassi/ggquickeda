@@ -1,4 +1,4 @@
-# Create a logistic fit vs exposure(s)plot
+# Create a logistic fit vs exposure(s)plot replaced by ggresponseexpdist
 
 Produces a logistic fit plot with a facettable
 exposures/quantiles/distributions in ggplot2
@@ -256,6 +256,7 @@ gglogisticexpdist(
 ## Examples
 
 ``` r
+if (FALSE) { # \dontrun{
 # Example 1
 library(ggplot2)
 effICGI <- logistic_data |>
@@ -287,21 +288,6 @@ gglogisticexpdist(data = effICGI |>
                  binlimits_ypos = 0.3,
                  binlimits_color = "#475c6b",
                  points_alpha= 0.8)
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> `geom_smooth()` using formula = 'y ~ x'
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Picking joint bandwidth of 11.7
-#> Warning: Removed 244 rows containing non-finite outside the scale range
-#> (`stat_density_ridges()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_pointrange()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_text_repel()`).
-
                  
 # Example 2                
 gglogisticexpdist(data = effICGI |>
@@ -323,21 +309,7 @@ gglogisticexpdist(data = effICGI |>
                  yproj_dodge = 2,
                  binlimits_color = "#475c6b",
                  dist_position_scaler = 0.1)
-#> Joining with `by = join_by(loopvariable, DOSE, quant_10)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_90)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_25)`
-#> Joining with `by = join_by(loopvariable, DOSE, quant_75)`
-#> Joining with `by = join_by(loopvariable, DOSE, medexp)`
-#> `geom_smooth()` using formula = 'y ~ x'
-#> `geom_smooth()` using formula = 'y ~ x'
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_pointrange()`).
-#> Warning: Removed 1 row containing missing values or values outside the scale range
-#> (`geom_text_repel()`).
-
-
-
-if (FALSE) { # \dontrun{
+                 
 #' # Example 3                
 library(ggh4x)
 gglogisticexpdist(data = effICGI |>

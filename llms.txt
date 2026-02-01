@@ -247,13 +247,15 @@ The app can also be directly launched using this command:
 - [`geom_kmticks()`](https://smouksassi.github.io/ggquickeda/reference/geom_kmticks.md)
   : Add tick marks to a Kaplan-Meier survival curve
 - [`ggcontinuousexpdist()`](https://smouksassi.github.io/ggquickeda/reference/ggcontinuousexpdist.md)
-  : Create a continuous fit vs exposure(s) plot
+  : Create a continuous fit vs exposure(s) plot replaced by
+  ggresponseexpdist
 - [`ggkmrisktable()`](https://smouksassi.github.io/ggquickeda/reference/ggkmrisktable.md)
   : Create a Kaplan-Meier plot with risk table
 - [`gglogisticexpdist()`](https://smouksassi.github.io/ggquickeda/reference/gglogisticexpdist.md)
-  : Create a logistic fit vs exposure(s)plot
+  : Create a logistic fit vs exposure(s)plot replaced by
+  ggresponseexpdist
 - [`ggresponseexpdist()`](https://smouksassi.github.io/ggquickeda/reference/ggresponseexpdist.md)
-  : Create a fit vs exposure(s)plot
+  : Create a general fit vs exposure(s) plot
 - [`logistic_data`](https://smouksassi.github.io/ggquickeda/reference/logistic_data.md)
   : Simulated Exposure Response Data
 - [`run_ggquickeda()`](https://smouksassi.github.io/ggquickeda/reference/run_ggquickeda.md)
