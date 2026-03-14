@@ -94,7 +94,7 @@ get_source_code <- function(x) {
   dep_vars <- attr(x, "source_deps")
   if (length(dep_vars) > 0) {
     for (dep_var in names(dep_vars)) {
-      dep_var_value <- utils::capture.output(dput(dep_vars[[dep_var]]))
+      dep_var_value <- utils::capture.output(constructive::construct(dep_vars[[dep_var]]))
       dep_var_value <- paste(trimws(dep_var_value), collapse = "")
       dep_code <- paste0(dep_code,
                          dep_var, " <- ", dep_var_value, "\n")
