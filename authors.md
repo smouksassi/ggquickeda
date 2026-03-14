@@ -19,16 +19,17 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/smouksassi/ggquickeda/blob/v0.3.3/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/smouksassi/ggquickeda/blob/main/DESCRIPTION)
 
 Mouksassi S, Attali D, Craig J, Rich B, Sachs M (2026). *ggquickeda:
 Quickly Explore Your Data Using 'ggplot2' and 'table1' Summary Tables*.
-R package version 0.3.3, <https://github.com/smouksassi/ggquickeda>.
+R package version 0.3.3.9999,
+<https://github.com/smouksassi/ggquickeda>.
 
     @Manual{,
       title = {ggquickeda: Quickly Explore Your Data Using 'ggplot2' and 'table1' Summary Tables},
       author = {Samer Mouksassi and Dean Attali and James Craig and Benjamin Rich and Michael Sachs},
       year = {2026},
-      note = {R package version 0.3.3},
+      note = {R package version 0.3.3.9999},
       url = {https://github.com/smouksassi/ggquickeda},
     }
