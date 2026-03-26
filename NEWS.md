@@ -1,3 +1,9 @@
+# ggquickeda 0.3.3.9999
+
+* fix issue when dput not working with S7 elements affecting plot code generation
+* ggrepel dependency now requires R > 4.5
+
+
 # ggquickeda 0.3.3
 
 * fix issue when color was set to "none" in  `ggkmrisktable`

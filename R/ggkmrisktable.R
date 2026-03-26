@@ -391,7 +391,8 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
     
     
     data.long <- data |>
-      tidyr::gather(expname,expvalue,none) |> 
+      tidyr::gather(expname,expvalue,none) |>
+      dplyr::filter(!is.na(expvalue)) |>
       dplyr::group_by(expname,!!endpoint)    
   }
   
@@ -412,11 +413,15 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
      data.long <- data.long |> 
        dplyr::mutate(
         Q25 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 0.25, na.rm=TRUE),
+                                                        exposure_metric_plac_value)], 0.25, na.rm=TRUE),
+        Q33 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)],  1/3, na.rm=TRUE),
         Q50 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 0.50, na.rm=TRUE), 
+                                                        exposure_metric_plac_value)], 0.50, na.rm=TRUE),
+        Q66 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)],  2/3, na.rm=TRUE),
         Q75 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 0.75, na.rm=TRUE)) |> 
+                                                        exposure_metric_plac_value)], 0.75, na.rm=TRUE)) |> 
        dplyr::mutate(exptile = dplyr::case_when(
          expvalue == exposure_metric_soc_value  ~ exposure_metric_soc_name,
          expvalue == exposure_metric_plac_value ~ exposure_metric_plac_name,
@@ -429,10 +434,16 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   if(exposure_metric_split=="tertile") {
     data.long <- data.long |> 
       dplyr::mutate(
+        Q25 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)], 0.25, na.rm=TRUE),
         Q33 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 1/3, na.rm=TRUE),
+                                                        exposure_metric_plac_value)],  1/3, na.rm=TRUE),
+        Q50 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)], 0.50, na.rm=TRUE),
         Q66 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 2/3, na.rm=TRUE)) |> 
+                                                        exposure_metric_plac_value)],  2/3, na.rm=TRUE),
+        Q75 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)], 0.75, na.rm=TRUE)) |> 
       dplyr::mutate(exptile = dplyr::case_when(
         expvalue == exposure_metric_soc_value  ~ exposure_metric_soc_name,
         expvalue == exposure_metric_plac_value ~ exposure_metric_plac_name,
@@ -444,12 +455,20 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
   if(exposure_metric_split=="median") {
     data.long <- data.long |> 
       dplyr::mutate(
+        Q25 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)], 0.25, na.rm=TRUE),
+        Q33 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)],  1/3, na.rm=TRUE),
         Q50 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
-                                                 exposure_metric_plac_value)], 0.5, na.rm=TRUE)) |> 
+                                                        exposure_metric_plac_value)], 0.50, na.rm=TRUE),
+        Q66 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)],  2/3, na.rm=TRUE),
+        Q75 = stats::quantile(expvalue[!expvalue %in% c(exposure_metric_soc_value,
+                                                        exposure_metric_plac_value)], 0.75, na.rm=TRUE)) |> 
       dplyr::mutate(exptile = dplyr::case_when(
         expvalue == exposure_metric_soc_value  ~ exposure_metric_soc_name,
         expvalue == exposure_metric_plac_value ~ exposure_metric_plac_name,
-        expvalue > 0   &  expvalue <= Q50      ~ "M1",
+        expvalue > exposure_metric_plac_value   &  expvalue <= Q50      ~ "M1",
         expvalue > Q50                         ~ "M2"))
   }
   data.long$exptile2 <- data.long$exptile
@@ -462,7 +481,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
 
   if(!all(exposure_metrics%in% c("none",""))) {
     data.long.quantiles <- data.long |>
-      dplyr::group_by(!!!syms(listvars))|>
+      dplyr::group_by(!!!syms(listvars),Q25,Q33,Q50,Q66,Q75)|>
       #dplyr::group_by(Endpoint,exptile,expname,exptile2)|>
       dplyr::summarize(exprange = paste0("(",round(min(expvalue),2),"-",round(max(expvalue),2),"]"))
     
@@ -505,6 +524,7 @@ ggkmrisktable <- function(data = lung_long, # long format filter to Endpoint of 
                                     break.time.by = nrisk_table_breaktimeby,
                                     ggtheme = ggplot2::theme_bw())
   }
+  logrank_test_by_endpoint <- list()
   if(km_logrank_pvalue){ #log rank does not group by color_fill, linetype exptile
     loopvariables <- unique(c(endpointinputvar,"expname",groupvar1inputvar,groupvar2inputvar,groupvar3inputvar))
     #loopvariables <- loopvariables[!loopvariables%in% "exptile"]
